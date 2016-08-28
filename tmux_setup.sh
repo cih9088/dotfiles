@@ -1,7 +1,7 @@
 VERSION=2.2
 
 if [[ $1 = local ]]; then
-    echo 'Build "libevent-dev" and "libncurses-dev".' > &2
+    echo 'Build "libevent-dev" and "libncurses-dev".' >&2
 else
     sudo apt-get -y install libevent-dev libncurses-dev
     sudo apt-get -y remove tmux
