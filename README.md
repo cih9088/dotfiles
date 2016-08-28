@@ -11,9 +11,9 @@ cd dotfiles
 
 ## Installation of Prezto
 1. Install zsh
-```
-sudo apt-get install zsh
-```
+    ```
+    sudo apt-get install zsh
+    ```
 2. Launch zsh
 ```
 zsh
