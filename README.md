@@ -6,3 +6,6 @@ This is my dot files.
 ```
 sudo apt-get install
 ```
+
+`sudo apt-get install`
+
