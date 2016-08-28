@@ -9,7 +9,6 @@ call vundle#begin()
 
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-Plugin 'altercation/vim-colors-solarized'
 Plugin 'flazz/vim-colorschemes'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
@@ -43,18 +42,18 @@ filetype plugin indent on    " required
 syntax on
 filetype plugin indent on
 
-set nocompatible " 오리지날 VI와 호환하지 않음
+set nocompatible            " do not compatible to original vi
 set wrap
-set nowrapscan " 검색할 때 문서의 끝에서 처음으로 안돌아감
-set nobackup " 백업 파일을 안만듬
-set visualbell " 키를 잘못눌렀을 때 화면 프레시
-set fencs=ucs-bom,utf-8,euc-kr.latin1 " 한글 파일은 euc-kr로, 유니코드는 유니코드로
-set fileencoding=utf-8 " 파일저장인코딩
-set tenc=utf-8      " 터미널 인코딩
-set backspace=eol,start,indent "  줄의 끝, 시작, 들여쓰기에서 백스페이스시 이전줄로
-set history=1000    " remember more commands and search history
-set undolevels=1000 " use many muchos levels of undo
-set laststatus=2    " 상태바 표시를 항상한다
+set nowrapscan              " do not go back to the first of the line when it reaches at the end of the line
+set nobackup                " do not create backup file
+set visualbell              " visualbell on
+set fencs=ucs-bom,utf-8,euc-kr.latin1   " hangle goes euc-kr, unicode goes unicode
+set fileencoding=utf-8      " file saving encoding
+set tenc=utf-8              " terminal encoding
+set backspace=eol,start,indent          " go to earlier line where the cursor is positioned at end of the line, start of the line and indent 
+set history=1000            " remember more commands and search history
+set undolevels=1000         " use many muchos levels of undo
+set laststatus=2            " status bar is always on
 "set statusline=\ %<%l:%v\ [%P]%=%a\ %h%m%r\ %F\
 set lbr
 
@@ -70,14 +69,14 @@ colorscheme jellybeans
 set tabstop=4       " number of visual spaces per TAB
 set softtabstop=4   " number of spaces in tab when editing
 set expandtab       " tabs are spaces
-set shiftwidth=4    " 자동 들여쓰기 4칸
-set cindent         " C 프로그래밍용 자동 들여쓰기
+set shiftwidth=4    " auto indent 4
+set cindent         " indent only for C language
 set smartindent     " smart indentation
 set copyindent      " copy the previous indentation on autoindenting 
 set autoindent      " always set autoindenting on
 
 " UI Config
-set ruler           " 화면 우측 하단에 현재 커서의 위치(줄,칸) 표시
+set ruler           " show line and col
 set number          " show line numbers
 set showcmd         " show command in bottom bar
 set cursorline      " highlight current line
