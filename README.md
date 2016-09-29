@@ -1,6 +1,6 @@
 # dotfiles
 This is my dot files.
-It is not verified yet whether working or not.
+The only thing that did not verified yet is **installation of tmux**
 
 ## Get this repository
 ```
@@ -9,11 +9,21 @@ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
 cd dotfiles
 ```
 
+## For MAC
+Install brew first
+```
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+```
+
 ## Installation of Prezto
 1. Install zsh
     ```
     sudo apt-get install zsh
     ```
+    ```
+    brew install zsh
+    ```
+
 2. Launch zsh
     ```
     zsh

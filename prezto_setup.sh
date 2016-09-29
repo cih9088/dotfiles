@@ -1,3 +1,4 @@
+#!/bin/zsh
 # Original URL of prezto
 # htts://github.com/sorin-ionescu/prezto
 
@@ -14,7 +15,7 @@ done
 git clone https://github.com/cih9088/zsh-prompt-garrett.git ./prompt
 
 cd prompt
-cp prompt_garrett_setup '~/.zprezto/modules/prompt/functions'
+cp prompt_garrett_setup ~/.zprezto/modules/prompt/functions/
 cd ..
 rm -rf prompt
 

@@ -1,3 +1,4 @@
+#!/bin/zsh
 VERSION=2.2
 
 if [[ $1 = local ]]; then
