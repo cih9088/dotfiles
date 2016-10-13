@@ -49,6 +49,9 @@ Install brew first
     ./dot_setup.sh
     ```
 
+2. [Setting YCM](https://github.com/Valloric/YouCompleteMe)
+
+
 ## Setting up vim
 1. Run vim_setup.sh
     ```
