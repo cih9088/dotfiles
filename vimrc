@@ -163,19 +163,23 @@ nmap <leader>bn :enew<CR>
     vmap <Leader>a: :Tabularize /:\zs<CR>
 "endif
 
-" Split navigations
+" Vim Split navigations
 nmap <C-J> <C-W><C-J>
 nmap <C-K> <C-W><C-K>
 nmap <C-L> <C-W><C-L>
 nmap <C-H> <C-W><C-H>
 set splitbelow
 set splitright
+" Vim Split command remapping like tmux
+nmap <C-W>h <C-W>s
+nmap <C-W>x <C-W>q
 
-"nnoremap <leader>g :YcmCompleter GoTo<CR>
+
+nnoremap <leader>g :YcmCompleter GoTo<CR>
 "nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
-"nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
-"nnoremap <leader>t :YcmCompleter GetType<CR>
-"nnoremap <leader>p :YcmCompleter GetParent<CR>
+nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>t :YcmCompleter GetType<CR>
+nnoremap <leader>p :YcmCompleter GetParent<CR>
 
 
 "" dispaly indent guide lines
