@@ -22,6 +22,8 @@ Plugin 'ervandew/supertab'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'easymotion/vim-easymotion'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 
@@ -42,7 +44,6 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line:
 
 syntax on
-filetype plugin indent on
 
 set nocompatible            " do not compatible to original vi
 set wrap
@@ -53,11 +54,13 @@ set fencs=ucs-bom,utf-8,euc-kr.latin1   " hangle goes euc-kr, unicode goes unico
 set fileencoding=utf-8      " file saving encoding
 set tenc=utf-8              " terminal encoding
 set backspace=eol,start,indent          " go to earlier line where the cursor is positioned at end of the line, start of the line and indent 
+set hidden                  " unsaved changes in buffer is hidden not quit
 set history=1000            " remember more commands and search history
 set undolevels=1000         " use many muchos levels of undo
 set laststatus=2            " status bar is always on
 "set statusline=\ %<%l:%v\ [%P]%=%a\ %h%m%r\ %F\
 set lbr
+set colorcolumn=90          " color column to limit coding length
 
 
 " Colors
@@ -96,23 +99,49 @@ set smartcase       " ignore case if search pattern is all lowercase,
                     " case-sensitive otherwise
 " turn off search highlight
 
-" Folding
-set foldenable          " enable folding
-set foldlevelstart=10   " open most folds by default
-set foldnestmax=10      " 10 nested fold max
-set foldmethod=indent   " fold based on indent level
-nnoremap <space> za
+"" Folding
+"set foldenable          " enable folding
+"set foldlevelstart=10   " open most folds by default
+"set foldnestmax=10      " 10 nested fold max
+"set foldmethod=indent   " fold based on indent level
+"nnoremap <space> za
 
 " Movement
 " highlight last inserted text
 "nnoremap gV `[v`]
 
+" turn off search highlight
+nmap <leader><space> :nohlsearch<CR>
+" toggle Gundo
+nmap <leader>u :GundoToggle<CR>
+" toggle CtrlP
+nmap <leader>] :bnext<CR>
+" buffer previous
+nmap <leader>[ :bprevious<CR>
+" buffer quit
+nmap <leader>bq :bp <BAR> bd #<CR>
+" new buffer
+nmap <leader>bn :enew<CR>
+
+" Vim Split navigations
+nmap <C-J> <C-W><C-J>
+nmap <C-K> <C-W><C-K>
+nmap <C-L> <C-W><C-L>
+nmap <C-H> <C-W><C-H>
+set splitbelow
+set splitright
+" Vim Split command remapping like tmux
+nmap <C-W>h <C-W>s
+nmap <C-W>x <C-W>q
+
+" ======================================  Plugin Setting  ================
 " Airline Setting
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
 
 " CtrlP Setting
-let g:ctrlp_working_path_mode = 0
+nmap <leader>p :CtrlP<CR>
+let g:ctrlp_working_path_mode = 'ra'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip    " Linux/MacOSX
 
 " Syntastic setting
@@ -132,30 +161,17 @@ let g:indent_guides_enable_on_vim_startup = 0
 " YouCompleteMe setting
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
-"To avoid conflict snippets
-let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+""To avoid conflict snippets
+"let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
+"let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
 let g:ycm_autoclose_preview_window_after_completion = 1
+nnoremap <leader>g :YcmCompleter GoTo<CR>
+"nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
+nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>t :YcmCompleter GetType<CR>
+nnoremap <leader>p :YcmCompleter GetParent<CR>
 
-" Mapping
-" turn off search highlight
-nmap <leader><space> :nohlsearch<CR>
-" toggle Gundo
-nmap <leader>u :GundoToggle<CR>
-" toggle NerdTree
-nmap <leader>n :NERDTreeToggle<CR>      
-" toggle CtrlP
-nmap <leader>c :CtrlP<CR>
-" buffer next
-nmap <leader>] :bnext<CR>
-" buffer previous
-nmap <leader>[ :bprevious<CR>
-" buffer quit
-nmap <leader>bq :bp <BAR> bd #<CR>
-" new buffer
-nmap <leader>bn :enew<CR>
-
-" Tabular
+" Tabular setting
 "if exists(':Tabularize')
     nmap <Leader>a= :Tabularize /=<CR>
     vmap <Leader>a= :Tabularize /=<CR>
@@ -163,23 +179,16 @@ nmap <leader>bn :enew<CR>
     vmap <Leader>a: :Tabularize /:\zs<CR>
 "endif
 
-" Vim Split navigations
-nmap <C-J> <C-W><C-J>
-nmap <C-K> <C-W><C-K>
-nmap <C-L> <C-W><C-L>
-nmap <C-H> <C-W><C-H>
-set splitbelow
-set splitright
-" Vim Split command remapping like tmux
-nmap <C-W>h <C-W>s
-nmap <C-W>x <C-W>q
-
-
-nnoremap <leader>g :YcmCompleter GoTo<CR>
-"nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
-nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>t :YcmCompleter GetType<CR>
-nnoremap <leader>p :YcmCompleter GetParent<CR>
+" Easy motion setting
+let g:EasyMotion_do_mapping = 0 " Disable default mappings
+" Jump to anywhere you want with minimal keystrokes, with just one key binding
+" `s{char}{char}{label}`
+nmap s <Plug>(easymotion-overwin-f2)
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
+" JK motions: Line motions
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
 
 
 "" dispaly indent guide lines
