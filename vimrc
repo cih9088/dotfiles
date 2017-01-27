@@ -135,6 +135,10 @@ nmap <C-W>h <C-W>s
 nmap <C-W>x <C-W>q
 
 " ======================================  Plugin Setting  ================
+" NERDTree Setting
+nmap <leader>n :NERDTreeToggle<CR>
+let NERDTreeQuitOnOpen = 1
+
 " Airline Setting
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
