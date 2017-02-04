@@ -97,7 +97,6 @@ set hlsearch        " highlight mtches
 set ignorecase      " ignore case when searching
 set smartcase       " ignore case if search pattern is all lowercase,
                     " case-sensitive otherwise
-" turn off search highlight
 
 "" Folding
 "set foldenable          " enable folding
@@ -114,7 +113,7 @@ set smartcase       " ignore case if search pattern is all lowercase,
 nmap <leader><space> :nohlsearch<CR>
 " toggle Gundo
 nmap <leader>u :GundoToggle<CR>
-" toggle CtrlP
+" buffer next
 nmap <leader>] :bnext<CR>
 " buffer previous
 nmap <leader>[ :bprevious<CR>
@@ -157,10 +156,10 @@ let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-" Indent Guide setting
-let g:indent_guides_start_level = 1
-let g:indent_guides_guide_size = 1
-let g:indent_guides_enable_on_vim_startup = 0
+"" Indent Guide setting
+"let g:indent_guides_start_level = 1
+"let g:indent_guides_guide_size = 1
+"let g:indent_guides_enable_on_vim_startup = 0
 
 " YouCompleteMe setting
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
@@ -176,12 +175,10 @@ nnoremap <leader>t :YcmCompleter GetType<CR>
 nnoremap <leader>p :YcmCompleter GetParent<CR>
 
 " Tabular setting
-"if exists(':Tabularize')
-    nmap <Leader>a= :Tabularize /=<CR>
-    vmap <Leader>a= :Tabularize /=<CR>
-    nmap <Leader>a: :Tabularize /:\zs<CR>
-    vmap <Leader>a: :Tabularize /:\zs<CR>
-"endif
+nmap <Leader>a= :Tabularize /=<CR>
+vmap <Leader>a= :Tabularize /=<CR>
+nmap <Leader>a: :Tabularize /:\zs<CR>
+vmap <Leader>a: :Tabularize /:\zs<CR>
 
 " Easy motion setting
 let g:EasyMotion_do_mapping = 0 " Disable default mappings
