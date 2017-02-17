@@ -1,54 +1,38 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
-
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-" call vundle#begin('~/some/path/here')
+" ==================  vim-plug  ================
+" Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
+call plug#begin('~/.vim/plugged')
+" Make sure you use single quotes
 
 " let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'flazz/vim-colorschemes'
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
-Plugin 'scrooloose/nerdtree'
-Plugin 'kien/ctrlp.vim'
-Plugin 'scrooloose/syntastic'
-Plugin 'tpope/vim-surround'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'godlygeek/tabular'
-Plugin 'ervandew/supertab'
-Plugin 'terryma/vim-multiple-cursors'
-Plugin 'tpope/vim-fugitive'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'easymotion/vim-easymotion'
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
+"Plug 'flazz/vim-colorschemes'
+Plug 'morhetz/gruvbox'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'scrooloose/nerdtree'
+Plug 'kien/ctrlp.vim'
+"Plug 'scrooloose/syntastic'
+Plug 'w0rp/ale'
+Plug 'tpope/vim-surround'
+Plug 'Valloric/YouCompleteMe'
+Plug 'godlygeek/tabular'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'scrooloose/nerdcommenter'
+Plug 'easymotion/vim-easymotion'
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just
-" :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line:
+" Initialize plugin system
+call plug#end()
 
+
+" ==================  vim setting ================
 syntax on
 
 set nocompatible            " do not compatible to original vi
 set wrap
 set nowrapscan              " do not go back to the first of the line when it reaches at the end of the line
 set nobackup                " do not create backup file
+"set noswapfile              " do not create swap file
 set visualbell              " visualbell on
 set fencs=ucs-bom,utf-8,euc-kr.latin1   " hangle goes euc-kr, unicode goes unicode
 set fileencoding=utf-8      " file saving encoding
@@ -61,14 +45,28 @@ set laststatus=2            " status bar is always on
 "set statusline=\ %<%l:%v\ [%P]%=%a\ %h%m%r\ %F\
 set lbr
 set colorcolumn=90          " color column to limit coding length
+set pastetoggle=<F2>        " when in insert mode, press <F2> to go to
+                            " pasete mode, where you can paste mass data
+                            " that won't be autoindent
 
+" Turns off vim's crazy default regex characters
+nnoremap / /\v
+vnoremap / /\v
+"set listchars=tab:▸\ ,eol:¬
+"set list
 
 " Colors
-set t_Co=256 " for ubuntu
-let g:solarized_termcolors=256
+"set t_Co=256 " for ubuntu
 syntax enable       " enable syntax processing
 set background=dark " lihgt / dark
-colorscheme jellybeans
+"if has('termguicolors')
+"   set termguicolors
+"   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+"   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+"endif
+"colorscheme Tomorrow-Night
+"colorscheme jellybeans
+colorscheme gruvbox
 
 " Spaces & Tabs
 set tabstop=4       " number of visual spaces per TAB
@@ -89,7 +87,7 @@ filetype indent on  " load filetype-specific index files
 set wildmenu        " visual autocomplete for command menu
 set showmatch       " highlight matching [{()}]
 set title           " change the terminal's title
-"set lazyredraw      " redraw only when we need to
+set lazyredraw      " redraw only when we need to
 
 " Searching
 set incsearch       " show search matches as you type
@@ -104,10 +102,6 @@ set smartcase       " ignore case if search pattern is all lowercase,
 "set foldnestmax=10      " 10 nested fold max
 "set foldmethod=indent   " fold based on indent level
 "nnoremap <space> za
-
-" Movement
-" highlight last inserted text
-"nnoremap gV `[v`]
 
 " turn off search highlight
 nmap <leader><space> :nohlsearch<CR>
@@ -129,11 +123,12 @@ nmap <C-L> <C-W><C-L>
 nmap <C-H> <C-W><C-H>
 set splitbelow
 set splitright
+
 " Vim Split command remapping like tmux
 nmap <C-W>h <C-W>s
 nmap <C-W>x <C-W>q
 
-" ======================================  Plugin Setting  ================
+" ==================  Plugin Setting  ================
 " NERDTree Setting
 nmap <leader>n :NERDTreeToggle<CR>
 let NERDTreeQuitOnOpen = 1
@@ -141,6 +136,9 @@ let NERDTreeQuitOnOpen = 1
 " Airline Setting
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1
+call airline#parts#define_function('ALE', 'ALEGetStatusLine')
+call airline#parts#define_condition('ALE', 'exists("*ALEGetStatusLine")')
+let g:airline_section_error = airline#section#create_right(['ALE'])
 
 " CtrlP Setting
 nmap <leader>p :CtrlP<CR>
@@ -148,13 +146,22 @@ let g:ctrlp_working_path_mode = 'ra'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip    " Linux/MacOSX
 
 " Syntastic setting
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+"let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+"let g:syntastic_check_on_open = 1
+"let g:syntastic_check_on_wq = 0
+
+"Asynchronous Lint Engine
+let g:ale_echo_msg_error_str = 'Error'
+let g:ale_echo_msg_warning_str = 'Warning'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
+"let g:ale_linters = {
+            "\ 'python': ['flake8']
+            "\}
 
 "" Indent Guide setting
 "let g:indent_guides_start_level = 1
