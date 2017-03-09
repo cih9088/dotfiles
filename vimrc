@@ -4,8 +4,7 @@ call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
 
 " let Vundle manage Vundle, required
-"Plug 'flazz/vim-colorschemes'
-Plug 'morhetz/gruvbox'
+Plug 'flazz/vim-colorschemes'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'scrooloose/nerdtree'
@@ -20,6 +19,13 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdcommenter'
 Plug 'easymotion/vim-easymotion'
+Plug 'Sirver/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+Plug 'junegunn/fzf.vim'
+plug 'junegunn/goyo.vim'
+plug 'junegunn/limelight.vim'
+plug 'yggdroot/indentline'
 
 " Initialize plugin system
 call plug#end()
@@ -198,12 +204,30 @@ let g:EasyMotion_smartcase = 1
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 
+" Ultisnips
+let g:UltisnipsExpandTrigger='<c-j>'
+let g:UltisnipsJumpForwardTrigger='<c-b>'
+let g:UltisnipsJumpBackwardTrigger='<c-z>'
 
-"" dispaly indent guide lines
-"set list listchars=tab:❘-,trail:·,extends:»,precedes:«,nbsp:×
-"" convert spaces to tabs when reading file
-"autocmd! bufreadpost * set noexpandtab | retab! 4
-"" convert tabs to spaces before writing file
-"autocmd! bufwritepre * set expandtab | retab! 4
-"" convert spaces to tabs after writing file (to show guides again)
-"autocmd! bufwritepost * set noexpandtab | retab! 4
+" Indentlines
+let g:indentLine_eenabled = 1
+
+" Limelight
+" Color name (:help cterm-colors) or ANSI code
+let g:limelight_conceal_ctermfg = 'gray'
+let g:limelight_conceal_ctermfg = 240
+" Color name (:help gui-colors) or RGB color
+let g:limelight_conceal_guifg = 'DarkGray'
+let g:limelight_conceal_guifg = '#777777'
+" Default: 0.5
+let g:limelight_default_coefficient = 0.7
+" Number of preceding/following paragraphs to include (default: 0)
+let g:limelight_paragraph_span = 1
+" Beginning/end of paragraph
+"   When there's no empty line between the paragraphs
+"   and each paragraph starts with indentation
+let g:limelight_bop = '^\s'
+let g:limelight_eop = '\ze\n^\s'
+" Highlighting priority (default: 10)
+"   Set it to -1 not to overrule hlsearch
+let g:limelight_priority = -1
