@@ -23,9 +23,11 @@ Plug 'Sirver/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
-plug 'junegunn/goyo.vim'
-plug 'junegunn/limelight.vim'
-plug 'yggdroot/indentline'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/limelight.vim'
+Plug 'yggdroot/indentline'
+"Plug 'metakirby5/codi.vim'
+
 
 " Initialize plugin system
 call plug#end()
