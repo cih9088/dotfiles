@@ -34,6 +34,8 @@ call plug#end()
 
 
 " ==================  vim setting ================
+filetype plugin indent on   " Enable filetype plugins
+set autoread                " Set to auto read when a file is changed from the outside
 syntax on
 
 set nocompatible            " do not compatible to original vi
@@ -110,6 +112,10 @@ set smartcase       " ignore case if search pattern is all lowercase,
 "set foldnestmax=10      " 10 nested fold max
 "set foldmethod=indent   " fold based on indent level
 "nnoremap <space> za
+
+" Treat long lines as break lines (useful when moving around in them)
+map j gj
+map k gk
 
 " turn off search highlight
 nmap <leader><space> :nohlsearch<CR>
