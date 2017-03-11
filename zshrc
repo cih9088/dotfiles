@@ -8,9 +8,11 @@ export PATH=/usr/local/cuda/bin:$PATH
 export PYTHONPATH=/home/mlg/Theano:$PYTHONPATH
 
 # fzf
+export fzf_default_command='ag --hidden --ignore .git -g ""'
+export fzf_ctrl_t_command="$fzf_default_command"
 export FZF_DEFAULT_OPTS='
---color fg:-1,bg:-1,hl:230,fg+:3,bg+:233,hl+:229
---color info:150,prompt:110,spinner:150,pointer:167,marker:174
+--color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
+--color info:183,prompt:110,spinner:107,pointer:167,marker:215
 --border
 '
 
@@ -44,7 +46,7 @@ fi
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
-    export EDITOR=/usr/bin/nano
+    export EDITOR=/usr/bin/vim
 
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
