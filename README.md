@@ -51,9 +51,4 @@ Install brew first
 
 2. [Setting YCM](https://github.com/Valloric/YouCompleteMe)
 
-
-## Setting up vim
-1. Run vim_setup.sh
-    ```
-    ./vim_setup.sh
-    ```
+3. [Install ag from source](https://github.com/ggreer/the_silver_searcher)
