@@ -1,4 +1,11 @@
 " ==================  vim-plug  ================
+" automatic installation
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -flo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd vimenter * pluginstall --sync | source $myvimrc
+endif
+
 " Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
 call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
@@ -7,27 +14,33 @@ call plug#begin('~/.vim/plugged')
 Plug 'flazz/vim-colorschemes'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'scrooloose/nerdtree'
-Plug 'kien/ctrlp.vim'
+
 "Plug 'scrooloose/syntastic'
 Plug 'w0rp/ale'
+
+Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-surround'
-Plug 'Valloric/YouCompleteMe'
 Plug 'godlygeek/tabular'
+Plug 'easymotion/vim-easymotion'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'scrooloose/nerdcommenter'
+Plug 'Yggdroot/indentLine'
+Plug 'raimondi/delimitmate'
+
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'scrooloose/nerdcommenter'
-Plug 'easymotion/vim-easymotion'
+
 Plug 'Sirver/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'kien/ctrlp.vim'
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
+Plug 'ervandew/supertab'
+Plug 'Valloric/YouCompleteMe'
+
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
-Plug 'yggdroot/indentline'
 "Plug 'metakirby5/codi.vim'
-
 
 " Initialize plugin system
 call plug#end()
@@ -42,7 +55,7 @@ set nocompatible            " do not compatible to original vi
 set wrap
 set nowrapscan              " do not go back to the first of the line when it reaches at the end of the line
 set nobackup                " do not create backup file
-"set noswapfile              " do not create swap file
+set noswapfile              " do not create swap file
 set visualbell              " visualbell on
 set fencs=ucs-bom,utf-8,euc-kr.latin1   " hangle goes euc-kr, unicode goes unicode
 set fileencoding=utf-8      " file saving encoding
@@ -53,7 +66,7 @@ set history=1000            " remember more commands and search history
 set undolevels=1000         " use many muchos levels of undo
 set laststatus=2            " status bar is always on
 "set statusline=\ %<%l:%v\ [%P]%=%a\ %h%m%r\ %F\
-set lbr
+set linebreak
 set colorcolumn=90          " color column to limit coding length
 set pastetoggle=<F2>        " when in insert mode, press <F2> to go to
                             " pasete mode, where you can paste mass data
@@ -74,9 +87,7 @@ set background=dark " lihgt / dark
 "   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 "   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 "endif
-"colorscheme Tomorrow-Night
-"colorscheme jellybeans
-colorscheme gruvbox
+colorscheme PaperColor
 
 " Spaces & Tabs
 set tabstop=4       " number of visual spaces per TAB
@@ -119,8 +130,6 @@ map k gk
 
 " turn off search highlight
 nmap <leader><space> :nohlsearch<CR>
-" toggle Gundo
-nmap <leader>u :GundoToggle<CR>
 " buffer next
 nmap <leader>] :bnext<CR>
 " buffer previous
@@ -169,31 +178,34 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip    " Linux/MacOSX
 "let g:syntastic_check_on_wq = 0
 
 "Asynchronous Lint Engine
-let g:ale_echo_msg_error_str = 'Error'
-let g:ale_echo_msg_warning_str = 'Warning'
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
 "let g:ale_linters = {
             "\ 'python': ['flake8']
             "\}
 
-"" Indent Guide setting
-"let g:indent_guides_start_level = 1
-"let g:indent_guides_guide_size = 1
-"let g:indent_guides_enable_on_vim_startup = 0
-
-" YouCompleteMe setting
+" youcompleteme setting
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
-""To avoid conflict snippets
-"let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
-"let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+"to avoid conflict snippets
+let g:ycm_key_list_select_completion = ['<c-j>', '<down>']
+let g:ycm_key_list_previous_completion = ['<c-k>', '<up>']
 let g:ycm_autoclose_preview_window_after_completion = 1
-nnoremap <leader>g :YcmCompleter GoTo<CR>
-"nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
-nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>t :YcmCompleter GetType<CR>
-nnoremap <leader>p :YcmCompleter GetParent<CR>
+nnoremap <leader>g :ycmcompleter goto<cr>
+"nnoremap <leader>gg :ycmcompleter gotoimprecise<cr>
+nnoremap <leader>d :ycmcompleter gotodeclaration<cr>
+nnoremap <leader>t :ycmcompleter gettype<cr>
+nnoremap <leader>p :ycmcompleter getparent<cr>
+
+" supertab setting
+let g:supertabdefaultcompletiontype = '<c-n>'
+
+" ultisnips
+let g:ultisnipsexpandtrigger='<tab>'
+let g:ultisnipsjumpforwardtrigger='<c-j>'
+let g:ultisnipsjumpbackwardtrigger='<c-k>'
 
 " Tabular setting
 nmap <Leader>a= :Tabularize /=<CR>
@@ -211,11 +223,6 @@ let g:EasyMotion_smartcase = 1
 " JK motions: Line motions
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
-
-" Ultisnips
-let g:UltisnipsExpandTrigger='<c-j>'
-let g:UltisnipsJumpForwardTrigger='<c-b>'
-let g:UltisnipsJumpBackwardTrigger='<c-z>'
 
 " Indentlines
 let g:indentLine_eenabled = 1
