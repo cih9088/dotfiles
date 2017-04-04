@@ -182,30 +182,30 @@ let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 let g:ale_statusline_format = ['⨉ %d', '⚠ %d', '⬥ ok']
-"let g:ale_linters = {
-            "\ 'python': ['flake8']
-            "\}
+let g:ale_linters = {
+            \ 'python': ['flake8']
+            \}
 
 " youcompleteme setting
 let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 let g:ycm_confirm_extra_conf = 0
 "to avoid conflict snippets
-let g:ycm_key_list_select_completion = ['<c-j>', '<down>']
-let g:ycm_key_list_previous_completion = ['<c-k>', '<up>']
+let g:ycm_key_list_select_completion = ['<tab>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<s-tab>', '<Up>']
 let g:ycm_autoclose_preview_window_after_completion = 1
-nnoremap <leader>g :ycmcompleter goto<cr>
-"nnoremap <leader>gg :ycmcompleter gotoimprecise<cr>
-nnoremap <leader>d :ycmcompleter gotodeclaration<cr>
-nnoremap <leader>t :ycmcompleter gettype<cr>
-nnoremap <leader>p :ycmcompleter getparent<cr>
+nnoremap <leader>g :YcmCompleter GoTo<CR>
+"nnoremap <leader>gg :YcmCompleter GoToImprecise<CR>
+nnoremap <leader>d :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>t :YcmCompleter GetType<CR>
+nnoremap <leader>p :YcmCompleter GetParent<CR>
 
 " supertab setting
-let g:supertabdefaultcompletiontype = '<c-n>'
+let g:SuperTabDefaultCompletionType = '<tab>'
 
 " ultisnips
-let g:ultisnipsexpandtrigger='<tab>'
-let g:ultisnipsjumpforwardtrigger='<c-j>'
-let g:ultisnipsjumpbackwardtrigger='<c-k>'
+let g:UltiSnipsExpandTrigger='<tab>'
+let g:UltiSnipsJumpforwardTrigger='<C-n>'
+let g:UltiSnipsJumpBackwardTrigger='<C-p>'
 
 " Tabular setting
 nmap <Leader>a= :Tabularize /=<CR>
