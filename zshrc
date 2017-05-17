@@ -16,6 +16,11 @@ export FZF_DEFAULT_OPTS='
 --border
 '
 
+alias gpu0='CUDA_VISIBLE_DEVICES=0 python '
+alias gpu1='CUDA_VISIBLE_DEVICES=1 python '
+alias gpu01='CUDA_VISIBLE_DEVICES=0,1 python '
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
