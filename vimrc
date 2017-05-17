@@ -1,5 +1,5 @@
 " ==================  vim-plug  ================
-" automatic installation
+" automatic installation (for Neovim: ~/.local/share/nvim/site/autoload/plug.vim)
 if empty(glob('~/.vim/autoload/plug.vim'))
     silent !curl -flo ~/.vim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -12,6 +12,8 @@ call plug#begin('~/.vim/plugged')
 
 " let Vundle manage Vundle, required
 Plug 'flazz/vim-colorschemes'
+Plug 'jacoborus/tender.vim'
+Plug 'chriskempson/base16-vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
@@ -26,6 +28,9 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdcommenter'
 Plug 'Yggdroot/indentLine'
 Plug 'raimondi/delimitmate'
+Plug 'Vimjas/vim-python-pep8-indent'
+Plug 'terryma/vim-smooth-scroll'
+Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
@@ -82,12 +87,28 @@ vnoremap / /\v
 "set t_Co=256 " for ubuntu
 syntax enable       " enable syntax processing
 set background=dark " lihgt / dark
-"if has('termguicolors')
-"   set termguicolors
-"   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-"   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-"endif
-colorscheme PaperColor
+if has('termguicolors')
+   set termguicolors
+   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+endif
+colorscheme tender
+"colorscheme base16-default-dark
+"colorscheme base16-eighties
+"colorscheme PaperColor
+"let g:PaperColor_Theme_Options = {
+  "\   'language': {
+  "\     'python': {
+  "\       'highlight_builtins' : 1
+  "\     },
+  "\     'cpp': {
+  "\       'highlight_standard_library': 1
+  "\     },
+  "\     'c': {
+  "\       'highlight_builtins' : 1
+  "\     }
+  "\   }
+  "\ }
 
 " Spaces & Tabs
 set tabstop=4       " number of visual spaces per TAB
@@ -101,7 +122,9 @@ set autoindent      " always set autoindenting on
 
 " UI Config
 set ruler           " show line and col
-set number          " show line numbers
+set relativenumber  " show relative line numbers
+set number          " show absolute line numbers where your cursor is
+set numberwidth=2   " keep the line number gutter narrow"
 set showcmd         " show command in bottom bar
 set cursorline      " highlight current line
 filetype indent on  " load filetype-specific index files
@@ -246,3 +269,9 @@ let g:limelight_eop = '\ze\n^\s'
 " Highlighting priority (default: 10)
 "   Set it to -1 not to overrule hlsearch
 let g:limelight_priority = -1
+
+" vim-smooth-scroll
+noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 30, 2)<CR>
+noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 30, 2)<CR>
+noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
+noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
