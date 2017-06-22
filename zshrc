@@ -8,12 +8,11 @@ export PATH=/usr/local/cuda/bin:$PATH
 export PYTHONPATH=/home/mlg/Theano:$PYTHONPATH
 
 # fzf
-export fzf_default_command='ag --hidden --ignore .git -g ""'
-export fzf_ctrl_t_command="$fzf_default_command"
+export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='
 --color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
 --color info:183,prompt:110,spinner:107,pointer:167,marker:215
---border
 '
 
 alias gpu0='CUDA_VISIBLE_DEVICES=0 python '
