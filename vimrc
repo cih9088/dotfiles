@@ -99,19 +99,6 @@ colorscheme tender
 "colorscheme base16-default-dark
 "colorscheme base16-eighties
 "colorscheme PaperColor
-"let g:PaperColor_Theme_Options = {
-  "\   'language': {
-  "\     'python': {
-  "\       'highlight_builtins' : 1
-  "\     },
-  "\     'cpp': {
-  "\       'highlight_standard_library': 1
-  "\     },
-  "\     'c': {
-  "\       'highlight_builtins' : 1
-  "\     }
-  "\   }
-  "\ }
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
@@ -189,6 +176,10 @@ nmap <C-W>x <C-W>q
 " NERDTree------------------------------------
     nmap <leader>n :NERDTreeToggle<CR>
     let NERDTreeQuitOnOpen = 1
+	let NERDTreeMinimalUI = 1
+	let NERDTreeDirArrows = 1
+	" automatically close nerdtree if it is the only left window
+	autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " Airline-------------------------------------
     let g:airline#extensions#tabline#enabled = 1
@@ -289,3 +280,7 @@ nmap <C-W>x <C-W>q
 
 " Tagbar---------------------------------------
     nmap <Leader>b :TagbarToggle<CR>
+    "autocmd VimEnter * nested :TagbarOpen
+
+" Signature-----------------------------------
+    let g:SignatureMarkTextHLDynamic = 1
