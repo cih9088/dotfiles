@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 # backup old files
 \mkdir ~/dotfiles_old
 \cp ~/.vimrc ~/dotfiles_old
