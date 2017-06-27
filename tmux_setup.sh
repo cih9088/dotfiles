@@ -1,9 +1,8 @@
-#!/bin/zsh
-
+#!/bin/bash
 # exit on error
 set -e
 
-VERSION=2.3
+VERSION=2.5
 
 case "$OSTYPE" in
     solaris*) platform='SOLARIS' ;;
