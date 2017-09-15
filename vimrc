@@ -17,10 +17,14 @@ Plug 'chriskempson/base16-vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
+Plug 'hdima/python-syntax'
+Plug 'Vimjas/vim-python-pep8-indent'
+
 "Plug 'scrooloose/syntastic'
 Plug 'w0rp/ale'
 
 Plug 'scrooloose/nerdtree'
+Plug 'majutsushi/tagbar'
 Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
 Plug 'easymotion/vim-easymotion'
@@ -28,17 +32,16 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdcommenter'
 Plug 'Yggdroot/indentLine'
 Plug 'raimondi/delimitmate'
-Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'terryma/vim-smooth-scroll'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'majutsushi/tagbar'
+"Plug 'tpope/vim-repeat'
 
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
 Plug 'Sirver/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'kien/ctrlp.vim'
+"Plug 'kien/ctrlp.vim'
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 Plug 'ervandew/supertab'
@@ -49,6 +52,7 @@ Plug 'junegunn/limelight.vim'
 Plug 'ryanoasis/vim-devicons'
 Plug 'terryma/vim-expand-region' 
 "Plug 'metakirby5/codi.vim'
+Plug 'kshenoy/vim-signature'
 
 " Initialize plugin system
 call plug#end()
@@ -87,18 +91,20 @@ vnoremap / /\v
 "set list
 
 " Colors
-"set t_Co=256 " for ubuntu
+set t_Co=256 " for ubuntu
 syntax enable       " enable syntax processing
 set background=dark " lihgt / dark
 if has('termguicolors')
    set termguicolors
-   let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+   "let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+   "let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
-colorscheme tender
+"colorscheme tender
 "colorscheme base16-default-dark
 "colorscheme base16-eighties
 "colorscheme PaperColor
+"colorscheme gruvbox
+colorscheme hybrid
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
@@ -176,12 +182,13 @@ nmap <C-W>x <C-W>q
 " NERDTree------------------------------------
     nmap <leader>n :NERDTreeToggle<CR>
     let NERDTreeQuitOnOpen = 1
-	let NERDTreeMinimalUI = 1
-	let NERDTreeDirArrows = 1
-	" automatically close nerdtree if it is the only left window
-	autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    let NERDTreeMinimalUI = 1
+    let NERDTreeDirArrows = 1
+    " automatically close nerdtree if it is the only left window
+    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " Airline-------------------------------------
+    let g:airline_theme = 'tomorrow'
     let g:airline#extensions#tabline#enabled = 1
     let g:airline_powerline_fonts = 1
     call airline#parts#define_function('ALE', 'ALEGetStatusLine')
@@ -189,9 +196,9 @@ nmap <C-W>x <C-W>q
     let g:airline_section_error = airline#section#create_right(['ALE'])
 
 " CtrlP---------------------------------------
-    nmap <leader>p :CtrlP<CR>
-    let g:ctrlp_working_path_mode = 'ra'
-    set wildignore+=*/tmp/*,*.so,*.swp,*.zip    " Linux/MacOSX
+    "nmap <leader>p :CtrlP<CR>
+    "let g:ctrlp_working_path_mode = 'ra'
+    "set wildignore+=*/tmp/*,*.so,*.swp,*.zip    " Linux/MacOSX
 
 " Syntastic-----------------------------------
     "set statusline+=%#warningmsg#
@@ -211,7 +218,7 @@ nmap <C-W>x <C-W>q
                 \ 'python': ['flake8']
                 \}
 
-" youcompleteme-------------------------------
+" YouCompleteMe-------------------------------
     let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
     let g:ycm_confirm_extra_conf = 0
     "to avoid conflict snippets
