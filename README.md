@@ -49,6 +49,8 @@ Install brew first
     ./dot_setup.sh
     ```
 
-2. [Setting YCM](https://github.com/Valloric/YouCompleteMe)
-
-3. [Install ag from source](https://github.com/ggreer/the_silver_searcher)
+## Post setup [only for ubuntu]
+1. Run post_setup.sh
+    ```
+    ./post_setup.sh
+    ```
