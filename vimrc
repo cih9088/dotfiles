@@ -219,7 +219,8 @@ nmap <C-W>x <C-W>q
                 \}
 
 " YouCompleteMe-------------------------------
-    let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+    "let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+    let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
     let g:ycm_confirm_extra_conf = 0
     "to avoid conflict snippets
     let g:ycm_key_list_select_completion = ['<tab>', '<Down>']
