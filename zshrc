@@ -1,24 +1,34 @@
 
-# Tensorflow enviroment variables
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64"
-export CUDA_HOME=/usr/local/cuda
-
-# Theano enviroment variables
-export PATH=/usr/local/cuda/bin:$PATH
-export PYTHONPATH=/home/mlg/Theano:$PYTHONPATH
-
-# fzf
-export FZF_DEFAULT_COMMAND='ag --hidden --ignore .git -g ""'
+# FZF
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='
 --color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
 --color info:183,prompt:110,spinner:107,pointer:167,marker:215
 '
 
-alias gpu0='CUDA_VISIBLE_DEVICES=0 python '
-alias gpu1='CUDA_VISIBLE_DEVICES=1 python '
-alias gpu01='CUDA_VISIBLE_DEVICES=0,1 python '
-export CUDA_DEVICE_ORDER=PCI_BUS_ID
+#############################################################
+# Tensorflow enviroment variables
+# Uncomment following variables if tensorflow is in need
+#############################################################
+# export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64"
+# export CUDA_HOME=/usr/local/cuda
+
+#############################################################
+# Theano enviroment variables
+# Uncomment following variables if theano is in need
+#############################################################
+# export PATH=/usr/local/cuda/bin:$PATH
+# export PYTHONPATH=/home/mlg/Theano:$PYTHONPATH
+
+#############################################################
+# Uncomment following aliases if needed
+#############################################################
+# alias gpu0='CUDA_VISIBLE_DEVICES=0 python '
+# alias gpu1='CUDA_VISIBLE_DEVICES=1 python '
+# alias gpu2='CUDA_VISIBLE_DEVICES=2 python '
+# alias gpu3='CUDA_VISIBLE_DEVICES=3 python '
+# export CUDA_DEVICE_ORDER=PCI_BUS_ID
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
@@ -73,10 +83,10 @@ fi
 alias cp='cp -iv'                           # Preferred 'cp' implementation
 alias mv='mv -iv'                           # Preferred 'mv' implementation
 alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
-alias ls='ls --group-directories-first --color=auto'
+#alias ls='ls --group-directories-first --color=auto'
 alias ll='ls -FGlhp'                        # Preferred 'ls' implementation
 alias la='ll -A'                            #
-#alias lr='ll -R'
+alias lr='ll -R'
 alias lx='ll -XB'
 alias lk='ll -Sr'
 alias rm='nocorrect rm -iv'
@@ -321,3 +331,5 @@ httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grab
 #   e.g.: hdiutil create -size 10m 10MB.dmg
 #   the above create files that are almost all zeros - if random bytes are desired
 #   then use: ~/Dev/Perl/randBytes 1048576 > 10MB.dat
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
