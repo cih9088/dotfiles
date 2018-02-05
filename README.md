@@ -77,9 +77,3 @@ $ brew install python3
     ```bash
     $ ./dot_setup.sh
     ```
-
-## Post setup [only for ubuntu]
-1. Run post_setup.sh
-    ```bash
-    $ ./post_setup.sh
-    ```
