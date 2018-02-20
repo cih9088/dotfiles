@@ -8,18 +8,14 @@ export FZF_DEFAULT_OPTS='
 '
 
 #############################################################
-# Tensorflow enviroment variables
-# Uncomment following variables if tensorflow is in need
+# CUDA enviroment variables
+# Uncomment following variables if cuda is in need
 #############################################################
-# export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/cuda/lib64"
+# export CUDA_DEVICE_ORDER=PCI_BUS_ID
 # export CUDA_HOME=/usr/local/cuda
-
-#############################################################
-# Theano enviroment variables
-# Uncomment following variables if theano is in need
-#############################################################
-# export PATH=/usr/local/cuda/bin:$PATH
-# export PYTHONPATH=/home/mlg/Theano:$PYTHONPATH
+# export PATH=/sur/local/cuda/bin:$PATH
+# export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH    # For CUDA Toolkit >= 9.0
+# export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH                                      # For CUDA Toolkit <= 7.5
 
 #############################################################
 # Uncomment following aliases if needed
@@ -28,7 +24,10 @@ export FZF_DEFAULT_OPTS='
 # alias gpu1='CUDA_VISIBLE_DEVICES=1 python '
 # alias gpu2='CUDA_VISIBLE_DEVICES=2 python '
 # alias gpu3='CUDA_VISIBLE_DEVICES=3 python '
-# export CUDA_DEVICE_ORDER=PCI_BUS_ID
+# alias gpu4='CUDA_VISIBLE_DEVICES=4 python '
+# alias gpu5='CUDA_VISIBLE_DEVICES=5 python '
+# alias gpu6='CUDA_VISIBLE_DEVICES=6 python '
+# alias gpu7='CUDA_VISIBLE_DEVICES=7 python '
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
