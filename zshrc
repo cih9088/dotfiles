@@ -11,10 +11,10 @@ export FZF_DEFAULT_OPTS='
 # CUDA enviroment variables
 # Uncomment following variables if cuda is in need
 #############################################################
-# export CUDA_DEVICE_ORDER=PCI_BUS_ID
-# export CUDA_HOME=/usr/local/cuda
-# export PATH=/sur/local/cuda/bin:$PATH
-# export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH    # For CUDA Toolkit >= 9.0
+export CUDA_DEVICE_ORDER=PCI_BUS_ID
+export CUDA_HOME=/usr/local/cuda
+export PATH=/sur/local/cuda/bin:$PATH
+export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH    # For CUDA Toolkit >= 9.0
 # export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH                                      # For CUDA Toolkit <= 7.5
 
 #############################################################
@@ -59,7 +59,7 @@ fi
 
 #   Set Default Editor (change 'Nano' to the editor of your choice)
 #   ------------------------------------------------------------
-    export EDITOR=/usr/bin/vim
+    export EDITOR=/usr/bin/nvim
 
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
