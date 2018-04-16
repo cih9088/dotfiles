@@ -26,7 +26,7 @@ $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/inst
     ```
 3. Run prezto_setup.sh
     ```bash
-    $ ./prezto_setup.sh
+    $ ./script/prezto_setup.sh
     ```
 4. (Optional) Set Zsh as your default shell
     ```bash
@@ -69,11 +69,11 @@ $ brew install python3
 ## Installation of tmux
 1. Run tmux_setup.sh
     ```bash
-    $ ./tmux_setup.sh
+    $ ./script/tmux_setup.sh
     ```
 
 ## Copy dot files
 1. Run dot_setup.sh
     ```bash
-    $ ./dot_setup.sh
+    $ ./script/dot_setup.sh
     ```

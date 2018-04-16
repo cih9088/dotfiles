@@ -13,9 +13,9 @@ export FZF_DEFAULT_OPTS='
 #############################################################
 export CUDA_DEVICE_ORDER=PCI_BUS_ID
 export CUDA_HOME=/usr/local/cuda
-export PATH=/sur/local/cuda/bin:$PATH
-export LD_LIBRARY_PATH=/usr/local/cuda/lib64:/usr/local/cuda/extras/CUPTI/lib64:$LD_LIBRARY_PATH    # For CUDA Toolkit >= 9.0
-# export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH                                      # For CUDA Toolkit <= 7.5
+export PATH=$CUDA_HOME/bin:$PATH
+export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRARY_PATH    # For CUDA Toolkit >= 9.0
+# export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH                                      # For CUDA Toolkit <= 7.5
 
 #############################################################
 # Uncomment following aliases if needed

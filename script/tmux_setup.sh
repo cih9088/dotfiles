@@ -50,6 +50,3 @@ else
     sudo rm -rf /usr/local/src/tmux-*
     sudo mv tmux-${VERSION} /usr/local/src
 fi
-
-# install tmux-resurrect
-git clone https://github.com/tmux-plugins/tmux-resurrect ~/tmux-resurrect
