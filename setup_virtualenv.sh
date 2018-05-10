@@ -5,7 +5,7 @@ set -e
 VIRENV_NAME=venv
 
 cd ~
-virtualenv -p python3 ${VIRENV_NAME}
+virtualenv --system-site-package -p python3 ${VIRENV_NAME}
 source ~/${VIRENV_NAME}/bin/activate
 
 pip install --upgrade pip
@@ -14,6 +14,7 @@ pip install scikit-learn
 pip install tqdm
 pip install seaborn
 pip install tabulate
+pip install ipdb
 # pip install paramiko
 
 while true; do
