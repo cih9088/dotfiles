@@ -39,12 +39,31 @@ esac
 $SCRIPTS/prezto_setup.sh
 
 # change default shell to zsh
-echo '\n[*] chaning default shell to zsh'
-if [[ $1 = local ]]; then
-    chsh -s $HOME/.local/bin/zsh
-else
-    chsh -s /bin/zsh
-fi
+while true; do
+    echo
+    read -p "[?] Do you wish to change default shell to zsh? " yn
+    case $yn in
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[*] Default shell is unchanged..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Change default shell to local zsh or systemwide zsh? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Changing default shell to local zsh..."
+            if grep -Fxq "exec $HOME/.local/bin/zsh -l" $HOME/.bashrc; then
+                :
+            else
+                echo "exec $HOME/.local/bin/zsh -l" >> $HOME/.bashrc
+            fi
+            break;;
+        [Ss]ystem* ) echo "[*] Changing default shell to systemwide zsh..."
+            chsh -s /bin/zsh; break;;
+        * ) echo "Please answer locally or systemwide.";;
+    esac
+done
+
 
 
 ########################################################################
@@ -55,6 +74,9 @@ fi
 ( . $SCRIPTS/nvim_setup.sh )
 
 # install neovim with python support
+echo
+echo '[*] Install neovim with python support'
+sleep 1
 pip3 install neovim --upgrade --user
 pip2 install neovim --upgrade --user
 # while true; do
@@ -70,7 +92,41 @@ pip2 install neovim --upgrade --user
 #     esac
 # done
 
+
+########################################################################
+# install tmux #
+########################################################################
+
 ( . $SCRIPTS/tmux_setup.sh )
+
+
+
+########################################################################
+# install bin #
+########################################################################
+
 ( . $SCRIPTS/bin_setup.sh )
-# ( . $SCRIPTS/dot_setup.sh )
-# ( . $SCRIPTS/setup_env.sh )
+
+
+########################################################################
+# install dotfiles #
+########################################################################
+
+( . $SCRIPTS/dot_setup.sh )
+
+
+# clean up
+if [ -d $TMP_DIR ]; then
+    rm -rp $TMP_DIR
+fi
+
+
+
+# Install plugins in neovim and vim
+echo
+echo '[*] Install plugins in neovim'
+sleep 1
+nvim +PlugInstall +qall
+# vim +PlugInstall +qall
+
+echo '[*] Install is finished!!!'

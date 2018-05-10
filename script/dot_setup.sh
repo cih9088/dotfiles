@@ -1,11 +1,33 @@
 #!/bin/bash
 
+echo '[*] copying dot files....'
+
+################################################################
 set -e
 
+case "$OSTYPE" in
+    solaris*) platform='SOLARIS' ;;
+    darwin*)  platform='OSX' ;;
+    linux*)   platform='LINUX' ;;
+    bsd*)     platform='BSD' ;;
+    msys*)    platform='WINDOWS' ;;
+    *)        platform='unknown: $OSTYPE' ;;
+esac
+
+if [[ $$ = $BASHPID ]]; then
+    if [[ $platform == "OSX" ]]; then
+        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs greadlink -f ); cd ..; pwd)
+    elif [[ $platform == "LINUX" ]]; then
+        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs readlink -f ); cd ..; pwd)
+    fi
+fi
+
 if [ -d "${HOME}/dotfiles_old" ]; then
-    echo "dotfiles_old folder already exists"
-    echo "rename it to 'dotfiles_old_old'"
+    echo "[*] dotfiles_old folder already exists"
+    echo "[*] Rename it to 'dotfiles_old_old'"
     mv $HOME/dotfiles_old $HOME/dotfiles_old_old
+    mkdir -p ~/dotfiles_old
+else
     mkdir -p ~/dotfiles_old
 fi
 
@@ -13,7 +35,6 @@ if [ ! -d "~/.config" ]; then
     mkdir -p ~/.config
 fi
 
-PROJ_HOME="$(dirname "$(pwd)")"
 VIM_DIR=${PROJ_HOME}/vim
 NVIM_DIR=${PROJ_HOME}/nvim
 TMUX_DIR=${PROJ_HOME}/tmux
@@ -21,42 +42,42 @@ ZSH_DIR=${PROJ_HOME}/zsh
 PYLINT_DIR=${PROJ_HOME}/pylint
 
 # backup old files and replace it with mine
-if [ -e ~/.vimrc ]; then
-    mv ~/.vimrc ~/dotfiles_old
+if [ -e $HOME/.vimrc ]; then
+    mv $HOME/.vimrc $HOME/dotfiles_old
 fi
-ln -s -f ${VIM_DIR} ~/.vim
+ln -s -f ${VIM_DIR}/vimrc $HOME/.vimrc
 
-if [ -e ~/.vim ]; then
-    mv ~/.vim ~/dotfiles_old
+if [ -e $HOME/.vim ]; then
+    mv $HOME/.vim $HOME/dotfiles_old
 fi
-ln -s -f ${VIM_DIR}/vimrc ~/.vimrc
+ln -s -f ${VIM_DIR} $HOME/.vim
 
-if [ -e ~/.config/nvim ]; then
-    mv ~/.config/nvim/ ~/dotfiles_old
+if [ -e $HOME/.config/nvim ]; then
+    mv $HOME/.config/nvim $HOME/dotfiles_old
 fi
-ln -s -f ${NVIM_DIR} ~/.config/nvim
+ln -s -f ${NVIM_DIR} $HOME/.config/nvim
 
-if [ -e ~/.tmux ]; then
-    mv ~/.tmux ~/dotfiles_old
+if [ -e $HOME/.tmux ]; then
+    mv $HOME/.tmux $HOME/dotfiles_old
 fi
-ln -s -f ${TMUX_DIR} ~/.tmux
+ln -s -f ${TMUX_DIR} $HOME/.tmux
 
-if [ -e ~/.tmux.conf ]; then
-    mv ~/.tmux.conf ~/dotfiles_old
+if [ -e $HOME/.tmux.conf ]; then
+    mv $HOME/.tmux.conf $HOME/dotfiles_old
 fi
-ln -s -f ${TMUX_DIR}/tmux.conf ~/.tmux.conf
+ln -s -f ${TMUX_DIR}/tmux.conf $HOME/.tmux.conf
 
-if [ -e ~/.zshrc ]; then
-    mv ~/.zshrc ~/dotfiles_old
+if [ -e $HOME/.zshrc ]; then
+    mv $HOME/.zshrc $HOME/dotfiles_old
 fi
-ln -s -f ${ZSH_DIR}/zshrc ~/.zshrc
+ln -s -f ${ZSH_DIR}/zshrc $HOME/.zshrc
 
-if [ -e ~/.zpreztorc ]; then
-    mv ~/.zpreztorc ~/dotfiles_old
+if [ -e $HOME/.zpreztorc ]; then
+    mv $HOME/.zpreztorc $HOME/dotfiles_old
 fi
-ln -s -f ${ZSH_DIR}/zpreztorc ~/.zpreztorc
+ln -s -f ${ZSH_DIR}/zpreztorc $HOME/.zpreztorc
 
-if [ -e ~/.pylintrc ]; then
-    mv ~/.pylintrc ~/dotfiles_old
+if [ -e $HOME/.pylintrc ]; then
+    mv $HOME/.pylintrc $HOME/dotfiles_old
 fi
-ln -s -f ${PYLINT_DIR}/pylintrc ~/.pylintrc
+ln -s -f ${PYLINT_DIR}/pylintrc $HOME/.pylintrc

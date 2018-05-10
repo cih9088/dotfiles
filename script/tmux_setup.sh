@@ -109,6 +109,7 @@ setup_func() {
         ./configure --prefix=$HOME/.local
         make
         make install
+        cd $TMP_DIR
         mv tmux-${TMUX_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
@@ -127,7 +128,7 @@ setup_func() {
             ./configure
             make
             sudo make install
-            cd -
+            cd $TMP_DIR
             sudo mv tmux-${TMUX_VERSION} /usr/local/src
         else
             echo 'not defined'; exit 1
@@ -144,10 +145,19 @@ setup_func() {
 
 
 while true; do
-    read -p "\nDo you wish to install tmux ($1)? " yn
+    echo
+    read -p "[?] Do you wish to install tmux? " yn
     case $yn in
-        [Yy]* ) echo "[*] installing tmux..."; setup_func; break;;
-        [Nn]* ) echo "[!] aborting install tmux..."; break;;
-        * ) echo "Please answer yes or no.";;
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install tmux..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install tmux locally..."; setup_func 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install tmux systemwide..."; setup_func; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done

@@ -18,13 +18,18 @@ else
     echo 'not defined'; exit 1
 fi
 
-# install python
-echo '\n[*] install python, etc.'
+# install python, etc.
+echo
+echo '[*] install python, etc.'
 if [[ $platform == "OSX" ]]; then
     brew install python2
     brew install python
+    brew install wget
 elif [[ $platform == "LINUX" ]]; then
     sudo apt-get install python-dev python-pip python3-dev python3-pip
 else
     echo 'not defined'; exit 1
 fi
+
+sudo pip install --upgrade pip
+sudo pip3 install --upgrade pip

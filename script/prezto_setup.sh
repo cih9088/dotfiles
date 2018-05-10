@@ -25,13 +25,12 @@ setup_func() {
 }
 
 while true; do
-    read "yn?\nDo you wish to install prezto? "
+    echo
+    read "yn?[?] Do you wish to install prezto? "
     # vared -p "Do you wish to install prezto? " -c yn
     case $yn in
-        [Yy]* ) echo "[*] installing prezto..."; setup_func; break;;
-        [Nn]* ) echo "[!] aborting install prezto..."; break;;
+        [Yy]* ) echo "[*] Installing prezto..."; setup_func; break;;
+        [Nn]* ) echo "[!] Aborting install prezto..."; break;;
         * ) echo "Please answer yes or no.";;
     esac
 done
-
-

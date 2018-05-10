@@ -1,3 +1,6 @@
 tmux/resurrect
 tmux/plugins
+
 bin/dircnt
+
+nvim/.netrwhist

@@ -19,7 +19,12 @@ $ ./prerequisites.sh
 $ cd ~/dotfiles
 $ ./install.sh local    # if you want to install locally
 $ ./install.sh          # if you want to install system-wide
+```
 
+## Setup virtual env
+```bash
+$ cd ~/dotfiles
+$ ./setup_virtualenv.sh
 ```
 
 <!--

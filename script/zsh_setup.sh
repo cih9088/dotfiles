@@ -74,10 +74,19 @@ setup_func() {
 
 
 while true; do
-    read -p "\nDo you wish to install zsh ($1)? " yn
+    echo
+    read -p "[?] Do you wish to install zsh? " yn
     case $yn in
-        [Yy]* ) echo "[*] installing zsh..."; setup_func; break;;
-        [Nn]* ) echo "[!] aborting install zsh..."; break;;
-        * ) echo "Please answer yes or no.";;
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install zsh..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install zsh locally..."; setup_func 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install zsh systemwide..."; setup_func; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done

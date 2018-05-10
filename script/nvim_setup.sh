@@ -40,9 +40,17 @@ fi
 setup_func() {
     if [[ $1 = local ]]; then
         cd $TMP_DIR
-        wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
-        chmod u+x nvim.appimage
-        mv nvim.appimage $HOME/.local/bin/nvim
+        if [[ $platform == "OSX" ]]; then
+            wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-macos.tar.gz
+            tar -xvzf nvim-macos.tar.gz
+            mv nvim-osx64/* $HOME/.local/
+        elif [[ $platform == "LINUX" ]]; then
+            wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
+            chmod u+x nvim.appimage
+            mv nvim.appimage $HOME/.local/bin/nvim
+        else
+            echo 'not defined'; exit 1
+        fi
     else
         if [[ $platform == "OSX" ]]; then
             brew install neovim
@@ -66,10 +74,19 @@ setup_func() {
 
 
 while true; do
-    read -p "\nDo you wish to install nvim ($1)? " yn
+    echo
+    read -p "[?] Do you wish to install neovim? " yn
     case $yn in
-        [Yy]* ) echo "[*] installing nvim..."; setup_func; break;;
-        [Nn]* ) echo "[!] aborting install nvim..."; break;;
-        * ) echo "Please answer yes or no.";;
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install neovim..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install neovim locally..."; setup_func 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install neovim systemwide..."; setup_func; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done

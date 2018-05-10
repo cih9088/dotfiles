@@ -55,7 +55,7 @@ setup_func_tree() {
         make install
         cd $TMP_DIR
         rm -rf $HOME/.local/src/tree-*
-        mv tree-${TREE_VERSIOn} $HOME/.local/src
+        mv tree-${TREE_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
             brew install tree
@@ -77,7 +77,22 @@ setup_func_tree() {
 # fd
 setup_func_fd() {
     if [[ $1 = local ]]; then
-        echo '[!] not available!'
+        echo $TMP_DIR
+        if [[ $platform == "OSX" ]]; then
+            wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
+            tar -xvzf fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
+            cd fd-v${FD_VERSION}-x86_64-apple-darwin
+            mv fd $HOME/.local/bin
+            mv fd.1 $HOME/.local/man/man1
+        elif [[ $platform == "LINUX" ]]; then
+            wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+            tar -xvzf fd-v${FD_VERSION}-x86_64-unknown-linux-gnu.tar.gz
+            cd fd-v${FD_VERSION}-x86_64-unknown-linux-gnu
+            mv fd $HOME/.local/bin
+            mv fd.1 $HOME/.local/man/man1
+        else
+            echo 'not defined'; exit 1
+        fi
     else
         if [[ $platform == "OSX" ]]; then
             brew install fd
@@ -98,29 +113,86 @@ setup_func_fd() {
     echo "[*] fd command installed..."
 }
 
+# thefuck
+setup_func_thefuck() {
+    if [[ $1 = local ]]; then
+        pip3 install thefuck --user
+    else
+        if [[ $platform == "OSX" ]]; then
+            brew install thefuck
+        elif [[ $platform == "LINUX" ]]; then
+            sudo pip3 install thefuck
+        else
+            echo 'not defined'; exit 1
+        fi
+    fi
+
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
+    fi
+
+    echo "[*] thefuck command installed..."
+}
+
 
 while true; do
-    read -p "\nDo you wish to install tree ($1)? " yn
+    echo
+    read -p "[?] Do you wish to install tree? " yn
     case $yn in
-        [Yy]* ) echo "[*] installing tree..."; setup_func_tree; break;;
-        [Nn]* ) echo "[!] aborting install tree..."; break;;
-        * ) echo "Please answer yes or no.";;
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install tree..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install tree locally..."; setup_func_tree 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install tree systemwide..."; setup_func; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done
 
 
 while true; do
-    read -p "\nDo you wish to install fd ($1)? " yn
+    echo
+    read -p "[?] Do you wish to install fd? " yn
     case $yn in
-        [Yy]* ) echo "[*] installing fd..."; setup_func_fd; break;;
-        [Nn]* ) echo "[!] aborting install fd..."; break;;
-        * ) echo "Please answer yes or no.";;
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install fd..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install fd locally..."; setup_func_fd 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install fd systemwide..."; setup_func; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done
 
+
+while true; do
+    echo
+    read -p "[?] Do you wish to install thefuck? " yn
+    case $yn in
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install thefuck..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install thefuck locally..."; setup_func_thefuck 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install thefuck systemwide..."; setup_func; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
+    esac
+done
+
+echo '[*] Coyping bin files...'
 for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
-    ln -s ${BIN_DIR}/$file ~/.local/bin/$file
+    mv ${BIN_DIR}/$file ~/.local/bin/$file
 done
-
-# clean up
-rm -rf $TMP_DIR
