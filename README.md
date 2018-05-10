@@ -8,7 +8,9 @@ $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
 ```
 
 ## Prerequisites
-You need sudo
+You need sudo and following
+* MAC: python2, python3, wget
+* Ubuntu: python2, python3, bsdtar
 ```bash
 $ cd ~/dotfiles
 $ ./prerequisites.sh
@@ -17,8 +19,7 @@ $ ./prerequisites.sh
 ## Install it as whole
 ```bash
 $ cd ~/dotfiles
-$ ./install.sh local    # if you want to install locally
-$ ./install.sh          # if you want to install system-wide
+$ ./install.sh
 ```
 
 ## Setup virtual env

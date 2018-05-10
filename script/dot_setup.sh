@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo '[*] copying dot files....'
+echo '[*] Copying dot files....'
 
 ################################################################
 set -e

@@ -82,14 +82,14 @@ setup_func_fd() {
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
             tar -xvzf fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
             cd fd-v${FD_VERSION}-x86_64-apple-darwin
-            mv fd $HOME/.local/bin
-            mv fd.1 $HOME/.local/man/man1
+            cp fd $HOME/.local/bin
+            cp fd.1 $HOME/.local/man/man1
         elif [[ $platform == "LINUX" ]]; then
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-x86_64-unknown-linux-gnu.tar.gz
             tar -xvzf fd-v${FD_VERSION}-x86_64-unknown-linux-gnu.tar.gz
             cd fd-v${FD_VERSION}-x86_64-unknown-linux-gnu
-            mv fd $HOME/.local/bin
-            mv fd.1 $HOME/.local/man/man1
+            cp fd $HOME/.local/bin
+            cp fd.1 $HOME/.local/man/man1
         else
             echo 'not defined'; exit 1
         fi
@@ -194,5 +194,5 @@ done
 
 echo '[*] Coyping bin files...'
 for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
-    mv ${BIN_DIR}/$file ~/.local/bin/$file
+    cp -rf ${BIN_DIR}/$file ~/.local/bin/$file
 done

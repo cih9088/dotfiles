@@ -43,11 +43,17 @@ setup_func() {
         if [[ $platform == "OSX" ]]; then
             wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-macos.tar.gz
             tar -xvzf nvim-macos.tar.gz
-            mv nvim-osx64/* $HOME/.local/
+            cp -r nvim-osx64/* $HOME/.local/
         elif [[ $platform == "LINUX" ]]; then
+            # https://github.com/neovim/neovim/issues/7620
+            # https://github.com/neovim/neovim/issues/7537
             wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
             chmod u+x nvim.appimage
-            mv nvim.appimage $HOME/.local/bin/nvim
+            mkdir -p $TMP_DIR/nvim; cd $TMP_DIR/nvim
+            bsdtar xfp ../nvim.appimage
+            cp -r usr/bin $HOME/.local
+            cp -r usr/man $HOME/.local
+            cp -r usr/share $HOME/.local
         else
             echo 'not defined'; exit 1
         fi
