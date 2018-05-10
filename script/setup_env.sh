@@ -11,6 +11,6 @@ pip install numpy scipy matplotlib ipython jupyter pandas sympy nose
 pip install scikit-learn
 pip install tqdm
 pip install seaborn
-pip install paramiko
-
-pip install install --upgrade tensorflow-gpu
+pip install tabulate
+# pip install paramiko
+pip install --upgrade tensorflow-gpu

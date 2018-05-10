@@ -5,9 +5,24 @@ This is my dot files.
 ```bash
 $ cd ~
 $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
-$ cd dotfiles
 ```
 
+## Prerequisites
+You need sudo
+```bash
+$ cd ~/dotfiles
+$ ./prerequisites.sh
+```
+
+## Install it as whole
+```bash
+$ cd ~/dotfiles
+$ ./install.sh local    # if you want to install locally
+$ ./install.sh          # if you want to install system-wide
+
+```
+
+<!--
 ## For MAC
 Install [brew](https://brew.sh/index_ko.html) first
 ```bash
@@ -37,8 +52,8 @@ $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/inst
 ---
 **MAC ONLY**: You need to install Python2 and Python3 managed by Homebrew
 ```bash
-$ brew install python
-$ brew install python3
+$ brew install python2  # python2
+$ brew install python   # python3
 ```
 ---
 
@@ -75,5 +90,7 @@ $ brew install python3
 ## Copy dot files
 1. Run dot_setup.sh
     ```bash
-    $ ./script/dot_setup.sh
+    $ cd script # important! you have to be in script directory!!
+    $ ./dot_setup.sh
     ```
+-->

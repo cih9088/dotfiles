@@ -1,8 +1,16 @@
 #!/bin/bash
 
+set -e
+
 if [ -d "${HOME}/dotfiles_old" ]; then
     echo "dotfiles_old folder already exists"
-    exit
+    echo "rename it to 'dotfiles_old_old'"
+    mv $HOME/dotfiles_old $HOME/dotfiles_old_old
+    mkdir -p ~/dotfiles_old
+fi
+
+if [ ! -d "~/.config" ]; then
+    mkdir -p ~/.config
 fi
 
 PROJ_HOME="$(dirname "$(pwd)")"
@@ -12,36 +20,43 @@ TMUX_DIR=${PROJ_HOME}/tmux
 ZSH_DIR=${PROJ_HOME}/zsh
 PYLINT_DIR=${PROJ_HOME}/pylint
 
-# backup old files
-\mkdir ~/dotfiles_old
-\cp ~/.vimrc ~/dotfiles_old
-\cp -r ~/.vim ~/dotfiles_old
-
-\cp -r ~/.config/nvim/ ~/dotfiles_old
-
-\cp -r ~/.tmux ~/dotfiles_old
-\cp ~/.tmux.conf ~/dotfiles_old
-
-\cp ~/.zshrc ~/dotfiles_old
-\cp ~/.zpreztorc ~/dotfiles_old
-
-\cp ~/.pylintrc ~/dotfiles_old
-
-# make directory if needed
-if [ ! -d "~/.config" ]; then
-    \mkdir -p ~/.config
+# backup old files and replace it with mine
+if [ -e ~/.vimrc ]; then
+    mv ~/.vimrc ~/dotfiles_old
 fi
+ln -s -f ${VIM_DIR} ~/.vim
 
-# Copy dot files
-\ln -s -f ${VIM_DIR} ~/.vim
-\ln -s -f ${VIM_DIR}/vimrc ~/.vimrc
+if [ -e ~/.vim ]; then
+    mv ~/.vim ~/dotfiles_old
+fi
+ln -s -f ${VIM_DIR}/vimrc ~/.vimrc
 
-\ln -s -f ${NVIM_DIR} ~/.config/nvim
+if [ -e ~/.config/nvim ]; then
+    mv ~/.config/nvim/ ~/dotfiles_old
+fi
+ln -s -f ${NVIM_DIR} ~/.config/nvim
 
-\ln -s -f ${TMUX_DIR} ~/.tmux
-\ln -s -f ${TMUX_DIR}/tmux.conf ~/.tmux.conf
+if [ -e ~/.tmux ]; then
+    mv ~/.tmux ~/dotfiles_old
+fi
+ln -s -f ${TMUX_DIR} ~/.tmux
 
-\ln -s -f ${ZSH_DIR}/zshrc ~/.zshrc
-\ln -s -f ${ZSH_DIR}/zpreztorc ~/.zpreztorc
+if [ -e ~/.tmux.conf ]; then
+    mv ~/.tmux.conf ~/dotfiles_old
+fi
+ln -s -f ${TMUX_DIR}/tmux.conf ~/.tmux.conf
 
-\ln -s -f ${PYLINT_DIR}/pylintrc ~/.pylintrc
+if [ -e ~/.zshrc ]; then
+    mv ~/.zshrc ~/dotfiles_old
+fi
+ln -s -f ${ZSH_DIR}/zshrc ~/.zshrc
+
+if [ -e ~/.zpreztorc ]; then
+    mv ~/.zpreztorc ~/dotfiles_old
+fi
+ln -s -f ${ZSH_DIR}/zpreztorc ~/.zpreztorc
+
+if [ -e ~/.pylintrc ]; then
+    mv ~/.pylintrc ~/dotfiles_old
+fi
+ln -s -f ${PYLINT_DIR}/pylintrc ~/.pylintrc

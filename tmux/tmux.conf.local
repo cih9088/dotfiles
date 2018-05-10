@@ -155,7 +155,7 @@ tmux_conf_theme_right_separator_sub='|'
 #     - #{uptime_s}
 #     - #{username}
 #     - #{username_ssh}
-tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} '
+tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} | #{loadavg} '
 tmux_conf_theme_status_right='#{prefix}#{pairing}#{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
 
 # status left style
@@ -253,7 +253,7 @@ unbind %
 # force Vi mode
 #   really you should export VISUAL or EDITOR environment variable, see manual
 #set -g status-keys vi
-#set -g mode-keys vi
+set -g mode-keys vi
 
 # replace C-b by C-a instead of using both prefixes
 set -gu prefix2
@@ -263,7 +263,7 @@ set -g prefix C-a
 bind C-a send-prefix
 
 # move status line to top
-#set -g status-position top
+# set -g status-position top
 
 # Smart pane switching with awareness of Vim splits.
 # # See: https://github.com/christoomey/vim-tmux-navigator
@@ -282,3 +282,16 @@ bind -n C-k run "($is_vim && tmux send-keys C-k) || \
 bind -n C-l run "($is_vim && tmux send-keys C-l) || \
                 tmux select-pane -R"
 bind-key -n C-\ if-shell "$is_vim" "send-keys C-\\" "select-pane -l"
+
+# Prevent from window renaming
+set-option -g allow-rename off
+
+# synchronize mode (toggle)
+bind-key e set-window-option synchronize-panes
+
+# centered windows
+# set -g status-justify centre
+
+# Proper treu color terminal
+set -g  default-terminal "xterm-256color"
+set -ga terminal-overrides ",xterm-256color:Tc"

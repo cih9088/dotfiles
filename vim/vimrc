@@ -3,7 +3,7 @@ if has('nvim')
     " automatic installation (for Neovim: ~/.local/share/nvim/site/autoload/plug.vim)
     if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
         silent !curl -flo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
         autocmd vimenter * pluginstall --sync | source $myvimrc
     endif
     " Specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
@@ -13,7 +13,7 @@ else
     " automatic installation (for vim: ~/.vim/autoload/plug.vim)
     if empty(glob('~/.vim/autoload/plug.vim'))
         silent !curl -flo ~/.vim/autoload/plug.vim --create-dirs
-            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+                    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
         autocmd vimenter * pluginstall --sync | source $myvimrc
     endif
     " Specify a directory for plugins (for vim: ~/.vim/plugged)
@@ -32,14 +32,15 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Language specific (syntax, completion, etc.)
 Plug 'chrisbra/csv.vim'
-
-" Plug 'python-mode/python-mode', { 'branch': 'develop' }
-Plug 'vim-python/python-syntax'
+Plug 'python-mode/python-mode', { 'branch': 'develop' }
+" Plug 'vim-python/python-syntax'
 Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'davidhalter/jedi-vim'
+Plug 'sheerun/vim-polyglot'
 
 if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
     Plug 'zchee/deoplete-jedi'
     Plug 'zchee/deoplete-clang'
     Plug 'machakann/vim-Verdin', { 'for': ['vim'] }
@@ -60,7 +61,6 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdcommenter'
 Plug 'Yggdroot/indentLine'
 Plug 'raimondi/delimitmate'
-Plug 'terryma/vim-smooth-scroll'
 Plug 'christoomey/vim-tmux-navigator'
 " Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-expand-region'
@@ -70,7 +70,10 @@ Plug 'kshenoy/vim-signature'
 " Plug 'tpope/vim-sensible'
 Plug 'junegunn/vim-easy-align'
 Plug 'Shougo/echodoc.vim'
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'junegunn/gv.vim'
+Plug 'yuttie/comfortable-motion.vim'
+Plug 'kien/rainbow_parentheses.vim'
 
 " etc.
 Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
@@ -78,6 +81,8 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
 "Plug 'metakirby5/codi.vim'
+Plug 'mhinz/vim-startify'
+Plug 'wellle/tmux-complete.vim'
 
 " Initialize plugin system
 call plug#end()
@@ -109,61 +114,36 @@ set pastetoggle=<F2>        " when in insert mode, press <F2> to go to
                             " pasete mode, where you can paste mass data
                             " that won't be autoindent
 
-" Turns off vim's crazy default regex characters
-"nnoremap / /\v
-"vnoremap / /\v
-
 " Set unvisible characters
 set list
 set showbreak=↪\
 set listchars=tab:»\ ,nbsp:␣,trail:·,extends:>,precedes:<
-" set listchars=tab:»\ ,eol:↲,nbsp:␣,trail:·,extends:>,precedes:<
 
-" set wildmenu
-" set wildmode=list:longest,full
+" visual autocomplete for command menu
+set wildmenu
+set wildmode=list:longest,full
+" Setting up ignores
+set wildignore+=*/tmp/*,*.so,*.pyc,*.png,*.jpg,*.gif,*.jpeg,*.ico,*.pdf
+set wildignore+=*.wav,*.mp4,*.mp3
+set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.rbo,*.class,.svn,*.gem
+set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
+set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
+set wildignore+=*.swp,*~,._*
+set wildignore+=_pycache_,.DS_Store,.vscode,.localized
+" Resize panes whenever containing window resized.
+autocmd VimResized * wincmd =
 
-" do not exit from visual mode when shifting
-" (gv : select the preivous area)
-vnoremap < <gv
-vnoremap > >gv
+" When scrolling, keep cursor 5 lines away from screen border
+set scrolloff=5
 
-" Sudo Save (:Wsudo command)
-command! Wsudo w !sudo tee % > /dev/null
-
-" <leader>cd : switch to the directory of the current buffer
-nmap <leader>cd :cd %:p:h<CR>
-
-" <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
-map <leader>y "*y
-noremap <leader>x "*x
-noremap <leader>p "*p
-
-" <leader>df : diffthis
-nnoremap <leader>df :diffthis<CR>
-
-" remove trailing whitespaces on save
-fun! StripTrailingWhitespaces()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
-
-autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
-    \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
-
-" To toggle showing the non-printable characters
-noremap <F12> :set list!<CR>
-inoremap <F12> <Esc>:set list!<CR>a
-
-" Colors
+" Color scheme
 set t_Co=256 " for ubuntu
 syntax enable       " enable syntax processing
 set background=dark " lihgt / dark
 if has('termguicolors')
-   set termguicolors
-   "let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-   "let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 endif
 " colorscheme tender
 " colorscheme base16-default-dark
@@ -172,12 +152,9 @@ endif
 " colorscheme gruvbox
 colorscheme hybrid
 " colorscheme onedark
-
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-if has("autocmd")
-    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-endif
+" better popup menu colors (instead of dark black)
+highlight Pmenu ctermfg=black ctermbg=yellow guifg=black guibg=#ffec99
+highlight PmenuSel ctermfg=red ctermbg=white guifg=red guibg=white gui=bold
 
 " Spaces & Tabs
 set tabstop=4       " number of visual spaces per TAB
@@ -197,14 +174,10 @@ set numberwidth=2   " keep the line number gutter narrow"
 set showcmd         " show command in bottom bar
 set cursorline      " highlight current line
 filetype indent on  " load filetype-specific index files
-set wildmenu        " visual autocomplete for command menu
 set showmatch       " highlight matching [{()}]
 set title           " change the terminal's title
 set lazyredraw      " redraw only when we need to
 set noshowmode      " for echodoc to hide -- INSERT -- in command line
-" better popup menu colors (instead of dark black)
-highlight Pmenu ctermfg=black ctermbg=yellow guifg=black guibg=#ffec99
-highlight PmenuSel ctermfg=red ctermbg=white guifg=red guibg=white gui=bold
 
 " Searching
 set incsearch       " show search matches as you type
@@ -219,6 +192,36 @@ set foldlevelstart=10   " open most folds by default
 set foldnestmax=10      " 10 nested fold max
 set foldmethod=indent   " fold based on indent level
 nnoremap <space> za
+
+
+" remove trailing whitespaces on save
+fun! StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
+    \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
+
+" To toggle showing the non-printable characters
+noremap <F12> :set list!<CR>
+inoremap <F12> <Esc>:set list!<CR>a
+
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+" Turns off vim's crazy default regex characters
+"nnoremap / /\v
+"vnoremap / /\v
+
+" do not exit from visual mode when shifting
+" (gv : select the preivous area)
+vnoremap < <gv
+vnoremap > >gv
 
 " Treat long lines as break lines (useful when moving around in them)
 map j gj
@@ -252,17 +255,30 @@ set splitright
 nmap <C-W>h <C-W>s
 nmap <C-W>x <C-W>q
 
-" [F4] Next Error [Shift+F4] Previous Error
-map <F4> <ESC>:cn<CR>
-map [26~ <ESC>:cp<CR>
-map [1;2S <ESC>:cp<CR>
-map [29~ <ESC>:cp<CR>
+" Sudo Save (:Wsudo command)
+command! Wsudo w !sudo tee % > /dev/null
+
+" <leader>cd : switch to the directory of the current buffer
+nmap <leader>cd :cd %:p:h<CR>
+
+" <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard
+map <leader>y "*y
+noremap <leader>x "*x
+noremap <leader>p "*p
+
+" <leader>df : diffthis
+nnoremap <leader>df :diffthis<CR>
+
+" I am too lazy to take my hands from shift
+command! WQ wq
+command! Wq wq
+command! W w
 
 
 " ==================  Plugin Setting  ================
 
 " NERDtree------------------------------------
-    nmap <leader>n :NERDTreeToggle<CR>
+    nmap <leader>N :NERDTreeToggle<CR>
     let NERDTreeQuitOnOpen = 0
     let NERDTreeMinimalUI = 1
     let NERDTreeDirArrows = 1
@@ -294,24 +310,21 @@ map [29~ <ESC>:cp<CR>
 
 
 " Airline-------------------------------------
-    let g:airline_theme = 'wombat'
+    let g:airline_theme = 'bubblegum'
     " enable tabline feature
     let g:airline#extensions#tabline#enabled = 1
     " Display buffers (like tabs) in the tabline
     " if there is only one tab
     let g:airline#extensions#tabline#show_buffers = 1
-    let g:airline_powerline_fonts = 1
+    let g:airline_powerline_fonts = 0
     let g:airline#extensions#ale#enabled = 1
 
 " ALE------------------------------------------
-    " let g:ale_echo_msg_error_str = 'E'
-    " let g:ale_echo_msg_warning_str = 'W'
-    " let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+	let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
     let g:ale_linters = {
                 \ 'python': ['pylint']
                 \}
     " show which linter is showing the message
-    let g:ale_echo_msg_format = '[%linter%] %code: %%s'
     let g:ale_sign_error = '✘'
     let g:ale_sign_warning = '⚠'
     hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=167
@@ -319,7 +332,7 @@ map [29~ <ESC>:cp<CR>
     " let g:ale_sign_error = '>>'
     " let g:ale_sign_warning = '--'
     " no highlight (underline) on detected errors/warnings
-    " let g:ale_set_highlights = 0
+    let g:ale_set_highlights = 0
 
 " Ultisnips-----------------------------------
     let g:UltiSnipsExpandTrigger="<c-j>"
@@ -400,12 +413,6 @@ map [29~ <ESC>:cp<CR>
     autocmd! User GoyoEnter Limelight
     autocmd! User GoyoLeave Limelight!
 
-" smoothscroll----------------------------------
-    noremap <silent> <c-u> :call smooth_scroll#up(&scroll, 30, 2)<CR>
-    noremap <silent> <c-d> :call smooth_scroll#down(&scroll, 30, 2)<CR>
-    " noremap <silent> <c-b> :call smooth_scroll#up(&scroll*2, 30, 4)<CR>
-    " noremap <silent> <c-f> :call smooth_scroll#down(&scroll*2, 30, 4)<CR>
-
 " Tagbar---------------------------------------
     nmap <Leader>t :TagbarToggle<CR>
     "autocmd VimEnter * nested :TagbarOpen
@@ -445,73 +452,103 @@ map [29~ <ESC>:cp<CR>
 " echodoc-----------------------------------------
     let g:echodoc#enable_at_startup = 1
 
-"
-" " pymode-------------------------------------------
-" " heavenshell/vim-pydocstring
-" " Change default keymapping to <C-_> (default is <C-l>)
-" nmap <silent> <C-_> <Plug>(pydocstring)
-"
-" " disable code folding by default
-" let g:pymode_folding = 0
-"
-" " disable rope (terribly slow), in favor of jedi-vim
-" let g:pymode_rope = 0
-"
-" " prefer jedi's <leader>r (rename), instead of run
-" " however, jedi resets all the highlight :( - why?
-" let g:pymode_run = 0
-"
-" " Use ipython pdb for inserting breakpoints
-" " one might need to run 'pip install ipdb'
-" let g:pymode_breakpoint_cmd = 'import pudb; pudb.set_trace()'
-"
-" " lint (code checking):
-" " disable in favor of ALE, but only if pylint/pycodestyle exists
-" let s:py_linters_exists = executable("pylint") || executable("pycodestyle")
-" if has_key(g:plugs, 'ale') && s:py_linters_exists
-"     let g:pymode_lint = 0
-" endif
-"
-" " Check code on every save (not on the fly)
-" let g:pymode_lint_on_write = 1
-" let g:pymode_lint_unmodified = 1
-"
-" " Do NOT open quickfix window when any pymode_lint errors have been found
-" let g:pymode_lint_cwindow = 0
-"
-" " Skip some errors and warnings
-" " see also ~/.config/pycodestyle (for ALE)
-" "  E401 : multiple imports on one line
-" "  E501 : line too long
-" let g:pymode_lint_ignore = ["E401", "E501"]
+" vim-startify------------------------------------
+    let g:startify_bookmarks = [
+                \ '~/dotfiles/nvim/init.vim',
+                \ '~/dotfiles/tmux/tmux.conf.local',
+                \ '~/dotfiles/zsh/zpreztorc',
+                \ '~/dotfiles/zsh/zshrc'
+                \]
+
+" FZF----------------------------------------------
+    nnoremap <leader>F :FZF<CR>
+    command! F FZF
+    nnoremap <leader>B :Buffers<CR>
+    command! B Buffers
+    nnoremap <leader>H :History<CR>
+    command! H History
+    nnoremap <leader>C :Commits<CR>
+    command! C Commits
+
+" Semshi--------------------------------------------
+    function SemshiHighlight()
+        " hi! def link  semshiBuiltin  Structure
+        hi! def link semshiSelf Identifier
+        " hi semshiSelf           ctermfg=174     guifg=#d78787
+        hi semshiAttribute      ctermfg=157     guifg=#afffaf
+    endfunction
+    autocmd FileType python call SemshiHighlight()
+
+" pymode-------------------------------------------
+    " heavenshell/vim-pydocstring
+    " Change default keymapping to <C-_> (default is <C-l>)
+    nmap <silent> <C-_> <Plug>(pydocstring)
+
+    " disable code folding by default
+    let g:pymode_folding = 0
+
+    " disable rope (terribly slow), in favor of jedi-vim
+    let g:pymode_rope = 0
+
+    " prefer jedi's <leader>r (rename), instead of run
+    " however, jedi resets all the highlight :( - why?
+    let g:pymode_run = 0
+
+    " Use ipython pdb for inserting breakpoints
+    " one might need to run 'pip install ipdb'
+    let g:pymode_breakpoint_cmd = 'import ipdb; ipdb.set_trace()'
+
+    " lint (code checking):
+    " disable in favor of ALE, but only if pylint/pycodestyle exists
+    let s:py_linters_exists = executable("pylint") || executable("pycodestyle")
+    if has_key(g:plugs, 'ale') && s:py_linters_exists
+        let g:pymode_lint = 0
+    endif
+
+    " Check code on every save (not on the fly)
+    let g:pymode_lint_on_write = 1
+    let g:pymode_lint_unmodified = 1
+
+    " Do NOT open quickfix window when any pymode_lint errors have been found
+    let g:pymode_lint_cwindow = 0
+
+    " Skip some errors and warnings
+    " see also ~/.config/pycodestyle (for ALE)
+    "  E401 : multiple imports on one line
+    "  E501 : line too long
+    let g:pymode_lint_ignore = ["E401", "E501"]
+
+    let g:pymode_syntax_all = 1
 
 
 " jedi----------------------------------------------
-" For neovim or vim8 (completor.vim),
-" disable jedi's autocompletion behavior but enable all the other features (e.g. goto, or refactoring)
-" The autocompletion is supported by deoplete-jedi or completor.vim.
-if has_key(g:plugs, 'deoplete-jedi') || has_key(g:plugs, 'completor.vim')
-"if has('nvim') || v:version >= 800
-    " @see https://github.com/zchee/deoplete-jedi/issues/35
-    let g:jedi#completions_enabled = 0
-endif
+    " For neovim or vim8 (completor.vim),
+    " disable jedi's autocompletion behavior but enable all the other features (e.g. goto, or refactoring)
+    " The autocompletion is supported by deoplete-jedi or completor.vim.
+    if has_key(g:plugs, 'deoplete-jedi') || has_key(g:plugs, 'completor.vim')
+    "if has('nvim') || v:version >= 800
+        " @see https://github.com/zchee/deoplete-jedi/issues/35
+        let g:jedi#completions_enabled = 0
+    endif
 
-" Make jedi's completeopt not to include 'longest',
-" to prevent underscore prefix auto-completion (e.g. self.__)
-" @see jedi-vim issues #429
-let g:jedi#auto_vim_configuration = 0
+    " Make jedi's completeopt not to include 'longest',
+    " to prevent underscore prefix auto-completion (e.g. self.__)
+    " @see jedi-vim issues #429
+    let g:jedi#auto_vim_configuration = 0
 
-" Do not automatically add the 'import' statement for 'from ...'
-let g:jedi#smart_auto_mappings = 0
+    " Do not automatically add the 'import' statement for 'from ...'
+    let g:jedi#smart_auto_mappings = 0
 
-" Turn off call signatures temporarily, due to an annoying bug
-" @see https://github.com/davidhalter/jedi-vim/issues/257
-let g:jedi#show_call_signatures = 0
+    " Turn off call signatures temporarily, due to an annoying bug
+    " @see https://github.com/davidhalter/jedi-vim/issues/257
+    let g:jedi#show_call_signatures = 0
 
-" jedi-vim opens buffer in the current tab (rather than a new tab)
-" when goto (e.g. goto definition) is performed
-let g:jedi#use_tabs_not_buffers = 0
+    " jedi-vim opens buffer in the current tab (rather than a new tab)
+    " when goto (e.g. goto definition) is performed
+    let g:jedi#use_tabs_not_buffers = 0
 
-" window splits to open with; for now, it is disabled
-"let g:jedi#use_splits_not_buffers = 'bottom'
+    " window splits to open with; for now, it is disabled
+    "let g:jedi#use_splits_not_buffers = 'bottom'
 
+" vim-pyglot----------------------------------------
+    let g:polyglot_disabled = ['css']

@@ -32,8 +32,10 @@ zstyle ':prezto:load' pmodule \
   'spectrum' \
   'utility' \
   'completion' \
+  'fasd' \
   'tmux' \
   'git' \
+  'archive' \
   'rsync' \
   'syntax-highlighting' \
   'prompt'
