@@ -2,6 +2,24 @@
 
 set -e
 
+case "$OSTYPE" in
+    solaris*) platform='SOLARIS' ;;
+    darwin*)  platform='OSX' ;;
+    linux*)   platform='LINUX' ;;
+    bsd*)     platform='BSD' ;;
+    msys*)    platform='WINDOWS' ;;
+    *)        platform='unknown: $OSTYPE' ;;
+esac
+
+if [[ $platform == "OSX" ]]; then
+    echo "[*] Your platform is OSX"
+elif [[ $platform == "LINUX" ]]; then
+    echo "[*] Your platform is LINUX"
+else
+    echo "[!] $platform is not supported."; exit 1
+fi
+
+
 PROJ_HOME=$(pwd)
 TMP_DIR=$HOME/tmp_install
 SCRIPTS=$PROJ_HOME/script
@@ -17,15 +35,6 @@ fi
 if [ ! -d $TMP_DIR ]; then
     mkdir -p $TMP_DIR
 fi
-
-case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
-esac
 
 
 ########################################################################
@@ -126,7 +135,7 @@ fi
 echo
 echo '[*] Install plugins in neovim'
 sleep 1
-nvim +PlugInstall +qall
+nvim +PlugInstall +UpdateRemotePlugins +qall
 # vim +PlugInstall +qall
 
 echo '[*] Install is finished!!!'

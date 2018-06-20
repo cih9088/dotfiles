@@ -1,4 +1,5 @@
 
+
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
@@ -21,12 +22,17 @@ export PATH=$HOME/.local/bin:$PATH
 # thefuck
 eval $(thefuck --alias)
 
-alias ssh-122='ssh -p 6150 -Y mlg@141.223.162.122'
-alias ssh-parker='ssh -p 6150 -Y andy@parker.aitricsdev.com'
-alias ssh-banner='ssh -p 6150 -Y andy@banner.aitricsdev.com'
-alias ssh-strange='ssh -p 6150 -Y andy@strange.aitricsdev.com'
-alias ssh-stark='ssh -p 6150 -Y andy@stark.aitricsdev.com'
-alias ssh-rogers='ssh -p 6150 -Y andy@rogers.aitricsdev.com'
+# vi mode for zsh
+bindkey -v
+export KEYTIMEOUT=1
+
+# usefull alias
+alias ssh-122='ssh -A -p 6150 -Y mlg@141.223.162.122'
+alias ssh-parker='ssh -A -p 6150 -Y andy@parker.aitricsdev.com'
+alias ssh-banner='ssh -A -p 6150 -Y andy@banner.aitricsdev.com'
+alias ssh-strange='ssh -A -p 6150 -Y andy@strange.aitricsdev.com'
+alias ssh-stark='ssh -A -p 6150 -Y andy@stark.aitricsdev.com'
+alias ssh-rogers='ssh -A -p 6150 -Y andy@rogers.aitricsdev.com'
 
 #############################################################
 # CUDA enviroment variables
@@ -94,8 +100,8 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
 #   2.  MAKE TERMINAL BETTER
 #   -----------------------------
 
-    alias rsync-copy-sum='rsync-copy --info=progress2 --info=name0 '
-    alias rsync-move-sum='rsync-move --info=progress2 --info=name0 '
+    alias rsync-copy-sum='rsync-copy --info=progress2,name0 '
+    alias rsync-move-sum='rsync-move --info=progress2,name0 '
 #    alias cp='cp -iv'                           # Preferred 'cp' implementation
 #    alias mv='mv -iv'                           # Preferred 'mv' implementation
 #    alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
@@ -116,6 +122,16 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
         fi
         )
     }               # Always list directory contents upon 'cd'
+    easy-pssh() {
+        local host_list="$1"
+        local cmd="$2"
+
+        echo "Enter the sudo passwd for the remote user: "
+        read -s pswd
+
+        echo "$pswd" | pssh -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
+    }           # Easy pssh command
+
 #    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 #    alias ..='cd ../'                           # Go back 1 directory level
 #    alias ...='cd ../../'                       # Go back 2 directory levels

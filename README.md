@@ -8,7 +8,7 @@ $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
 ```
 
 ## Prerequisites
-You need sudo and following
+You need sudo and following would be installed
 * MAC: python2, python3, wget
 * Ubuntu: python2, python3, bsdtar
 ```bash

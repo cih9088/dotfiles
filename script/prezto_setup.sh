@@ -20,7 +20,18 @@ setup_func() {
     #cp prompt_garrett_setup ~/.zprezto/modules/prompt/functions/
     #cd ..
     #rm -rf prompt
-    
+    #
+
+    # adding vi-mode indicator https://github.com/sindresorhus/pure/wiki
+    if grep -Fq 'PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"; then
+        :
+    else
+        sed -i '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+        sed -i '458i\\tzstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\" "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+        sed -i '459i\\tzstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\" "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+        sed -i '460i\\tPROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+    fi
+
     echo "[*] prezto installed..."
 }
 

@@ -3,6 +3,7 @@
 # change version you want to install on local
 TREE_VERSION=1.7.0
 FD_VERSION=7.0.0
+RG_VERSION=0.8.1
 
 ################################################################
 set -e
@@ -62,13 +63,8 @@ setup_func_tree() {
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get install tree
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
-    fi
-
-    # clean up
-    if [[ $$ = $BASHPID ]]; then
-        rm -rf $TMP_DIR
     fi
 
     echo "[*] tree command installed..."
@@ -91,7 +87,7 @@ setup_func_fd() {
             cp fd $HOME/.local/bin
             cp fd.1 $HOME/.local/man/man1
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -101,13 +97,8 @@ setup_func_fd() {
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd_${FD_VERSION}_amd64.deb
             sudo dpkg -i fd_${FD_VERSION}_amd64.deb
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
-    fi
-
-    # clean up
-    if [[ $$ = $BASHPID ]]; then
-        rm -rf $TMP_DIR
     fi
 
     echo "[*] fd command installed..."
@@ -123,18 +114,46 @@ setup_func_thefuck() {
         elif [[ $platform == "LINUX" ]]; then
             sudo pip3 install thefuck
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
-    fi
-
-    # clean up
-    if [[ $$ = $BASHPID ]]; then
-        rm -rf $TMP_DIR
     fi
 
     echo "[*] thefuck command installed..."
 }
 
+# rg
+setup_func_rg() {
+    if [[ $1 = local ]]; then
+        echo $TMP_DIR
+        if [[ $platform == "OSX" ]]; then
+            wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep-${RG_VERSION}-x86_64-apple-darwin.tar.gz
+            tar -xvzf ripgrep-${RG_VERSION}-x86_64-apple-darwin.tar.gz
+            cd ripgrep-${RG_VERSION}-x86_64-apple-darwin
+            cp rg $HOME/.local/bin
+            cp doc/rg.1 $HOME/.local/man/man1
+        elif [[ $platform == "LINUX" ]]; then
+            wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl.tar.gz
+            tar -xvzf ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl.tar.gz
+            cd ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl
+            cp rg $HOME/.local/bin
+            cp doc/rg.1 $HOME/.local/man/man1
+        else
+            echo "[!] $platform is not supported."; exit 1
+        fi
+    else
+        if [[ $platform == "OSX" ]]; then
+            brew install ripgrep
+        elif [[ $platform == "LINUX" ]]; then
+            cd $TMP_DIR
+            wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb
+            sudo dpkg -i ripgrep_${RG_VERSION}_amd64.deb
+        else
+            echo "[!] $platform is not supported."; exit 1
+        fi
+    fi
+
+    echo "[*] rg command installed..."
+}
 
 while true; do
     echo
@@ -149,7 +168,7 @@ while true; do
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install tree locally..."; setup_func_tree 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install tree systemwide..."; setup_func; break;;
+        [Ss]ystem* ) echo "[*] Install tree systemwide..."; setup_func_tree; break;;
         * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done
@@ -168,7 +187,7 @@ while true; do
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install fd locally..."; setup_func_fd 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install fd systemwide..."; setup_func; break;;
+        [Ss]ystem* ) echo "[*] Install fd systemwide..."; setup_func_fd; break;;
         * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done
@@ -187,12 +206,57 @@ while true; do
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install thefuck locally..."; setup_func_thefuck 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install thefuck systemwide..."; setup_func; break;;
+        [Ss]ystem* ) echo "[*] Install thefuck systemwide..."; setup_func_thefuck; break;;
         * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done
 
+
+while true; do
+    echo
+    read -p "[?] Do you wish to install tldr? " yn
+    case $yn in
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install tldr..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install tldr locally..."; pip install tldr --user; break;;
+        [Ss]ystem* ) echo "[*] Install tldr systemwide..."; sudo pip install tldr; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
+    esac
+done
+
+
+
+while true; do
+    echo
+    read -p "[?] Do you wish to install ripgrep? " yn
+    case $yn in
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install ripgrep..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    echo
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install ripgrep locally..."; setup_func_rg 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install ripgrep systemwide..."; setup_func_rg; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
+    esac
+done
+
+
 echo '[*] Coyping bin files...'
 for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
-    cp -rf ${BIN_DIR}/$file ~/.local/bin/$file
+    cp -rf ${BIN_DIR}/$file $HOME/.local/bin/$file
 done
+
+# clean up
+if [[ $$ = $BASHPID ]]; then
+    rm -rf $TMP_DIR
+fi

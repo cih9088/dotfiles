@@ -55,7 +55,7 @@ setup_func() {
             cp -r usr/man $HOME/.local
             cp -r usr/share $HOME/.local
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -66,7 +66,7 @@ setup_func() {
             sudo apt-get update
             sudo apt-get install neovim
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
     fi
 

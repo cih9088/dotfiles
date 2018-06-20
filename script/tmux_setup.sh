@@ -131,7 +131,7 @@ setup_func() {
             cd $TMP_DIR
             sudo mv tmux-${TMUX_VERSION} /usr/local/src
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
     fi
 

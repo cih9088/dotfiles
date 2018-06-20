@@ -60,7 +60,7 @@ setup_func() {
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get install zsh
         else
-            echo 'not defined'; exit 1
+            echo "[!] $platform is not supported."; exit 1
         fi
     fi
 
