@@ -20,7 +20,9 @@ export FZF_DEFAULT_OPTS='
 export PATH=$HOME/.local/bin:$PATH
 
 # thefuck
-eval $(thefuck --alias)
+if [ -x "$(command -v thefuck)" ]; then
+    eval $(thefuck --alias)
+fi
 
 # vi mode for zsh
 bindkey -v
