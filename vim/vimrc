@@ -58,7 +58,7 @@ Plug 'honza/vim-snippets'
 Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'majutsushi/tagbar'
-Plug 'tpope/vim-surround'
+Plug 'machakann/vim-sandwich'
 Plug 'easymotion/vim-easymotion'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdcommenter'
@@ -81,8 +81,11 @@ Plug 'chrisbra/NrrwRgn'
 Plug 'dyng/ctrlsf.vim'
 if has('nvim')
     set inccommand=nosplit
+    Plug 'lambdalisue/lista.nvim', { 'do': 'UpdateRemotePlugins' }
 else
     Plug 'markonm/traces.vim'
+    Plug 'lambdalisue/vim-rplugin'
+    Plug 'lambdalisue/lista.nvim', { 'do': 'UpdateRemotePlugins' }
 endif
 
 " etc.
@@ -712,3 +715,21 @@ endfunction
     nnoremap <C-F>o :CtrlSFOpen<CR>
     nnoremap <C-F>t :CtrlSFToggle<CR>
     inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+
+" lista----------------------------------------------
+    nnoremap # :<C-u>Lista<CR>
+    nnoremap g# :<C-u>ListaCursorWord<CR>
+
+" vim-sandwich---------------------------------------
+    " if you have not copied default recipes
+    let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
+
+    " add spaces inside braket
+    let g:sandwich#recipes += [
+          \   {'buns': ['{ ', ' }'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['{']},
+          \   {'buns': ['[ ', ' ]'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['[']},
+          \   {'buns': ['( ', ' )'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['(']},
+          \   {'buns': ['{\s*', '\s*}'],   'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['{']},
+          \   {'buns': ['\[\s*', '\s*\]'], 'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['[']},
+          \   {'buns': ['(\s*', '\s*)'],   'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['(']},
+          \ ]

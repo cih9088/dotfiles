@@ -1,5 +1,5 @@
 # dotfiles
-This is my dot files.
+This is my dotfiles. Only tested in OSX and Ubuntu.
 
 ## Get this repository
 ```bash
@@ -8,7 +8,7 @@ $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
 ```
 
 ## Prerequisites
-You need sudo and following would be installed
+You need sudo and following would be installed. If you have installed already, no need.
 * MAC: python2, python3, wget
 * Ubuntu: python2, python3, bsdtar
 ```bash
@@ -16,7 +16,9 @@ $ cd ~/dotfiles
 $ ./prerequisites.sh
 ```
 
-## Install it as whole
+## Install it as a whole
+Following list would be installed by itself with prompt.
+* zsh, prezto, personal dotfiles, neovim, tmux, personal bin, neovim plugins
 ```bash
 $ cd ~/dotfiles
 $ ./install.sh
