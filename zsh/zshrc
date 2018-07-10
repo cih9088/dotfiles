@@ -131,7 +131,7 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
         echo "Enter the sudo passwd for the remote user: "
         read -s pswd
 
-        echo "$pswd" | pssh -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
+        echo "$pswd" | pssh -t 0 -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
     }           # Easy pssh command
 
 #    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)

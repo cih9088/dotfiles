@@ -166,17 +166,14 @@ set scrolloff=5
     " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
     if (has("termguicolors"))
         set termguicolors
+        " set t_8b=[48;2;%lu;%lu;%lum
+        " set t_8f=[38;2;%lu;%lu;%lum
     endif
 " endif
 
 set t_Co=256        " for ubuntu
 syntax enable       " enable syntax processing
 set background=dark " lihgt / dark
-" if has('termguicolors')
-    " set termguicolors
-    " set t_8b=[48;2;%lu;%lu;%lum
-    " set t_8f=[38;2;%lu;%lu;%lum
-" endif
 " colorscheme base16-default-dark
 " colorscheme base16-eighties
 " colorscheme gruvbox
