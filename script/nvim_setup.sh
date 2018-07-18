@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # change version you want to install on local
-NVIM_VERSION=0.2.2
+NVIM_VERSION=0.3.0
 
 
 ################################################################
@@ -48,12 +48,12 @@ setup_func() {
             # https://github.com/neovim/neovim/issues/7620
             # https://github.com/neovim/neovim/issues/7537
             wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
-            chmod u+x nvim.appimage
-            mkdir -p $TMP_DIR/nvim; cd $TMP_DIR/nvim
-            bsdtar xfp ../nvim.appimage
-            cp -r usr/bin $HOME/.local
-            cp -r usr/man $HOME/.local
-            cp -r usr/share $HOME/.local
+            chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract
+            cp -r squashfs-root/usr/bin $HOME/.local
+            cp -r squashfs-root/usr/man $HOME/.local
+            cp -r squashfs-root/usr/share/nvim $HOME/.local/share
+            # chmod u+x nvim.appimage && mv nvim.appimage nvim
+            # cp nvim &HOME/.local/bin
         else
             echo "[!] $platform is not supported."; exit 1
         fi
@@ -88,7 +88,6 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install neovim locally..."; setup_func 'local'; break;;

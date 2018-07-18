@@ -58,7 +58,7 @@ setup_func() {
         if [[ $platform == "OSX" ]]; then
             brew install zsh
         elif [[ $platform == "LINUX" ]]; then
-            sudo apt-get install zsh
+            sudo apt-get -y install zsh
         else
             echo "[!] $platform is not supported."; exit 1
         fi
@@ -82,7 +82,6 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install zsh locally..."; setup_func 'local'; break;;

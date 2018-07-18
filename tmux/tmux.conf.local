@@ -289,9 +289,15 @@ set-option -g allow-rename off
 # synchronize mode (toggle)
 bind-key e set-window-option synchronize-panes
 
+# restoring pane contensts using tmux-resurrect
+set -g @resurrect-capture-pane-contents 'on'
+
 # centered windows
 # set -g status-justify centre
 
-# Proper treu color terminal
+# Proper true color terminal
 set -g  default-terminal "xterm-256color"
 set -ga terminal-overrides ",xterm-256color:Tc"
+
+# bind-key M choose-tree -Nw "join-pane -t '%%'"
+# bind-key C-m choose-tree -Ns "join-pane -t '%%'"

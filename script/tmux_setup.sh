@@ -4,6 +4,7 @@
 TMUX_VERSION=2.7
 LIBEVENT_VERSION=2.1.8
 NCURSES_VERSION=6.1
+XCLIP_VERSION=0.12
 
 # based on https://gist.github.com/ryin/3106801#gistcomment-2191503
 # tmux will be installed in $HOME/.local/bin if you specify to install without root access
@@ -43,6 +44,7 @@ if [[ $$ = $BASHPID ]]; then
 fi
 
 setup_func() {
+    # install prerequisite
     if [[ $1 = local ]]; then
         echo 'Build "libevent-dev" and "libncurses-dev".' >&2
 
@@ -82,13 +84,12 @@ setup_func() {
     else
         if [[ $platform == "OSX" ]]; then
             brew install libevent ncurses
-            brew install wget
             brew uninstall tmux
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install libevent-dev libncurses-dev
             sudo apt-get -y remove tmux
         else
-            print 'Not defined'
+            echo "[!] $platform is not supported."; exit 1
         fi
     fi
 
@@ -100,6 +101,23 @@ setup_func() {
             rm -rf $HOME/.local/src/tmux-*
         fi
         cd $TMP_DIR
+
+        # install xclip
+        if [[ $platform == "OSX" ]]; then
+            echo 'reattatch-to-user-namespace will be installed using brew that need sudo privileges' >&2
+            brew install reattach-to-user-namespace
+        elif [[ $platform == "LINUX" ]]; then
+            wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
+            tar -xvzf xclip-${XCLIP_VERSION}.tar.gz
+            cd xclip-${XCLIP_VERSION}
+            ./configure --prefix=$HOME/.local --disable-shared
+            make
+            make install
+            cd $TMP_DIR
+            mv xclip-${XCLIP_VERSION} $HOME/.local/src
+        fi
+
+        # install tmux
         wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz
         tar -xvzf tmux-${TMUX_VERSION}.tar.gz
         cd tmux-${TMUX_VERSION}
@@ -113,6 +131,7 @@ setup_func() {
         mv tmux-${TMUX_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
+            brew install reattach-to-user-namespace
             brew install tmux
         elif [[ $platform == "LINUX" ]]; then
             if [ -d /usr/local/src/tmux-* ]; then
@@ -121,7 +140,12 @@ setup_func() {
                 cd ..
                 sudo rm -rf /usr/local/src/tmux-*
             fi
+
             cd $TMP_DIR
+            # install xclip
+            sudo apt-get -y install xclip
+
+            # install tmux
             wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz
             tar -xvzf tmux-${TMUX_VERSION}.tar.gz
             cd tmux-${TMUX_VERSION}
@@ -153,7 +177,6 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install tmux locally..."; setup_func 'local'; break;;

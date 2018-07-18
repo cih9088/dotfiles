@@ -19,7 +19,6 @@ else
     echo "[!] $platform is not supported."; exit 1
 fi
 
-
 PROJ_HOME=$(pwd)
 TMP_DIR=$HOME/tmp_install
 SCRIPTS=$PROJ_HOME/script
@@ -95,6 +94,7 @@ echo '[*] Install neovim with python support'
 sleep 1
 pip3 install neovim --upgrade --user
 pip2 install neovim --upgrade --user
+
 # while true; do
 #     read -p "\nDo you wish to install neovim with virtualenv ? " yn
 #     case $yn in
@@ -128,6 +128,16 @@ pip2 install neovim --upgrade --user
 if [ -d $TMP_DIR ]; then
     rm -rf $TMP_DIR
 fi
+
+
+
+########################################################################
+# install etc #
+########################################################################
+
+pip install glances --user
+pip install gpustat --user
+pip install grip --user
 
 
 

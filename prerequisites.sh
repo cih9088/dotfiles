@@ -25,8 +25,8 @@ if [[ $platform == "OSX" ]]; then
     brew install python2
     brew install python
     brew install wget
+    brew install reattach-to-user-namespace
 elif [[ $platform == "LINUX" ]]; then
-    sudo apt-get install bsdtar     # to solve problem with neovim local install
     sudo apt-get install python-dev python-pip python3-dev python3-pip
 else
     echo 'not defined'; exit 1

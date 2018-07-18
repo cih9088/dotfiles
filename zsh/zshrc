@@ -1,5 +1,4 @@
 
-
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
@@ -17,7 +16,7 @@ export FZF_DEFAULT_OPTS='
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # set PATH so it includes user's private bin directories
-export PATH=$HOME/.local/bin:$PATH
+# export PATH=$HOME/.local/bin:$PATH
 
 # thefuck
 if [ -x "$(command -v thefuck)" ]; then
@@ -133,7 +132,11 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
 
         echo "$pswd" | pssh -t 0 -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
     }           # Easy pssh command
-
+    z() {
+        [ $# -gt 0 ] && fasd_cd -d "$*" && return
+        local dir
+        dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
+    }    # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
 #    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 #    alias ..='cd ../'                           # Go back 1 directory level
 #    alias ...='cd ../../'                       # Go back 2 directory levels

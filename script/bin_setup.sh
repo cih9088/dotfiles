@@ -61,7 +61,7 @@ setup_func_tree() {
         if [[ $platform == "OSX" ]]; then
             brew install tree
         elif [[ $platform == "LINUX" ]]; then
-            sudo apt-get install tree
+            sudo apt-get -y install tree
         else
             echo "[!] $platform is not supported."; exit 1
         fi
@@ -155,6 +155,13 @@ setup_func_rg() {
     echo "[*] rg command installed..."
 }
 
+setup_func_ranger() {
+    rm -rf $HOME/.local/src/ranger
+    git clone https://github.com/cih9088/ranger $HOME/.local/src/ranger
+    $HOME/.local/src/ranger/ranger.py --copy-config=all
+    ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
+}
+
 while true; do
     echo
     read -p "[?] Do you wish to install tree? " yn
@@ -164,7 +171,6 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install tree locally..."; setup_func_tree 'local'; break;;
@@ -183,13 +189,44 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install fd locally..."; setup_func_fd 'local'; break;;
         [Ss]ystem* ) echo "[*] Install fd systemwide..."; setup_func_fd; break;;
         * ) echo "Please answer locally or systemwide."; continue;;
     esac
+done
+
+
+while true; do
+    echo
+    read -p "[?] Do you wish to install ripgrep? " yn
+    case $yn in
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install ripgrep..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    read -p "[?] Install locally or sytemwide? " yn
+    case $yn in
+        [Ll]ocal* ) echo "[*] Install ripgrep locally..."; setup_func_rg 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install ripgrep systemwide..."; setup_func_rg; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
+    esac
+done
+
+
+while true; do
+    echo
+    read -p "[?] Do you wish to install ranger? (it will be installed on local) " yn
+    case $yn in
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install ranger..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    setup_func_ranger
+    break
 done
 
 
@@ -202,7 +239,6 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install thefuck locally..."; setup_func_thefuck 'local'; break;;
@@ -221,7 +257,6 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install tldr locally..."; pip install tldr --user; break;;
@@ -231,24 +266,6 @@ while true; do
 done
 
 
-
-while true; do
-    echo
-    read -p "[?] Do you wish to install ripgrep? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install ripgrep..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
-
-    echo
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install ripgrep locally..."; setup_func_rg 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install ripgrep systemwide..."; setup_func_rg; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
 
 
 echo '[*] Coyping bin files...'

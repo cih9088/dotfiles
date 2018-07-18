@@ -77,6 +77,11 @@ if [ -e $HOME/.zpreztorc ]; then
 fi
 ln -s -f ${ZSH_DIR}/zpreztorc $HOME/.zpreztorc
 
+if [ -e $HOME/.zshenv ]; then
+    mv $HOME/.zshenv $HOME/dotfiles_old
+fi
+ln -s -f ${ZSH_DIR}/zshenv $HOME/.zshenv
+
 if [ -e $HOME/.pylintrc ]; then
     mv $HOME/.pylintrc $HOME/dotfiles_old
 fi

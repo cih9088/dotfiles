@@ -23,11 +23,11 @@ endif
 
 " Prettier vim
 " Plug 'flazz/vim-colorschemes'
-Plug 'chriskempson/base16-vim'
-Plug 'morhetz/gruvbox'
+" Plug 'chriskempson/base16-vim'
+" Plug 'morhetz/gruvbox'
 Plug 'w0ng/vim-hybrid'
 Plug 'joshdick/onedark.vim'
-Plug 'ayu-theme/ayu-vim'
+" Plug 'ayu-theme/ayu-vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
@@ -68,7 +68,8 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-expand-region'
 Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-signify'
 Plug 'kshenoy/vim-signature'
 " Plug 'tpope/vim-sensible'
 Plug 'junegunn/vim-easy-align'
@@ -223,7 +224,7 @@ nnoremap <space> za
 
 " ==================  vim mapping and functions ================
 " leader is now spacebar
-map <space> <leader>
+" map <space> <leader>
 
 " remove trailing whitespaces on save
 fun! StripTrailingWhitespaces()
@@ -326,7 +327,7 @@ nnoremap <leader>b :call <SID>ToggleBreakpoint()<CR>
 " terminal remaping escaping insert mode
 " tnoremap <Esc> <C-\><C-n>
 
-" [Advanced] Replace a word under the curser and '.' to repeat 'n' to skip
+" Replace a word under the curser and '.' to repeat 'n' to skip (c*)
 let g:should_inject_replace_occurences = 0
 function! MoveToNext()
     if g:should_inject_replace_occurences
@@ -371,6 +372,25 @@ function! ReplaceOccurence()
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
 ""======
+
+" file is large from 10mb
+" let g:LargeFile = 1024 * 1024 * 10
+" augroup LargeFile
+"     autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
+" augroup END
+"
+" function LargeFile()
+"     " no syntax highlighting etc
+"     set eventignore+=FileType
+"     " save memory when other file is viewed
+"     setlocal bufhidden=unload
+"     " is read-only (write with :w new_filename)
+"     setlocal buftype=nowrite
+"     " no undo possible
+"     setlocal undolevels=-1
+"     " display message
+"     autocmd VimEnter *  echo 'The file is larger than ' . (g:LargeFile / 1024 / 1024) . ' MB, so some options are changed (see .vimrc for details).'
+" endfunction
 
 
 " ==================  Plugin Setting  ================

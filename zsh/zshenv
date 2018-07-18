@@ -1,0 +1,18 @@
+#
+# Defines environment variables.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+# Ensure that a non-login, non-interactive shell has a defined environment.
+if [[ ( "$SHLVL" -eq 1 && ! -o LOGIN ) && -s "${ZDOTDIR:-$HOME}/.zprofile" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprofile"
+fi
+
+# virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/working
+export VIRTUALENVWRAPPER_PYTHON=`which python3`
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+# export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
