@@ -9,25 +9,40 @@ $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
 
 ## Prerequisites
 You need sudo and following would be installed. If you have installed already, no need.
-* MAC: python2, python3, wget
-* Ubuntu: python2, python3, bsdtar
+* OSX: python2, python3, wget
+* Ubuntu: python2, python3
 ```bash
 $ cd ~/dotfiles
+# You have to be in dotfiles directory!!
 $ ./prerequisites.sh
 ```
 
 ## Install it as a whole
-Following list would be installed by itself with prompt.
-* zsh, prezto, personal dotfiles, neovim, tmux, personal bin, neovim plugins
+Following list would be installed by itself with prompt. 
+If you choose to install systemwide, other users could execute thoes command.
+(homebrew for OSX and apt-get for Ubuntu will be used.)
+If you choose to install locally, others not.
+(All of command would be installed in `$HOME/.local`)
+* [zsh](http://www.zsh.org/)
+* [prezto](https://github.com/sorin-ionescu/prezto)
+* personal dotfiles
+* [neovim](https://neovim.io/) and plugins (please refer `init.vim` for the details)
+* [tmux](https://github.com/tmux/tmux)
+* personal bin
+    * [tree](https://linux.die.net/man/1/tree)
+    * [fd](https://github.com/sharkdp/fd)
+    * [thefuck](https://github.com/nvbn/thefuck)
+    * [ripgrep](https://github.com/nvbn/thefuck)
+    * [trdl](https://github.com/tldr-pages/tldr)
+    * [ranger](https://github.com/ranger/ranger)
+    * [bash-snippets (transfer, cheat only)](https://github.com/alexanderepstein/Bash-Snippets)
 ```bash
 $ cd ~/dotfiles
+# You have to be in dotfiles directory!!
 $ ./install.sh
-```
-
-## Setup virtual env
-```bash
-$ cd ~/dotfiles
-$ ./setup_virtualenv.sh
+# Only if you need my dev environment
+$ ./setup_python_dev.sh     # setup python dev environment
+$ ./setup_shell_dev.sh      # setup shell dev envrionment
 ```
 
 <!--

@@ -13,6 +13,8 @@ export FZF_DEFAULT_OPTS='
 --color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
 --color info:183,prompt:110,spinner:107,pointer:167,marker:215
 '
+export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # set PATH so it includes user's private bin directories
@@ -78,11 +80,6 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
 #   1.  ENVIRONMENT CONFIGURATION
 #   -------------------------------
 
-#   Set Default Editor (change 'Nano' to the editor of your choice)
-#   ------------------------------------------------------------
-    export EDITOR=/usr/bin/nvim
-    export VISUAL=/usr/bin/nvim
-
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
 #   ------------------------------------------------------------
@@ -114,7 +111,7 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
 #    alias lk='ll -Sr'
 #    alias rm='nocorrect rm -iv'
 #    alias less='less -FSRXc'                    # Preferred 'less' implementation
-    cd() {
+    function cd() {
         builtin cd "$@" && (
         n_files=$(\ls -f | wc -l)
         term_size=$(( `tput lines` * `tput cols` / 100 ))
@@ -123,16 +120,34 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
         fi
         )
     }               # Always list directory contents upon 'cd'
-    easy-pssh() {
-        local host_list="$1"
-        local cmd="$2"
+    function easy-pssh() {
+        local host_list="$1"; shift
+        local option="$1"
+        if [[ $option == '-i' ]]; then
+            shift
+        fi
 
-        echo "Enter the sudo passwd for the remote user: "
-        read -s pswd
+        local cmd="$@"
+        sudo=$(echo $cmd | awk '{print $1}')
 
-        echo "$pswd" | pssh -t 0 -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
+        if [[ $sudo == 'sudo' ]]; then
+            echo "Enter the sudo passwd for the remote user: "
+            read -s pswd
+
+            if [[ $option == '-i' ]]; then
+                echo "$pswd" | pssh -h $host_list -i -I "sudo -S -- sh -c '$cmd'"
+            else
+                echo "$pswd" | pssh -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
+            fi
+        else
+            if [[ $option == '-i' ]]; then
+                pssh -h $host_list -i $cmd
+            else
+                pssh -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir $cmd
+            fi
+        fi
     }           # Easy pssh command
-    z() {
+    function z() {
         [ $# -gt 0 ] && fasd_cd -d "$*" && return
         local dir
         dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
@@ -153,9 +168,9 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
 #    alias show_options='shopt'                  # Show_options: display bash options settings
 #    alias fix_stty='stty sane'                  # fix_stty:     Restore terminal settings when screwed up
 #    alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
-    mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
-    trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
-    ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
+    function mcd () { mkdir -p "$1" && cd "$1"; }        # mcd:          Makes new Dir and jumps inside
+    function trash () { command mv "$@" ~/.Trash ; }     # trash:        Moves a file to the MacOS trash
+    function ql () { qlmanage -p "$*" >& /dev/null; }    # ql:           Opens any file in MacOS Quicklook Preview
 #    alias DT='tee ~/Desktop/terminalOut.txt'    # DT:           Pipe content to file on MacOS Desktop
 
 #   glg: display the graphic log

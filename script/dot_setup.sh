@@ -6,20 +6,16 @@ echo '[*] Copying dot files....'
 set -e
 
 case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $$ = $BASHPID ]]; then
-    if [[ $platform == "OSX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs greadlink -f ); cd ..; pwd)
-    elif [[ $platform == "LINUX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs readlink -f ); cd ..; pwd)
-    fi
+    PROJ_HOME=$(git rev-parse --show-toplevel)
 fi
 
 if [ -d "${HOME}/dotfiles_old" ]; then
@@ -81,6 +77,11 @@ if [ -e $HOME/.zshenv ]; then
     mv $HOME/.zshenv $HOME/dotfiles_old
 fi
 ln -s -f ${ZSH_DIR}/zshenv $HOME/.zshenv
+
+if [ -e $HOME/.zprofile ]; then
+    mv $HOME/.zprofile $HOME/dotfiles_old
+fi
+ln -s -f ${ZSH_DIR}/zprofile $HOME/.zprofile
 
 if [ -e $HOME/.pylintrc ]; then
     mv $HOME/.pylintrc $HOME/dotfiles_old

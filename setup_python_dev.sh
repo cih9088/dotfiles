@@ -4,6 +4,7 @@ set -e
 
 VIRENV_NAME=venv
 
+pip install gpustat --user
 pip install ipdb --user
 pip install pylint --user
 pip install jedi --user

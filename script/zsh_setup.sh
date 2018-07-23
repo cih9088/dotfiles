@@ -8,20 +8,16 @@ ZSH_VERSION=5.5.1
 set -e
 
 case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $$ = $BASHPID ]]; then
-    if [[ $platform == "OSX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs greadlink -f ); cd ..; pwd)
-    elif [[ $platform == "LINUX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs readlink -f ); cd ..; pwd)
-    fi
+    PROJ_HOME=$(git rev-parse --show-toplevel)
     TMP_DIR=$HOME/tmp_install
 
     if [ ! -d $HOME/.local/bin ]; then
@@ -56,11 +52,20 @@ setup_func() {
         mv zsh-${ZSH_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            brew install zsh
+            # brew install zsh
+            brew bundle --file=- <<EOS
+brew 'zsh'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install zsh
         else
             echo "[!] $platform is not supported."; exit 1
+        fi
+        echo "[*] Adding installed zsh to /etc/shells..."
+        if grep -Fxq "$(which zsh)" /etc/shells; then
+            :
+        else
+            echo "$(which zsh)" | sudo tee -a /etc/shells
         fi
     fi
 
@@ -75,6 +80,8 @@ setup_func() {
 
 while true; do
     echo
+    echo "[*] Following list is zsh insalled on the system"
+    type zsh
     read -p "[?] Do you wish to install zsh? " yn
     case $yn in
         [Yy]* ) :; ;;

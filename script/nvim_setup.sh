@@ -8,20 +8,16 @@ NVIM_VERSION=0.3.0
 set -e
 
 case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $$ = $BASHPID ]]; then
-    if [[ $platform == "OSX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs greadlink -f ); cd ..; pwd)
-    elif [[ $platform == "LINUX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs readlink -f ); cd ..; pwd)
-    fi
+    PROJ_HOME=$(git rev-parse --show-toplevel)
     TMP_DIR=$HOME/tmp_install
 
     if [ ! -d $HOME/.local/bin ]; then
@@ -59,7 +55,10 @@ setup_func() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
-            brew install neovim
+            # brew install neovim
+            brew bundle --file=- <<EOS
+brew 'neovim'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get install software-properties-common
             sudo add-apt-repository ppa:neovim-ppa/stable

@@ -9,20 +9,16 @@ RG_VERSION=0.8.1
 set -e
 
 case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $$ = $BASHPID ]]; then
-    if [[ $platform == "OSX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs greadlink -f ); cd ..; pwd)
-    elif [[ $platform == "LINUX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs readlink -f ); cd ..; pwd)
-    fi
+    PROJ_HOME=$(git rev-parse --show-toplevel)
     TMP_DIR=$HOME/tmp_install
 
     if [ ! -d $HOME/.local/bin ]; then
@@ -59,7 +55,10 @@ setup_func_tree() {
         mv tree-${TREE_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            brew install tree
+            # brew install tree
+            brew bundle --file=- <<EOS
+brew 'tree'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install tree
         else
@@ -91,7 +90,10 @@ setup_func_fd() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
-            brew install fd
+            # brew install fd
+            brew bundle --file=- <<EOS
+brew 'fd'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             cd $TMP_DIR
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd_${FD_VERSION}_amd64.deb
@@ -110,7 +112,10 @@ setup_func_thefuck() {
         pip3 install thefuck --user
     else
         if [[ $platform == "OSX" ]]; then
-            brew install thefuck
+            # brew install thefuck
+            brew bundle --file=- <<EOS
+brew 'thefuck'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo pip3 install thefuck
         else
@@ -124,7 +129,7 @@ setup_func_thefuck() {
 # rg
 setup_func_rg() {
     if [[ $1 = local ]]; then
-        echo $TMP_DIR
+        cd $TMP_DIR
         if [[ $platform == "OSX" ]]; then
             wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep-${RG_VERSION}-x86_64-apple-darwin.tar.gz
             tar -xvzf ripgrep-${RG_VERSION}-x86_64-apple-darwin.tar.gz
@@ -142,7 +147,10 @@ setup_func_rg() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
-            brew install ripgrep
+            # brew install ripgrep
+            brew bundle --file=- <<EOS
+brew 'ripgrep'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             cd $TMP_DIR
             wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb
@@ -161,6 +169,29 @@ setup_func_ranger() {
     $HOME/.local/src/ranger/ranger.py --copy-config=all
     ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
 }
+
+
+setup_func_bash_snippets() {
+    cd $TMP_DIR
+    git clone https://github.com/alexanderepstein/Bash-Snippets
+    cd Bash-Snippets
+    
+    if [[ $1 = local ]]; then
+        ./install.sh --prefix=$HOME/.local transfer cheat
+    else
+        if [[ $platform == "OSX" ]]; then
+            brew bundle --file=- <<EOS
+brew "bash-snippets", args: ["with-cheat", "with-transfer", "without-all-tools"]
+EOS
+        elif [[ $platform == "LINUX" ]]; then
+            ./install.sh transfer cheat
+        fi
+
+    fi
+
+    echo "[*] bash-snippets (transfer, cheat) command installed..."
+}
+
 
 while true; do
     echo
@@ -260,11 +291,38 @@ while true; do
     read -p "[?] Install locally or sytemwide? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Install tldr locally..."; pip install tldr --user; break;;
-        [Ss]ystem* ) echo "[*] Install tldr systemwide..."; sudo pip install tldr; break;;
+        [Ss]ystem* ) echo "[*] Install tldr systemwide..."; 
+            if [[ $platform == "OSX" ]]; then
+                brew bundle --file=- <<EOS
+brew 'tldr'
+EOS
+            elif [[ $platform == "LINUX" ]]; then
+                sudo pip install tldr
+            else
+                echo "[!] $platform is not supported."; exit 1
+            fi
+            break;;
         * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done
 
+
+while true; do
+    echo
+    read -p "[?] Do you wish to install bash-snippets? " yn
+    case $yn in
+        [Yy]* ) :; ;;
+        [Nn]* ) echo "[!] Aborting install bash-snippets..."; break;;
+        * ) echo "Please answer yes or no."; continue;;
+    esac
+
+    read -p "[?] Install locally or systemwide? " yn
+    case $yn in
+        [Ll]local* ) echo "[*] Install bash-snippets locally..."; setup_func_bash_snippets 'local'; break;;
+        [Ss]ystem* ) echo "[*] Install bash-snippets systemwide..."; setup_func_bash_snippets; break;;
+        * ) echo "Please answer locally or systemwide."; continue;;
+    esac
+done
 
 
 

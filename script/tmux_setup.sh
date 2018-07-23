@@ -14,20 +14,16 @@ XCLIP_VERSION=0.12
 set -e
 
 case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $$ = $BASHPID ]]; then
-    if [[ $platform == "OSX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs greadlink -f ); cd ..; pwd)
-    elif [[ $platform == "LINUX" ]]; then
-        PROJ_HOME=$(cd $(echo $(dirname $0) | xargs readlink -f ); cd ..; pwd)
-    fi
+    PROJ_HOME=$(git rev-parse --show-toplevel)
     TMP_DIR=$HOME/tmp_install
 
     if [ ! -d $HOME/.local/bin ]; then
@@ -83,8 +79,12 @@ setup_func() {
         mv ncurses-${NCURSES_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            brew install libevent ncurses
-            brew uninstall tmux
+            # brew install libevent ncurses
+            # brew uninstall tmux
+            brew bundle --file=- <<EOS
+brew 'libevent'
+brew 'ncurses'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install libevent-dev libncurses-dev
             sudo apt-get -y remove tmux
@@ -106,15 +106,18 @@ setup_func() {
         if [[ $platform == "OSX" ]]; then
             echo 'reattatch-to-user-namespace will be installed using brew that need sudo privileges' >&2
             brew install reattach-to-user-namespace
-        elif [[ $platform == "LINUX" ]]; then
-            wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
-            tar -xvzf xclip-${XCLIP_VERSION}.tar.gz
-            cd xclip-${XCLIP_VERSION}
-            ./configure --prefix=$HOME/.local --disable-shared
-            make
-            make install
-            cd $TMP_DIR
-            mv xclip-${XCLIP_VERSION} $HOME/.local/src
+            brew bundle --file=- <<EOS
+brew 'reattach-to-user-namespace'
+EOS
+        # elif [[ $platform == "LINUX" ]]; then
+        #     wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
+        #     tar -xvzf xclip-${XCLIP_VERSION}.tar.gz
+        #     cd xclip-${XCLIP_VERSION}
+        #     ./configure --prefix=$HOME/.local --disable-shared
+        #     make
+        #     make install
+        #     cd $TMP_DIR
+        #     mv xclip-${XCLIP_VERSION} $HOME/.local/src
         fi
 
         # install tmux
@@ -131,8 +134,12 @@ setup_func() {
         mv tmux-${TMUX_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            brew install reattach-to-user-namespace
-            brew install tmux
+            # brew install reattach-to-user-namespace
+            # brew install tmux
+            brew bundle --file=- <<EOS
+brew 'reattach-to-user-namespace'
+brew 'tmux'
+EOS
         elif [[ $platform == "LINUX" ]]; then
             if [ -d /usr/local/src/tmux-* ]; then
                 cd /usr/local/src/tmux-*

@@ -1,27 +1,30 @@
 #!/bin/bash
 
 set -e
+PROJ_HOME=$(git rev-parse --show-toplevel)
+TMP_DIR=$PROJ_HOME/temp
+SCRIPTS=$PROJ_HOME/script
+
+trap "rm -rf $TMP_DIR && trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $platform == "OSX" ]]; then
     echo "[*] Your platform is OSX"
+    echo "[*] systemwide install is recommended (using homebrew)"
 elif [[ $platform == "LINUX" ]]; then
     echo "[*] Your platform is LINUX"
+    echo "[*] systemwide install is using apt-get"
 else
     echo "[!] $platform is not supported."; exit 1
 fi
-
-PROJ_HOME=$(pwd)
-TMP_DIR=$HOME/tmp_install
-SCRIPTS=$PROJ_HOME/script
 
 if [ ! -d $HOME/.local/bin ]; then
     mkdir -p $HOME/.local/bin
@@ -56,7 +59,6 @@ while true; do
         * ) echo "Please answer yes or no."; continue;;
     esac
 
-    echo
     read -p "[?] Change default shell to local zsh or systemwide zsh? " yn
     case $yn in
         [Ll]ocal* ) echo "[*] Changing default shell to local zsh..."
@@ -67,7 +69,7 @@ while true; do
             fi
             break;;
         [Ss]ystem* ) echo "[*] Changing default shell to systemwide zsh..."
-            chsh -s /bin/zsh; break;;
+            chsh -s $(which zsh); break;;
         * ) echo "Please answer locally or systemwide.";;
     esac
 done
@@ -136,7 +138,6 @@ fi
 ########################################################################
 
 pip install glances --user
-pip install gpustat --user
 pip install grip --user
 
 

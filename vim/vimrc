@@ -23,11 +23,11 @@ endif
 
 " Prettier vim
 " Plug 'flazz/vim-colorschemes'
-" Plug 'chriskempson/base16-vim'
-" Plug 'morhetz/gruvbox'
+Plug 'chriskempson/base16-vim'
+Plug 'morhetz/gruvbox'
 Plug 'w0ng/vim-hybrid'
 Plug 'joshdick/onedark.vim'
-" Plug 'ayu-theme/ayu-vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
@@ -57,6 +57,9 @@ Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
+Plug 'dhruvasagar/vim-vinegar'
+" Plug 'tpope/vim-vinegar'
+" Plug 'justinmk/vim-dirvish'
 Plug 'majutsushi/tagbar'
 Plug 'machakann/vim-sandwich'
 Plug 'easymotion/vim-easymotion'
@@ -68,6 +71,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-expand-region'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-unimpaired'
 " Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-signify'
 Plug 'kshenoy/vim-signature'
@@ -80,13 +84,13 @@ Plug 'junegunn/gv.vim'
 " Plug 'kien/rainbow_parentheses.vim'
 Plug 'chrisbra/NrrwRgn'
 Plug 'dyng/ctrlsf.vim'
+Plug 'unblevable/quick-scope'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'RRethy/vim-illuminate'
 if has('nvim')
     set inccommand=nosplit
-    Plug 'lambdalisue/lista.nvim', { 'do': 'UpdateRemotePlugins' }
 else
     Plug 'markonm/traces.vim'
-    Plug 'lambdalisue/vim-rplugin'
-    Plug 'lambdalisue/lista.nvim', { 'do': 'UpdateRemotePlugins' }
 endif
 
 " etc.
@@ -94,7 +98,7 @@ Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
-"Plug 'metakirby5/codi.vim'
+" Plug 'metakirby5/codi.vim'
 Plug 'mhinz/vim-startify'
 Plug 'wellle/tmux-complete.vim'
 
@@ -132,6 +136,7 @@ set pastetoggle=<F2>                  " when in insert mode, press <F2> to go to
 
 " Set unvisible characters
 set list
+" set breakindent
 set showbreak=↪\
 set listchars=tab:»\ ,nbsp:␣,trail:·,extends:>,precedes:<
 
@@ -172,7 +177,7 @@ set scrolloff=5
     endif
 " endif
 
-set t_Co=256        " for ubuntu
+" set t_Co=256        " for ubuntu
 syntax enable       " enable syntax processing
 set background=dark " lihgt / dark
 " colorscheme base16-default-dark
@@ -182,8 +187,6 @@ set background=dark " lihgt / dark
 " colorscheme dracula
 " colorscheme Tomorrow-Night-Eighties
 colorscheme onedark
-" let ayucolor="mirage"
-" colorscheme ayu
 
 " Spaces & Tabs
 set tabstop=4       " number of visual spaces per TAB
@@ -236,9 +239,25 @@ endfun
 autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
     \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
-" To toggle showing the non-printable characters
-noremap <F12> :set list!<CR>
-inoremap <F12> <Esc>:set list!<CR>a
+" file is larger than 10mb
+let g:LargeFile = 1024 * 1024 * 10
+augroup LargeFile
+    autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
+augroup END
+
+function LargeFile()
+    " no syntax highlighting etc
+    set eventignore+=FileType
+    " save memory when other file is viewed
+    setlocal bufhidden=unload
+    " is read-only (write with :w new_filename)
+    setlocal buftype=nowrite
+    " no undo possible
+    setlocal undolevels=-1
+    " display message
+    autocmd VimEnter *  echo 'The file is larger than ' . (g:LargeFile / 1024 / 1024) . ' MB, so some options are changed (see .vimrc for details).'
+endfunction
+
 
 " Vim jump to the last position when reopening a file
 if has("autocmd")
@@ -254,9 +273,18 @@ endif
 vnoremap < <gv
 vnoremap > >gv
 
-" Treat long lines as break lines (useful when moving around in them)
-map j gj
-map k gk
+" Treat long lines as break lines (useful when moving around in them) but when
+" preceded by a count, go back to normal and save movement in jumplist lager
+" than 5 
+nnoremap <expr> j v:count ? (v:count > 5 ? "m'" . v:count : '') . 'j' : 'gj'
+nnoremap <expr> k v:count ? (v:count > 5 ? "m'" . v:count : '') . 'k' : 'gk'
+
+" terminal remaping escaping insert mode
+" tnoremap <Esc> <C-\><C-n>
+
+" To toggle showing the non-printable characters
+noremap <F12> :set list!<CR>
+inoremap <F12> <Esc>:set list!<CR>a
 
 " turn off search highlight
 nmap <leader><space> :nohlsearch<CR>
@@ -306,6 +334,10 @@ noremap <leader>p "+p
 " <leader>df : diffthis
 nnoremap <leader>df :diffthis<CR>
 
+" Search in current visible window
+command! -nargs=1 WinSearch exe '/\%>'.(line('w0')-1).'l'.<q-args>.'\%<'.(line('w$')+1).'l'
+nnoremap z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
+
 " I am too lazy to take my hands from shift
 command! WQ wq
 command! Wq wq
@@ -322,10 +354,6 @@ func! s:ToggleBreakpoint()
     if getline('.')=~#'^\s*import\sipdb' | cal s:RemoveBreakpoint() | el | cal s:SetBreakpoint() | en
 endf
 nnoremap <leader>b :call <SID>ToggleBreakpoint()<CR>
-
-
-" terminal remaping escaping insert mode
-" tnoremap <Esc> <C-\><C-n>
 
 " Replace a word under the curser and '.' to repeat 'n' to skip (c*)
 let g:should_inject_replace_occurences = 0
@@ -371,27 +399,6 @@ function! ReplaceOccurence()
     call feedkeys("n")
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
-""======
-
-" file is large from 10mb
-" let g:LargeFile = 1024 * 1024 * 10
-" augroup LargeFile
-"     autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
-" augroup END
-"
-" function LargeFile()
-"     " no syntax highlighting etc
-"     set eventignore+=FileType
-"     " save memory when other file is viewed
-"     setlocal bufhidden=unload
-"     " is read-only (write with :w new_filename)
-"     setlocal buftype=nowrite
-"     " no undo possible
-"     setlocal undolevels=-1
-"     " display message
-"     autocmd VimEnter *  echo 'The file is larger than ' . (g:LargeFile / 1024 / 1024) . ' MB, so some options are changed (see .vimrc for details).'
-" endfunction
-
 
 " ==================  Plugin Setting  ================
 
@@ -408,6 +415,24 @@ endfunction
     let g:nerdtree_tabs_open_on_gui_startup = 0
     " filter out some files, by extension
     let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
+    " NERDTress File highlighting
+    function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+        exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+        exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+    endfunction
+    call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
+    call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
+    call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
+    call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
+    call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
+    call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
+    call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
+    call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
+    call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
+    call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
+    call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
+    call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
+    call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 
 
 " NERDcommenter-------------------------------
@@ -448,22 +473,20 @@ endfunction
     let g:ale_sign_warning = '⚠'
     hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=167
     hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
-    " let g:ale_sign_error = '>>'
-    " let g:ale_sign_warning = '--'
     " no highlight (underline) on detected errors/warnings
     let g:ale_set_highlights = 0
 
 
+
 " Easymotion-----------------------------------
-    let g:EasyMotion_do_mapping = 0 " Disable default mappings
-    " Jump to anywhere you want with minimal keystrokes, with just one key binding
-    " `s{char}{char}{label}`
+    " Disable default mappings
+    let g:EasyMotion_do_mapping = 0
+
+    " s{char}{char} to move to {char}{char}
     nmap s <Plug>(easymotion-overwin-f2)
+
     " Turn on case insensitive feature
     let g:EasyMotion_smartcase = 1
-    " JK motions: Line motions
-    map <Leader>j <Plug>(easymotion-j)
-    map <Leader>k <Plug>(easymotion-k)
 
 
 " multiplecusors--------------------------------
@@ -527,7 +550,7 @@ endfunction
 
 
 " Tagbar---------------------------------------
-    nmap <Leader>t :TagbarToggle<CR>
+    nmap <Leader>T :TagbarToggle<CR>
     "autocmd VimEnter * nested :TagbarOpen
     "
 
@@ -543,33 +566,36 @@ endfunction
     " let b:deoplete_disable_auto_complete=1
     " let g:deoplete_disable_auto_complete=1
 
-    let g:deoplete#sources#jedi#show_docstring = 0
+    let g:deoplete#sources#jedi#show_docstring = 1
     let g:deoplete#sources#jedi#server_timeout = 100
 
-    call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
+    " automatically close preview window
+    autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+    " call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
     " Register some default omnicomplete functions/patterns
     " to automatically trigger in deoplete {{
-    let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
-    let g:deoplete#omni#input_patterns = get(g:, 'deoplete#omni#input_patterns', {})
-
-    let g:deoplete#omni#functions.tex = ['vimtex#complete#omnifunc']
-    let g:deoplete#omni#input_patterns.tex =
-          \ '(?:'
-          \ . '\\\w*'
-          \ . ')'
-
-    " deoplete-clang
-    if filereadable('/usr/lib/llvm-3.8/lib/libclang.so.1')
-        let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
-    elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
-        let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
-    endif
-
-    if isdirectory('/usr/include/clang')
-        let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
-    elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
-        let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
-    endif
+    " let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
+    " let g:deoplete#omni#input_patterns = get(g:, 'deoplete#omni#input_patterns', {})
+    "
+    " let g:deoplete#omni#functions.tex = ['vimtex#complete#omnifunc']
+    " let g:deoplete#omni#input_patterns.tex =
+    "       \ '(?:'
+    "       \ . '\\\w*'
+    "       \ . ')'
+    "
+    " " deoplete-clang
+    " if filereadable('/usr/lib/llvm-3.8/lib/libclang.so.1')
+    "     let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
+    " elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
+    "     let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+    " endif
+    "
+    " if isdirectory('/usr/include/clang')
+    "     let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
+    " elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
+    "     let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
+    " endif
 
 
 " Ultisnips-----------------------------------
@@ -596,8 +622,8 @@ endfunction
 " vim-startify------------------------------------
     let g:startify_bookmarks = [
                 \ { 'a': '~/dotfiles/nvim/init.vim' },
-                \ { 's': '~/dotfiles/zsh/zpreztorc' },
-                \ { 'd': '~/dotfiles/zsh/zshrc' },
+                \ { 's': '~/dotfiles/zsh/zshrc' },
+                \ { 'd': '~/dotfiles/zsh/zpreztorc' },
                 \ { 'f': '~/dotfiles/tmux/tmux.conf.local' }
                 \]
     let g:startify_change_to_dir = 0
@@ -605,13 +631,10 @@ endfunction
 
 " FZF----------------------------------------------
     nnoremap <leader>F :FZF<CR>
-    command! F FZF
     nnoremap <leader>B :Buffers<CR>
-    command! B Buffers
     nnoremap <leader>H :History<CR>
-    command! H History
     nnoremap <leader>C :Commits<CR>
-    command! C Commits
+    nnoremap <leader>L :BLines<CR>
 
     let g:fzf_colors =
     \ { 'fg':      ['fg', 'Normal'],
@@ -712,8 +735,8 @@ endfunction
     "let g:jedi#use_splits_not_buffers = 'bottom'
 
 
-" vim-pyglot----------------------------------------
-    let g:polyglot_disabled = ['css']
+" vim-polyglot----------------------------------------
+    let g:polyglot_disabled = ['python']
 
 
 " nrrwrgn-------------------------------------------
@@ -733,10 +756,6 @@ endfunction
     nnoremap <C-F>t :CtrlSFToggle<CR>
     inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
 
-" lista----------------------------------------------
-    nnoremap # :<C-u>Lista<CR>
-    nnoremap g# :<C-u>ListaCursorWord<CR>
-
 " vim-sandwich---------------------------------------
     " if you have not copied default recipes
     let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
@@ -750,3 +769,20 @@ endfunction
           \   {'buns': ['\[\s*', '\s*\]'], 'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['[']},
           \   {'buns': ['(\s*', '\s*)'],   'nesting': 1, 'regex': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['(']},
           \ ]
+
+
+" vim-table-mode-------------------------------------
+    let g:table_mode_corner='|'
+    " let g:table_mode_corner_corner='+'
+    " let g:table_mode_header_fillchar='='
+
+
+" quick-scope----------------------------------------
+    " Trigger a highlight in the appropriate direction when pressing these keys:
+    let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+
+
+" vim-illuminate-------------------------------------
+    hi illuminatedWord        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
+    let g:Illuminate_ftblacklist = ['nerdtree', 'python']
+    let g:Illuminate_delay = 500

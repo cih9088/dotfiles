@@ -1,12 +1,12 @@
 #!/bin/bash
 
 case "$OSTYPE" in
-    solaris*) platform='SOLARIS' ;;
-    darwin*)  platform='OSX' ;;
-    linux*)   platform='LINUX' ;;
-    bsd*)     platform='BSD' ;;
-    msys*)    platform='WINDOWS' ;;
-    *)        platform='unknown: $OSTYPE' ;;
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
 esac
 
 # install brew for macos
@@ -24,8 +24,7 @@ echo '[*] install python, etc.'
 if [[ $platform == "OSX" ]]; then
     brew install python2
     brew install python
-    brew install wget
-    brew install reattach-to-user-namespace
+    brew install wget pssh
 elif [[ $platform == "LINUX" ]]; then
     sudo apt-get install python-dev python-pip python3-dev python3-pip
 else
