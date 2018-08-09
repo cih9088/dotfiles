@@ -29,14 +29,6 @@ fi
 bindkey -v
 export KEYTIMEOUT=1
 
-# usefull alias
-alias ssh-122='ssh -A -p 6150 -Y mlg@141.223.162.122'
-alias ssh-parker='ssh -A -p 6150 -Y andy@parker.aitricsdev.com'
-alias ssh-banner='ssh -A -p 6150 -Y andy@banner.aitricsdev.com'
-alias ssh-strange='ssh -A -p 6150 -Y andy@strange.aitricsdev.com'
-alias ssh-stark='ssh -A -p 6150 -Y andy@stark.aitricsdev.com'
-alias ssh-rogers='ssh -A -p 6150 -Y andy@rogers.aitricsdev.com'
-
 #############################################################
 # CUDA enviroment variables
 # Uncomment following variables if cuda is in need
@@ -152,6 +144,22 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
         local dir
         dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
     }    # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
+    function man () {
+        local width="${COLUMNS:-100}"
+        (( width > 100 )) && width=100
+        MANWIDTH="$width" command man "$@"
+    }
+    if [ -n "$TMUX" ]; then
+        function refresh {
+            eval $(tmux showenv -s DISPLAY) 
+            eval $(tmux showenv -s SSH_AUTH_SOCK)
+        }
+    else
+        function refresh { }
+    fi
+    function preexec() {
+        refresh
+    }
 #    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 #    alias ..='cd ../'                           # Go back 1 directory level
 #    alias ...='cd ../../'                       # Go back 2 directory levels

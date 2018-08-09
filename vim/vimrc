@@ -72,6 +72,8 @@ Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-expand-region'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-abolish'
 " Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-signify'
 Plug 'kshenoy/vim-signature'
@@ -283,8 +285,8 @@ nnoremap <expr> k v:count ? (v:count > 5 ? "m'" . v:count : '') . 'k' : 'gk'
 " tnoremap <Esc> <C-\><C-n>
 
 " To toggle showing the non-printable characters
-noremap <F12> :set list!<CR>
-inoremap <F12> <Esc>:set list!<CR>a
+" noremap <F12> :set list!<CR>
+" inoremap <F12> <Esc>:set list!<CR>a
 
 " turn off search highlight
 nmap <leader><space> :nohlsearch<CR>
@@ -399,6 +401,35 @@ function! ReplaceOccurence()
     call feedkeys("n")
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
+
+" copy from vim-split
+let s:force_vertical = exists('g:split_term_vertical') ? 1 : 0
+fun! s:openBuffer(count, vertical)
+    let cmd = a:vertical ? 'vnew' : 'new'
+    let cmd = a:count ? a:count . cmd : cmd
+    exe cmd
+endf
+fun! s:openTerm(args, count, vertical)
+    let params = split(a:args)
+    let direction = s:force_vertical ? 1 : a:vertical
+
+    call s:openBuffer(a:count, direction)
+    exe 'terminal' a:args
+    exe 'startinsert'
+endf
+command! -count -nargs=* T call s:openTerm(<q-args>, <count>, 0)
+command! -count -nargs=* VT call s:openTerm(<q-args>, <count>, 1)
+
+" Coneallevel control
+function! ToggleConcealLevel()
+    if &conceallevel == 0
+        setlocal conceallevel=2
+    else
+        setlocal conceallevel=0
+    endif
+endfunction
+
+nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " ==================  Plugin Setting  ================
 
@@ -784,5 +815,7 @@ endfunction
 
 " vim-illuminate-------------------------------------
     hi illuminatedWord        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
+    " hi illuminatedWord cterm=underline gui=underline
     let g:Illuminate_ftblacklist = ['nerdtree', 'python']
     let g:Illuminate_delay = 500
+
