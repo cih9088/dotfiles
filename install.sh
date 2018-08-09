@@ -94,8 +94,10 @@ done
 echo
 echo '[*] Install neovim with python support'
 sleep 1
-pip3 install neovim --upgrade --user
-pip2 install neovim --upgrade --user
+
+pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
 
 # while true; do
 #     read -p "\nDo you wish to install neovim with virtualenv ? " yn
@@ -146,7 +148,7 @@ pip install grip --user
 echo
 echo '[*] Install plugins in neovim'
 sleep 1
-nvim +PlugInstall +UpdateRemotePlugins +qall
+nvim +PlugInstall +PlugUpdate +PlugUpgrade +UpdateRemotePlugins +qall
 # vim +PlugInstall +qall
 
 echo '[*] Install is finished!!!'

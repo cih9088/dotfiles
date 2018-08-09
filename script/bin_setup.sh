@@ -72,7 +72,7 @@ EOS
 # fd
 setup_func_fd() {
     if [[ $1 = local ]]; then
-        echo $TMP_DIR
+        cd $TMP_DIR
         if [[ $platform == "OSX" ]]; then
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
             tar -xvzf fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
@@ -162,6 +162,7 @@ EOS
 
     echo "[*] rg command installed..."
 }
+
 
 setup_func_ranger() {
     rm -rf $HOME/.local/src/ranger
@@ -327,9 +328,19 @@ done
 
 
 echo '[*] Coyping bin files...'
-for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
-    cp -rf ${BIN_DIR}/$file $HOME/.local/bin/$file
-done
+
+if [[ $platform == "OSX" ]]; then
+    for file in `find ${BIN_DIR} -type f -perm +111 -exec basename {} \;`; do
+        cp -rf ${BIN_DIR}/$file $HOME/.local/bin/$file
+    done
+elif [[ $platform == "LINUX" ]]; then
+    for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
+        cp -rf ${BIN_DIR}/$file $HOME/.local/bin/$file
+    done
+else
+    echo "[!] $platform is not supported."; exit 1
+fi
+
 
 # clean up
 if [[ $$ = $BASHPID ]]; then

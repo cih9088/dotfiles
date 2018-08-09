@@ -45,6 +45,11 @@ $ ./setup_python_dev.sh     # setup python dev environment
 $ ./setup_shell_dev.sh      # setup shell dev envrionment
 ```
 
+## Issues
+1. Showing following error message at the top of terminal when the zsh 5.5+ started \
+    `/var/folders/vp/15xrzrrj4sx0dd3k6gsv1hmw0000gn/T//prezto-fasd-cache.501.zsh:compctl:17: unknown condition code:` \
+    -> [will be fixed later version of zsh](https://github.com/sorin-ionescu/prezto/issues/1569)
+
 <!--
 ## For MAC
 Install [brew](https://brew.sh/index_ko.html) first

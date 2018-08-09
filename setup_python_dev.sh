@@ -12,10 +12,9 @@ pip install jedi --user
 pip install virtualenv --user
 pip install virtualenvwrapper --user
 export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/working
-export VIRTUALENVWRAPPER_PYTHON=`which python3`
+export VIRTUALENVWRAPPER_PYTHON=$(which python3)
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
-source $HOME/.local/bin/virtualenvwrapper.sh
+source $(which virtualenvwrapper.sh)
 mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
 
 # cd ~

@@ -9,6 +9,7 @@ fi
 # FZF
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='
 --color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
 --color info:183,prompt:110,spinner:107,pointer:167,marker:215
@@ -18,7 +19,7 @@ export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # set PATH so it includes user's private bin directories
-# export PATH=$HOME/.local/bin:$PATH
+[[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && PATH="$HOME/.local/bin:${PATH}"
 
 # thefuck
 if [ -x "$(command -v thefuck)" ]; then
@@ -28,6 +29,13 @@ fi
 # vi mode for zsh
 bindkey -v
 export KEYTIMEOUT=1
+
+# virtualenvwrapper
+export WORKON_HOME=$HOME/.virtualenvs
+# export PROJECT_HOME=$HOME/working
+export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+# export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
 #############################################################
 # CUDA enviroment variables
@@ -111,7 +119,7 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
             ls
         fi
         )
-    }               # Always list directory contents upon 'cd'
+    }   # Always list directory contents upon 'cd'
     function easy-pssh() {
         local host_list="$1"; shift
         local option="$1"
@@ -138,17 +146,17 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
                 pssh -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir $cmd
             fi
         fi
-    }           # Easy pssh command
+    }   # Easy pssh command
     function z() {
         [ $# -gt 0 ] && fasd_cd -d "$*" && return
         local dir
         dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-    }    # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
+    }   # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
     function man () {
         local width="${COLUMNS:-100}"
         (( width > 100 )) && width=100
         MANWIDTH="$width" command man "$@"
-    }
+    }   # fix man page width for better readability
     if [ -n "$TMUX" ]; then
         function refresh {
             eval $(tmux showenv -s DISPLAY) 
@@ -159,7 +167,7 @@ export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:$LD_LIBRAR
     fi
     function preexec() {
         refresh
-    }
+    }   # update envirionment in tmux just before every command
 #    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 #    alias ..='cd ../'                           # Go back 1 directory level
 #    alias ...='cd ../../'                       # Go back 2 directory levels

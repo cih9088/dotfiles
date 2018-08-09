@@ -3,34 +3,38 @@
 # htts://github.com/sorin-ionescu/prezto
 
 setup_func() {
-    # Clone prezto the repository
-    #git clone --recursive https://github.com/cih9088/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-    git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-
-    # Create a new zsh configureation by copying the zsh config files
-    setopt EXTENDED_GLOB
-    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-        ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-    done
-
-    ## Clone garrett prompt repository
-    #git clone https://github.com/cih9088/zsh-prompt-garrett.git ./prompt
-    #
-    #cd prompt
-    #cp prompt_garrett_setup ~/.zprezto/modules/prompt/functions/
-    #cd ..
-    #rm -rf prompt
-    #
-
-    # adding vi-mode indicator https://github.com/sindresorhus/pure/wiki
-    if grep -Fq 'PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"; then
-        :
+    if [ -d "${ZDOTDIR:-$HOME}/.zprezto" ]; then
+        echo "[*] prezto is installed. No need to install. Abort..."
     else
-        sed -i -e '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
-        sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
-    fi
+        # Clone prezto the repository
+        #git clone --recursive https://github.com/cih9088/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+        git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 
-    echo "[*] prezto installed..."
+        # Create a new zsh configureation by copying the zsh config files
+        setopt EXTENDED_GLOB
+        for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+            ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+        done
+
+        ## Clone garrett prompt repository
+        #git clone https://github.com/cih9088/zsh-prompt-garrett.git ./prompt
+        #
+        #cd prompt
+        #cp prompt_garrett_setup ~/.zprezto/modules/prompt/functions/
+        #cd ..
+        #rm -rf prompt
+        #
+
+        # adding vi-mode indicator https://github.com/sindresorhus/pure/wiki
+        if grep -Fq 'PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"; then
+            :
+        else
+            sed -i -e '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+            sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+        fi
+
+        echo "[*] prezto installed..."
+    fi
 }
 
 while true; do
