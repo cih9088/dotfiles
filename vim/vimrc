@@ -28,19 +28,23 @@ Plug 'morhetz/gruvbox'
 Plug 'w0ng/vim-hybrid'
 Plug 'joshdick/onedark.vim'
 Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'kamwitsta/flatwhite-vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Language specific (syntax, completion, etc.)
+Plug 'sheerun/vim-polyglot'
 Plug 'chrisbra/csv.vim'
 " Plug 'python-mode/python-mode', { 'branch': 'develop' }
 Plug 'Vimjas/vim-python-pep8-indent'
-" Plug 'davidhalter/jedi-vim'
-Plug 'sheerun/vim-polyglot'
+Plug 'tmhedberg/SimpylFold'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
+Plug 'vim-python/python-syntax'
+" Plug 'davidhalter/jedi-vim'
+" Plug 'lifepillar/vim-mucomplete'
 if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
@@ -53,9 +57,12 @@ endif
 
 " Convenient coding
 Plug 'w0rp/ale'
-Plug 'sirver/ultisnips'
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
+Plug 'Shougo/context_filetype.vim'
+" Plug 'Shougo/deol.nvim'
+" Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'ervandew/supertab'
 Plug 'scrooloose/nerdtree'
 Plug 'dhruvasagar/vim-vinegar'
 " Plug 'tpope/vim-vinegar'
@@ -89,6 +96,9 @@ Plug 'dyng/ctrlsf.vim'
 Plug 'unblevable/quick-scope'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'RRethy/vim-illuminate'
+" Plug 'haya14busa/is.vim'
+Plug 'junegunn/vim-peekaboo'
+Plug 'AndrewRadev/splitjoin.vim'
 if has('nvim')
     set inccommand=nosplit
 else
@@ -100,7 +110,7 @@ Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/goyo.vim'
 Plug 'junegunn/limelight.vim'
-" Plug 'metakirby5/codi.vim'
+Plug 'metakirby5/codi.vim'
 Plug 'mhinz/vim-startify'
 Plug 'wellle/tmux-complete.vim'
 
@@ -225,11 +235,10 @@ set foldenable          " enable folding
 set foldlevelstart=10   " open most folds by default
 set foldnestmax=10      " 10 nested fold max
 set foldmethod=indent   " fold based on indent level
-nnoremap <space> za
 
 " ==================  vim mapping and functions ================
 " leader is now spacebar
-" map <space> <leader>
+map , <leader>
 
 " remove trailing whitespaces on save
 fun! StripTrailingWhitespaces()
@@ -283,13 +292,21 @@ nnoremap <expr> k v:count ? (v:count > 5 ? "m'" . v:count : '') . 'k' : 'gk'
 
 " terminal remaping escaping insert mode
 " tnoremap <Esc> <C-\><C-n>
-
-" To toggle showing the non-printable characters
-" noremap <F12> :set list!<CR>
-" inoremap <F12> <Esc>:set list!<CR>a
+if has('nvim')
+  au TermOpen * setlocal nonumber norelativenumber
+endif
 
 " turn off search highlight
 nmap <leader><space> :nohlsearch<CR>
+
+" Make arrow keys do something useful
+nnoremap <Left> :vertical resize +2<CR>
+nnoremap <Right> :vertical resize -2<CR>
+nnoremap <Up> :resize -2<CR>
+nnoremap <Down> :resize +2<CR><Paste>
+
+" Go back to previous buffer
+nmap <C-W><tab> :e#<CR>
 
 " Buffer navigation
 nnoremap [b :bprevious<CR>
@@ -402,7 +419,7 @@ function! ReplaceOccurence()
     call repeat#set("\<Plug>ReplaceOccurences")
 endfunction
 
-" copy from vim-split
+" steal from split-term
 let s:force_vertical = exists('g:split_term_vertical') ? 1 : 0
 fun! s:openBuffer(count, vertical)
     let cmd = a:vertical ? 'vnew' : 'new'
@@ -435,12 +452,12 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " NERDtree------------------------------------
     nmap <leader>N :NERDTreeToggle<CR>
-    let NERDTreeQuitOnOpen = 0
+    let NERDTreeQuitOnOpen = 1
     let NERDTreeMinimalUI = 1
     let NERDTreeDirArrows = 1
     let g:WebDevIconsUnicodeDecorateFolderNodes = 1
     " automatically close nerdtree if it is the only left window
-    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
     " startup Options (do NOT show automatically)
     let g:nerdtree_tabs_open_on_console_startup = 0
     let g:nerdtree_tabs_open_on_gui_startup = 0
@@ -506,6 +523,8 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
     " no highlight (underline) on detected errors/warnings
     let g:ale_set_highlights = 0
+    let g:ale_completion_enabled = 0
+    let g:ale_sign_column_always = 1
 
 
 
@@ -591,11 +610,16 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " deoplete------------------------------------
     let g:deoplete#enable_at_startup = 1
+    if !exists('g:deoplete#omni#input_patterns')
+        let g:deoplete#omni#input_patterns = {}
+    endif
+    " let g:deoplete#disable_auto_complete = 1
     let g:deoplete#enable_smart_case = 1
-
-    " disable autocomplete by default
-    " let b:deoplete_disable_auto_complete=1
-    " let g:deoplete_disable_auto_complete=1
+    let g:deoplete#enable_camel_case = 1
+    let g:deoplete#max_abbr_width = 35
+    let g:deoplete#max_menu_width = 20
+    let g:deoplete#skip_chars = ['(', ')', '<', '>']
+    let g:deoplete#tag#cache_limit_size = 800000
 
     let g:deoplete#sources#jedi#show_docstring = 1
     let g:deoplete#sources#jedi#server_timeout = 100
@@ -603,47 +627,112 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     " automatically close preview window
     autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 
-    " call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
     " Register some default omnicomplete functions/patterns
     " to automatically trigger in deoplete {{
-    " let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
-    " let g:deoplete#omni#input_patterns = get(g:, 'deoplete#omni#input_patterns', {})
-    "
-    " let g:deoplete#omni#functions.tex = ['vimtex#complete#omnifunc']
-    " let g:deoplete#omni#input_patterns.tex =
-    "       \ '(?:'
-    "       \ . '\\\w*'
-    "       \ . ')'
-    "
-    " " deoplete-clang
-    " if filereadable('/usr/lib/llvm-3.8/lib/libclang.so.1')
-    "     let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
-    " elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
-    "     let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
-    " endif
-    "
-    " if isdirectory('/usr/include/clang')
-    "     let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
-    " elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
-    "     let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
-    " endif
+    let g:deoplete#omni#functions = get(g:, 'deoplete#omni#functions', {})
+    let g:deoplete#omni#input_patterns = get(g:, 'deoplete#omni#input_patterns', {})
+
+    let g:deoplete#omni#functions.tex = ['vimtex#complete#omnifunc']
+    let g:deoplete#omni#input_patterns.tex =
+          \ '(?:'
+          \ . '\\\w*'
+          \ . ')'
+
+    " deoplete-clang
+    if filereadable('/usr/lib/llvm-3.8/lib/libclang.so.1')
+        let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
+    elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
+        let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+    endif
+
+    if isdirectory('/usr/include/clang')
+        let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
+    elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
+        let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
+    endif
+
+    " }}}
+    " Ranking and Marks " {{{
+    " Default rank is 100, higher is better.
+    call deoplete#custom#source('omni',          'mark', '⌾')
+    call deoplete#custom#source('go',            'mark', '⌁')
+    call deoplete#custom#source('clang',         'mark', '⌁')
+    call deoplete#custom#source('jedi',          'mark', '⌁')
+    call deoplete#custom#source('vim',           'mark', '⌁')
+    call deoplete#custom#source('neosnippet',    'mark', '⌘')
+    call deoplete#custom#source('tag',           'mark', '⌦')
+    call deoplete#custom#source('around',        'mark', '↻')
+    call deoplete#custom#source('buffer',        'mark', 'ℬ')
+    call deoplete#custom#source('tmux-complete', 'mark', '⊶')
+    call deoplete#custom#source('syntax',        'mark', '♯')
+    call deoplete#custom#source('member',        'mark', '.')
+
+    call deoplete#custom#source('go',            'rank', 650)
+    call deoplete#custom#source('vim',           'rank', 640)
+    call deoplete#custom#source('clang',         'rank', 630)
+    call deoplete#custom#source('jedi',          'rank', 610)
+    call deoplete#custom#source('omni',          'rank', 600)
+    call deoplete#custom#source('neosnippet',    'rank', 510)
+    call deoplete#custom#source('member',        'rank', 500)
+    call deoplete#custom#source('file_include',  'rank', 420)
+    call deoplete#custom#source('file',          'rank', 410)
+    call deoplete#custom#source('tag',           'rank', 400)
+    call deoplete#custom#source('around',        'rank', 330)
+    call deoplete#custom#source('buffer',        'rank', 320)
+    call deoplete#custom#source('dictionary',    'rank', 310)
+    call deoplete#custom#source('tmux-complete', 'rank', 300)
+    call deoplete#custom#source('syntax',        'rank', 200)
+
+    " <CR>: If popup menu visible, expand snippet or close popup with selection,
+    "       Otherwise, just put '<CR>'
+    " inoremap <silent><expr><CR> pumvisible() ?
+    "     \ (neosnippet#expandable() ? neosnippet#mappings#expand_impl() : deoplete#close_popup())
+    "         \ :  "\<CR>"
+
+    " <Tab> completion:
+    " 1. If popup menu is visible, select and insert next item
+    " 2. Otherwise, if within a snippet, jump to next input
+    " 3. Otherwise, if preceding chars are whitespace, insert tab char
+    " 4. Otherwise, start manual autocomplete
+    imap <silent><expr><Tab> pumvisible() ? "\<C-n>"
+        \ : (neosnippet#jumpable() ? "\<Plug>(neosnippet_expand_or_jump)"
+        \ : (<SID>is_whitespace() ? "\<Tab>"
+        \ : deoplete#manual_complete()))
+
+    smap <silent><expr><Tab> pumvisible() ? "\<C-n>"
+        \ : (neosnippet#jumpable() ? "\<Plug>(neosnippet_expand_or_jump)"
+        \ : (<SID>is_whitespace() ? "\<Tab>"
+        \ : deoplete#manual_complete()))
+
+    inoremap <expr><S-Tab> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    function! s:is_whitespace()
+        let col = col('.') - 1
+        return ! col || getline('.')[col - 1] =~? '\s'
+    endfunction
+
+    function! s:is_back_space()
+        let col = col('.') - 1
+        return ! col || getline('.')[col - 1] =~ s
+    endfunction
+
+
+" neosnippet----------------------------------
+    let g:neosnippet#snippets_directory='~/.local/share/nvim/plugged/vim-snippets/snippets'
+
+    " Plugin key-mappings.
+    " Note: It must be "imap" and "smap".  It uses <Plug> mappings.
+    imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+    xmap <C-k>     <Plug>(neosnippet_expand_target)
+    " let g:neosnippet#enable_eompleted_snippet = 1
 
 
 " Ultisnips-----------------------------------
-    let g:UltiSnipsExpandTrigger="<c-j>"
-    let g:UltiSnipsJumpForwardTrigger="<c-j>"
-    let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+    " let g:UltiSnipsExpandTrigger="<c-j>"
+    " let g:UltiSnipsJumpForwardTrigger="<c-j>"
+    " let g:UltiSnipsJumpBackwardTrigger="<c-k>"
     " let g:UltiSnipsEditSplit="vertical"
-
-
-" Supertab-------------------------------------
-    " Use 'omnicomplete' as the default completion type.
-    " It may fallback to default keyword completion (<C-P>).
-    let g:SuperTabDefaultCompletionType = "<C-X><C-O>"
-
-    " sometimes we may want to insert tabs or spaces for indentation.
-    " no tab completion at the start of line or after whitespace.
-    let g:SuperTabNoCompleteAfter = ['^', '\s']
 
 
 " echodoc-----------------------------------------
@@ -692,6 +781,7 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
         " hi semshiParameter      ctermfg=103     guifg=#8787af
     endfunction
     autocmd FileType python call CustomSemshiHighlights()
+    let g:semshi#error_sign = 0
 
 
 " " pymode-------------------------------------------
@@ -767,7 +857,7 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 
 " vim-polyglot----------------------------------------
-    let g:polyglot_disabled = ['python']
+    let g:polyglot_disabled = ['python', 'markdown']
 
 
 " nrrwrgn-------------------------------------------
@@ -786,6 +876,9 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     nnoremap <C-F>o :CtrlSFOpen<CR>
     nnoremap <C-F>t :CtrlSFToggle<CR>
     inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
+
+    let g:ctrlsf_default_root = 'project'
+    let g:ctrlsf_winsize = '50%'
 
 " vim-sandwich---------------------------------------
     " if you have not copied default recipes
@@ -815,7 +908,22 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " vim-illuminate-------------------------------------
     hi illuminatedWord        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
-    " hi illuminatedWord cterm=underline gui=underline
     let g:Illuminate_ftblacklist = ['nerdtree', 'python']
     let g:Illuminate_delay = 500
 
+" csv------------------------------------------------
+    let g:csv_delim_test = ',;|'
+    " let g:csv_delim=','
+
+" mucomplete-----------------------------------------
+    " let g:mucomplete#enable_auto_at_startup = 1
+    " set completeopt-=preview
+    " set completeopt+=longest,menuone,noselect
+    " set shortmess+=c   " Shut off completion messages
+    " set belloff+=ctrlg " If Vim beeps during completion
+
+" python-syntax--------------------------------------
+    let g:python_highlight_all = 1
+
+" auto-pair------------------------------------------
+    let g:AutoPairsFlyMode = 0
