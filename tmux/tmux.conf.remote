@@ -1,0 +1,3 @@
+
+# Set port of SSH remote tunnel, where tmux will pipe buffers to transfer on local machine for copy
+set -g @copy_backend_remote_tunnel_port 11988

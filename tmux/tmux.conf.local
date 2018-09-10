@@ -84,8 +84,16 @@ tmux_conf_theme_mode_bg='#ffff00'                       # yellow
 tmux_conf_theme_mode_attr='bold'
 
 # status line style
+tmux_conf_theme_status_active_fg='#8a8a8a'                     # light gray
+tmux_conf_theme_status_active_bg='#080808'                     # dark gray
+tmux_conf_theme_status_inactive_fg='#ffffff'                     # light gray
+tmux_conf_theme_status_inactive_bg='#8a8a8a'                     # dark gray
+
+
 tmux_conf_theme_status_fg='#8a8a8a'                     # light gray
 tmux_conf_theme_status_bg='#080808'                     # dark gray
+# tmux_conf_theme_status_fg='#8a8a8a'                     # light gray
+# tmux_conf_theme_status_bg='#080808'                     # dark gray
 tmux_conf_theme_status_attr='none'
 
 # window status style
@@ -95,8 +103,8 @@ tmux_conf_theme_window_status_fg='#8a8a8a'              # light gray
 tmux_conf_theme_window_status_bg='#080808'              # dark gray
 tmux_conf_theme_window_status_attr='none'
 tmux_conf_theme_window_status_format='#I #W'
-#tmux_conf_theme_window_status_format='#{circled_window_index} #W'
-#tmux_conf_theme_window_status_format='#I #W#{?window_bell_flag,🔔,}#{?window_zoomed_flag,🔍,}'
+# tmux_conf_theme_window_status_format='#{circled_window_index} #W'
+# tmux_conf_theme_window_status_format='#I #W#{?window_bell_flag,🔔,}#{?window_zoomed_flag,🔍,}'
 
 # window current status style
 #   - built-in variables are:
@@ -106,7 +114,7 @@ tmux_conf_theme_window_status_current_bg='#00afff'      # light blue
 tmux_conf_theme_window_status_current_attr='bold'
 tmux_conf_theme_window_status_current_format='#I #W'
 #tmux_conf_theme_window_status_current_format='#{circled_window_index} #W'
-#tmux_conf_theme_window_status_current_format='#I #W#{?window_zoomed_flag,🔍,}'
+# tmux_conf_theme_window_status_current_format='#I #W#{?window_zoomed_flag,🔍,}'
 
 # window activity status style
 tmux_conf_theme_window_status_activity_fg='default'
@@ -144,6 +152,7 @@ tmux_conf_theme_right_separator_sub='|'
 #     - #{battery_vbar}
 #     - #{circled_session_name}
 #     - #{hostname_ssh}
+#     - #{hostname_nossh}
 #     - #{hostname}
 #     - #{loadavg}
 #     - #{pairing}
@@ -155,12 +164,15 @@ tmux_conf_theme_right_separator_sub='|'
 #     - #{uptime_s}
 #     - #{username}
 #     - #{username_ssh}
-tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} | #{loadavg} '
-tmux_conf_theme_status_right='#{prefix}#{pairing}#{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username}#{root} | #{hostname} '
+#     - #{username_nossh}
+tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} |  #{sysstat_mem} , #{sysstat_cpu} #{loadavg} ,|'
+tmux_conf_theme_status_right='#{prefix}#{pairing}#{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username_nossh}#{root} | #{hostname_nossh} '
 
 # status left style
-tmux_conf_theme_status_left_fg='#000000,#e4e4e4,#e4e4e4'  # black, white , white
-tmux_conf_theme_status_left_bg='#ffff00,#ff00af,#00afff'  # yellow, pink, white blue
+#tmux_conf_theme_status_left_fg='#000000,#e4e4e4,#e4e4e4'  # black, white , white
+#tmux_conf_theme_status_left_bg='#ffff00,#ff00af,#00afff'  # yellow, pink, white blue
+tmux_conf_theme_status_left_fg='#000000,#e4e4e4,#8a8a8a'  # black, white , white
+tmux_conf_theme_status_left_bg='#ffff00,#ff00af,#080808'  # yellow, pink, white blue
 tmux_conf_theme_status_left_attr='bold,none,none'
 
 # status right style
@@ -237,7 +249,7 @@ tmux_conf_theme_clock_style='24'
 #   - false (default)
 # on macOS, this requires installing reattach-to-user-namespace, see README.md
 # on Linux, this requires xsel or xclip
-tmux_conf_copy_to_os_clipboard=false
+tmux_conf_copy_to_os_clipboard=true
 
 
 # -- user customizations -------------------------------------------------------
@@ -250,10 +262,9 @@ bind v split-window -h
 unbind '"'
 unbind %
 
-# force Vi mode
-#   really you should export VISUAL or EDITOR environment variable, see manual
-#set -g status-keys vi
-set -g mode-keys vi
+# emacs key bindings in tmux command prompt (prefix + :) are better than
+# vi keys, even for vim user
+set -g status-keys emacs
 
 # replace C-b by C-a instead of using both prefixes
 set -gu prefix2
@@ -262,8 +273,6 @@ unbind C-b
 set -g prefix C-a
 bind C-a send-prefix
 
-# move status line to top
-# set -g status-position top
 
 # Smart pane switching with awareness of Vim splits.
 # # See: https://github.com/christoomey/vim-tmux-navigator
@@ -286,6 +295,9 @@ bind-key -n C-\ if-shell "$is_vim" "send-keys C-\\" "select-pane -l"
 # Prevent from window renaming
 set-option -g allow-rename off
 
+# Prompt to rename window right after it's created
+# set-hook -g after-new-window 'command-prompt -I "#{window_name}" "rename-window '%%'"'
+
 # synchronize mode (toggle)
 bind-key e set-window-option synchronize-panes
 
@@ -301,3 +313,51 @@ set -ga terminal-overrides ",xterm-256color:Tc"
 
 # bind-key M choose-tree -Nw "join-pane -t '%%'"
 # bind-key C-m choose-tree -Ns "join-pane -t '%%'"
+
+set -g status-interval 5
+set -g @sysstat_cpu_view_tmpl '#[fg=#{cpu.color}]#{cpu.pused}#[default]'
+set -g @sysstat_mem_view_tmpl '#[fg=#{mem.color}]#{mem.pused}#[default] #[fg=#{mem.color}]#{mem.used}#[default]/#{mem.total}'
+
+# copy from https://github.com/samoshkin/tmux-config
+
+# Session is considered to be remote when we ssh into host
+if-shell 'test -n "$SSH_CLIENT"' \
+    'source-file ~/.tmux/tmux.conf.remote'
+
+set -g update-environment \
+  "DISPLAY\
+  SSH_ASKPASS\
+  SSH_AUTH_SOCK\
+  SSH_AGENT_PID\
+  SSH_CONNECTION\
+  SSH_TTY\
+  WINDOWID\
+  XAUTHORITY"
+bind '$' run "~/.tmux/renew_env.sh"
+
+# We want to have single prefix key "C-a", usable both for local and remote session
+# we don't want to "C-a" + "a" approach either
+# Idea is to turn off all key bindings and prefix handling on local session,
+# so that all keystrokes are passed to inner/remote session
+
+# see: toggle on/off all keybindings · Issue #237 · tmux/tmux - https://github.com/tmux/tmux/issues/237
+
+# Also, change some visual styles when window keys are off
+bind -T root F12  \
+    set prefix None \;\
+    set key-table off \;\
+    set status-style "fg=$tmux_conf_theme_status_inactive_fg,bg=$tmux_conf_theme_status_inactive_bg" \;\
+    set -g status-position top \;\
+    refresh-client -S \;\
+
+bind -T off F12 \
+  set -u prefix \;\
+  set -u key-table \;\
+  set -u status-style \;\
+  set -u status-left-style \;\
+  set -u status-right-style \;\
+  set -u window-status-current-style \;\
+  set -u window-status-current-format \;\
+  set -g status-position bottom \;\
+  refresh-client -S
+
