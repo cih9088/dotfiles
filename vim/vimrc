@@ -43,8 +43,8 @@ Plug 'tmhedberg/SimpylFold'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'vim-python/python-syntax'
+Plug 'lervag/vimtex'
 " Plug 'davidhalter/jedi-vim'
-" Plug 'lifepillar/vim-mucomplete'
 if has('nvim')
     Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
     Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
@@ -99,6 +99,7 @@ Plug 'RRethy/vim-illuminate'
 " Plug 'haya14busa/is.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'AndrewRadev/splitjoin.vim'
+Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 if has('nvim')
     set inccommand=nosplit
 else
@@ -927,3 +928,6 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " auto-pair------------------------------------------
     let g:AutoPairsFlyMode = 0
+
+" vim-which-key--------------------------------------
+    nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>
