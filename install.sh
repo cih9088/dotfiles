@@ -142,6 +142,8 @@ fi
 pip install glances --user
 pip install grip --user
 
+# install tpm
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 
 # Install plugins in neovim and vim

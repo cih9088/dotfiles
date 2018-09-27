@@ -23,11 +23,11 @@ mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
 # source ~/${VIRENV_NAME}/bin/activate
 
 pip install --upgrade pip
-pip install numpy scipy matplotlib ipython jupyter pandas sympy nose
-pip install scikit-learn
-pip install tqdm
-pip install seaborn
-pip install tabulate
+pip install --no-cache-dir numpy scipy matplotlib ipython jupyter pandas sympy nose
+pip install --no-cache-dir scikit-learn
+pip install --no-cache-dir tqdm
+pip install --no-cache-dir seaborn
+pip install --no-cache-dir tabulate
 # pip install paramiko
 
 while true; do
