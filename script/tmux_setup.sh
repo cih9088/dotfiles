@@ -86,6 +86,7 @@ brew 'libevent'
 brew 'ncurses'
 EOS
         elif [[ $platform == "LINUX" ]]; then
+            sudo pat-get -y remove libevent-dev libncurses-dev
             sudo apt-get -y install libevent-dev libncurses-dev
             sudo apt-get -y remove tmux
         else
@@ -93,6 +94,7 @@ EOS
         fi
     fi
 
+    # install tmux
     if [[ $1 == local ]]; then
         if [ -d $HOME/.local/src/tmux-* ]; then
             cd $HOME/.local/src/tmux-*
@@ -124,12 +126,10 @@ EOS
         wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz
         tar -xvzf tmux-${TMUX_VERSION}.tar.gz
         cd tmux-${TMUX_VERSION}
-        # ./configure CFLAGS="-I$HOME/.local/include -I$HOME/.local/include/ncurses" LDFLAGS="-L$HOME/.local/lib -L$HOME/.local/include/ncurses -L$HOME/.local/include"
-        # CPPFLAGS="-I$HOME/.local/include -I$HOME/.local/include/ncurses" LDFLAGS="-static -L$HOME/.local/include -L$HOME/.local/include/ncurses -L$HOME/.local/lib" make
-        # mv tmux $HOME/.local/bin
-        ./configure --prefix=$HOME/.local
-        make
+        ./configure CFLAGS="-I$HOME/.local/include -I$HOME/.local/include/ncurses" LDFLAGS="-L$HOME/.local/lib -L$HOME/.local/include/ncurses -L$HOME/.local/include" --prefix=$HOME/.local
+        (CPPFLAGS="-I$HOME/.local/include -I$HOME/.local/include/ncurses" LDFLAGS="-static -L$HOME/.local/include -L$HOME/.local/include/ncurses -L$HOME/.local/lib" make)
         make install
+        mv tmux $HOME/.local/bin
         cd $TMP_DIR
         mv tmux-${TMUX_VERSION} $HOME/.local/src
     else

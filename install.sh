@@ -90,15 +90,6 @@ done
 # install neovim
 ( . $SCRIPTS/nvim_setup.sh )
 
-# install neovim with python support
-echo
-echo '[*] Install neovim with python support'
-sleep 1
-
-pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-
 # while true; do
 #     read -p "\nDo you wish to install neovim with virtualenv ? " yn
 #     case $yn in

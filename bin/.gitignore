@@ -3,5 +3,6 @@
 # Except this file
 !.gitignore
 !*.c
-!list_users
+!list-users
 !bashtips
+!easy-useradd

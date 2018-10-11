@@ -75,6 +75,21 @@ EOS
     fi
 
     echo "[*] neovim installed..."
+
+    # install neovim with python support
+    echo
+    echo '[*] Install neovim with python support'
+    sleep 1
+
+    if [[ $1 = local ]]; then
+        pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+        pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+        pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+    else
+        pip install --no-cache-dir --upgrade --force-reinstall neovim || true
+        pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
+        pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
+    fi
 }
 
 

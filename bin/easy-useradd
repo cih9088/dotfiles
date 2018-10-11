@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+trap "echo 'error: Script failed: see failed command above'" ERR
+DEFAULT_PASSWD="14771477" 
+DEFAULT_GROUPS="aitrics"
+
+usage="$(basename "$0") [-h] [-s] [-g arg] [-p args] username -- program to add user easily
+The deafult password is ${DEFAULT_PASSWD}.
+The default group is ${DEFAULT_GROUPS}
+User name 'guest' will have passwd 'bemyguest' and only sftp is enabled
+
+where:
+    -h  show this help message
+    -s  add user to sudo group
+    -g  default group
+    -p  default password
+    "
+OPTIND=1
+SUDOUSER=false
+
+while getopts ':pg:hs' option; do
+    case "$option" in
+        h) echo "$usage"
+            exit
+            ;;
+        s) SUDOUSER=true
+            ;;
+        g) DEFAULT_GROUPS=${OPTARG}
+            ;;
+        p) DEFAULT_PASSWD=${OPTARG}
+            ;;
+        :) printf "missing argument for -%s\n" "$OPTARG" >&2
+            echo ""
+            echo "$usage" >&2
+            exit 1
+            ;;
+        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+            echo ""
+            echo "$usage" >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+[ "${1:-}" = "--" ] && shift
+
+if [ "$EUID" -ne 0 ];then
+    echo "Please run this script as root"
+    exit 1
+fi
+
+if [ "${1:?you have to specify user name}" == "guest" ]; then
+    useradd guest -m -s /bin/bash
+    echo "$1:bemyguest" | chpasswd
+    chown root.${DEFAULT_GROUPS} /home/guest
+    chmod 755 /home/guest
+else
+    # create user
+    useradd "$1" -m -g ${DEFAULT_GROUPS} -s /bin/bash
+    echo "$1:$DEFAULT_PASSWD" | chpasswd
+    passwd --expire "$1"
+
+    # add user to sudo group
+    if [ "$SUDOUSER" == true ]; then
+        usermod -a -G sudo "$1"
+    fi
+
+    # change the authority
+    chmod 700 /home/"$1"
+fi

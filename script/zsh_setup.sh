@@ -80,8 +80,12 @@ EOS
 
 while true; do
     echo
-    echo "[*] Following list is zsh insalled on the system"
-    type zsh
+    if [ -x "$(command -v zsh)" ]; then
+        echo "[*] Following list is zsh insalled on the system"
+        type zsh
+    else
+        echo "[*] zsh is not found"
+    fi
     read -p "[?] Do you wish to install zsh? " yn
     case $yn in
         [Yy]* ) :; ;;

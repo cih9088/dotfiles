@@ -33,6 +33,9 @@ if [ -x "$(command -v thefuck)" ]; then
     eval $(thefuck --alias)
 fi
 
+# unset virtualenv prompt to show it in pure prompt
+unset VIRTUAL_ENV_DISABLE_PROMPT
+
 # vi mode for zsh
 bindkey -v
 export KEYTIMEOUT=1

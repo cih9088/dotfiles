@@ -10,8 +10,12 @@ pip install pudb --user
 pip install pylint --user
 pip install jedi --user
 
-pip install virtualenv --user
-pip install virtualenvwrapper --user
+pip install virtualenv --user || true
+pip install virtualenvwrapper --user || true
+
+pip3 install virtualenv --user || true
+pip3 install virtualenvwrapper --user || true
+
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=$(which python3)
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
@@ -22,7 +26,7 @@ mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
 # virtualenv --system-site-package -p python3 ${VIRENV_NAME}
 # source ~/${VIRENV_NAME}/bin/activate
 
-pip install --upgrade pip
+# pip install --upgrade pip
 pip install --no-cache-dir numpy scipy matplotlib ipython jupyter pandas sympy nose
 pip install --no-cache-dir scikit-learn
 pip install --no-cache-dir tqdm
