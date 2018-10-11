@@ -37,6 +37,7 @@ else
     echo 'not defined'; exit 1
 fi
 
-sudo pip install --upgrade pip || true
-sudo pip2 intall --upgrade pip || true
-sudo pip3 install --upgrade pip || true
+# do not udpate pip causing import error!
+# sudo pip install --upgrade pip || true
+# sudo pip2 intall --upgrade pip || true
+# sudo pip3 install --upgrade pip || true

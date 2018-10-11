@@ -27,7 +27,7 @@ setup_func() {
 
 
         # adding vi-mode indicator https://github.com/sindresorhus/pure/wiki
-        # this feature is not in the master. no need.
+        # this feature is in the master. no need.
         # if grep -Fq 'PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"; then
         #     :
         # else

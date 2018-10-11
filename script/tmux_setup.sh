@@ -86,7 +86,7 @@ brew 'libevent'
 brew 'ncurses'
 EOS
         elif [[ $platform == "LINUX" ]]; then
-            sudo pat-get -y remove libevent-dev libncurses-dev
+            sudo apt-get -y remove libevent-dev libncurses-dev
             sudo apt-get -y install libevent-dev libncurses-dev
             sudo apt-get -y remove tmux
         else
@@ -150,7 +150,7 @@ EOS
 
             cd $TMP_DIR
             # install xclip
-            sudo apt-get -y install xclip
+            # sudo apt-get -y install xclip
 
             # install tmux
             wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz

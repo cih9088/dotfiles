@@ -331,11 +331,11 @@ echo '[*] Coyping bin files...'
 
 if [[ $platform == "OSX" ]]; then
     for file in `find ${BIN_DIR} -type f -perm +111 -exec basename {} \;`; do
-        ln -snf ${BIN_DIR}/${file} $HOME/.local/bin/$file
+        ln -sf ${BIN_DIR}/${file} $HOME/.local/bin/$file
     done
 elif [[ $platform == "LINUX" ]]; then
     for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
-        ln -snf ${BIN_DIR}/${file} $HOME/.local/bin/$file
+        ln -sf ${BIN_DIR}/${file} $HOME/.local/bin/$file
     done
 else
     echo "[!] $platform is not supported."; exit 1
