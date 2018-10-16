@@ -251,15 +251,15 @@ endfun
 autocmd FileType c,cpp,java,javascript,html,ruby,python,pandoc
     \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
 
-" file is larger than 10mb
-let g:LargeFile = 1024 * 1024 * 10
+" file is larger than 50mb
+let g:LargeFile = 1024 * 1024 * 50
 augroup LargeFile
     autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
 augroup END
 
 function LargeFile()
     " no syntax highlighting etc
-    set eventignore+=FileType
+    " set eventignore+=FileType
     " save memory when other file is viewed
     setlocal bufhidden=unload
     " is read-only (write with :w new_filename)
