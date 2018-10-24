@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+
+    cat <<EOF
+DIRECTORIES
+-----------
+    ~-          Previous working directory
+    cd -        Previous working directory
+    pushd tmp   Push tmp && cd tmp
+    popd        Pop && cd
+
+GLOBBING AND OUTPUT SUBSTITUTION
+--------------------------------
+    ls a[b-dx]e Globs abe, ace, ade, axe
+    ls a{c,bl}e Globs ace, able
+    \$(ls)      \`ls\` (but nestable!)
+
+HISTORY MANIPULATION
+--------------------
+    !!          Last command
+    !?foo       Last command containing \`foo'
+    ^foo^bar^   Last command containing \`foo', but substitute \`bar'
+    !!:0        Last command word
+    !!:^        Last command's first argument
+    !\$          Last command's last argument
+    !!:*        Last command's arguments
+    !!:x-y      Arguments x to y of last command
+    C-s         search forwards in history
+    C-r         search backwards in history
+
+LINE EDITING
+------------
+    M-d     kill to end of word
+    C-w     kill to beginning of word
+    C-k     kill to end of line
+    C-u     kill to beginning of line
+    M-r     revert all modifications to current line
+    C-]     search forwards in line
+    M-C-]   search backwards in line
+    C-t     transpose characters
+    M-t     transpose words
+    M-u     uppercase word
+    M-l     lowercase word
+    M-c     capitalize word
+    M-#     intert # at the beginning of the current line
+    C-x C-e edit the line with default editor
+    C-x a   get raw command
+
+COMPLETION
+----------
+    M-/     complete filename
+    M-~     complete user name
+    M-@     complete host name
+    M-\$     complete variable name
+    M-!     complete command name
+    M-^     complete history
+
+FZF
+---
+    C-t     Find file name and paste it to the command line
+    C-r     Find command history and past it to the command line
+    M-c     Go to the directory
+    z       z command
+    z {arg} go to fuzzy {arg} directly
+
+prezto archive module
+---------------------
+    archive     creates an archive based on the provided archive name
+    lsarchive   lists the contents of one or more archives
+    unarchive   extracts the contents of one or more archives
+
+prezto utility module
+---------------------
+    _       executes a command as another user (sudo)
+    b       opens the default web browser
+    diffu   shorthand for diff --unified
+    e       opens the default editor
+    mkdir   creates directories, including intermediary directories
+    p       opens the default pager
+    po      removes a directory from the stack and changes to it (popd)
+    pu      changes the directory and pushes the old directory onto the stack (pushd)
+    sa      search aliases for a word
+    type    displays all the attribute values of a shell parameter
+
+    ls      lists with directories grouped first (GNU only).
+    l       lists in one column, hidden files.
+    ll      lists human readable sizes.
+    lr      lists human readable sizes, recursively.
+    la      lists human readable sizes, hidden files.
+    lm      lists human readable sizes, hidden files through pager.
+    lx      lists sorted by extension (GNU only).
+    lk      lists sorted by size, largest last.
+    lt      lists sorted by date, most recent last.
+    lc      lists sorted by date, most recent last, shows change time.
+    lu      lists sorted by date, most recent last, shows access time.
+    sl      lists directory contents (ls).
+
+    http-serve serves a directory via HTTP
+
+    rsync-copy          copies files and directories from source to destination.
+    rsync-move          moves files and directories from source to destination.
+    rsync-update        updates files and directories on destination.
+    rsync-synchronize   synchronizes files and directories between source and destination.
+EOF

@@ -4,18 +4,6 @@ set -e
 
 VIRENV_NAME=venv
 
-pip install gpustat --user
-pip install ipdb --user
-pip install pudb --user
-pip install pylint --user
-pip install jedi --user
-
-pip install virtualenv --user || true
-pip install virtualenvwrapper --user || true
-
-pip3 install virtualenv --user || true
-pip3 install virtualenvwrapper --user || true
-
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=$(which python3)
 export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'

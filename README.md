@@ -11,44 +11,65 @@ $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
 You need sudo and following would be installed. If you have installed already, no need.
 * OSX: python2, python3, wget
 * Ubuntu: python2, python3
+
 ```bash
 $ cd ~/dotfiles
 # You have to be in dotfiles directory!!
-$ ./prerequisites.sh
+$ make prerequisites
 ```
+<!-- ```bash -->
+<!-- $ cd ~/dotfiles -->
+<!-- # You have to be in dotfiles directory!! -->
+<!-- $ ./prerequisites.sh -->
+<!-- ``` -->
 
 ## Install it as a whole
-Following list would be installed by itself with prompt. 
 If you choose to install systemwide, other users could execute thoes command.
 (homebrew for OSX and apt-get for Ubuntu will be used.)
 If you choose to install locally, others not.
 (All of command would be installed in `$HOME/.local`)
-* [zsh](http://www.zsh.org/)
-* [prezto](https://github.com/sorin-ionescu/prezto)
-* personal dotfiles
-* [neovim](https://neovim.io/) and plugins (please refer `init.vim` for the details)
-* [tmux](https://github.com/tmux/tmux)
-* personal bin
-    * [tree](https://linux.die.net/man/1/tree)
-    * [fd](https://github.com/sharkdp/fd)
-    * [thefuck](https://github.com/nvbn/thefuck)
-    * [ripgrep](https://github.com/nvbn/thefuck)
-    * [trdl](https://github.com/tldr-pages/tldr)
-    * [ranger](https://github.com/ranger/ranger)
-    * [bash-snippets (transfer, cheat only)](https://github.com/alexanderepstein/Bash-Snippets)
 ```bash
 $ cd ~/dotfiles
-# You have to be in dotfiles directory!!
-$ ./install.sh
-# Only if you need my dev environment
-$ ./setup_python_dev.sh     # setup python dev environment
-$ ./setup_shell_dev.sh      # setup shell dev envrionment
+$ make installAll
 ```
 
+## Update dotfiles
+```bash
+$ cd ~/dotfiles
+$ make updateAll
+```
+<!-- ## Install it as a whole -->
+<!-- Following list would be installed by itself with prompt.  -->
+<!-- If you choose to install systemwide, other users could execute thoes command. -->
+<!-- (homebrew for OSX and apt-get for Ubuntu will be used.) -->
+<!-- If you choose to install locally, others not. -->
+<!-- (All of command would be installed in `$HOME/.local`) -->
+<!-- * [zsh](http://www.zsh.org/) -->
+<!-- * [prezto](https://github.com/sorin-ionescu/prezto) -->
+<!-- * personal dotfiles -->
+<!-- * [neovim](https://neovim.io/) and plugins (please refer `init.vim` for the details) -->
+<!-- * [tmux](https://github.com/tmux/tmux) -->
+<!-- * personal bin -->
+<!--     [> * [tree](https://linux.die.net/man/1/tree) <] -->
+<!--     [> * [fd](https://github.com/sharkdp/fd) <] -->
+<!--     [> * [thefuck](https://github.com/nvbn/thefuck) <] -->
+<!--     [> * [ripgrep](https://github.com/nvbn/thefuck) <] -->
+<!--     [> * [trdl](https://github.com/tldr-pages/tldr) <] -->
+<!--     [> * [ranger](https://github.com/ranger/ranger) <] -->
+<!--     [> * [bash-snippets (transfer, cheat only)](https://github.com/alexanderepstein/Bash-Snippets) <] -->
+<!-- ```bash -->
+<!-- $ cd ~/dotfiles -->
+<!-- # You have to be in dotfiles directory!! -->
+<!-- $ ./install.sh -->
+<!-- # Only if you need my dev environment -->
+<!-- $ ./setup_python_dev.sh     # setup python dev environment -->
+<!-- $ ./setup_shell_dev.sh      # setup shell dev envrionment -->
+<!-- ``` -->
+
 ## Issues
-1. Showing following error message at the top of terminal when the zsh 5.5+ started \
-    `/var/folders/vp/15xrzrrj4sx0dd3k6gsv1hmw0000gn/T//prezto-fasd-cache.501.zsh:compctl:17: unknown condition code:` \
-    -> [will be fixed later version of zsh](https://github.com/sorin-ionescu/prezto/issues/1569)
+1. ~~Showing following error message at the top of terminal when the zsh 5.5+ started \
+    `/var/folders/vp/15xrzrrj4sx0dd3k6gsv1hmw0000gn/T//prezto-fasd-cache.501.zsh:compctl:17: unknown condition code:`~~ \
+    -> [it is now fixed with zsh 5.6.1+](https://github.com/sorin-ionescu/prezto/issues/1569)
 
 <!--
 ## For MAC
