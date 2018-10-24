@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# change version you want to install on local
-NVIM_VERSION=0.3.0
-
+NVIM_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/neovim/neovim/releases/latest" |
+    grep '"tag_name":' |
+    sed -E 's/.*"([^"]+)".*/\1/')
+NVIM_LATEST_VERSION=${NVIM_LATEST_VERSION##v}
+NVIM_VERSION=${1:-${NVIM_LATEST_VERSION}}
 
 ################################################################
 set -e
@@ -95,6 +97,17 @@ EOS
 
 while true; do
     echo
+    if [ -x "$(command -v nvim)" ]; then
+        echo "[*] Following list is nvim insalled on the system"
+        type nvim
+        echo
+        echo "[*] Your nvim version is...."
+        nvim --version
+    else
+        echo "[*] nvim is not found"
+    fi
+
+    echo "[*] Local install version (latest version: $NVIM_LATEST_VERSION, installing version: $NVIM_VERSION)"
     read -p "[?] Do you wish to install neovim? " yn
     case $yn in
         [Yy]* ) :; ;;

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # change version you want to install on local
-ZSH_VERSION=5.5.1
+ZSH_VERSION=5.6.2
 
 
 ################################################################

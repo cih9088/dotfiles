@@ -34,6 +34,7 @@ $ make installAll
 ```
 
 ## Update dotfiles
+If you have installed with `make installAll`, no need.
 ```bash
 $ cd ~/dotfiles
 $ make updateAll

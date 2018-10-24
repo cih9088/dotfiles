@@ -2,8 +2,18 @@
 
 # change version you want to install on local
 TREE_VERSION=1.7.0
-FD_VERSION=7.0.0
-RG_VERSION=0.8.1
+
+FD_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/sharkdp/fd/releases/latest" |
+     grep '"tag_name":' |
+     sed -E 's/.*"([^"]+)".*/\1/')
+FD_LATEST_VERSION=${FD_LATEST_VERSION##v}
+FD_VERSION=${1:-${FD_LATEST_VERSION}}
+
+RG_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/BurntSushi/ripgrep/releases/latest" |
+     grep '"tag_name":' |
+     sed -E 's/.*"([^"]+)".*/\1/')
+RG_LATEST_VERSION=${RG_LATEST_VERSION##v}
+RG_VERSION=${1:-${RG_LATEST_VERSION}}
 
 ################################################################
 set -e
@@ -33,12 +43,8 @@ if [[ $$ = $BASHPID ]]; then
         mkdir -p $TMP_DIR
     fi
 fi
-
 BIN_DIR=${PROJ_HOME}/bin
 
-
-# https://github.com/ChristopherSchultz/fast-file-count
-cd $BIN_DIR; cc -Wall -pedantic -o dircnt dircnt.c;
 
 # tree
 setup_func_tree() {
@@ -176,7 +182,7 @@ setup_func_bash_snippets() {
     cd $TMP_DIR
     git clone https://github.com/alexanderepstein/Bash-Snippets
     cd Bash-Snippets
-    
+
     if [[ $1 = local ]]; then
         ./install.sh --prefix=$HOME/.local transfer cheat
     else
@@ -196,6 +202,18 @@ EOS
 
 while true; do
     echo
+    if [ -x "$(command -v tree)" ]; then
+        echo "[*] Following list is tree insalled on the system"
+        type tree
+        echo
+        echo "[*] Your tree version is...."
+        tree --version
+    else
+        echo "[*] tree is not found"
+    fi
+
+    echo
+    echo "[*] Local install version (installing version: $TREE_VERSION)"
     read -p "[?] Do you wish to install tree? " yn
     case $yn in
         [Yy]* ) :; ;;
@@ -214,6 +232,18 @@ done
 
 while true; do
     echo
+    if [ -x "$(command -v fd)" ]; then
+        echo "[*] Following list is fd insalled on the system"
+        type fd
+        echo
+        echo "[*] Your fd version is...."
+        fd --version
+    else
+        echo "[*] fd is not found"
+    fi
+
+    echo
+    echo "[*] Local install version (latest version: $FD_VERSION, installing version: $FD_VERSION)"
     read -p "[?] Do you wish to install fd? " yn
     case $yn in
         [Yy]* ) :; ;;
@@ -232,6 +262,18 @@ done
 
 while true; do
     echo
+    if [ -x "$(command -v rg)" ]; then
+        echo "[*] Following list is rg insalled on the system"
+        type rg
+        echo
+        echo "[*] Your rg version is...."
+        rg --version
+    else
+        echo "[*] rg is not found"
+    fi
+
+    echo
+    echo "[*] Local install version (latest version: $RG_VERSION, installing version: $RG_VERSION)"
     read -p "[?] Do you wish to install ripgrep? " yn
     case $yn in
         [Yy]* ) :; ;;
@@ -319,27 +361,11 @@ while true; do
 
     read -p "[?] Install locally or systemwide? " yn
     case $yn in
-        [Ll]local* ) echo "[*] Install bash-snippets locally..."; setup_func_bash_snippets 'local'; break;;
+        [Ll]ocal* ) echo "[*] Install bash-snippets locally..."; setup_func_bash_snippets 'local'; break;;
         [Ss]ystem* ) echo "[*] Install bash-snippets systemwide..."; setup_func_bash_snippets; break;;
         * ) echo "Please answer locally or systemwide."; continue;;
     esac
 done
-
-
-
-echo '[*] Coyping bin files...'
-
-if [[ $platform == "OSX" ]]; then
-    for file in `find ${BIN_DIR} -type f -perm +111 -exec basename {} \;`; do
-        ln -sf ${BIN_DIR}/${file} $HOME/.local/bin/$file
-    done
-elif [[ $platform == "LINUX" ]]; then
-    for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
-        ln -sf ${BIN_DIR}/${file} $HOME/.local/bin/$file
-    done
-else
-    echo "[!] $platform is not supported."; exit 1
-fi
 
 
 # clean up

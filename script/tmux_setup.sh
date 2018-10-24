@@ -1,10 +1,15 @@
 #!/bin/bash
 
 # change version you want to install on local
-TMUX_VERSION=2.7
 LIBEVENT_VERSION=2.1.8
 NCURSES_VERSION=6.1
 XCLIP_VERSION=0.12
+
+TMUX_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/tmux/tmux/releases/latest" |
+    grep '"tag_name":' |
+    sed -E 's/.*"([^"]+)".*/\1/')
+TMUX_LATEST_VERSION=${TMUX_LATEST_VERSION##v}
+TMUX_VERSION=${1:-${TMUX_LATEST_VERSION}}
 
 # based on https://gist.github.com/ryin/3106801#gistcomment-2191503
 # tmux will be installed in $HOME/.local/bin if you specify to install without root access
@@ -177,6 +182,15 @@ EOS
 
 while true; do
     echo
+    if [ -x "$(command -v tmux)" ]; then
+        echo "[*] Following list is tmux insalled on the system"
+        type tmux
+        tmux -V
+    else
+        echo "[*] tmux is not found"
+    fi
+
+    echo "[*] Local install version (latest version: $TMUX_LATEST_VERSION, installing version: $TMUX_VERSION)"
     read -p "[?] Do you wish to install tmux? " yn
     case $yn in
         [Yy]* ) :; ;;
