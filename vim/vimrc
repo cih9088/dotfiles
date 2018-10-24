@@ -32,7 +32,7 @@ Plug 'kamwitsta/flatwhite-vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ryanoasis/vim-devicons'
-Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 
 " Language specific (syntax, completion, etc.)
 Plug 'sheerun/vim-polyglot'
@@ -63,10 +63,10 @@ Plug 'Shougo/context_filetype.vim'
 " Plug 'Shougo/deol.nvim'
 " Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'scrooloose/nerdtree'
-Plug 'dhruvasagar/vim-vinegar'
+" Plug 'scrooloose/nerdtree'
+" Plug 'dhruvasagar/vim-vinegar'
 " Plug 'tpope/vim-vinegar'
-" Plug 'justinmk/vim-dirvish'
+Plug 'justinmk/vim-dirvish'
 Plug 'majutsushi/tagbar'
 Plug 'machakann/vim-sandwich'
 Plug 'easymotion/vim-easymotion'
@@ -79,7 +79,8 @@ Plug 'tpope/vim-repeat'
 Plug 'terryma/vim-expand-region'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-obsession'
+" Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-abolish'
 " Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-signify'
@@ -100,6 +101,7 @@ Plug 'RRethy/vim-illuminate'
 Plug 'junegunn/vim-peekaboo'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+Plug 'airblade/vim-rooter'
 if has('nvim')
     set inccommand=nosplit
 else
@@ -351,9 +353,6 @@ map <leader>y "+y
 noremap <leader>x "+x
 noremap <leader>p "+p
 
-" <leader>df : diffthis
-nnoremap <leader>df :diffthis<CR>
-
 " Search in current visible window
 command! -nargs=1 WinSearch exe '/\%>'.(line('w0')-1).'l'.<q-args>.'\%<'.(line('w$')+1).'l'
 nnoremap z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
@@ -446,7 +445,6 @@ function! ToggleConcealLevel()
         setlocal conceallevel=0
     endif
 endfunction
-
 nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " ==================  Plugin Setting  ================
@@ -751,7 +749,7 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 
 " FZF----------------------------------------------
-    nnoremap <leader>F :FZF<CR>
+    nnoremap <leader>F :Files<CR>
     nnoremap <leader>B :Buffers<CR>
     nnoremap <leader>H :History<CR>
     nnoremap <leader>C :Commits<CR>
@@ -771,6 +769,10 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
       \ 'marker':  ['fg', 'Keyword'],
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
+
+    " Likewise, Files command with preview window
+    command! -bang -nargs=? -complete=dir Files
+                \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 
 
 " Semshi--------------------------------------------
@@ -928,6 +930,13 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " auto-pair------------------------------------------
     let g:AutoPairsFlyMode = 0
+
+" vim-dirvish----------------------------------------
+    let g:dirvish_mode = ':sort ,^.*[\/],'
+    " let g:dirvish_mode = ':silent keeppatterns g@\v/\.[^\/]+/?$@d _'
+
+" vim-rooter-----------------------------------------
+    let g:rooter_manual_only = 1
 
 " vim-which-key--------------------------------------
     nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>

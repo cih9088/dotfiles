@@ -10,13 +10,13 @@ fi
 if [ -x "$(command -v fd)" ]; then
     export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-    export FZF_ALT_C_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
 export FZF_DEFAULT_OPTS='
 --color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
 --color info:183,prompt:110,spinner:107,pointer:167,marker:215
 '
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -181,6 +181,16 @@ export CUDA_HOME=/usr/local/cuda
     function preexec() {
         refresh
     }   # update envirionment in tmux just before every command
+    function tm() {
+        # tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
+        # `tm` will allow you to select your tmux session via fzf.
+        # `tm irc` will attach to the irc session (if it exists), else it will create it.
+        [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+        if [ $1 ]; then
+            tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
+        fi
+        session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
+    }
 #    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 #    alias ..='cd ../'                           # Go back 1 directory level
 #    alias ...='cd ../../'                       # Go back 2 directory levels
