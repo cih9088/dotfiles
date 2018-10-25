@@ -933,6 +933,18 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     " let g:dirvish_mode = ':silent keeppatterns g@\v/\.[^\/]+/?$@d _'
 
 
+" tmux-vim-navigator----------------------------------
+    let g:tmux_navigator_no_mappings = 1
+
+    nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+    nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+    nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+    nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+    nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+    " Disable tmux navigator when zooming the Vim pane
+    let g:tmux_navigator_disable_when_zoomed = 1
+
+
 " vim-rooter-----------------------------------------
     nnoremap <leader>R :Rooter<CR>
     let g:rooter_manual_only = 1

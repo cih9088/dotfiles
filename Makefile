@@ -34,6 +34,7 @@ installTmux: prepare
 	@( $(scripts)/tmux_setup.sh $(tmux_version) )
 
 installTPM:
+	@echo
 	@echo "[*] Install TPM..."
 	@rm -rf ~/.tmux/plugins/tpm || true
 	@git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
