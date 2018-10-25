@@ -1,104 +1,201 @@
 #!/usr/bin/env bash
 
+# Reset
+Color_Off='[0m'       # Text Reset
 
-    cat <<EOF
-DIRECTORIES
------------
-    ~-          Previous working directory
-    cd -        Previous working directory
-    pushd tmp   Push tmp && cd tmp
-    popd        Pop && cd
+# Regular Colors
+Black='[0;30m'        # Black
+Red='[0;31m'          # Red
+Green='[0;32m'        # Green
+Yellow='[0;33m'       # Yellow
+Blue='[0;34m'         # Blue
+Purple='[0;35m'       # Purple
+Cyan='[0;36m'         # Cyan
+White='[0;37m'        # White
 
-GLOBBING AND OUTPUT SUBSTITUTION
---------------------------------
-    ls a[b-dx]e Globs abe, ace, ade, axe
-    ls a{c,bl}e Globs ace, able
-    \$(ls)      \`ls\` (but nestable!)
+# Bold
+BBlack='[1;30m'       # Black
+BRed='[1;31m'         # Red
+BGreen='[1;32m'       # Green
+BYellow='[1;33m'      # Yellow
+BBlue='[1;34m'        # Blue
+BPurple='[1;35m'      # Purple
+BCyan='[1;36m'        # Cyan
+BWhite='[1;37m'       # White
 
-HISTORY MANIPULATION
---------------------
-    !!          Last command
-    !?foo       Last command containing \`foo'
-    ^foo^bar^   Last command containing \`foo', but substitute \`bar'
-    !!:0        Last command word
-    !!:^        Last command's first argument
-    !\$          Last command's last argument
-    !!:*        Last command's arguments
-    !!:x-y      Arguments x to y of last command
-    C-s         search forwards in history
-    C-r         search backwards in history
+# Underline
+UBlack='[4;30m'       # Black
+URed='[4;31m'         # Red
+UGreen='[4;32m'       # Green
+UYellow='[4;33m'      # Yellow
+UBlue='[4;34m'        # Blue
+UPurple='[4;35m'      # Purple
+UCyan='[4;36m'        # Cyan
+UWhite='[4;37m'       # White
 
-LINE EDITING
-------------
-    M-d     kill to end of word
-    C-w     kill to beginning of word
-    C-k     kill to end of line
-    C-u     kill to beginning of line
-    M-r     revert all modifications to current line
-    C-]     search forwards in line
-    M-C-]   search backwards in line
-    C-t     transpose characters
-    M-t     transpose words
-    M-u     uppercase word
-    M-l     lowercase word
-    M-c     capitalize word
-    M-#     intert # at the beginning of the current line
-    C-x C-e edit the line with default editor
-    C-x a   get raw command
+# Background
+On_Black='[40m'       # Black
+On_Red='[41m'         # Red
+On_Green='[42m'       # Green
+On_Yellow='[43m'      # Yellow
+On_Blue='[44m'        # Blue
+On_Purple='[45m'      # Purple
+On_Cyan='[46m'        # Cyan
+On_White='[47m'       # White
 
-COMPLETION
-----------
-    M-/     complete filename
-    M-~     complete user name
-    M-@     complete host name
-    M-\$     complete variable name
-    M-!     complete command name
-    M-^     complete history
+# High Intensity
+IBlack='[0;90m'       # Black
+IRed='[0;91m'         # Red
+IGreen='[0;92m'       # Green
+IYellow='[0;93m'      # Yellow
+IBlue='[0;94m'        # Blue
+IPurple='[0;95m'      # Purple
+ICyan='[0;96m'        # Cyan
+IWhite='[0;97m'       # White
 
-FZF
+# Bold High Intensity
+BIBlack='[1;90m'      # Black
+BIRed='[1;91m'        # Red
+BIGreen='[1;92m'      # Green
+BIYellow='[1;93m'     # Yellow
+BIBlue='[1;94m'       # Blue
+BIPurple='[1;95m'     # Purple
+BICyan='[1;96m'       # Cyan
+BIWhite='[1;97m'      # White
+
+# High Intensity backgrounds
+On_IBlack='[0;100m'   # Black
+On_IRed='[0;101m'     # Red
+On_IGreen='[0;102m'   # Green
+On_IYellow='[0;103m'  # Yellow
+On_IBlue='[0;104m'    # Blue
+On_IPurple='[0;105m'  # Purple
+On_ICyan='[0;106m'    # Cyan
+On_IWhite='[0;107m'   # White
+
+
+    less -R <<EOF
+${BIPurple}FZF${Color_Off}
 ---
-    C-t     Find file name and paste it to the command line
-    C-r     Find command history and past it to the command line
-    M-c     Go to the directory
-    z       z command
-    z {arg} go to fuzzy {arg} directly
+    ${BIRed}C-t${Color_Off}     Find file name and paste it to the command line
+    ${BIRed}C-r${Color_Off}     Find command history and past it to the command line
+    ${BIRed}M-c${Color_Off}     Go to the directory
 
-prezto archive module
+
+${BIPurple}PREZTO ARCHIVE MODULE${Color_Off}
 ---------------------
-    archive     creates an archive based on the provided archive name
-    lsarchive   lists the contents of one or more archives
-    unarchive   extracts the contents of one or more archives
+    ${BIRed}archive${Color_Off}     creates an archive based on the provided archive name
+    ${BIRed}lsarchive${Color_Off}   lists the contents of one or more archives
+    ${BIRed}unarchive${Color_Off}   extracts the contents of one or more archives
 
-prezto utility module
----------------------
-    _       executes a command as another user (sudo)
-    b       opens the default web browser
-    diffu   shorthand for diff --unified
-    e       opens the default editor
-    mkdir   creates directories, including intermediary directories
-    p       opens the default pager
-    po      removes a directory from the stack and changes to it (popd)
-    pu      changes the directory and pushes the old directory onto the stack (pushd)
-    sa      search aliases for a word
-    type    displays all the attribute values of a shell parameter
 
-    ls      lists with directories grouped first (GNU only).
-    l       lists in one column, hidden files.
-    ll      lists human readable sizes.
-    lr      lists human readable sizes, recursively.
-    la      lists human readable sizes, hidden files.
-    lm      lists human readable sizes, hidden files through pager.
-    lx      lists sorted by extension (GNU only).
-    lk      lists sorted by size, largest last.
-    lt      lists sorted by date, most recent last.
-    lc      lists sorted by date, most recent last, shows change time.
-    lu      lists sorted by date, most recent last, shows access time.
-    sl      lists directory contents (ls).
+${BIPurple}USEFUL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
+--------------------------------------
+    ${BIRed}_${Color_Off}           executes a command as another user (sudo)
+    ${BIRed}b${Color_Off}           opens the default web browser
+    ${BIRed}diffu${Color_Off}       shorthand for diff --unified
+    ${BIRed}e${Color_Off}           opens the default editor
+    ${BIRed}mkdir${Color_Off}       creates directories, including intermediary directories
+    ${BIRed}p${Color_Off}           opens the default pager
+    ${BIRed}po${Color_Off}          removes a directory from the stack and changes to it (popd)
+    ${BIRed}pu${Color_Off}          changes the directory and pushes the old directory onto the stack (pushd)
+    ${BIRed}sa${Color_Off}          search aliases for a word
+    ${BIRed}type${Color_Off}        displays all the attribute values of a shell parameter
 
-    http-serve serves a directory via HTTP
+    ${BIRed}http-serve${Color_Off}  serves a directory via HTTP
 
-    rsync-copy          copies files and directories from source to destination.
-    rsync-move          moves files and directories from source to destination.
-    rsync-update        updates files and directories on destination.
-    rsync-synchronize   synchronizes files and directories between source and destination.
+    --------------------CUSTOM-------------------------
+    ${BIRed}c${Color_Off}               clear terminal
+    ${BIRed}dircnt ${BIGreen}arg${Color_Off}      count directories and files in ${BIGreen}arg${Color_Off}
+    ${BIRed}easy-useradd${Color_Off}    add user account
+    ${BIRed}list-users${Color_Off}      list users
+
+
+
+${BIPurple}RSYNC ALIAS (PREZTO RSYNC MODULE)${Color_Off}
+---------------------------------
+    ${BIRed}rsync-copy${Color_Off}          copies files and directories from source to destination.
+    ${BIRed}rsync-move${Color_Off}          moves files and directories from source to destination.
+    ${BIRed}rsync-update${Color_Off}        updates files and directories on destination.
+    ${BIRed}rsync-synchronize${Color_Off}   synchronizes files and directories between source and destination.
+
+    --------------------CUSTOM-------------------------
+    ${BIRed}rsync-copy-sum${Color_Off}      summary version of rsync-copy
+    ${BIRed}rsync-move-sum${Color_Off}      summary version of rsync-move
+
+
+${BIPurple}DIRECTORIES${Color_Off}
+-----------
+    ${BIRed}~${Color_Off}               Go to $HOME
+    ${BIRed}cd -${Color_Off}            Previous working directory
+    ${BIRed}pushd ${BIGreen}arg${Color_Off}       Push ${BIGreen}arg${Color_Off} && cd ${BIGreen}arg${Color_Off}
+    ${BIRed}popd${Color_Off}            Pop && cd
+    ${BIRed}z${Color_Off}               z command (fzf based)
+    ${BIRed}z ${BIGreen}arg${Color_Off}           go to fuzzy ${BIGreen}arg${Color_Off} directly (fzf based)
+
+
+${BIPurple}LIST DIRECTORIES (PREZTO UTILITY MODULE)${Color_Off}
+----------------------------------------
+    ${BIRed}ls${Color_Off}      lists with directories grouped first (GNU only).
+    ${BIRed}l${Color_Off}       lists in one column, hidden files.
+    ${BIRed}ll${Color_Off}      lists human readable sizes.
+    ${BIRed}lr${Color_Off}      lists human readable sizes, recursively.
+    ${BIRed}la${Color_Off}      lists human readable sizes, hidden files.
+    ${BIRed}lm${Color_Off}      lists human readable sizes, hidden files through pager.
+    ${BIRed}lx${Color_Off}      lists sorted by extension (GNU only).
+    ${BIRed}lk${Color_Off}      lists sorted by size, largest last.
+    ${BIRed}lt${Color_Off}      lists sorted by date, most recent last.
+    ${BIRed}lc${Color_Off}      lists sorted by date, most recent last, shows change time.
+    ${BIRed}lu${Color_Off}      lists sorted by date, most recent last, shows access time.
+    ${BIRed}sl${Color_Off}      lists directory contents (ls).
+
+
+${BIPurple}HISTORY MANIPULATION${Color_Off}
+--------------------
+    ${BIRed}!!${Color_Off}          Last command
+    ${BIRed}!?foo${Color_Off}       Last command containing \`foo'
+    ${BIRed}^foo^bar^${Color_Off}   Last command containing \`foo', but substitute \`bar'
+    ${BIRed}!!:0${Color_Off}        Last command word
+    ${BIRed}!!:^${Color_Off}        Last command's first argument
+    ${BIRed}!\$${Color_Off}          Last command's last argument
+    ${BIRed}!!:*${Color_Off}        Last command's arguments
+    ${BIRed}!!:x-y${Color_Off}      Arguments x to y of last command
+    ${BIRed}C-s${Color_Off}         search forwards in history
+    ${BIRed}C-r${Color_Off}         search backwards in history
+
+
+${BIPurple}LINE EDITING${Color_Off}
+------------
+    ${BIRed}M-d${Color_Off}     kill to end of word
+    ${BIRed}C-w${Color_Off}     kill to beginning of word
+    ${BIRed}C-k${Color_Off}     kill to end of line
+    ${BIRed}C-u${Color_Off}     kill to beginning of line
+    ${BIRed}M-r${Color_Off}     revert all modifications to current line
+    ${BIRed}C-]${Color_Off}     search forwards in line
+    ${BIRed}M-C-]${Color_Off}   search backwards in line
+    ${BIRed}C-t${Color_Off}     transpose characters
+    ${BIRed}M-t${Color_Off}     transpose words
+    ${BIRed}M-u${Color_Off}     uppercase word
+    ${BIRed}M-l${Color_Off}     lowercase word
+    ${BIRed}M-c${Color_Off}     capitalize word
+    ${BIRed}M-#${Color_Off}     intert # at the beginning of the current line
+    ${BIRed}C-x C-e${Color_Off} edit the line with default editor
+    ${BIRed}C-x a${Color_Off}   get raw command
+
 EOF
+
+# GLOBBING AND OUTPUT SUBSTITUTION
+# --------------------------------
+#     ${BIRed}ls${Color_Off} a[b-dx]e Globs abe, ace, ade, axe
+#     ${BIRed}ls${Color_Off} a{c,bl}e Globs ace, able
+#     \$(ls)      \`ls\` (but nestable!)
+
+
+# COMPLETION
+# ----------
+#     M-/     complete filename
+#     M-~     complete user name
+#     M-@     complete host name
+#     M-\$     complete variable name
+#     M-!     complete command${Color_Off} name
+#     M-^     complete history
