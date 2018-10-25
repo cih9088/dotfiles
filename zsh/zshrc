@@ -170,17 +170,17 @@ export CUDA_HOME=/usr/local/cuda
         (( width > 100 )) && width=100
         MANWIDTH="$width" command man "$@"
     }   # fix man page width for better readability
-    if [ -n "$TMUX" ]; then
-        function refresh {
-            eval $(tmux showenv -s DISPLAY) 
-            eval $(tmux showenv -s SSH_AUTH_SOCK)
-        }
-    else
-        function refresh { }
-    fi
-    function preexec() {
-        refresh
-    }   # update envirionment in tmux just before every command
+    # if [ -n "$TMUX" ]; then
+    #     function refresh {
+    #         eval $(tmux showenv -s DISPLAY)
+    #         eval $(tmux showenv -s SSH_AUTH_SOCK)
+    #     }
+    # else
+    #     function refresh { }
+    # fi
+    # function preexec() {
+    #     refresh
+    # }   # update envirionment in tmux just before every command
     function tm() {
         # tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
         # `tm` will allow you to select your tmux session via fzf.
