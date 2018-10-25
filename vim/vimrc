@@ -36,13 +36,12 @@ Plug 'ryanoasis/vim-devicons'
 
 " Language specific (syntax, completion, etc.)
 Plug 'sheerun/vim-polyglot'
-Plug 'chrisbra/csv.vim'
+" Plug 'Vimjas/vim-python-pep8-indent' "included in vim-polyglot
+" Plug 'vim-python/python-syntax' "included in vim-polyglot
+" Plug 'plasticboy/vim-markdown' "included in vim-polyglot
 " Plug 'python-mode/python-mode', { 'branch': 'develop' }
-Plug 'Vimjas/vim-python-pep8-indent'
 Plug 'tmhedberg/SimpylFold'
-Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
-Plug 'vim-python/python-syntax'
+Plug 'chrisbra/csv.vim'
 Plug 'lervag/vimtex'
 " Plug 'davidhalter/jedi-vim'
 if has('nvim')
@@ -60,7 +59,7 @@ Plug 'w0rp/ale'
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'Shougo/context_filetype.vim'
-" Plug 'Shougo/deol.nvim'
+Plug 'Shougo/echodoc.vim'
 " Plug 'sirver/ultisnips'
 Plug 'honza/vim-snippets'
 " Plug 'scrooloose/nerdtree'
@@ -87,7 +86,6 @@ Plug 'mhinz/vim-signify'
 Plug 'kshenoy/vim-signature'
 " Plug 'tpope/vim-sensible'
 Plug 'junegunn/vim-easy-align'
-Plug 'Shougo/echodoc.vim'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'junegunn/gv.vim'
 " Plug 'yuttie/comfortable-motion.vim'
@@ -450,36 +448,36 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 " ==================  Plugin Setting  ================
 
 " NERDtree------------------------------------
-    nmap <leader>N :NERDTreeToggle<CR>
-    let NERDTreeQuitOnOpen = 1
-    let NERDTreeMinimalUI = 1
-    let NERDTreeDirArrows = 1
-    let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-    " automatically close nerdtree if it is the only left window
-    autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    " startup Options (do NOT show automatically)
-    let g:nerdtree_tabs_open_on_console_startup = 0
-    let g:nerdtree_tabs_open_on_gui_startup = 0
-    " filter out some files, by extension
-    let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
-    " NERDTress File highlighting
-    function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
-        exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
-        exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
-    endfunction
-    call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
-    call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
-    call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
-    call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
-    call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
-    call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
-    call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
-    call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
-    call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
-    call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
-    call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
-    call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
-    call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
+    " nmap <leader>N :NERDTreeToggle<CR>
+    " let NERDTreeQuitOnOpen = 1
+    " let NERDTreeMinimalUI = 1
+    " let NERDTreeDirArrows = 1
+    " let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+    " " automatically close nerdtree if it is the only left window
+    " autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+    " " startup Options (do NOT show automatically)
+    " let g:nerdtree_tabs_open_on_console_startup = 0
+    " let g:nerdtree_tabs_open_on_gui_startup = 0
+    " " filter out some files, by extension
+    " let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
+    " " NERDTress File highlighting
+    " function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+    "     exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+    "     exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+    " endfunction
+    " call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
+    " call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
+    " call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
+    " call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
+    " call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
+    " call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
+    " call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
+    " call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
+    " call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
+    " call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
+    " call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
+    " call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
+    " call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 
 
 " NERDcommenter-------------------------------
@@ -524,7 +522,6 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     let g:ale_set_highlights = 0
     let g:ale_completion_enabled = 0
     let g:ale_sign_column_always = 1
-
 
 
 " Easymotion-----------------------------------
@@ -739,6 +736,8 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 
 " vim-startify------------------------------------
+    nnoremap <leader>S :Startify<CR>
+
     let g:startify_bookmarks = [
                 \ { 'a': '~/dotfiles/nvim/init.vim' },
                 \ { 's': '~/dotfiles/zsh/zshrc' },
@@ -860,7 +859,7 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 
 " vim-polyglot----------------------------------------
-    let g:polyglot_disabled = ['python', 'markdown']
+    let g:polyglot_disabled = ['latex']
 
 
 " nrrwrgn-------------------------------------------
@@ -882,6 +881,7 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
     let g:ctrlsf_default_root = 'project'
     let g:ctrlsf_winsize = '50%'
+
 
 " vim-sandwich---------------------------------------
     " if you have not copied default recipes
@@ -914,29 +914,28 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     let g:Illuminate_ftblacklist = ['nerdtree', 'python']
     let g:Illuminate_delay = 500
 
+
 " csv------------------------------------------------
     let g:csv_delim_test = ',;|'
     " let g:csv_delim=','
-
-" mucomplete-----------------------------------------
-    " let g:mucomplete#enable_auto_at_startup = 1
-    " set completeopt-=preview
-    " set completeopt+=longest,menuone,noselect
-    " set shortmess+=c   " Shut off completion messages
-    " set belloff+=ctrlg " If Vim beeps during completion
+    "
 
 " python-syntax--------------------------------------
-    let g:python_highlight_all = 1
+    " let g:python_highlight_all = 1
+
 
 " auto-pair------------------------------------------
     let g:AutoPairsFlyMode = 0
+
 
 " vim-dirvish----------------------------------------
     let g:dirvish_mode = ':sort ,^.*[\/],'
     " let g:dirvish_mode = ':silent keeppatterns g@\v/\.[^\/]+/?$@d _'
 
+
 " vim-rooter-----------------------------------------
     let g:rooter_manual_only = 1
+
 
 " vim-which-key--------------------------------------
     nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>
