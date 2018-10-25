@@ -934,6 +934,7 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 
 " vim-rooter-----------------------------------------
+    nnoremap <leader>R :Rooter<CR>
     let g:rooter_manual_only = 1
 
 

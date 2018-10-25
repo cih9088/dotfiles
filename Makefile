@@ -21,16 +21,16 @@ prepare:
 prerequisites:
 	@( $(scripts)/prerequisites.sh )
 
-installZsh:
+installZsh: prepare
 	@( $(scripts)/zsh_setup.sh )
 
-installPrezto:
+installPrezto: prepare
 	@( $(scripts)/prezto_setup.sh )
 
-installNeovim:
+installNeovim: prepare
 	@( $(scripts)/nvim_setup.sh $(nvim_version) )
 
-installTmux:
+installTmux: prepare
 	@( $(scripts)/tmux_setup.sh $(tmux_version) )
 
 installTPM:
@@ -38,7 +38,7 @@ installTPM:
 	@rm -rf ~/.tmux/plugins/tpm || true
 	@git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
-installBins:
+installBins: prepare
 	@( $(scripts)/bin_setup.sh )
 
 installDevShell:
@@ -89,12 +89,14 @@ clean:
 
 updateAll: updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins
 
-installAll: prepare installZsh installPrezto changeDefaultShell updateDotfiles installNeovim \
+installAll: prepare installZsh installPrezto installNeovim installTmux installTPM installBins clean
+
+installUpdateAll: prepare installZsh installPrezto changeDefaultShell updateDotfiles installNeovim \
 	installTmux installTPM installBins updateBins updateNeovimPlugins updateTmuxPlugins clean
 
 installDevAll: installDevPython installDevShell
 
-.PHONY: prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
+.PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \
 	updateDotfiles updateNeovimPlugins updateTmuxPlugins clean updateAll installAll installDevAll \
 	installTPM

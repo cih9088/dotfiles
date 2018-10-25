@@ -11,10 +11,8 @@ $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
 You need sudo and following would be installed. If you have installed already, no need.
 * OSX: python2, python3, wget
 * Ubuntu: python2, python3
-
 ```bash
 $ cd ~/dotfiles
-# You have to be in dotfiles directory!!
 $ make prerequisites
 ```
 <!-- ```bash -->
@@ -23,22 +21,126 @@ $ make prerequisites
 <!-- $ ./prerequisites.sh -->
 <!-- ``` -->
 
-## Install it as a whole
-If you choose to install systemwide, other users could execute thoes command.
-(homebrew for OSX and apt-get for Ubuntu will be used.)
-If you choose to install locally, others not.
-(All of command would be installed in `$HOME/.local`)
+## How to install and update
+If you just want to install dotfiles and nothing else,
+`cd ~/dotfiles; make updateDotfiles`
+
+### Install (Easy way)
+If you can't be bothered to pay attention to the entire processes.
+Note that `make updateAll` is included.
+- If you choose to install systemwide, other users could execute thoes command. \
+(**homebrew** for OSX and **apt-get** for Ubuntu will be used.)
+- If you choose to install locally, others not.
+(All of command would be installed in `$HOME/.local/bin`)
+
 ```bash
 $ cd ~/dotfiles
-$ make installAll
+$ make installUpdateAll     # Install and update as a whole (recommended way)
 ```
 
-## Update dotfiles
-If you have installed with `make installAll`, no need.
+### Update
+If you have installed with `make intallUpdateAll`, you don't need this.
 ```bash
 $ cd ~/dotfiles
-$ make updateAll
+$ make updateAll    # Update all (recommended way)
+
+# or you could choose what to update in following list
+# [updateDotfiles, updateNeovimPlugins, updateTmuxPlugins, updateBins]
+# For instance,
+$ make updateDotfiles   # Update dotfiles only
 ```
+
+
+### Install (Advanced)
+```bash
+$ cd ~/dotfiles
+$ make installAll   # Install all
+
+# or you could choose what to install in following list
+# [installZsh, installPrezto, installNeovim, installTmux, installTPM, installBins]
+# For instance,
+$ make installNeovim   # Install neovim only
+```
+
+
+## Highligts
+
+### [zsh](https://github.com/tmux/tmux)
+For more detailed information please refer [zshrc](https://github.com/cih9088/dotfiles/blob/master/zsh/zshrc)
+- show tips: `$ tips`
+
+### [prezto](https://github.com/sorin-ionescu/prezto)
+For more detailed information please refer [zpreztorc](https://github.com/cih9088/dotfiles/blob/master/zsh/zpreztorc)
+
+### [nvim](https://github.com/neovim/neovim)
+For detailed information and plugins please refer [init.vim](https://github.com/cih9088/dotfiles/blob/master/vim/vimrc)
+- Few settings automatically disabled with files larger than 50mb
+- leader: <kbd>,</kbd> or <kbd>\\</kbd>
+- nohighlight: <kbd>leader</kbd>+<kbd>Space</kbd>
+- buffers
+    - new buffer: <kbd>Ctrl</kbd>+<kbd>b</kbd>
+    - close buffer: <kbd>leader</kbd>+<kbd>b</kbd>+<kbd>q</kbd>
+    - navigate buffer: <kbd>\]</kbd>+<kbd>b</kbd>, <kbd>\[</kbd>+<kbd>b</kbd>
+    - go back to previous buffer: <kbd>Ctrl</kbd>+<kbd>w</kbd>+<kbd>Tab</kbd>
+    - resize buffer: <kbd>&uparrow;</kbd>, <kbd>&downarrow;</kbd>, <kbd>&leftarrow;</kbd>, <kbd>&rightarrow;</kbd>
+- tabs
+    - new tab: <kbd>Ctrl</kbd>+<kbd>t</kbd>
+    - close tab: <kbd>leader</kbd>+<kbd>t</kbd>+<kbd>q</kbd>
+    - navigate tab: <kbd>\]</kbd>+<kbd>t</kbd>, <kbd>\[</kbd>+<kbd>t</kbd>
+- splits
+    - navigate split: <kbd>Ctrl</kbd>+<kbd>h</kbd>, <kbd>Ctrl</kbd>+<kbd>k</kbd>, <kbd>Ctrl</kbd>+<kbd>l</kbd>, <kbd>Ctrl</kbd>+<kbd>;</kbd>
+    - horizontal split: <kbd>Ctrl</kbd>+<kbd>w</kbd>+<kbd>h</kbd>
+    - vertical split: <kbd>Ctrl</kbd>+<kbd>w</kbd>+<kbd>v</kbd>
+- system clipboard
+    - yank to system clipboard: <kbd>leader</kbd>+<kbd>y</kbd>
+    - cut to system clipboard: <kbd>leader</kbd>+<kbd>x</kbd>
+    - paste from system clipboard: <kbd>leader</kbd>+<kbd>p</kbd>
+- search in current visible window: `:WinSearch [args]`
+- python breakpoint: <kbd>leader</kbd>+<kbd>b</kbd>
+- replace a word under the curser or visually select then
+    - <kbd>c</kbd>+<kbd>*</kbd>
+    - repeat: <kbd>.</kbd>
+    - skip: <kbd>n</kbd>
+- terminal
+    - open terminal horizontally: `:T`
+    - open terminal horizontally: `:VT`
+- toggle conceal level: <kbd>y</kbd>+<kbd>o</kbd>+<kbd>a</kbd>
+- [easymotion](https://github.com/easymotion/vim-easymotion): fast movement
+    - <kbd>s</kbd>+{char}+{char}
+- [tagbar](https://github.com/majutsushi/tagbar)
+    - toggle tagbar: <kbd>leader</kbd>+<kbd>T</kbd>
+- [deoplete](https://github.com/Shougo/deoplete.nvim): autocompletion
+    - forward: <kbd>Tab</kbd>
+    - backward: <kbd>Shift</kbd>+<kbd>Tab</kbd>
+- [neosnippet](https://github.com/Shougo/neosnippet.vim): snippet
+    - expand or jump: <kbd>Ctrl</kbd>+<kbd>k</kbd>
+    - jump: <kbd>Tab</kbd>
+- [fzf](https://github.com/junegunn/fzf.vim): fuzzy finder
+    - open Files: <kbd>Ctrl</kbd>+<kbd>F</kbd>
+    - open Buffers: <kbd>Ctrl</kbd>+<kbd>B</kbd>
+    - open History: <kbd>Ctrl</kbd>+<kbd>H</kbd>
+    - open Commits: <kbd>Ctrl</kbd>+<kbd>C</kbd>
+    - open Blines: <kbd>Ctrl</kbd>+<kbd>L</kbd>
+- [vim-startify](https://github.com/mhinz/vim-startify): nice start
+    - open startify: <kbd>leader</kbd>+<kbd>S</kbd>
+- [ctrlsf](https://github.com/dyng/ctrlsf.vim): powerful search
+    - search prompt: <kbd>Ctrl</kbd>+<kbd>f</kbd>+<kbd>f</kbd>
+- [vim-sandwich](https://github.com/machakann/vim-sandwich): easy surrounding modification
+    - add surrounding: <kbd>s</kbd>+<kbd>a</kbd>+{motion/text object}+{addition}
+    - delete surrounding: <kbd>s</kbd>+<kbd>d</kbd>+{deletion}
+    - replace surrounding: <kbd>s</kbd>+<kbd>a</kbd>+{deletion}+{addition}
+- [vim-dirvish](https://github.com/justinmk/vim-dirvish): file explore
+    - open dirvish: <kbd>-</kbd>
+- [vim-rooter](https://github.com/airblade/vim-rooter): change pwd to root. usefule with fzf
+    - run rooter: <kbd>leader</kbd>+<kbd>R</kbd>
+- [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
+- [vim-easyaline](https://github.com/junegunn/vim-easy-align)
+
+### [tmux](https://github.com/tmux/tmux)
+For more detailed information please refer [oh my tmux](https://github.com/gpakosz/.tmux)
+- prefix: <kbd>Ctrl</kbd>+<kbd>a</kbd>
+- toggle disable: <kbd>F12</kbd> (useful nested tmux)
+
 <!-- ## Install it as a whole -->
 <!-- Following list would be installed by itself with prompt.  -->
 <!-- If you choose to install systemwide, other users could execute thoes command. -->
