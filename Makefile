@@ -1,4 +1,5 @@
 scripts := ./script
+PATH := ${HOME}/.local/bin:${PATH}
 
 export PROJ_HOME := $(shell git rev-parse --show-toplevel)
 export TMP_DIR= ${HOME}/tmp_install

@@ -46,12 +46,12 @@ setup_func() {
             # https://github.com/neovim/neovim/issues/7620
             # https://github.com/neovim/neovim/issues/7537
             wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
-            chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract
-            cp -r squashfs-root/usr/bin $HOME/.local
-            cp -r squashfs-root/usr/man $HOME/.local
-            cp -r squashfs-root/usr/share/nvim $HOME/.local/share
-            # chmod u+x nvim.appimage && mv nvim.appimage nvim
-            # cp nvim &HOME/.local/bin
+            # chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract
+            # cp -r squashfs-root/usr/bin $HOME/.local
+            # cp -r squashfs-root/usr/man $HOME/.local
+            # cp -r squashfs-root/usr/share/nvim $HOME/.local/share
+            chmod u+x nvim.appimage && mv nvim.appimage nvim
+            cp nvim $HOME/.local/bin
         else
             echo "[!] $platform is not supported."; exit 1
         fi
