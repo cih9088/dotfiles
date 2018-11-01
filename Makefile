@@ -1,5 +1,5 @@
 scripts := ./script
-PATH := ${HOME}/.local/bin:${PATH}
+export PATH := ${HOME}/.local/bin:${PATH}
 
 export PROJ_HOME := $(shell git rev-parse --show-toplevel)
 export TMP_DIR= ${HOME}/tmp_install
@@ -65,10 +65,12 @@ installPythonVirtualenv:
 changeDefaultShell:
 	@( $(scripts)/change_defualt_to_zsh.sh )
 
-updateBins:
+updateBins: prepare
 	@( $(scripts)/custom_bin_setup.sh )
 
 updatePrezto:
+	@echo
+	@echo "[*] update prezto..."
 	@cd ~/.zprezto
 	@git pull
 	@git submodule update --init --recursive
@@ -78,25 +80,27 @@ updateDotfiles:
 
 updateNeovimPlugins:
 	@echo
-	@echo "[*] Install neovim plugins..."
+	@echo "[*] Update neovim plugins..."
 	@nvim -E -s -u "${HOME}/.config/nvim/init.vim" +PlugInstall +PlugUpdate +PlugUpgrade +UpdateRemotePlugins +qall
 
 updateTmuxPlugins: installTPM
 	@echo
-	@echo "[*] Install tmux plugin..."
+	@echo "[*] Update tmux plugin..."
 	@~/.tmux/plugins/tpm/scripts/install_plugins.sh
 
 clean:
 	@rm -rf $(TMP_DIR)
 
-updateAll: updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins
+updateAll: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto clean
 
 installAll: prepare installZsh installPrezto installNeovim installTmux installTPM installBins clean
 
-installUpdateAll: prepare installZsh installPrezto changeDefaultShell updateDotfiles installNeovim \
-	installTmux installTPM installBins updateBins updateNeovimPlugins updateTmuxPlugins clean
+installUpdateAll: prepare installZsh installPrezto changeDefaultShell installNeovim installTmux \
+	updateDotfiles \
+	installTMP installBins \
+	updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto clean
 
-installDevAll: installDevPython installDevShell
+installDevAll: installDevPython installDevShell installPythonVirtualenv
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \

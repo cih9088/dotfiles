@@ -42,9 +42,9 @@ zstyle ':prezto:load' pmodule \
   'rsync' \
   'python' \
   'autosuggestions' \
+  'ssh' \
   'syntax-highlighting' \
   'history-substring-search' \
-  'ssh' \
   'prompt'
 
 #

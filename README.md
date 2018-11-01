@@ -3,8 +3,13 @@ This is my dotfiles. Only tested in OSX and Ubuntu.
 
 ## Get this repository
 ```bash
+# clone repository
 $ cd ~
 $ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
+
+# or pull in case you have cloned already
+$ cd ~/dotfiles
+$ git pull
 ```
 
 ## Prerequisites
@@ -22,15 +27,15 @@ $ make prerequisites
 <!-- ``` -->
 
 ## How to install and update
-If you just want to install dotfiles and nothing else,
-`cd ~/dotfiles; make updateDotfiles`
+### one-liner
+1. To install dotfiles only and nothing else, `cd ~/dotfiles; make updateDotfiles`
+2. To install and update all (for novice), `cd ~/dotfiles; make installUpdateAll`
+3. To update (if you have installed my **things**), `cd ~/dotfiles; make updateAll`
 
-### Install (The easy and recommended way)
+### Install (The easy way)
 If you can't be bothered to pay attention to the entire processes.
-- If you choose to install systemwide, other users could execute thoes command. \
-(**homebrew** for OSX and **apt-get** for Ubuntu will be used.)
-- If you choose to install locally, others not.
-(All of commands would be installed in `$HOME/.local/bin`)
+- Install **systemwide**: others could execute those commands (**homebrew** for OSX and **apt-get** for Ubuntu will be used.)
+- Install **locally**: others could not (All of commands would be installed in `$HOME/.local/bin`)
 
 ```bash
 $ cd ~/dotfiles
