@@ -14,6 +14,12 @@ ifeq (installTmux,$(firstword $(MAKECMDGOALS)))
     $(eval $(tmux_version):;@:)
 endif
 
+wipeOut:
+	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
+		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto ${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
+		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
+		${HOME}/.vimrc ${HOME}/.vim 
+
 prepare:
 	@mkdir -p ${HOME}/.local/bin
 	@mkdir -p ${HOME}/.local/src

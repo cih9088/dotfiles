@@ -41,10 +41,10 @@ zstyle ':prezto:load' pmodule \
   'archive' \
   'rsync' \
   'python' \
-  'autosuggestions' \
   'ssh' \
   'syntax-highlighting' \
   'history-substring-search' \
+  'autosuggestions' \
   'prompt'
 
 #

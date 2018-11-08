@@ -97,3 +97,8 @@ if [ -e $HOME/.pylintrc ]; then
     rm -rf $HOME/.pylintrc
 fi
 ln -s -f ${PYLINT_DIR}/pylintrc $HOME/.pylintrc
+
+# clean up dotfiles old if there is nothing backuped
+if [ -z "$(ls -A $HOME/dotfiles_old)" ]; then
+    rm -rf $HOME/doefiles_old
+fi

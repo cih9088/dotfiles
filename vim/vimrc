@@ -276,6 +276,10 @@ if has("autocmd")
     au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
+" work like * and g*, but do not move the cursor and always set hls.
+nnoremap * :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-M>
+nnoremap g* :let @/ = expand('<cword>')\|set hlsearch<C-M>
+
 " Turns off vim's crazy default regex characters
 "nnoremap / /\v
 "vnoremap / /\v
@@ -495,6 +499,8 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     let g:NERDCommentEmptyLines = 1
     " Enable trimming of trailing whitespace when uncommenting
     let g:NERDTrimTrailingWhitespace = 1
+    " Enable NERDCommenterToggle to check all selected lines is commented or not 
+    let g:NERDToggleCheckAllLines = 1
 
 
 " Airline-------------------------------------
@@ -527,10 +533,8 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 " Easymotion-----------------------------------
     " Disable default mappings
     let g:EasyMotion_do_mapping = 0
-
     " s{char}{char} to move to {char}{char}
     nmap s <Plug>(easymotion-overwin-f2)
-
     " Turn on case insensitive feature
     let g:EasyMotion_smartcase = 1
 
@@ -952,3 +956,4 @@ nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
 
 " vim-which-key--------------------------------------
     nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>
+
