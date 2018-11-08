@@ -2,6 +2,21 @@
 
 set -euo pipefail
 trap "echo 'error: Script failed: see failed command above'" ERR
+
+case "$OSTYPE" in
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
+esac
+
+if [[ $platform != LINUX ]]; then
+    echo "This script dose not support $platform." >&2
+    exit 1
+fi
+
 DEFAULT_PASSWD="0000" 
 DEFAULT_GROUP="$(groups | awk '{print $1}')"
 

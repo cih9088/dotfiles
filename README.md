@@ -116,7 +116,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - close tab: <kbd>leader</kbd>+<kbd>t</kbd>+<kbd>q</kbd>
     - navigate tab: <kbd>\]</kbd>+<kbd>t</kbd>, <kbd>\[</kbd>+<kbd>t</kbd>
 - splits
-    - navigate split: <kbd>Ctrl</kbd>+<kbd>h</kbd>, <kbd>Ctrl</kbd>+<kbd>k</kbd>, <kbd>Ctrl</kbd>+<kbd>l</kbd>, <kbd>Ctrl</kbd>+<kbd>;</kbd>
+    - navigate split: <kbd>Ctrl</kbd>+<kbd>h</kbd>, <kbd>Ctrl</kbd>+<kbd>j<kbd>, <kbd>Ctrl</kbd>+<kbd>k</kbd>, <kbd>Ctrl</kbd>+<kbd>l</kbd>
     - horizontal split: <kbd>Ctrl</kbd>+<kbd>w</kbd>+<kbd>h</kbd>
     - vertical split: <kbd>Ctrl</kbd>+<kbd>w</kbd>+<kbd>v</kbd>
 - system clipboard
