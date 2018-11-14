@@ -86,8 +86,8 @@ tmux_conf_theme_mode_attr='bold'
 # status line style
 tmux_conf_theme_status_active_fg='#8a8a8a'                     # light gray
 tmux_conf_theme_status_active_bg='#080808'                     # dark gray
-tmux_conf_theme_status_inactive_fg='#ffffff'                     # light gray
-tmux_conf_theme_status_inactive_bg='#8a8a8a'                     # dark gray
+tmux_conf_theme_status_inactive_fg='#ffffff'
+tmux_conf_theme_status_inactive_bg='#8a8a8a'
 
 
 tmux_conf_theme_status_fg='#8a8a8a'                     # light gray
@@ -165,7 +165,7 @@ tmux_conf_theme_right_separator_sub='|'
 #     - #{username}
 #     - #{username_ssh}
 #     - #{username_nossh}
-tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} |  #{sysstat_mem} , #{sysstat_cpu} #{loadavg} ,|'
+tmux_conf_theme_status_left=' ❐ #S | ↑#{?uptime_d, #{uptime_d}d,}#{?uptime_h, #{uptime_h}h,}#{?uptime_m, #{uptime_m}m,} | MEM: #{sysstat_mem} , CPU: #{sysstat_cpu} #{loadavg} ,|'
 tmux_conf_theme_status_right='#{prefix}#{pairing}#{?battery_status, #{battery_status},}#{?battery_bar, #{battery_bar},}#{?battery_percentage, #{battery_percentage},} , %R , %d %b | #{username_nossh}#{root} | #{hostname_nossh} '
 
 # status left style
