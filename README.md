@@ -183,6 +183,7 @@ For more detailed information please refer [oh my tmux](https://github.com/gpako
 - toggle synchronizing mode: <kbd>prefix</kbd>+<kbd>e</kbd>
 - toggle maximizing pane: <kbd>prefix</kbd>+<kbd>z</kbd>
 - maximize pane to new window: <kbd>prefix</kbd>+<kbd>+</kbd>
+- renew environment variables (e.g. DISPLAY): <kbd>prefix</kbd>+<kbd>\$</kbd>
 
 ## Issues
 1. ~~Showing following error message at the top of terminal when the zsh 5.5+ started \

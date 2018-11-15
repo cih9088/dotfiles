@@ -5,3 +5,4 @@
 !tmux.conf
 !tmux.conf.local
 !tmux.conf.remote
+!renew_env.sh
