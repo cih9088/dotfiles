@@ -172,7 +172,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - join a block into single-line statement: <kbd>g</kbd>+<kbd>J</kbd>
 
 ### [tmux](https://github.com/tmux/tmux)
-For more detailed information please refer [oh my tmux](https://github.com/gpakosz/.tmux) and [tmux.conf.local](https://github.com/cih9088/dotfiles/blob/master/tmux/tmux.conf.local)
+For more detailed information please refer [tmux.conf](https://github.com/cih9088/dotfiles/blob/master/tmux/tmux.conf)
 - prefix: <kbd>Ctrl</kbd>+<kbd>a</kbd>
 - toggle disable: <kbd>F12</kbd> (useful nested tmux)
 - create new window: <kbd>prefix</kbd>+<kbd>c</kbd>
@@ -182,8 +182,8 @@ For more detailed information please refer [oh my tmux](https://github.com/gpako
 - enter copy mode: <kbd>prefix</kbd>+<kbd>enter</kbd>
 - toggle synchronizing mode: <kbd>prefix</kbd>+<kbd>e</kbd>
 - toggle maximizing pane: <kbd>prefix</kbd>+<kbd>z</kbd>
-- maximize pane to new window: <kbd>prefix</kbd>+<kbd>+</kbd>
 - renew environment variables (e.g. DISPLAY): <kbd>prefix</kbd>+<kbd>\$</kbd>
+- go to pane with fzf: <kbd>prefix</kbd>+<kbd>0</kbd>
 
 ## Issues
 1. ~~Showing following error message at the top of terminal when the zsh 5.5+ started \

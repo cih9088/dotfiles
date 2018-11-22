@@ -23,6 +23,7 @@ wipeOut:
 prepare:
 	@mkdir -p ${HOME}/.local/bin
 	@mkdir -p ${HOME}/.local/src
+	@mkdir -p ${HOME}/.config/alacritty
 	@mkdir -p $(TMP_DIR)
 
 prerequisites:
@@ -59,11 +60,15 @@ installDevPython:
 	@pip install ipdb --user
 	@pip install pudb --user
 	@pip install pylint --user
+	@pip install pylint-venv --user
 	@pip install jedi --user
 	@pip install virtualenv --user || true
 	@pip install virtualenvwrapper --user || true
 	@pip3 install virtualenv --user || true
 	@pip3 install virtualenvwrapper --user || true
+
+installDevNodejs:
+	@curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local
 
 installPythonVirtualenv:
 	@( $(scripts)/virenv_setup.sh )
@@ -106,7 +111,7 @@ installUpdateAll: prepare installZsh installPrezto changeDefaultShell installNeo
 	installTMP installBins \
 	updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto clean
 
-installDevAll: installDevPython installDevShell installPythonVirtualenv
+installDevAll: installDevPython installDevShell installPythonVirtualenv installDevNodejs
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \

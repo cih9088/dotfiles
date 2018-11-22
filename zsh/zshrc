@@ -11,10 +11,10 @@ if [ -x "$(command -v fd)" ]; then
     export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
     export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 fi
-export FZF_DEFAULT_OPTS='
---color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
---color info:183,prompt:110,spinner:107,pointer:167,marker:215
-'
+# export FZF_DEFAULT_OPTS='
+# --color fg:188,bg:233,hl:103,fg+:222,bg+:234,hl+:104
+# --color info:183,prompt:110,spinner:107,pointer:167,marker:215
+# '
 export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
 export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
@@ -190,6 +190,24 @@ export CUDA_HOME=/usr/local/cuda
             tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
         fi
         session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
+    }
+    ftpane() { # ftpane - switch pane (@george-b)
+        local panes current_window current_pane target target_window target_pane
+        panes=$(tmux list-panes -s -F '#I:#P - #{pane_current_path} #{pane_current_command}')
+        current_pane=$(tmux display-message -p '#I:#P')
+        current_window=$(tmux display-message -p '#I')
+
+        target=$(echo "$panes" | grep -v "$current_pane" | fzf +m --reverse) || return
+
+        target_window=$(echo $target | awk 'BEGIN{FS=":|-"} {print$1}')
+        target_pane=$(echo $target | awk 'BEGIN{FS=":|-"} {print$2}' | cut -c 1)
+
+        if [[ $current_window -eq $target_window ]]; then
+            tmux select-pane -t ${target_window}.${target_pane}
+        else
+            tmux select-pane -t ${target_window}.${target_pane} &&
+                tmux select-window -t $target_window
+        fi
     }
 #    alias cd..='cd ../'                         # Go back 1 directory level (for fast typers)
 #    alias ..='cd ../'                           # Go back 1 directory level
@@ -434,3 +452,7 @@ export CUDA_HOME=/usr/local/cuda
 #   e.g.: hdiutil create -size 10m 10MB.dmg
 #   the above create files that are almost all zeros - if random bytes are desired
 #   then use: ~/Dev/Perl/randBytes 1048576 > 10MB.dat
+
+
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"

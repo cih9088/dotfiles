@@ -36,6 +36,7 @@ NVIM_DIR=${PROJ_HOME}/nvim
 TMUX_DIR=${PROJ_HOME}/tmux
 ZSH_DIR=${PROJ_HOME}/zsh
 PYLINT_DIR=${PROJ_HOME}/pylint
+CONFIG_DIR=${PROJ_HOME}/config
 
 # backup old files and replace it with mine
 if [ -e $HOME/.vimrc ]; then
@@ -97,6 +98,12 @@ if [ -e $HOME/.pylintrc ]; then
     rm -rf $HOME/.pylintrc
 fi
 ln -s -f ${PYLINT_DIR}/pylintrc $HOME/.pylintrc
+
+if [ -e $HOME/.config/alacritty ]; then
+    cp -RfH $HOME/.config/alacritty $HOME/dotfiles_old
+    rm -rf $HOME/.config/alacritty
+fi
+ln -s -f ${CONFIG_DIR}/alacritty $HOME/.config/alacritty
 
 # clean up dotfiles old if there is nothing backuped
 if [ -z "$(ls -A $HOME/dotfiles_old)" ]; then
