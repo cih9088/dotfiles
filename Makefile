@@ -23,6 +23,8 @@ wipeOut:
 prepare:
 	@mkdir -p ${HOME}/.local/bin
 	@mkdir -p ${HOME}/.local/src
+	@mkdir -p ${HOME}/.local/shared
+	@mkdir -p ${HOME}/.local/man/man1
 	@mkdir -p ${HOME}/.config/alacritty
 	@mkdir -p $(TMP_DIR)
 
@@ -62,12 +64,14 @@ installDevPython:
 	@pip install pylint --user
 	@pip install pylint-venv --user
 	@pip install jedi --user
+	@pip install 'python-language-server[all]' --user
 	@pip install virtualenv --user || true
 	@pip install virtualenvwrapper --user || true
 	@pip3 install virtualenv --user || true
 	@pip3 install virtualenvwrapper --user || true
 
 installDevNodejs:
+	# TODO: no need for now
 	@curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local
 
 installPythonVirtualenv:
@@ -92,9 +96,10 @@ updateDotfiles:
 updateNeovimPlugins:
 	@echo
 	@echo "[*] Update neovim plugins..."
-	@nvim -E -s -u "${HOME}/.config/nvim/init.vim" +PlugInstall +PlugUpdate +PlugUpgrade +UpdateRemotePlugins +qall
+	@nvim -E -s -u "${HOME}/.config/nvim/init.vim" +PlugInstall +PlugUpdate +PlugUpgrade +UpdateRemotePlugins +qall || true
 
 updateTmuxPlugins: installTPM
+	# TODO: not working for now
 	@echo
 	@echo "[*] Update tmux plugin..."
 	@~/.tmux/plugins/tpm/scripts/install_plugins.sh
@@ -108,10 +113,10 @@ installAll: prepare installZsh installPrezto installNeovim installTmux installTP
 
 installUpdateAll: prepare installZsh installPrezto changeDefaultShell installNeovim installTmux \
 	updateDotfiles \
-	installTMP installBins \
-	updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto clean
+	installTPM installBins \
+	updateNeovimPlugins updateBins updatePrezto clean
 
-installDevAll: installDevPython installDevShell installPythonVirtualenv installDevNodejs
+installDevAll: installDevPython installDevShell installPythonVirtualenv
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \

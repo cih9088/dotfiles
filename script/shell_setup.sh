@@ -37,7 +37,7 @@ setup_func_shellcheck() {
             exit 1
         elif [[ $platform == "LINUX" ]]; then
             wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz
-            tar -xvJf shellcheck-stable.linux.x86_64_tar.xz
+            tar -xvJf shellcheck-stable.linux.x86_64.tar.xz
             cd shellcheck-stable
             cp shellcheck $HOME/.local/bin
         else
@@ -71,7 +71,7 @@ while true; do
 
     read -p "[?] Install locally or systemwide? " yn
     case $yn in
-        [Ll]local* ) echo "[*] Install shellcheck locally..."; setup_func_shellcheck 'local'; break;;
+        [Ll]ocal* ) echo "[*] Install shellcheck locally..."; setup_func_shellcheck 'local'; break;;
         [Ss]ystem* ) echo "[*] Install shellcheck systemwide..."; setup_func_shellcheck; break;;
         * ) echo "Please answer locally or systemwide."; continue;;
     esac

@@ -42,8 +42,8 @@ setup_func() {
             rm -rf $HOME/.local/src/zsh-*
         fi
         cd $TMP_DIR
-        wget http://www.zsh.org/pub/zsh-${ZSH_VERSION}.tar.gz
-        tar -xvzf zsh-${ZSH_VERSION}.tar.gz
+        wget http://www.zsh.org/pub/zsh-${ZSH_VERSION}.tar.xz
+        tar -xvJf zsh-${ZSH_VERSION}.tar.xz
         cd zsh-${ZSH_VERSION}
         ./configure --prefix=$HOME/.local
         make

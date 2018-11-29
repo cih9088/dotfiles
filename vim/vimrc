@@ -34,7 +34,8 @@
         Plug 'kamwitsta/flatwhite-vim'
         Plug 'junegunn/seoul256.vim'
         Plug 'itchyny/lightline.vim'
-        Plug 'maximbaz/lightline-ale'
+        " Plug 'maximbaz/lightline-ale'
+        " Plug 'Palpatineli/lightline-lsc-nvim'
         Plug 'mgee/lightline-bufferline'
         Plug 'NLKNguyen/papercolor-theme'
         Plug 'ryanoasis/vim-devicons'
@@ -61,6 +62,7 @@
             " " Plug 'ncm2/ncm2-jedi'
             " Plug 'ncm2/ncm2-ultisnips'
             Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+            " Plug 'zchee/deoplete-jedi'
             " Plug 'machakann/vim-Verdin', { 'for': ['vim'] }
             " Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
         elseif v:version >= 800
@@ -69,7 +71,7 @@
     " }}}
 
     " Plugins for Convenient coding {{{
-        Plug 'w0rp/ale'
+        " Plug 'w0rp/ale'
         Plug 'Shougo/neosnippet.vim'
         Plug 'Shougo/neosnippet-snippets'
         Plug 'Shougo/context_filetype.vim'
@@ -164,7 +166,7 @@
         set laststatus=2                      " status bar is always on
                                               " set statusline=\ %<%l:%v\ [%P]%=%a\ %h%m%r\ %F\
         set showtabline=2                     " tab bar is always on
-        set signcolumn=yes
+        set signcolumn=yes                    " always draw the sign column
         set linebreak
         set colorcolumn=90                    " color column to limit coding length
         set pastetoggle=<F2>                  " when in insert mode, press <F2> to go to
@@ -193,6 +195,10 @@
 
         " When scrolling, keep cursor 5 lines away from screen border
         set scrolloff=5
+
+        " if file has no extention, set it conf
+        au BufNewFile,BufRead * if &ft == '' | set ft=conf | endif
+        " autocmd BufNewFile,BufRead * if expand('%:t') !~ '\.' | set syntax=conf | endif
     " }}}
 
     " Color scheme {{{
@@ -593,8 +599,9 @@
                 \ 'colorscheme': 'seoul256',
                 \ 'active': {
                 \     'left': [['mode', 'paste'],
-                \              ['gitbranch', 'readonly', 'filename', 'modified']],
+                \              ['gitbranch', 'readonly', 'filename']],
                 \     'right': [['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok'],
+                \               ['LC_error_count', 'LC_warning_count'],
                 \               ['lineinfo'],
                 \               ['percent'],
                 \               ['fileformat', 'fileencoding', 'filetype']]
@@ -608,7 +615,7 @@
                 \     'filename': 'LightlineFilename',
                 \     'fileformat': 'LightlineFileformat',
                 \     'filetype': 'LightlineFiletype',
-                \     'fileencoding': 'LightlineFileencoding',
+                \     'fileencoding': 'LightlineFileencoding'
                 \ },
                 \ 'component_expand': {
                 \    'linter_checking': 'lightline#ale#checking',
@@ -616,6 +623,8 @@
                 \    'linter_errors': 'lightline#ale#errors',
                 \    'linter_ok': 'lightline#ale#ok',
                 \    'buffers': 'lightline#bufferline#buffers',
+                \    'LC_warning_count': 'LC_warning_count',
+                \    'LC_error_count': 'LC_error_count'
                 \ },
                 \ 'component_type': {
                 \    'linter_checking': 'left',
@@ -623,6 +632,8 @@
                 \    'linter_errors': 'error',
                 \    'linter_ok': 'left',
                 \    'buffers': 'tabsel',
+                \    'LC_warning_count': 'warning',
+                \    'LC_error_count': 'error'
                 \ },
                 \}
     function! LightlineFileformat()
@@ -670,26 +681,31 @@
         return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
     endfunction
 
+    augroup lightline_lsc
+        autocmd!
+        autocmd User LanguageClientDiagnosticsChanged call lightline#update()
+    augroup END
+
     " let g:lightline#ale#indicator_checking = "\uf110"
     " let g:lightline#ale#indicator_warnings = "\uf071  "
     " let g:lightline#ale#indicator_errors = "\uf05e  "
     " let g:lightline#ale#indicator_ok = "\uf00c"
     " }}}
 
-    " ALE {{{
-        let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-        let g:ale_linters = {
-                    \ 'python': ['pylint']
-                    \}
-        " show which linter is showing the message
-        let g:ale_sign_error = '✘'
-        let g:ale_sign_warning = '⚠'
-        hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=167
-        hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
-        " no highlight (underline) on detected errors/warnings
-        let g:ale_set_highlights = 0
-        let g:ale_completion_enabled = 0
-    " }}}
+    " " ALE {{{
+    "     let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+    "     let g:ale_linters = {
+    "                 \ 'python': ['pylint']
+    "                 \}
+    "     " show which linter is showing the message
+    "     let g:ale_sign_error = '✘'
+    "     let g:ale_sign_warning = '⚠'
+    "     hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=167
+    "     hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
+    "     " no highlight (underline) on detected errors/warnings
+    "     let g:ale_set_highlights = 0
+    "     let g:ale_completion_enabled = 0
+    " " }}}
 
     " Easymotion {{{
         " Disable default mappings
@@ -762,7 +778,7 @@
     " deoplete {{{
         let g:deoplete#enable_at_startup = 1
         call deoplete#custom#option({
-                    \ 'auto_complete_delay': 5,
+                    \ 'auto_complete_delay': 20,
                     \ 'auto_refresh_delay': 30,
                     \ 'skip_chars': ['(', ')', '<', '>'],
                     \ })
@@ -790,17 +806,17 @@
         "       \ . ')'
 
         " deoplete-clang
-        if filereadable('/usr/lib/llvm-3.8/lib/libclang.so.1')
-            let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
-        elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
-            let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
-        endif
-
-        if isdirectory('/usr/include/clang')
-            let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
-        elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
-            let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
-        endif
+        " if filereadable('/usr/lib/llvm-3.8/lib/libclang.so.1')
+        "     let g:deoplete#sources#clang#libclang_path = '/usr/lib/llvm-3.8/lib/libclang.so.1'
+        " elseif filereadable('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
+        "     let g:deoplete#sources#clang#libclang_path = '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'
+        " endif
+        "
+        " if isdirectory('/usr/include/clang')
+        "     let g:deoplete#sources#clang#clang_header = '/usr/include/clang/'
+        " elseif isdirectory('/Library/Developer/CommandLineTools/usr/lib/clang/')
+        "     let g:deoplete#sources#clang#clang_header = '/Library/Developer/CommandLineTools/usr/lib/clang/'
+        " endif
 
         " <CR>: If popup menu visible, expand snippet or close popup with selection,
         "       Otherwise, just put '<CR>'
@@ -960,7 +976,7 @@
             \ 'python': ['/home/andy/.local/bin/pyls'],
             \ 'sh': ['/home/andy/.local/bin/bash-language-server', 'start'],
             \ }
-        let g:LanguageClient_diagnosticsEnable = 0
+        let g:LanguageClient_diagnosticsEnable = 1
 
         nnoremap <F5> :call LanguageClient_contextMenu()<CR>
         nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
@@ -968,6 +984,7 @@
 
     " echodoc {{{
         let g:echodoc#enable_at_startup = 1
+        let g:echodoc#type = 'signature'
     " }}}
 
     " vim-startify {{{
@@ -988,6 +1005,14 @@
         nnoremap <leader>H :History<CR>
         nnoremap <leader>C :Commits<CR>
         nnoremap <leader>L :BLines<CR>
+        nnoremap <leader>P :ProjectFiles<CR>
+
+        " Search project root
+        function! s:find_git_root()
+            return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+        endfunction
+
+        command! ProjectFiles execute 'Files' s:find_git_root()
 
         " Customize fzf colors to match your color scheme
         let g:fzf_colors = {

@@ -23,9 +23,11 @@ $ make prerequisites
 
 ## How to install and update
 ### one-liner
-1. To install dotfiles only and nothing else, `cd ~/dotfiles; make updateDotfiles`
-2. To install and update all (for novice), `cd ~/dotfiles; make installUpdateAll`
+1. juset setup `cd ~/dotfiles; make installUpdateAll; make installDevAll`
+1. To install and update all (for novice), `cd ~/dotfiles; make installUpdateAll`
+2. To install dotfiles only and nothing else, `cd ~/dotfiles; make updateDotfiles`
 3. To update (if you have installed my **things**), `cd ~/dotfiles; make updateAll`
+4. To install my dev setup, `cd ~/dotfiles; make installDevAll`
 
 ### Install (The easy way)
 If you can't be bothered to pay attention to the entire processes.
@@ -143,6 +145,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - jump: <kbd>Tab</kbd>
 - [fzf](https://github.com/junegunn/fzf.vim): fuzzy finder
     - open Files: <kbd>leader</kbd>+<kbd>F</kbd>
+    - open ProjectFiles: <kbd>leader</kbd>+<kbd>P</kbd>
     - open Buffers: <kbd>leader</kbd>+<kbd>B</kbd>
     - open History: <kbd>leader</kbd>+<kbd>H</kbd>
     - open Commits: <kbd>leader</kbd>+<kbd>C</kbd>
