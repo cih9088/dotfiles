@@ -49,7 +49,7 @@ EOS
     fi
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tree..."
-    echo "${marker_ok} tree installed"
+    echo "${marker_ok} tree installed [$1]"
 }
 
 # fd
@@ -84,7 +84,7 @@ EOS
     fi
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing fd..."
-    echo "${marker_ok} fd installed"
+    echo "${marker_ok} fd installed [$1]"
 }
 
 # thefuck
@@ -104,7 +104,7 @@ EOS
     fi
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing thefuck..."
-    echo "${marker_ok} thefuck installed"
+    echo "${marker_ok} thefuck installed [$1]"
 }
 
 # rg
@@ -139,7 +139,7 @@ EOS
     fi
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing rg..."
-    echo "${marker_ok} rg installed"
+    echo "${marker_ok} rg installed [$1]"
 }
 
 
@@ -151,9 +151,27 @@ setup_func_ranger() {
     ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing ranger..."
-    echo "${marker_ok} ranger installed"
+    echo "${marker_ok} ranger installed [local]"
 }
 
+# tldr
+setup_func_tldr() {
+    (
+    if [[ $1 == local ]]; then
+        pip install tldr --user
+    else
+        if [[ $platform == "OSX" ]]; then
+            brew bundle --file=- <<EOS
+brew 'tldr'
+EOS
+        elif [[ $platform == "LINUX" ]]; then
+            sudo pip install tldr
+        fi
+    fi
+    ) >&3 2>&4 &
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tldr..."
+    echo "${marker_ok} tldr installed [$1]"
+}
 
 setup_func_bash_snippets() {
     (
@@ -175,7 +193,7 @@ EOS
     fi
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing bash-snippets (transfer, cheat)..."
-    echo "${marker_ok} bash-snippets (transfer, cheat) installed"
+    echo "${marker_ok} bash-snippets (transfer, cheat) installed [$1]"
 }
 
 
@@ -193,23 +211,31 @@ main() {
     else
         echo "${marker_err} tree is not found"
     fi
+    echo "${marker_info} Local install version (installing version: $TREE_VERSION)"
 
-    while true; do
-        echo "${marker_info} Local install version (installing version: $TREE_VERSION)"
-        read -p "${marker_que} Do you wish to install tree? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install tree"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_tree_install} == "yes" ]]; then
+            [[ ${CONFIG_tree_local} == "yes" ]] && setup_func_tree 'local' || setup_func_tree 'system'
+        else
+            echo "${marker_err} tree is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install tree? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install tree"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install tree locally"; setup_func_tree 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install tree systemwide"; setup_func_tree; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install tree locally"; setup_func_tree 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install tree systemwide"; setup_func_tree 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 
     echo
     if [ -x "$(command -v fd)" ]; then
@@ -224,23 +250,31 @@ main() {
     else
         echo "${marker_err} fd is not found"
     fi
+    echo "${marker_info} Local install version (latest version: $FD_VERSION, installing version: $FD_VERSION)"
 
-    while true; do
-        echo "${marker_info} Local install version (latest version: $FD_VERSION, installing version: $FD_VERSION)"
-        read -p "${marker_que} Do you wish to install fd? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install fd"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_fd_install} == "yes" ]]; then
+            [[ ${CONFIG_fd_local} == "yes" ]] && setup_func_fd 'local' || setup_func_fd 'system'
+        else
+            echo "${marker_err} fd is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install fd? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install fd"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install fd locally"; setup_func_fd 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install fd systemwide"; setup_func_fd; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install fd locally"; setup_func_fd 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install fd systemwide"; setup_func_fd 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 
     echo
     if [ -x "$(command -v rg)" ]; then
@@ -255,23 +289,31 @@ main() {
     else
         echo "${marker_err} rg is not found"
     fi
+    echo "${marker_info} Local install version (latest version: $RG_VERSION, installing version: $RG_VERSION)"
 
-    while true; do
-        echo "${marker_info} Local install version (latest version: $RG_VERSION, installing version: $RG_VERSION)"
-        read -p "${marker_que} Do you wish to install ripgrep? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install ripgrep"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_rg_install} == "yes" ]]; then
+            [[ ${CONFIG_rg_local} == "yes" ]] && setup_func_rg 'local' || setup_func_rg 'system'
+        else
+            echo "${marker_err} rg is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install ripgrep? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install ripgrep"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install ripgrep locally"; setup_func_rg 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install ripgrep systemwide"; setup_func_rg; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install ripgrep locally"; setup_func_rg 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install ripgrep systemwide"; setup_func_rg 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 
     echo
     if [ -x "$(command -v ranger)" ]; then
@@ -287,17 +329,25 @@ main() {
         echo "${marker_err} ranger is not found"
     fi
 
-    while true; do
-        read -p "${marker_que} Do you wish to install ranger? (it will be installed on local) " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install ranger"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_ranger_install} == "yes" ]]; then
+            setup_func_ranger
+        else
+            echo "${marker_err} rg is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install ranger? (it will be installed on local) " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install ranger"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        setup_func_ranger
-        break
-    done
+            setup_func_ranger
+            break
+        done
+    fi
 
     echo
     if [ -x "$(command -v thefuck)" ]; then
@@ -313,21 +363,29 @@ main() {
         echo "${marker_err} thefuck is not found"
     fi
 
-    while true; do
-        read -p "${marker_que} Do you wish to install thefuck? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install thefuck"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_thefuck_install} == "yes" ]]; then
+            [[ ${CONFIG_thefuck_local} == "yes" ]] && setup_func_thefuck 'local' || setup_func_thefuck 'system'
+        else
+            echo "${marker_err} thefuck is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install thefuck? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install thefuck"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install thefuck locally"; setup_func_thefuck 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install thefuck systemwide"; setup_func_thefuck; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install thefuck locally"; setup_func_thefuck 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install thefuck systemwide"; setup_func_thefuck 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 
     echo
     if [ -x "$(command -v tldr)" ]; then
@@ -343,55 +401,54 @@ main() {
         echo "${marker_err} tldr is not found"
     fi
 
-    while true; do
-        read -p "${marker_que} Do you wish to install tldr? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install tldr"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_tldr_install} == "yes" ]]; then
+            [[ ${CONFIG_tldr_local} == "yes" ]] && setup_func_tldr 'local' || setup_func_tldr 'system'
+        else
+            echo "${marker_err} tldr is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install tldr? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install tldr"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install tldr locally";
-                (pip install tldr --user) >&3 2>&4 &
-                [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tldr..."
-                echo "${marker_ok} tldr installed"
-                break;;
-            [Ss]ystem* ) echo "${marker_info} Install tldr systemwide"; 
-                (
-                if [[ $platform == "OSX" ]]; then
-                    brew bundle --file=- <<EOS
-brew 'tldr'
-EOS
-                elif [[ $platform == "LINUX" ]]; then
-                    sudo pip install tldr
-                fi
-                ) >&3 2>&4 &
-                [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tldr..."
-                echo "${marker_ok} tldr installed"
-                break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install tldr locally"; setup_func_tldr 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install tldr systemwide"; setup_func_tldr 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 
     echo
-    while true; do
-        read -p "${marker_que} Do you wish to install bash-snippets? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install bash-snippets"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_bash_snippets_install} == "yes" ]]; then
+            [[ ${CONFIG_bash_snippets_local} == "yes" ]] && setup_func_bash_snippets 'local' || setup_func_bash_snippets 'system'
+        else
+            echo "${marker_err} bash_snippets is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install bash-snippets? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install bash-snippets"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or systemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install bash-snippets locally"; setup_func_bash_snippets 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install bash-snippets systemwide"; setup_func_bash_snippets; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
-
+            read -p "${marker_que} Install locally or systemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install bash-snippets locally"; setup_func_bash_snippets 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install bash-snippets systemwide"; setup_func_bash_snippets 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 
     # clean up
     if [[ $$ = $BASHPID ]]; then

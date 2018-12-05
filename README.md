@@ -23,8 +23,17 @@ $ make prerequisites
 ```
 
 ## How to install and update
+### Variables
+- `CONFIG`: making script non-interactively. Create your own config based on `config_linux.yaml` \
+`make install CONFIG=config_linux.yaml`
+- `VERBOSE`: making script verbose \
+`make install VERBOSE=YES`
+
+
 ### one-liner
-- Init `cd ~/dotfiles; make init`
+- Non-interactive init for ubuntu(default) `cd ~/dotfiles; make init CONFIG=config_linux.yaml`
+- Non-interactive init for osx(default) `cd ~/dotfiles; make init CONFIG=config_osx.yaml`
+- Interactive init `cd ~/dotfiles; make init`
 - Install `cd ~/dotfiles; make install`
 - Update `cd ~/dotfiles; make update`
 - Only copy dotfiles `cd ~/dotfiles; make updateDotfiles`
@@ -232,3 +241,4 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 - tmux mouse mode
 - tmux consistent
 - the fuck version
+- duplicated which

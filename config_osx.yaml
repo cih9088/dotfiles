@@ -1,0 +1,55 @@
+zsh:
+  install: yes
+  local: no
+
+changeDefaultShell:
+  change: yes
+  local: no
+
+prezto:
+  install: yes
+
+nvim:
+  install: yes
+  local: no
+
+tmux:
+  install: yes
+  local: no
+
+tree:
+  install: yes
+  local: no
+
+fd:
+  install: yes
+  local: no
+
+rg:
+  install: yes
+  local: no
+
+thefuck:
+  install: yes
+  local: no
+
+ranger:
+  install: yes
+
+tldr:
+  install: yes
+  local: no
+
+bash_snippets:
+  install: yes
+  local: no
+
+shellchecker:
+  install: yes
+  local: no
+
+bash_language_server:
+  install: yes
+
+nodejs:
+  install: yes

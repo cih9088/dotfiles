@@ -47,7 +47,7 @@ EOS
     fi
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim..."
-    echo "${marker_ok} neovim installed"
+    echo "${marker_ok} neovim installed [$1]"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then
@@ -70,23 +70,31 @@ main() {
     else
         echo "${marker_err} nvim is not found"
     fi
+    echo "${marker_info} Local install version (latest version: $NVIM_LATEST_VERSION, installing version: $NVIM_VERSION)"
 
-    while true; do
-        echo "${marker_info} Local install version (latest version: $NVIM_LATEST_VERSION, installing version: $NVIM_VERSION)"
-        read -p "${marker_que} Do you wish to install neovim? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install neovim"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_nvim_install} == "yes" ]]; then
+            [[ ${CONFIG_nvim_local} == "yes" ]] && setup_func 'local' || setup_func 'system'
+        else
+            echo "${marker_err} neovim is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install neovim? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install neovim"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install neovim ${NVIM_VERSION} locally"; setup_func 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install latest neovim systemwide"; setup_func; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install neovim ${NVIM_VERSION} locally"; setup_func 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install latest neovim systemwide"; setup_func 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 
     # install neovim with python support
     (

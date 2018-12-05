@@ -26,16 +26,16 @@ prerequisites:
 	@( $(SCRIPTS_DIR)/prerequisites.sh )
 
 installZsh: prepare
-	@( $(SCRIPTS_DIR)/zsh_setup.sh )
+	@( $(SCRIPTS_DIR)/install_zsh.sh )
 
 installPrezto: prepare
-	@( $(SCRIPTS_DIR)/prezto_setup.sh )
+	@( $(SCRIPTS_DIR)/install_prezto.sh )
 
 installNeovim: prepare
-	@( $(SCRIPTS_DIR)/nvim_setup.sh $(nvim_version) )
+	@( $(SCRIPTS_DIR)/install_neovim.sh $(nvim_version) )
 
 installTmux: prepare
-	@( $(SCRIPTS_DIR)/tmux_setup.sh $(tmux_version) )
+	@( $(SCRIPTS_DIR)/install_tmux.sh $(tmux_version) )
 
 installTPM:
 	@echo
@@ -45,38 +45,16 @@ installTPM:
 	@echo "[0;92m[*][0m TPM installed"
 
 installBins: prepare
-	@( $(SCRIPTS_DIR)/bin_setup.sh )
+	@( $(SCRIPTS_DIR)/install_bins.sh )
 
 installDevShell:
-	@( $(SCRIPTS_DIR)/shell_setup.sh )
-	@echo
-	@echo "[0;93m[+][0m Installing bash-language-server..."
-	@npm i -g bash-language-server
-	@echo "[0;92m[*][0m bash-language-server installed"
+	@( $(SCRIPTS_DIR)/installDev_shell.sh )
 
 installDevPython:
-	@echo
-	@echo "[0;93m[+][0m Installing python dev..."
-	@pip install glances --user >/dev/null 2>&1
-	@pip install grip --user >/dev/null 2>&1
-	@pip install gpustat --user >/dev/null 2>&1
-	@pip install ipdb --user >/dev/null 2>&1
-	@pip install pudb --user >/dev/null 2>&1
-	@pip install pylint --user >/dev/null 2>&1
-	@pip install pylint-venv --user >/dev/null 2>&1
-	@pip install jedi --user >/dev/null 2>&1
-	@pip install 'python-language-server[all]' --user >/dev/null 2>&1
-	@pip install virtualenv --user >/dev/null 2>&1
-	@pip install virtualenvwrapper --user >/dev/null 2>&1
-	@pip3 install virtualenv --user >/dev/null 2>&1
-	@pip3 install virtualenvwrapper --user >/dev/null 2>&1
-	@echo "[0;92m[*][0m python dev installed"
+	@( $(SCRIPTS_DIR)/installDev_python.sh )
 
 installDevNodejs:
-	@echo
-	@echo "[0;93m[+][0m Installing Node.js..."
-	@curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local
-	@echo "[0;92m[*][0m Node.js installed"
+	@( $(SCRIPTS_DIR)/installDev_nodejs.sh )
 
 installPythonVirtualenv:
 	@( $(SCRIPTS_DIR)/virenv_setup.sh )
@@ -90,9 +68,7 @@ updateBins: prepare
 updatePrezto:
 	@echo
 	@echo "[0;93m[+][0m Updating prezto..."
-	@cd ~/.zprezto
-	@git pull >/dev/null >/dev/null 2>&1
-	@git submodule update --init --recursive >/dev/null 2>&1
+	@cd ~/.zprezto; git pull >/dev/null 2>&1; git submodule update --init --recursive >/dev/null 2>&1
 	@echo "[0;92m[*][0m prezto updated"
 
 updateDotfiles:
@@ -113,11 +89,11 @@ updateTmuxPlugins: installTPM
 
 prepare_clean:
 	@echo
-	@echo "[0;92m[*][0m Done."
 	@rm -rf $(TMP_DIR)
 
 clean:
 	@echo "Remove dotfiles and folder itself"
+	@rm -rf $(TMP_DIR)
 	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto ${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
 		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
@@ -127,13 +103,17 @@ clean:
 
 
 update: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto prepare_clean
+	@echo "[42m[*] Update has done.[0m"
 
 install: prepare installZsh changeDefaultShell installPrezto updateDotfiles \
 	installNeovim installTmux installTPM installBins prepare_clean
+	@echo "[42m[*] Install has done.[0m"
 
 installDev: installDevNodejs installDevPython installDevShell
+	@echo "[42m[*] InstallDev has done.[0m"
 
 init: install update installDev
+	@echo "[42m[*] Init has done.[0m"
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \

@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_info} Copying dot files"
+echo "${marker_info} Copying dotfiles"
 
 if [ -d "${HOME}/dotfiles_old" ]; then
     echo "${marker_err} dotfiles_old folder already exists"

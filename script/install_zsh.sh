@@ -46,7 +46,7 @@ EOS
     fi
     ) >&3 2>&4 &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing zsh..."
-    echo "${marker_ok} zsh installed"
+    echo "${marker_ok} zsh installed [$1]"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then
@@ -69,21 +69,29 @@ main() {
         echo "${marker_err} zsh is not found"
     fi
 
-    while true; do
-        read -p "${marker_que} Do you wish to install zsh? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install zsh"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_zsh_install} == "yes" ]]; then
+            [[ ${CONFIG_zsh_local} == "yes" ]] && setup_func 'local' || setup_func 'system'
+        else
+            echo "${marker_err} zsh is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install zsh? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install zsh"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install zsh ${ZSH_VERSION} locally"; setup_func 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install latest zsh systemwide"; setup_func; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install zsh ${ZSH_VERSION} locally"; setup_func 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install latest zsh systemwide"; setup_func 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 }
 
 main "$@"

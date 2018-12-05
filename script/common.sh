@@ -136,3 +136,4 @@ spinner() {
     done
 }
 
+[[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/parser_yaml ${CONFIG} "CONFIG_") || true

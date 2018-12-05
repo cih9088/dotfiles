@@ -19,6 +19,7 @@ spinner() {
         printf "\033[2K \033[${ctr}D"
     done
 }
+[[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/parser_yaml ${CONFIG} "CONFIG_")
 ################################################################
 
 setup_func() {
@@ -61,13 +62,21 @@ setup_func() {
     fi
 }
 
-while true; do
-    echo
-    read "yn?[0;96m[?][0m Do you wish to install prezto? "
-    # vared -p "Do you wish to install prezto? " -c yn
-    case $yn in
-        [Yy]* ) echo "[0;93m[+][0m Install prezto"; setup_func; break;;
-        [Nn]* ) echo "[0;91m[!][0m Aborting install prezto"; break;;
-        * ) echo "[0;91m[!][0mPlease answer yes or no";;
-    esac
-done
+echo
+if [[ ! -z ${CONFIG+x} ]]; then
+    if [[ ${CONFIG_prezto_install} == "yes" ]]; then
+        setup_func
+    else
+        echo "[0;91m[!][0m prezto is not installed"
+    fi
+else
+    while true; do
+        read "yn?[0;96m[?][0m Do you wish to install prezto? "
+        # vared -p "Do you wish to install prezto? " -c yn
+        case $yn in
+            [Yy]* ) echo "[0;93m[+][0m Install prezto"; setup_func; break;;
+            [Nn]* ) echo "[0;91m[!][0m Aborting install prezto"; break;;
+            * ) echo "[0;91m[!][0mPlease answer yes or no";;
+        esac
+    done
+fi

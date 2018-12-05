@@ -168,23 +168,31 @@ main() {
     else
         echo "${marker_err} tmux is not found"
     fi
+    echo "${marker_info} Local install version (latest version: $TMUX_LATEST_VERSION, installing version: $TMUX_VERSION)"
 
-    while true; do
-        echo "${marker_info} Local install version (latest version: $TMUX_LATEST_VERSION, installing version: $TMUX_VERSION)"
-        read -p "${marker_que} Do you wish to install tmux? " yn
-        case $yn in
-            [Yy]* ) :; ;;
-            [Nn]* ) echo "${marker_err} Aborting install tmux"; break;;
-            * ) echo "${marker_err} Please answer yes or no"; continue;;
-        esac
+    if [[ ! -z ${CONFIG+x} ]]; then
+        if [[ ${CONFIG_tmux_install} == "yes" ]]; then
+            [[ ${CONFIG_tmux_local} == "yes" ]] && setup_func 'local' || setup_func 'system'
+        else
+            echo "${marker_err} tmux is not installed"
+        fi
+    else
+        while true; do
+            read -p "${marker_que} Do you wish to install tmux? " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install tmux"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
 
-        read -p "${marker_que} Install locally or sytemwide? " yn
-        case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install tmux ${TMUX_VERSION} locally"; setup_func 'local'; break;;
-            [Ss]ystem* ) echo "${marker_info} Install latest tmux systemwide"; setup_func; break;;
-            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
-        esac
-    done
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* ) echo "${marker_info} Install tmux ${TMUX_VERSION} locally"; setup_func 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install latest tmux systemwide"; setup_func 'system'; break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
 }
 
 main "$@"
