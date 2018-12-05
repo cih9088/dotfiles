@@ -92,7 +92,6 @@ EOS
 
     VIRENV_NAME=neovim3
     export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-    source ${HOME}/.local/bin/virtualenvwrapper.sh
     mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
     pip install neovim
 
