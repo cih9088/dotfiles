@@ -1,8 +1,8 @@
-scripts := ./script
 export PATH := ${HOME}/.local/bin:${PATH}
-
 export PROJ_HOME := $(shell git rev-parse --show-toplevel)
 export TMP_DIR= ${HOME}/tmp_install
+
+scripts := $(PROJ_HOME)/script
 
 ifeq (installNeovim,$(firstword $(MAKECMDGOALS)))
     nvim_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -13,12 +13,6 @@ ifeq (installTmux,$(firstword $(MAKECMDGOALS)))
     tmux_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
     $(eval $(tmux_version):;@:)
 endif
-
-wipeOut:
-	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
-		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto ${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
-		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
-		${HOME}/.vimrc ${HOME}/.vim 
 
 prepare:
 	@mkdir -p ${HOME}/.local/bin
@@ -45,35 +39,44 @@ installTmux: prepare
 
 installTPM:
 	@echo
-	@echo "[*] Install TPM..."
+	@echo "[0;93m[+][0m Installing TPM..."
 	@rm -rf ~/.tmux/plugins/tpm || true
-	@git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+	@git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm >/dev/null 2>&1
+	@echo "[0;92m[*][0m TPM installed"
 
 installBins: prepare
 	@( $(scripts)/bin_setup.sh )
 
 installDevShell:
 	@( $(scripts)/shell_setup.sh )
+	@echo
+	@echo "[0;93m[+][0m Installing bash-language-server..."
 	@npm i -g bash-language-server
+	@echo "[0;92m[*][0m bash-language-server installed"
 
 installDevPython:
-	@pip install glances --user
-	@pip install grip --user
-	@pip install gpustat --user
-	@pip install ipdb --user
-	@pip install pudb --user
-	@pip install pylint --user
-	@pip install pylint-venv --user
-	@pip install jedi --user
-	@pip install 'python-language-server[all]' --user
-	@pip install virtualenv --user || true
-	@pip install virtualenvwrapper --user || true
-	@pip3 install virtualenv --user || true
-	@pip3 install virtualenvwrapper --user || true
+	@echo
+	@echo "[0;93m[+][0m Installing python dev..."
+	@pip install glances --user >/dev/null 2>&1
+	@pip install grip --user >/dev/null 2>&1
+	@pip install gpustat --user >/dev/null 2>&1
+	@pip install ipdb --user >/dev/null 2>&1
+	@pip install pudb --user >/dev/null 2>&1
+	@pip install pylint --user >/dev/null 2>&1
+	@pip install pylint-venv --user >/dev/null 2>&1
+	@pip install jedi --user >/dev/null 2>&1
+	@pip install 'python-language-server[all]' --user >/dev/null 2>&1
+	@pip install virtualenv --user >/dev/null 2>&1
+	@pip install virtualenvwrapper --user >/dev/null 2>&1
+	@pip3 install virtualenv --user >/dev/null 2>&1
+	@pip3 install virtualenvwrapper --user >/dev/null 2>&1
+	@echo "[0;92m[*][0m python dev installed"
 
 installDevNodejs:
-	# TODO: no need for now
+	@echo
+	@echo "[0;93m[+][0m Installing Node.js..."
 	@curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local
+	@echo "[0;92m[*][0m Node.js installed"
 
 installPythonVirtualenv:
 	@( $(scripts)/virenv_setup.sh )
@@ -86,41 +89,51 @@ updateBins: prepare
 
 updatePrezto:
 	@echo
-	@echo "[*] update prezto..."
+	@echo "[0;93m[+][0m Updating prezto..."
 	@cd ~/.zprezto
-	@git pull
-	@git submodule update --init --recursive
+	@git pull >/dev/null >/dev/null 2>&1
+	@git submodule update --init --recursive >/dev/null 2>&1
+	@echo "[0;92m[*][0m prezto updated"
 
 updateDotfiles:
 	@( $(scripts)/dot_setup.sh )
 
 updateNeovimPlugins:
 	@echo
-	@echo "[*] Update neovim plugins..."
+	@echo "[0;93m[+][0m Updating neovim plugins..."
 	@nvim -E -s -u "${HOME}/.config/nvim/init.vim" +PlugInstall +PlugUpdate +PlugUpgrade +UpdateRemotePlugins +qall || true
+	@echo "[0;92m[*][0m neovim plugins updated"
 
 updateTmuxPlugins: installTPM
-	# TODO: not working for now
 	@echo
-	@echo "[*] Update tmux plugin..."
-	@~/.tmux/plugins/tpm/scripts/install_plugins.sh
+	@echo "[0;93m[+][0m Updating tmux plugins..."
+	@~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1
+	@echo "[0;92m[*][0m tmux plugins updated"
 
-clean:
+prepare_clean:
 	@rm -rf $(TMP_DIR)
 
-updateAll: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto clean
+wipeout:
+	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
+		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto ${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
+		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
+		${HOME}/.vimrc ${HOME}/.vim \
+		${HOME}/.config/nvim ${HOME}/.config/alacritty
 
-installAll: prepare installZsh installPrezto installNeovim installTmux installTPM installBins clean
+
+updateAll: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto prepare_clean
+
+installAll: prepare installZsh installPrezto installNeovim installTmux installTPM installBins prepare_clean
 
 installUpdateAll: prepare installZsh changeDefaultShell installPrezto installNeovim installTmux \
 	updateDotfiles \
 	installTPM installBins \
-	updateNeovimPlugins updateBins updatePrezto clean
+	updateNeovimPlugins updateBins updatePrezto prepare_clean
 
 installDevAll: installDevNodejs installDevPython installDevShell
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \
-	updateDotfiles updateNeovimPlugins updateTmuxPlugins clean updateAll installAll installDevAll \
+	updateDotfiles updateNeovimPlugins updateTmuxPlugins prepare_clean updateAll installAll installDevAll \
 	installTPM
 

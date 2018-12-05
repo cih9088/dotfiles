@@ -18,36 +18,14 @@ RG_VERSION=${1:-${RG_LATEST_VERSION}}
 ################################################################
 set -e
 
-case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
-esac
-
-if [[ $$ = $BASHPID ]]; then
-    PROJ_HOME=$(git rev-parse --show-toplevel)
-    TMP_DIR=$HOME/tmp_install
-
-    if [ ! -d $HOME/.local/bin ]; then
-        mkdir -p $HOME/.local/bin
-    fi
-
-    if [ ! -d $HOME/.local/src ]; then
-        mkdir -p $HOME/.local/src
-    fi
-
-    if [ ! -d $TMP_DIR ]; then
-        mkdir -p $TMP_DIR
-    fi
-fi
-BIN_DIR=${PROJ_HOME}/bin
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${DIR}/common.sh
+################################################################
 
 
 # tree
 setup_func_tree() {
+    (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
         wget http://mama.indstate.edu/users/ice/tree/src/tree-${TREE_VERSION}.tgz
@@ -67,16 +45,16 @@ brew 'tree'
 EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install tree
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     fi
-
-    echo "[*] tree command installed..."
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing tree..."
+    echo "${marker_ok} tree installed"
 }
 
 # fd
 setup_func_fd() {
+    (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
         if [[ $platform == "OSX" ]]; then
@@ -91,8 +69,6 @@ setup_func_fd() {
             cd fd-v${FD_VERSION}-x86_64-unknown-linux-gnu
             cp fd $HOME/.local/bin
             cp fd.1 $HOME/.local/man/man1
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -104,16 +80,16 @@ EOS
             cd $TMP_DIR
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd_${FD_VERSION}_amd64.deb
             sudo dpkg -i fd_${FD_VERSION}_amd64.deb
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     fi
-
-    echo "[*] fd command installed..."
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing fd..."
+    echo "${marker_ok} fd installed"
 }
 
 # thefuck
 setup_func_thefuck() {
+    (
     if [[ $1 = local ]]; then
         pip3 install thefuck --user
     else
@@ -124,16 +100,16 @@ brew 'thefuck'
 EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo pip3 install thefuck
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     fi
-
-    echo "[*] thefuck command installed..."
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing thefuck..."
+    echo "${marker_ok} thefuck installed"
 }
 
 # rg
 setup_func_rg() {
+    (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
         if [[ $platform == "OSX" ]]; then
@@ -148,8 +124,6 @@ setup_func_rg() {
             cd ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl
             cp rg $HOME/.local/bin
             cp doc/rg.1 $HOME/.local/man/man1
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -161,24 +135,28 @@ EOS
             cd $TMP_DIR
             wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb
             sudo dpkg -i ripgrep_${RG_VERSION}_amd64.deb
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     fi
-
-    echo "[*] rg command installed..."
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing rg..."
+    echo "${marker_ok} rg installed"
 }
 
 
 setup_func_ranger() {
+    (
     rm -rf $HOME/.local/src/ranger
     git clone https://github.com/cih9088/ranger $HOME/.local/src/ranger
     $HOME/.local/src/ranger/ranger.py --copy-config=all
     ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing ranger..."
+    echo "${marker_ok} ranger installed"
 }
 
 
 setup_func_bash_snippets() {
+    (
     cd $TMP_DIR
     git clone https://github.com/alexanderepstein/Bash-Snippets
     cd Bash-Snippets
@@ -195,180 +173,227 @@ EOS
         fi
 
     fi
-
-    echo "[*] bash-snippets (transfer, cheat) command installed..."
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing bash-snippets (transfer, cheat)..."
+    echo "${marker_ok} bash-snippets (transfer, cheat) installed"
 }
 
 
-while true; do
+main() {
     echo
     if [ -x "$(command -v tree)" ]; then
-        echo "[*] Following list is tree insalled on the system"
-        type tree
-        echo
-        echo "[*] Your tree version is...."
-        tree --version
+        echo "${marker_info} Following list is tree insalled on the system"
+        coms=($(which -a tree | uniq))
+        (
+            printf 'LOCATION,VERSION\n'
+            for com in "${coms[@]}"; do
+                printf '%s,%s\n' "${com}" "$(${com} -version)"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "[*] tree is not found"
+        echo "${marker_err} tree is not found"
     fi
 
-    echo
-    echo "[*] Local install version (installing version: $TREE_VERSION)"
-    read -p "[?] Do you wish to install tree? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install tree..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
+    while true; do
+        echo "${marker_info} Local install version (installing version: $TREE_VERSION)"
+        read -p "${marker_que} Do you wish to install tree? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install tree"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
 
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install tree locally..."; setup_func_tree 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install tree systemwide..."; setup_func_tree; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+        read -p "${marker_que} Install locally or sytemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install tree locally"; setup_func_tree 'local'; break;;
+            [Ss]ystem* ) echo "${marker_info} Install tree systemwide"; setup_func_tree; break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
 
-
-while true; do
     echo
     if [ -x "$(command -v fd)" ]; then
-        echo "[*] Following list is fd insalled on the system"
-        type fd
-        echo
-        echo "[*] Your fd version is...."
-        fd --version
+        echo "${marker_info} Following list is fd insalled on the system"
+        coms=($(which -a fd | uniq))
+        (
+            printf 'LOCATION,VERSION\n'
+            for com in "${coms[@]}"; do
+                printf '%s,%s\n' "${com}" "$(${com} --version)"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "[*] fd is not found"
+        echo "${marker_err} fd is not found"
     fi
 
-    echo
-    echo "[*] Local install version (latest version: $FD_VERSION, installing version: $FD_VERSION)"
-    read -p "[?] Do you wish to install fd? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install fd..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
+    while true; do
+        echo "${marker_info} Local install version (latest version: $FD_VERSION, installing version: $FD_VERSION)"
+        read -p "${marker_que} Do you wish to install fd? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install fd"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
 
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install fd locally..."; setup_func_fd 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install fd systemwide..."; setup_func_fd; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+        read -p "${marker_que} Install locally or sytemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install fd locally"; setup_func_fd 'local'; break;;
+            [Ss]ystem* ) echo "${marker_info} Install fd systemwide"; setup_func_fd; break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
 
-
-while true; do
     echo
     if [ -x "$(command -v rg)" ]; then
-        echo "[*] Following list is rg insalled on the system"
-        type rg
-        echo
-        echo "[*] Your rg version is...."
-        rg --version
+        echo "${marker_info} Following list is rg insalled on the system"
+        coms=($(which -a rg | uniq))
+        (
+            printf 'LOCATION,VERSION\n'
+            for com in "${coms[@]}"; do
+                printf '%s,%s\n' "${com}" "$(${com} -version | head -1)"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "[*] rg is not found"
+        echo "${marker_err} rg is not found"
     fi
 
+    while true; do
+        echo "${marker_info} Local install version (latest version: $RG_VERSION, installing version: $RG_VERSION)"
+        read -p "${marker_que} Do you wish to install ripgrep? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install ripgrep"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
+
+        read -p "${marker_que} Install locally or sytemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install ripgrep locally"; setup_func_rg 'local'; break;;
+            [Ss]ystem* ) echo "${marker_info} Install ripgrep systemwide"; setup_func_rg; break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
+
     echo
-    echo "[*] Local install version (latest version: $RG_VERSION, installing version: $RG_VERSION)"
-    read -p "[?] Do you wish to install ripgrep? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install ripgrep..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
+    if [ -x "$(command -v ranger)" ]; then
+        echo "${marker_info} Following list is ranger insalled on the system"
+        coms=($(which -a ranger | uniq))
+        (
+            printf 'LOCATION,VERSION\n'
+            for com in "${coms[@]}"; do
+                printf '%s,%s\n' "${com}" "$(${com} -version | head -1)"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
+    else
+        echo "${marker_err} ranger is not found"
+    fi
 
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install ripgrep locally..."; setup_func_rg 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install ripgrep systemwide..."; setup_func_rg; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+    while true; do
+        read -p "${marker_que} Do you wish to install ranger? (it will be installed on local) " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install ranger"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
 
+        setup_func_ranger
+        break
+    done
 
-while true; do
     echo
-    read -p "[?] Do you wish to install ranger? (it will be installed on local) " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install ranger..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
+    if [ -x "$(command -v thefuck)" ]; then
+        echo "${marker_info} Following list is thefuck insalled on the system"
+        coms=($(which -a thefuck | uniq))
+        (
+            printf 'LOCATION,VERSION\n'
+            for com in "${coms[@]}"; do
+                printf '%s,%s\n' "${com}" "$(${com} -version)"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
+    else
+        echo "${marker_err} thefuck is not found"
+    fi
 
-    setup_func_ranger
-    break
-done
+    while true; do
+        read -p "${marker_que} Do you wish to install thefuck? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install thefuck"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
 
+        read -p "${marker_que} Install locally or sytemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install thefuck locally"; setup_func_thefuck 'local'; break;;
+            [Ss]ystem* ) echo "${marker_info} Install thefuck systemwide"; setup_func_thefuck; break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
 
-while true; do
     echo
-    read -p "[?] Do you wish to install thefuck? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install thefuck..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
+    if [ -x "$(command -v tldr)" ]; then
+        echo "${marker_info} Following list is tldr insalled on the system"
+        coms=($(which -a tldr | uniq))
+        (
+            printf 'LOCATION\n'
+            for com in "${coms[@]}"; do
+                printf '%s\n' "${com}"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
+    else
+        echo "${marker_err} tldr is not found"
+    fi
 
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install thefuck locally..."; setup_func_thefuck 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install thefuck systemwide..."; setup_func_thefuck; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+    while true; do
+        read -p "${marker_que} Do you wish to install tldr? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install tldr"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
 
-
-while true; do
-    echo
-    read -p "[?] Do you wish to install tldr? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install tldr..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
-
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install tldr locally..."; pip install tldr --user; break;;
-        [Ss]ystem* ) echo "[*] Install tldr systemwide..."; 
-            if [[ $platform == "OSX" ]]; then
-                brew bundle --file=- <<EOS
+        read -p "${marker_que} Install locally or sytemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install tldr locally"; pip install tldr --user; break;;
+            [Ss]ystem* ) echo "${marker_info} Install tldr systemwide"; 
+                (
+                if [[ $platform == "OSX" ]]; then
+                    brew bundle --file=- <<EOS
 brew 'tldr'
 EOS
-            elif [[ $platform == "LINUX" ]]; then
-                sudo pip install tldr
-            else
-                echo "[!] $platform is not supported."; exit 1
-            fi
-            break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+                elif [[ $platform == "LINUX" ]]; then
+                    sudo pip install tldr
+                fi
+                ) >&3 2>&4 &
+                spinner "${marker_info} Installing tldr..."
+                echo "${marker_ok} tldr installed"
+                break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
 
-
-while true; do
     echo
-    read -p "[?] Do you wish to install bash-snippets? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install bash-snippets..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
+    while true; do
+        read -p "${marker_que} Do you wish to install bash-snippets? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install bash-snippets"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
 
-    read -p "[?] Install locally or systemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install bash-snippets locally..."; setup_func_bash_snippets 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install bash-snippets systemwide..."; setup_func_bash_snippets; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+        read -p "${marker_que} Install locally or systemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install bash-snippets locally"; setup_func_bash_snippets 'local'; break;;
+            [Ss]ystem* ) echo "${marker_info} Install bash-snippets systemwide"; setup_func_bash_snippets; break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
 
 
-# clean up
-if [[ $$ = $BASHPID ]]; then
-    rm -rf $TMP_DIR
-fi
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
+    fi
+}
+
+        echo
+main "$@"

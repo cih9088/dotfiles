@@ -1,26 +1,33 @@
 #!/usr/bin/env bash
 
+################################################################
+set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${DIR}/common.sh
+################################################################
+
 # change default shell to zsh
 while true; do
     echo
-    read -p "[?] Do you wish to change default shell to zsh? " yn
+    read -p "${marker_que} Do you wish to change default shell to zsh? " yn
     case $yn in
         [Yy]* ) :; ;;
-        [Nn]* ) echo "[*] Default shell is unchanged..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
+        [Nn]* ) echo "${marker_info} Default shell is unchanged..."; break;;
+        * ) echo "${marker_err} Please answer yes or no."; continue;;
     esac
 
-    read -p "[?] Change default shell to local zsh or systemwide zsh? " yn
+    read -p "${marker_que} Change default shell to local zsh or systemwide zsh? " yn
     case $yn in
-        [Ll]ocal* ) echo "[*] Changing default shell to local zsh..."
+        [Ll]ocal* ) echo "${marker_ok} Changed default shell to local zsh"
             if grep -Fxq "exec $HOME/.local/bin/zsh -l" $HOME/.bashrc; then
                 :
             else
-                echo "exec $HOME/.local/bin/zsh -l" >> $HOME/.bashrc
+                echo -e "if [[ -e $HOME/.local/bin/zsh ]]; then\n\texec $HOME/.local/bin/zsh -l\nfi" >> $HOME/.bashrc
             fi
             break;;
-        [Ss]ystem* ) echo "[*] Changing default shell to systemwide zsh..."
+        [Ss]ystem* ) echo "${marker_ok} Changed default shell to systemwide zsh"
             chsh -s $(which zsh); break;;
-        * ) echo "Please answer locally or systemwide.";;
+        * ) echo "${marker_err} Please answer locally or systemwide.";;
     esac
 done

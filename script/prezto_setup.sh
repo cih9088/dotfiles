@@ -2,10 +2,30 @@
 # Original URL of prezto
 # htts://github.com/sorin-ionescu/prezto
 
+spinner() {
+    local info="$1"
+    local pid="$!"
+    local delay=0.75
+    local spinstr='|/-\'
+    local ctr=0
+    for (( i = 1; i <= $(printf "$info  [%c] " "$spinstr" | expand | wc -m ); i++ )); do
+        local ctr=$(( $ctr + 1 ))
+    done
+    while kill -0 $pid 2> /dev/null; do
+        local temp=${spinstr#?}
+        printf "$info  [%c]" "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\033[2K \033[${ctr}D"
+    done
+}
+################################################################
+
 setup_func() {
     if [ -d "${ZDOTDIR:-$HOME}/.zprezto" ]; then
-        echo "[*] prezto is installed. No need to install. Abort..."
+        echo "[0;93m[+][0m prezto is installed. No need to install. Abort"
     else
+        (
         # Clone prezto the repository
         #git clone --recursive https://github.com/cih9088/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
         git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
@@ -34,18 +54,20 @@ setup_func() {
         #     sed -i -e '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
         #     sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
         # fi
+        ) &> /dev/null &
+        spinner "[0;93m[+][0m Installing prezto..."
+        echo "[0;92m[*][0m prezto installed"
 
-        echo "[*] prezto installed..."
     fi
 }
 
 while true; do
     echo
-    read "yn?[?] Do you wish to install prezto? "
+    read "yn?[0;96m[?][0m Do you wish to install prezto? "
     # vared -p "Do you wish to install prezto? " -c yn
     case $yn in
-        [Yy]* ) echo "[*] Installing prezto..."; setup_func; break;;
-        [Nn]* ) echo "[!] Aborting install prezto..."; break;;
-        * ) echo "Please answer yes or no.";;
+        [Yy]* ) echo "[0;93m[+][0m Install prezto"; setup_func; break;;
+        [Nn]* ) echo "[0;91m[!][0m Aborting install prezto"; break;;
+        * ) echo "[0;91m[!][0mPlease answer yes or no";;
     esac
 done

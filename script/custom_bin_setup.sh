@@ -3,35 +3,12 @@
 ################################################################
 set -e
 
-case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
-esac
-
-if [[ $$ = $BASHPID ]]; then
-    PROJ_HOME=$(git rev-parse --show-toplevel)
-    TMP_DIR=$HOME/tmp_install
-
-    if [ ! -d $HOME/.local/bin ]; then
-        mkdir -p $HOME/.local/bin
-    fi
-
-    if [ ! -d $HOME/.local/src ]; then
-        mkdir -p $HOME/.local/src
-    fi
-
-    if [ ! -d $TMP_DIR ]; then
-        mkdir -p $TMP_DIR
-    fi
-fi
-BIN_DIR=${PROJ_HOME}/bin
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${DIR}/common.sh
+################################################################
 
 echo
-echo '[*] Coyping custom bin files...'
+echo "${marker_info} Coyping custom bin files..."
 
 # https://github.com/ChristopherSchultz/fast-file-count
 cd $BIN_DIR; cc -Wall -pedantic -o dircnt dircnt.c;
@@ -44,10 +21,9 @@ elif [[ $platform == "LINUX" ]]; then
     for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
         ln -snf ${BIN_DIR}/${file} $HOME/.local/bin/$file
     done
-else
-    echo "[!] $platform is not supported."; exit 1
 fi
 
+echo "${marker_ok} custom bin files copied"
 
 # clean up
 if [[ $$ = $BASHPID ]]; then

@@ -18,37 +18,15 @@ TMUX_VERSION=${1:-${TMUX_LATEST_VERSION}}
 ################################################################
 set -e
 
-case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
-esac
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${DIR}/common.sh
+################################################################
 
-if [[ $$ = $BASHPID ]]; then
-    PROJ_HOME=$(git rev-parse --show-toplevel)
-    TMP_DIR=$HOME/tmp_install
-
-    if [ ! -d $HOME/.local/bin ]; then
-        mkdir -p $HOME/.local/bin
-    fi
-
-    if [ ! -d $HOME/.local/src ]; then
-        mkdir -p $HOME/.local/src
-    fi
-
-    if [ ! -d $TMP_DIR ]; then
-        mkdir -p $TMP_DIR
-    fi
-fi
 
 setup_func() {
     # install prerequisite
+    (
     if [[ $1 = local ]]; then
-        echo 'Build "libevent-dev" and "libncurses-dev".' >&2
-
         # libevent
         if [ -d $HOME/.local/src/libevent-* ]; then
             cd $HOME/.local/src/libevent-*
@@ -94,8 +72,6 @@ EOS
             sudo apt-get -y remove libevent-dev libncurses-dev
             sudo apt-get -y install libevent-dev libncurses-dev
             sudo apt-get -y remove tmux
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     fi
 
@@ -166,42 +142,49 @@ EOS
             sudo make install
             cd $TMP_DIR
             sudo mv tmux-${TMUX_VERSION} /usr/local/src
-        else
-            echo "[!] $platform is not supported."; exit 1
         fi
     fi
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing tmux..."
+    echo "${marker_ok} tmux installed"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then
         rm -rf $TMP_DIR
     fi
-
-    echo "[*] tmux installed..."
 }
 
-
-while true; do
+main() {
     echo
     if [ -x "$(command -v tmux)" ]; then
-        echo "[*] Following list is tmux insalled on the system"
-        type tmux
-        tmux -V
+        echo "${marker_info} Following list is tmux insalled on the system"
+        coms=($(which -a tmux | uniq))
+        (
+            printf 'LOCATION,VERSION\n'
+            for com in "${coms[@]}"; do
+                printf '%s,%s\n' "${com}" "$(${com} -V)"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "[*] tmux is not found"
+        echo "${marker_err} tmux is not found"
     fi
 
-    echo "[*] Local install version (latest version: $TMUX_LATEST_VERSION, installing version: $TMUX_VERSION)"
-    read -p "[?] Do you wish to install tmux? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install tmux..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
+    while true; do
+        echo "${marker_info} Local install version (latest version: $TMUX_LATEST_VERSION, installing version: $TMUX_VERSION)"
+        read -p "${marker_que} Do you wish to install tmux? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install tmux"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
 
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install tmux locally..."; setup_func 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install tmux systemwide..."; setup_func; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+        read -p "${marker_que} Install locally or sytemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install tmux ${TMUX_VERSION} locally"; setup_func 'local'; break;;
+            [Ss]ystem* ) echo "${marker_info} Install latest tmux systemwide"; setup_func; break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
+}
+
+main "$@"

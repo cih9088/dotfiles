@@ -1,4 +1,5 @@
-# dotfiles
+# Andy's dotfiles
+![my dotfiles](https://i.imgur.com/O5Ntvjj.png)
 This is my dotfiles. Only tested in OSX and Ubuntu.
 
 ## Get this repository
@@ -177,6 +178,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 ### [tmux](https://github.com/tmux/tmux)
 For more detailed information please refer [tmux.conf](https://github.com/cih9088/dotfiles/blob/master/tmux/tmux.conf)
 - prefix: <kbd>Ctrl</kbd>+<kbd>a</kbd>
+- detach: <kbd>prefix</kbd>+<kbd>d</kbd>
 - toggle disable: <kbd>F12</kbd> (useful nested tmux)
 - create new window: <kbd>prefix</kbd>+<kbd>c</kbd>
 - split current pane vertically: <kbd>prefix</kbd>+<kbd>v</kbd>

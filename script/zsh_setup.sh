@@ -1,39 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # change version you want to install on local
 ZSH_VERSION=5.6.2
 
-
 ################################################################
 set -e
 
-case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
-esac
-
-if [[ $$ = $BASHPID ]]; then
-    PROJ_HOME=$(git rev-parse --show-toplevel)
-    TMP_DIR=$HOME/tmp_install
-
-    if [ ! -d $HOME/.local/bin ]; then
-        mkdir -p $HOME/.local/bin
-    fi
-
-    if [ ! -d $HOME/.local/src ]; then
-        mkdir -p $HOME/.local/src
-    fi
-
-    if [ ! -d $TMP_DIR ]; then
-        mkdir -p $TMP_DIR
-    fi
-fi
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${DIR}/common.sh
+################################################################
 
 setup_func() {
+    (
     if [[ $1 = local ]]; then
         if [ -d $HOME/.local/src/zsh-* ]; then
             cd $HOME/.local/src/zsh-*
@@ -58,45 +36,54 @@ brew 'zsh'
 EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install zsh
-        else
-            echo "[!] $platform is not supported."; exit 1
-        fi
-        echo "[*] Adding installed zsh to /etc/shells..."
-        if grep -Fxq "$(which zsh)" /etc/shells; then
-            :
-        else
-            echo "$(which zsh)" | sudo tee -a /etc/shells
+            # Adding installed zsh to /etc/shells
+            if grep -Fxq "$(which zsh)" /etc/shells; then
+                :
+            else
+                echo "$(which zsh)" | sudo tee -a /etc/shells
+            fi
         fi
     fi
+    ) >&3 2>&4 &
+    spinner "${marker_info} Installing zsh..."
+    echo "${marker_ok} zsh installed"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then
         rm -rf $TMP_DIR
     fi
-
-    echo "[*] zsh installed..."
 }
 
-
-while true; do
+main() {
     echo
     if [ -x "$(command -v zsh)" ]; then
-        echo "[*] Following list is zsh insalled on the system"
-        type zsh
+        echo "${marker_info} Following list is zsh insalled on the system"
+        coms=($(which -a zsh | uniq))
+        (
+            printf 'LOCATION,VERSION\n'
+            for com in "${coms[@]}"; do
+                printf '%s,%s\n' "${com}" "$(${com} --version)"
+            done
+        ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "[*] zsh is not found"
+        echo "${marker_err} zsh is not found"
     fi
-    read -p "[?] Do you wish to install zsh? " yn
-    case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) echo "[!] Aborting install zsh..."; break;;
-        * ) echo "Please answer yes or no."; continue;;
-    esac
 
-    read -p "[?] Install locally or sytemwide? " yn
-    case $yn in
-        [Ll]ocal* ) echo "[*] Install zsh locally..."; setup_func 'local'; break;;
-        [Ss]ystem* ) echo "[*] Install zsh systemwide..."; setup_func; break;;
-        * ) echo "Please answer locally or systemwide."; continue;;
-    esac
-done
+    while true; do
+        read -p "${marker_que} Do you wish to install zsh? " yn
+        case $yn in
+            [Yy]* ) :; ;;
+            [Nn]* ) echo "${marker_err} Aborting install zsh"; break;;
+            * ) echo "${marker_err} Please answer yes or no"; continue;;
+        esac
+
+        read -p "${marker_que} Install locally or sytemwide? " yn
+        case $yn in
+            [Ll]ocal* ) echo "${marker_info} Install zsh ${ZSH_VERSION} locally"; setup_func 'local'; break;;
+            [Ss]ystem* ) echo "${marker_info} Install latest zsh systemwide"; setup_func; break;;
+            * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+        esac
+    done
+}
+
+main "$@"
