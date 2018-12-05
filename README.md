@@ -13,9 +13,9 @@ $ git pull
 ```
 
 ## Prerequisites
-You need sudo and following would be installed. If you have installed already, no need.
-* OSX: python2, python3, wget
-* Ubuntu: python2, python3
+The following list would be installed in your system. You need privilege (sudo). No need if you have them on your system.
+* OSX: python2, python2-pip, python3, python3-pip wget
+* Ubuntu: python2, python2-pip, python3, python3-pip
 ```bash
 $ cd ~/dotfiles
 $ make prerequisites
@@ -23,7 +23,7 @@ $ make prerequisites
 
 ## How to install and update
 ### one-liner
-1. juset setup `cd ~/dotfiles; make installUpdateAll; make installDevAll`
+1. juet setup `cd ~/dotfiles; make installUpdateAll; make installDevAll`
 1. To install and update all (for novice), `cd ~/dotfiles; make installUpdateAll`
 2. To install dotfiles only and nothing else, `cd ~/dotfiles; make updateDotfiles`
 3. To update (if you have installed my **things**), `cd ~/dotfiles; make updateAll`

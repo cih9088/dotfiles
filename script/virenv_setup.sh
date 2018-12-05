@@ -6,7 +6,8 @@ VIRENV_NAME=venv
 
 export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+# export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 source $(which virtualenvwrapper.sh)
 mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
 

@@ -102,6 +102,8 @@
         " Plug 'tpope/vim-sensible'
         Plug 'junegunn/vim-easy-align'
         Plug 'michaeljsmith/vim-indent-object'
+        Plug 'kana/vim-textobj-user'
+        Plug 'idbrii/textobj-word-column.vim'
         Plug 'junegunn/gv.vim'
         " Plug 'yuttie/comfortable-motion.vim'
         " Plug 'kien/rainbow_parentheses.vim'
@@ -529,7 +531,13 @@
 
     " let terminal resize scale the internal windows {{{
         autocmd VimResized * :wincmd =
-    "}}}
+    " }}}
+
+    " neovim python support {{{
+        let g:python_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim2/bin/python")
+        let g:python3_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim3/bin/python")
+    " }}}
+
 
 " }}}
 
@@ -587,6 +595,10 @@
         let g:NERDTrimTrailingWhitespace = 1
         " Enable NERDCommenterToggle to check all selected lines is commented or not 
         let g:NERDToggleCheckAllLines = 1
+    " }}}
+
+    " fugitive {{{
+        nnoremap <leader>G :Gstatus<CR>
     " }}}
 
     " lightline {{{
@@ -973,8 +985,8 @@
 
     " LanguageClient {{{
         let g:LanguageClient_serverCommands = {
-            \ 'python': ['/home/andy/.local/bin/pyls'],
-            \ 'sh': ['/home/andy/.local/bin/bash-language-server', 'start'],
+            \ 'python': [system("echo -n ${HOME}/.local/bin/pyls")],
+            \ 'sh': [system("echo -n ${HOME}/.local/bin/bash-language-server"), 'start'],
             \ }
         let g:LanguageClient_diagnosticsEnable = 1
 

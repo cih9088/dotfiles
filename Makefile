@@ -54,6 +54,7 @@ installBins: prepare
 
 installDevShell:
 	@( $(scripts)/shell_setup.sh )
+	@npm i -g bash-language-server
 
 installDevPython:
 	@pip install glances --user
@@ -111,12 +112,12 @@ updateAll: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBi
 
 installAll: prepare installZsh installPrezto installNeovim installTmux installTPM installBins clean
 
-installUpdateAll: prepare installZsh installPrezto changeDefaultShell installNeovim installTmux \
+installUpdateAll: prepare installZsh changeDefaultShell installPrezto installNeovim installTmux \
 	updateDotfiles \
 	installTPM installBins \
 	updateNeovimPlugins updateBins updatePrezto clean
 
-installDevAll: installDevPython installDevShell installPythonVirtualenv
+installDevAll: installDevNodejs installDevPython installDevShell
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \

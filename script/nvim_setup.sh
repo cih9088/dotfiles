@@ -71,27 +71,46 @@ EOS
         fi
     fi
 
-    # clean up
-    if [[ $$ = $BASHPID ]]; then
-        rm -rf $TMP_DIR
-    fi
-
     echo "[*] neovim installed..."
 
     # install neovim with python support
     echo
     echo '[*] Install neovim with python support'
     sleep 1
+    
+    pip install virtualenv --user
+    pip install virtualenvwrapper --user
+    pip3 install virtualenv --user
+    pip3 install virtualenvwrapper --user
 
-    if [[ $1 = local ]]; then
-        pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-        pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-        pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-    else
-        pip install --no-cache-dir --upgrade --force-reinstall neovim || true
-        pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
-        pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
+    VIRENV_NAME=neovim2
+    export WORKON_HOME=$HOME/.virtualenvs
+    export VIRTUALENVWRAPPER_PYTHON=$(which python2)
+    source ${HOME}/.local/bin/virtualenvwrapper.sh
+    mkvirtualenv -p `which python2` ${VIRENV_NAME} || true
+    pip install neovim
+
+    VIRENV_NAME=neovim3
+    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+    source ${HOME}/.local/bin/virtualenvwrapper.sh
+    mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
+    pip install neovim
+
+    # if [[ $1 = local ]]; then
+    #     pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+    #     pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+    #     pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+    # else
+    #     pip install --no-cache-dir --upgrade --force-reinstall neovim || true
+    #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
+    #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
+    # fi
+
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
     fi
+
 }
 
 
