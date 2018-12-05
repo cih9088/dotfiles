@@ -13,7 +13,7 @@ while true; do
     read -p "${marker_que} Do you wish to change default shell to zsh? " yn
     case $yn in
         [Yy]* ) :; ;;
-        [Nn]* ) echo "${marker_info} Default shell is unchanged..."; break;;
+        [Nn]* ) echo "${marker_ok} Default shell is unchanged..."; break;;
         * ) echo "${marker_err} Please answer yes or no."; continue;;
     esac
 

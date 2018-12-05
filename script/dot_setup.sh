@@ -13,6 +13,7 @@ echo "${marker_info} Copying dot files"
 if [ -d "${HOME}/dotfiles_old" ]; then
     echo "${marker_err} dotfiles_old folder already exists"
     echo "${marker_info} Rename it to 'dotfiles_old_old'"
+    rm -rf $HOME/dotfiles_old_old || true
     mv $HOME/dotfiles_old $HOME/dotfiles_old_old
     mkdir -p ~/dotfiles_old
 else

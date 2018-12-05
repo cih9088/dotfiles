@@ -1,8 +1,8 @@
 export PATH := ${HOME}/.local/bin:${PATH}
 export PROJ_HOME := $(shell git rev-parse --show-toplevel)
-export TMP_DIR= ${HOME}/tmp_install
-
-scripts := $(PROJ_HOME)/script
+export TMP_DIR := ${HOME}/tmp_install
+export BIN_DIR := $(PROJ_HOME)/bin
+export SCRIPTS_DIR := $(PROJ_HOME)/script
 
 ifeq (installNeovim,$(firstword $(MAKECMDGOALS)))
     nvim_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -23,19 +23,19 @@ prepare:
 	@mkdir -p $(TMP_DIR)
 
 prerequisites:
-	@( $(scripts)/prerequisites.sh )
+	@( $(SCRIPTS_DIR)/prerequisites.sh )
 
 installZsh: prepare
-	@( $(scripts)/zsh_setup.sh )
+	@( $(SCRIPTS_DIR)/zsh_setup.sh )
 
 installPrezto: prepare
-	@( $(scripts)/prezto_setup.sh )
+	@( $(SCRIPTS_DIR)/prezto_setup.sh )
 
 installNeovim: prepare
-	@( $(scripts)/nvim_setup.sh $(nvim_version) )
+	@( $(SCRIPTS_DIR)/nvim_setup.sh $(nvim_version) )
 
 installTmux: prepare
-	@( $(scripts)/tmux_setup.sh $(tmux_version) )
+	@( $(SCRIPTS_DIR)/tmux_setup.sh $(tmux_version) )
 
 installTPM:
 	@echo
@@ -45,10 +45,10 @@ installTPM:
 	@echo "[0;92m[*][0m TPM installed"
 
 installBins: prepare
-	@( $(scripts)/bin_setup.sh )
+	@( $(SCRIPTS_DIR)/bin_setup.sh )
 
 installDevShell:
-	@( $(scripts)/shell_setup.sh )
+	@( $(SCRIPTS_DIR)/shell_setup.sh )
 	@echo
 	@echo "[0;93m[+][0m Installing bash-language-server..."
 	@npm i -g bash-language-server
@@ -79,13 +79,13 @@ installDevNodejs:
 	@echo "[0;92m[*][0m Node.js installed"
 
 installPythonVirtualenv:
-	@( $(scripts)/virenv_setup.sh )
+	@( $(SCRIPTS_DIR)/virenv_setup.sh )
 
 changeDefaultShell:
-	@( $(scripts)/change_defualt_to_zsh.sh )
+	@( $(SCRIPTS_DIR)/change_defualt_to_zsh.sh )
 
 updateBins: prepare
-	@( $(scripts)/custom_bin_setup.sh )
+	@( $(SCRIPTS_DIR)/custom_bin_setup.sh )
 
 updatePrezto:
 	@echo
@@ -96,44 +96,47 @@ updatePrezto:
 	@echo "[0;92m[*][0m prezto updated"
 
 updateDotfiles:
-	@( $(scripts)/dot_setup.sh )
+	@( $(SCRIPTS_DIR)/dot_setup.sh )
 
 updateNeovimPlugins:
 	@echo
 	@echo "[0;93m[+][0m Updating neovim plugins..."
 	@nvim -E -s -u "${HOME}/.config/nvim/init.vim" +PlugInstall +PlugUpdate +PlugUpgrade +UpdateRemotePlugins +qall || true
+	@ln -snf $(PROJ_HOME)/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
 	@echo "[0;92m[*][0m neovim plugins updated"
 
 updateTmuxPlugins: installTPM
 	@echo
 	@echo "[0;93m[+][0m Updating tmux plugins..."
-	@~/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1
+	@${HOME}/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1
 	@echo "[0;92m[*][0m tmux plugins updated"
 
 prepare_clean:
+	@echo
+	@echo "[0;92m[*][0m Done."
 	@rm -rf $(TMP_DIR)
 
-wipeout:
+clean:
+	@echo "Remove dotfiles and folder itself"
 	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto ${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
 		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
 		${HOME}/.vimrc ${HOME}/.vim \
 		${HOME}/.config/nvim ${HOME}/.config/alacritty
+	@rm -rf $(PROJ_HOME)
 
 
-updateAll: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto prepare_clean
+update: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto prepare_clean
 
-installAll: prepare installZsh installPrezto installNeovim installTmux installTPM installBins prepare_clean
+install: prepare installZsh changeDefaultShell installPrezto updateDotfiles \
+	installNeovim installTmux installTPM installBins prepare_clean
 
-installUpdateAll: prepare installZsh changeDefaultShell installPrezto installNeovim installTmux \
-	updateDotfiles \
-	installTPM installBins \
-	updateNeovimPlugins updateBins updatePrezto prepare_clean
+installDev: installDevNodejs installDevPython installDevShell
 
-installDevAll: installDevNodejs installDevPython installDevShell
+init: install update installDev
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \
-	updateDotfiles updateNeovimPlugins updateTmuxPlugins prepare_clean updateAll installAll installDevAll \
-	installTPM
+	updateDotfiles updateNeovimPlugins updateTmuxPlugins prepare_clean installTPM \
+	clean update install installDev init \
 

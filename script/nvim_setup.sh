@@ -46,42 +46,8 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing neovim..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim..."
     echo "${marker_ok} neovim installed"
-
-    # install neovim with python support
-    (
-    sleep 1
-    
-    pip install virtualenv --user
-    pip install virtualenvwrapper --user
-    pip3 install virtualenv --user
-    pip3 install virtualenvwrapper --user
-
-    VIRENV_NAME=neovim2
-    export WORKON_HOME=$HOME/.virtualenvs
-    export VIRTUALENVWRAPPER_PYTHON=$(which python2)
-    source ${HOME}/.local/bin/virtualenvwrapper.sh
-    mkvirtualenv -p `which python2` ${VIRENV_NAME} || true
-    pip install neovim
-
-    VIRENV_NAME=neovim3
-    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-    mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
-    pip install neovim
-
-    # if [[ $1 = local ]]; then
-    #     pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-    #     pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-    #     pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-    # else
-    #     pip install --no-cache-dir --upgrade --force-reinstall neovim || true
-    #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
-    #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
-    # fi
-    ) >&3 2>&4 &
-    spinner "${marker_info} Installing neovim with python support..."
-    echo "${marker_ok} neovim with python support installed"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then
@@ -93,7 +59,7 @@ EOS
 main() {
     echo
     if [ -x "$(command -v nvim)" ]; then
-        echo "${marker_info} Following list is nvim insalled on the system"
+        echo "${marker_info} Following list is nvim installed on the system"
         coms=($(which -a nvim | uniq))
         (
             printf 'LOCATION,VERSION\n'
@@ -121,6 +87,47 @@ main() {
             * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
         esac
     done
+
+    # install neovim with python support
+    (
+    pip install virtualenv --user
+    pip install virtualenvwrapper --user
+    pip3 install virtualenv --user
+    pip3 install virtualenvwrapper --user
+
+    rm -rf ${HOME}/.virtualenvs/neovim2 || true
+    rm -rf ${HOME}/.virtualenvs/neovim3 || true
+
+    if [[ $platform == "OSX" ]]; then
+        source ${HOME}/Library/Python/3.7/bin/virtualenvwrapper.sh
+    elif [[ $platform == "LINUX" ]]; then
+        source ${HOME}/.local/bin/virtualenvwrapper.sh
+    fi
+
+    VIRENV_NAME=neovim2
+    export WORKON_HOME=$HOME/.virtualenvs
+    export VIRTUALENVWRAPPER_PYTHON=$(which python2)
+    mkvirtualenv -p `which python2` ${VIRENV_NAME} || true
+    pip install neovim
+
+    VIRENV_NAME=neovim3
+    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+    mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
+    pip install neovim
+
+    # if [[ $1 = local ]]; then
+    #     pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+    #     pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+    #     pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+    # else
+    #     pip install --no-cache-dir --upgrade --force-reinstall neovim || true
+    #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
+    #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
+    # fi
+    ) >&3 2>&4 &
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim with python support..."
+    echo "${marker_ok} neovim with python support installed"
+
 }
 
 main "$@"

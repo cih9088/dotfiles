@@ -48,7 +48,7 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing tree..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tree..."
     echo "${marker_ok} tree installed"
 }
 
@@ -83,7 +83,7 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing fd..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing fd..."
     echo "${marker_ok} fd installed"
 }
 
@@ -103,7 +103,7 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing thefuck..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing thefuck..."
     echo "${marker_ok} thefuck installed"
 }
 
@@ -138,7 +138,7 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing rg..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing rg..."
     echo "${marker_ok} rg installed"
 }
 
@@ -150,7 +150,7 @@ setup_func_ranger() {
     $HOME/.local/src/ranger/ranger.py --copy-config=all
     ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing ranger..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing ranger..."
     echo "${marker_ok} ranger installed"
 }
 
@@ -174,7 +174,7 @@ EOS
 
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing bash-snippets (transfer, cheat)..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing bash-snippets (transfer, cheat)..."
     echo "${marker_ok} bash-snippets (transfer, cheat) installed"
 }
 
@@ -182,12 +182,12 @@ EOS
 main() {
     echo
     if [ -x "$(command -v tree)" ]; then
-        echo "${marker_info} Following list is tree insalled on the system"
+        echo "${marker_info} Following list is tree installed on the system"
         coms=($(which -a tree | uniq))
         (
             printf 'LOCATION,VERSION\n'
             for com in "${coms[@]}"; do
-                printf '%s,%s\n' "${com}" "$(${com} -version)"
+                printf '%s,%s\n' "${com}" "$(${com} --version)"
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
@@ -213,7 +213,7 @@ main() {
 
     echo
     if [ -x "$(command -v fd)" ]; then
-        echo "${marker_info} Following list is fd insalled on the system"
+        echo "${marker_info} Following list is fd installed on the system"
         coms=($(which -a fd | uniq))
         (
             printf 'LOCATION,VERSION\n'
@@ -244,12 +244,12 @@ main() {
 
     echo
     if [ -x "$(command -v rg)" ]; then
-        echo "${marker_info} Following list is rg insalled on the system"
+        echo "${marker_info} Following list is rg installed on the system"
         coms=($(which -a rg | uniq))
         (
             printf 'LOCATION,VERSION\n'
             for com in "${coms[@]}"; do
-                printf '%s,%s\n' "${com}" "$(${com} -version | head -1)"
+                printf '%s,%s\n' "${com}" "$(${com} --version | head -1)"
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
@@ -275,12 +275,12 @@ main() {
 
     echo
     if [ -x "$(command -v ranger)" ]; then
-        echo "${marker_info} Following list is ranger insalled on the system"
+        echo "${marker_info} Following list is ranger installed on the system"
         coms=($(which -a ranger | uniq))
         (
             printf 'LOCATION,VERSION\n'
             for com in "${coms[@]}"; do
-                printf '%s,%s\n' "${com}" "$(${com} -version | head -1)"
+                printf '%s,%s\n' "${com}" "$(${com} --version | head -1)"
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
@@ -301,12 +301,12 @@ main() {
 
     echo
     if [ -x "$(command -v thefuck)" ]; then
-        echo "${marker_info} Following list is thefuck insalled on the system"
+        echo "${marker_info} Following list is thefuck installed on the system"
         coms=($(which -a thefuck | uniq))
         (
-            printf 'LOCATION,VERSION\n'
+            printf 'LOCATION\n'
             for com in "${coms[@]}"; do
-                printf '%s,%s\n' "${com}" "$(${com} -version)"
+                printf '%s\n' "${com}"
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
@@ -331,7 +331,7 @@ main() {
 
     echo
     if [ -x "$(command -v tldr)" ]; then
-        echo "${marker_info} Following list is tldr insalled on the system"
+        echo "${marker_info} Following list is tldr installed on the system"
         coms=($(which -a tldr | uniq))
         (
             printf 'LOCATION\n'
@@ -353,7 +353,11 @@ main() {
 
         read -p "${marker_que} Install locally or sytemwide? " yn
         case $yn in
-            [Ll]ocal* ) echo "${marker_info} Install tldr locally"; pip install tldr --user; break;;
+            [Ll]ocal* ) echo "${marker_info} Install tldr locally";
+                (pip install tldr --user) >&3 2>&4 &
+                [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tldr..."
+                echo "${marker_ok} tldr installed"
+                break;;
             [Ss]ystem* ) echo "${marker_info} Install tldr systemwide"; 
                 (
                 if [[ $platform == "OSX" ]]; then
@@ -364,7 +368,7 @@ EOS
                     sudo pip install tldr
                 fi
                 ) >&3 2>&4 &
-                spinner "${marker_info} Installing tldr..."
+                [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tldr..."
                 echo "${marker_ok} tldr installed"
                 break;;
             * ) echo "${marker_err} Please answer locally or systemwide"; continue;;

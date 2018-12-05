@@ -145,7 +145,7 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing tmux..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tmux..."
     echo "${marker_ok} tmux installed"
 
     # clean up
@@ -157,7 +157,7 @@ EOS
 main() {
     echo
     if [ -x "$(command -v tmux)" ]; then
-        echo "${marker_info} Following list is tmux insalled on the system"
+        echo "${marker_info} Following list is tmux installed on the system"
         coms=($(which -a tmux | uniq))
         (
             printf 'LOCATION,VERSION\n'

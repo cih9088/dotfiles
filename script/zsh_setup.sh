@@ -45,7 +45,7 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing zsh..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing zsh..."
     echo "${marker_ok} zsh installed"
 
     # clean up
@@ -57,7 +57,7 @@ EOS
 main() {
     echo
     if [ -x "$(command -v zsh)" ]; then
-        echo "${marker_info} Following list is zsh insalled on the system"
+        echo "${marker_info} Following list is zsh installed on the system"
         coms=($(which -a zsh | uniq))
         (
             printf 'LOCATION,VERSION\n'

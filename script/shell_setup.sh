@@ -31,14 +31,14 @@ EOS
         fi
     fi
     ) >&3 2>&4 &
-    spinner "${marker_info} Installing shellcheck..."
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing shellcheck..."
     echo "${marker_ok} shellcheck installed"
 }
 
 main() {
     echo
     if [ -x "$(command -v shellchecker)" ]; then
-        echo "${marker_info} Following list is shellchecker insalled on the system"
+        echo "${marker_info} Following list is shellchecker installed on the system"
         coms=($(which -a shellchecker | uniq))
         (
             printf 'LOCATION,VERSION\n'

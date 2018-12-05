@@ -97,7 +97,7 @@ if [[ $$ = $BASHPID ]]; then
     PROJ_HOME=${PROJ_HOME:=$(git rev-parse --show-toplevel)}
     TMP_DIR=${TMP_DIR:=${HOME}/tmp_install}
     VERBOSE=${VERBOSE:=}
-    BIN_DIR=${PROJ_HOME}/bin
+    BIN_DIR=${BIN_DIR:=${PROJ_HOME}/bin}
 
     if [ ! -d $HOME/.local/bin ]; then
         mkdir -p $HOME/.local/bin

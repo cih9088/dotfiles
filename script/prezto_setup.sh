@@ -55,7 +55,7 @@ setup_func() {
         #     sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
         # fi
         ) &> /dev/null &
-        spinner "[0;93m[+][0m Installing prezto..."
+        [[ ${VERBOSE} == YES ]] && wait || spinner "[0;93m[+][0m Installing prezto..."
         echo "[0;92m[*][0m prezto installed"
 
     fi
