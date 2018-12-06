@@ -40,8 +40,8 @@ setup_func() {
         tar -xvzf libevent-${LIBEVENT_VERSION}-stable.tar.gz
         cd libevent-${LIBEVENT_VERSION}-stable
         ./configure --prefix=$HOME/.local --disable-shared
-        make
-        make install
+        make || exit $?
+        make install || exit $?
         cd $TMP_DIR
         mv libevent-${LIBEVENT_VERSION}-stable $HOME/.local/src
 
@@ -57,8 +57,8 @@ setup_func() {
         tar -xvzf ncurses.tar.gz
         cd ncurses-${NCURSES_VERSION}
         ./configure --prefix=$HOME/.local
-        make
-        make install
+        make || exit $?
+        make install || exit $?
         cd $TMP_DIR
         mv ncurses-${NCURSES_VERSION} $HOME/.local/src
     else
@@ -99,8 +99,8 @@ EOS
         #     tar -xvzf xclip-${XCLIP_VERSION}.tar.gz
         #     cd xclip-${XCLIP_VERSION}
         #     ./configure --prefix=$HOME/.local --disable-shared
-        #     make
-        #     make install
+        #     make || exit $?
+        #     make install || exit $?
         #     cd $TMP_DIR
         #     mv xclip-${XCLIP_VERSION} $HOME/.local/src
         fi
@@ -111,7 +111,7 @@ EOS
         cd tmux-${TMUX_VERSION}
         ./configure CFLAGS="-I$HOME/.local/include -I$HOME/.local/include/ncurses" LDFLAGS="-L$HOME/.local/lib -L$HOME/.local/include/ncurses -L$HOME/.local/include" --prefix=$HOME/.local
         (CPPFLAGS="-I$HOME/.local/include -I$HOME/.local/include/ncurses" LDFLAGS="-static -L$HOME/.local/include -L$HOME/.local/include/ncurses -L$HOME/.local/lib" make)
-        make install
+        make install || exit $?
         mv tmux $HOME/.local/bin
         cd $TMP_DIR
         mv tmux-${TMUX_VERSION} $HOME/.local/src
@@ -140,8 +140,8 @@ EOS
             tar -xvzf tmux-${TMUX_VERSION}.tar.gz
             cd tmux-${TMUX_VERSION}
             ./configure
-            make
-            sudo make install
+            make || exit $?
+            sudo make install || exit $?
             cd $TMP_DIR
             sudo mv tmux-${TMUX_VERSION} /usr/local/src
         fi
@@ -169,7 +169,7 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} tmux is not found"
+        echo "${marker_info} tmux is not found"
     fi
     echo "${marker_info} Local install version (latest version: $TMUX_LATEST_VERSION, installing version: $TMUX_VERSION)"
 
@@ -177,7 +177,7 @@ main() {
         if [[ ${CONFIG_tmux_install} == "yes" ]]; then
             [[ ${CONFIG_tmux_local} == "yes" ]] && setup_func 'local' || setup_func 'system'
         else
-            echo "${marker_err} tmux is not installed"
+            echo "${marker_ok} tmux is not installed"
         fi
     else
         while true; do

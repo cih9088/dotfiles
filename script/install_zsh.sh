@@ -25,8 +25,8 @@ setup_func() {
         tar -xvJf zsh-${ZSH_VERSION}.tar.xz
         cd zsh-${ZSH_VERSION}
         ./configure --prefix=$HOME/.local
-        make
-        make install
+        make || exit $?
+        make install || exit $?
         cd $TMP_DIR
         mv zsh-${ZSH_VERSION} $HOME/.local/src
     else
@@ -38,10 +38,10 @@ EOS
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install zsh
             # Adding installed zsh to /etc/shells
-            if grep -Fxq "$(which zsh)" /etc/shells; then
+            if grep -Fxq "/usr/bin/zsh" /etc/shells; then
                 :
             else
-                echo "$(which zsh)" | sudo tee -a /etc/shells
+                echo "/usr/bin/zsh" | sudo tee -a /etc/shells
             fi
         fi
     fi
@@ -68,14 +68,14 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} zsh is not found"
+        echo "${marker_info} zsh is not found"
     fi
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_zsh_install} == "yes" ]]; then
             [[ ${CONFIG_zsh_local} == "yes" ]] && setup_func 'local' || setup_func 'system'
         else
-            echo "${marker_err} zsh is not installed"
+            echo "${marker_ok} zsh is not installed"
         fi
     else
         while true; do

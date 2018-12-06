@@ -66,7 +66,7 @@ if [[ ! -z ${CONFIG+x} ]]; then
     if [[ ${CONFIG_prezto_install} == "yes" ]]; then
         setup_func
     else
-        echo "[0;91m[!][0m prezto is not installed"
+        echo "[0;92m[!][0m prezto is not installed"
     fi
 else
     while true; do

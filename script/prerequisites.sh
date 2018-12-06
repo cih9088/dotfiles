@@ -31,9 +31,10 @@ brew "wget"
 brew "pssh"
 brew "coreutils"
 brew "highlight"
+brew "git"
 EOS
 elif [[ $platform == "LINUX" ]]; then
-    sudo apt-get install python-dev python-pip python3-dev python3-pip highlight xclip
+    sudo apt-get install python-dev python-pip python3-dev python3-pip highlight xclip wget git
 else
     echo 'not defined'; exit 1
 fi

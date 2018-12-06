@@ -56,36 +56,36 @@ EOS
         || echo -e "\033[2K \033[100D${marker_err} neovim install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim..."
 
-    (
-    if [[ $1 = local ]]; then
-        if [ -d $HOME/.local/src/xclip-* ]; then
-            cd $HOME/.local/src/xclip-*
-            make uninstall
-            make clean
-            cd ..
-            rm -rf $HOME/.local/src/xclip-*
-        fi
-        cd $TMP_DIR
-        wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
-        tar xvzf xclip-${XCLIP_VERSION}.tar.gz
-        cd xclip-${XCLIP_VERSION}
-        ./configure --prefix=$HOME/.local --disable-shared
-        make
-        make install
-        cd $TMP_DIR
-        rm -rf $HOME/.local/src/xclip-*
-        mv xclip-${XCLIP_VERSION} $HOME/.local/src
-    else
-        if [[ $platform == "OSX" ]]; then
-            :
-        elif [[ $platform == "LINUX" ]]; then
-            sudo apt-get -y install xclip
-        fi
-    fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} X11 clipboard(xclip / pbcopy / pbpaste) is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} X11 clipboard(xclip / pbcopy / pbpaste) install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing X11 clipboard(xclip / pbcopy / pbpaste)..."
+    # (
+    # if [[ $1 = local ]]; then
+    #     if [ -d $HOME/.local/src/xclip-* ]; then
+    #         cd $HOME/.local/src/xclip-*
+    #         make uninstall
+    #         make clean
+    #         cd ..
+    #         rm -rf $HOME/.local/src/xclip-*
+    #     fi
+    #     cd $TMP_DIR
+    #     wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
+    #     tar xvzf xclip-${XCLIP_VERSION}.tar.gz
+    #     cd xclip-${XCLIP_VERSION}
+    #     ./configure --prefix=$HOME/.local --disable-shared
+    #     make || exit $?
+    #     make install || exit $?
+    #     cd $TMP_DIR
+    #     rm -rf $HOME/.local/src/xclip-*
+    #     mv xclip-${XCLIP_VERSION} $HOME/.local/src
+    # else
+    #     if [[ $platform == "OSX" ]]; then
+    #         :
+    #     elif [[ $platform == "LINUX" ]]; then
+    #         sudo apt-get -y install xclip
+    #     fi
+    # fi
+    # ) >&3 2>&4 \
+    #     && echo -e "\033[2K \033[100D${marker_ok} X11 clipboard(xclip / pbcopy / pbpaste) is installed [$1]" \
+    #     || echo -e "\033[2K \033[100D${marker_err} X11 clipboard(xclip / pbcopy / pbpaste) install is failed [$1]. use VERBOSE=YES for error message" &
+    # [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing X11 clipboard(xclip / pbcopy / pbpaste)..."
 
     # clean up
     if [[ $$ = $BASHPID ]]; then
@@ -106,7 +106,7 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} nvim is not found"
+        echo "${marker_info} nvim is not found"
     fi
     echo "${marker_info} Local install version (latest version: $NVIM_LATEST_VERSION, installing version: $NVIM_VERSION)"
 
@@ -114,7 +114,7 @@ main() {
         if [[ ${CONFIG_nvim_install} == "yes" ]]; then
             [[ ${CONFIG_nvim_local} == "yes" ]] && setup_func_neovim 'local' || setup_func_neovim 'system'
         else
-            echo "${marker_err} neovim is not installed"
+            echo "${marker_ok} neovim is not installed"
         fi
     else
         while true; do

@@ -38,8 +38,8 @@ setup_func_tree() {
         tar -xvzf tree-${TREE_VERSION}.tgz
         cd tree-${TREE_VERSION}
         sed -i -e "s|prefix = /usr|prefix = $HOME/.local|" Makefile
-        make
-        make install
+        make || exit $?
+        make install || exit $?
         cd $TMP_DIR
         rm -rf $HOME/.local/src/tree-*
         mv tree-${TREE_VERSION} $HOME/.local/src
@@ -166,8 +166,8 @@ setup_func_ranger() {
     $HOME/.local/src/ranger/ranger.py --copy-config=all
     ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
     ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} ranger is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} ranger install is failed [$1]. use VERBOSE=YES for error message" &
+        && echo -e "\033[2K \033[100D${marker_ok} ranger is installed [local]" \
+        || echo -e "\033[2K \033[100D${marker_err} ranger install is failed [local]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing ranger..."
 }
 
@@ -228,7 +228,7 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} tree is not found"
+        echo "${marker_info} tree is not found"
     fi
     echo "${marker_info} Local install version (installing version: $TREE_VERSION)"
 
@@ -236,7 +236,7 @@ main() {
         if [[ ${CONFIG_tree_install} == "yes" ]]; then
             [[ ${CONFIG_tree_local} == "yes" ]] && setup_func_tree 'local' || setup_func_tree 'system'
         else
-            echo "${marker_err} tree is not installed"
+            echo "${marker_ok} tree is not installed"
         fi
     else
         while true; do
@@ -267,7 +267,7 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} fd is not found"
+        echo "${marker_info} fd is not found"
     fi
     echo "${marker_info} Local install version (latest version: $FD_VERSION, installing version: $FD_VERSION)"
 
@@ -275,7 +275,7 @@ main() {
         if [[ ${CONFIG_fd_install} == "yes" ]]; then
             [[ ${CONFIG_fd_local} == "yes" ]] && setup_func_fd 'local' || setup_func_fd 'system'
         else
-            echo "${marker_err} fd is not installed"
+            echo "${marker_ok} fd is not installed"
         fi
     else
         while true; do
@@ -306,7 +306,7 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} rg is not found"
+        echo "${marker_info} rg is not found"
     fi
     echo "${marker_info} Local install version (latest version: $RG_VERSION, installing version: $RG_VERSION)"
 
@@ -314,7 +314,7 @@ main() {
         if [[ ${CONFIG_rg_install} == "yes" ]]; then
             [[ ${CONFIG_rg_local} == "yes" ]] && setup_func_rg 'local' || setup_func_rg 'system'
         else
-            echo "${marker_err} rg is not installed"
+            echo "${marker_ok} rg is not installed"
         fi
     else
         while true; do
@@ -345,14 +345,14 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} ranger is not found"
+        echo "${marker_info} ranger is not found"
     fi
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_ranger_install} == "yes" ]]; then
             setup_func_ranger
         else
-            echo "${marker_err} rg is not installed"
+            echo "${marker_ok} rg is not installed"
         fi
     else
         while true; do
@@ -379,14 +379,14 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} thefuck is not found"
+        echo "${marker_info} thefuck is not found"
     fi
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_thefuck_install} == "yes" ]]; then
             [[ ${CONFIG_thefuck_local} == "yes" ]] && setup_func_thefuck 'local' || setup_func_thefuck 'system'
         else
-            echo "${marker_err} thefuck is not installed"
+            echo "${marker_ok} thefuck is not installed"
         fi
     else
         while true; do
@@ -417,14 +417,14 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} tldr is not found"
+        echo "${marker_info} tldr is not found"
     fi
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_tldr_install} == "yes" ]]; then
             [[ ${CONFIG_tldr_local} == "yes" ]] && setup_func_tldr 'local' || setup_func_tldr 'system'
         else
-            echo "${marker_err} tldr is not installed"
+            echo "${marker_ok} tldr is not installed"
         fi
     else
         while true; do
@@ -449,7 +449,7 @@ main() {
         if [[ ${CONFIG_bash_snippets_install} == "yes" ]]; then
             [[ ${CONFIG_bash_snippets_local} == "yes" ]] && setup_func_bash_snippets 'local' || setup_func_bash_snippets 'system'
         else
-            echo "${marker_err} bash_snippets is not installed"
+            echo "${marker_ok} bash_snippets is not installed"
         fi
     else
         while true; do

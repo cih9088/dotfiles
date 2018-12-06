@@ -40,8 +40,8 @@ EOS
 
 setup_func_bash_language_server() {
     (npm i -g bash-language-server) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} bash-language-server is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} bash-language-server install is failed [$1]. use VERBOSE=YES for error message" &
+        && echo -e "\033[2K \033[100D${marker_ok} bash-language-server is installed [local]" \
+        || echo -e "\033[2K \033[100D${marker_err} bash-language-server install is failed [local]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing bash-language-server..."
 }
 
@@ -57,14 +57,14 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} shellchecker is not found"
+        echo "${marker_info} shellchecker is not found"
     fi
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_shellchecker_install} == "yes" ]]; then
             [[ ${CONFIG_shellchecker_local} == "yes" ]] && setup_func_shellcheck 'local' || setup_func_shellcheck 'system'
         else
-            echo "${marker_err} shellchecker is not installed"
+            echo "${marker_ok} shellchecker is not installed"
         fi
     else
         while true; do
@@ -95,14 +95,14 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_err} bash-language-server is not found"
+        echo "${marker_info} bash-language-server is not found"
     fi
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_bash_language_server_install} == "yes" ]]; then
             setup_func_bash_language_server
         else
-            echo "${marker_err} bash_language_server is not installed"
+            echo "${marker_ok} bash_language_server is not installed"
         fi
     else
         while true; do

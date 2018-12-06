@@ -15,11 +15,12 @@ $ git pull
 
 ## Prerequisites
 The following list would be installed in your system. You need privilege (sudo). No need if you have them on your system.
-* OSX: python2, python2-pip, python3, python3-pip, wget
-* Ubuntu: python2, python2-pip, python3, python3-pip
+* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git
+* Ubuntu: python2, python2-pip, python3, python3-pip, wget, xclip, git
 ```bash
 $ cd ~/dotfiles
-$ make prerequisites
+$ make prerequisitesTest    # Check what are installed and not
+$ make prerequisites        # Install prerequisites (previlege is needed)
 ```
 
 ## How to install and update
