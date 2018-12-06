@@ -24,42 +24,41 @@ spinner() {
 
 setup_func() {
     if [ -d "${ZDOTDIR:-$HOME}/.zprezto" ]; then
-        echo "[0;93m[+][0m prezto is installed. No need to install. Abort"
-    else
-        (
-        # Clone prezto the repository
-        #git clone --recursive https://github.com/cih9088/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-        git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
-
-        # Create a new zsh configureation by copying the zsh config files
-        setopt EXTENDED_GLOB
-        for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-            ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
-        done
-
-        ## Clone garrett prompt repository
-        #git clone https://github.com/cih9088/zsh-prompt-garrett.git ./prompt
-        #
-        #cd prompt
-        #cp prompt_garrett_setup ~/.zprezto/modules/prompt/functions/
-        #cd ..
-        #rm -rf prompt
-        #
-
-
-        # adding vi-mode indicator https://github.com/sindresorhus/pure/wiki
-        # this feature is in the master. no need.
-        # if grep -Fq 'PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"; then
-        #     :
-        # else
-        #     sed -i -e '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
-        #     sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
-        # fi
-        ) &> /dev/null &
-        [[ ${VERBOSE} == YES ]] && wait || spinner "[0;93m[+][0m Installing prezto..."
-        echo "[0;92m[*][0m prezto installed"
-
+        rm -rf "${ZDOTDIR:-$HOME}/.zprezto"
+        echo "[0;93m[+][0m prezto is installed. Remove it and reinstall."
     fi
+    (
+    # Clone prezto the repository
+    #git clone --recursive https://github.com/cih9088/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+    git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+
+    # Create a new zsh configureation by copying the zsh config files
+    setopt EXTENDED_GLOB
+    for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+        ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+    done
+
+    ## Clone garrett prompt repository
+    #git clone https://github.com/cih9088/zsh-prompt-garrett.git ./prompt
+    #
+    #cd prompt
+    #cp prompt_garrett_setup ~/.zprezto/modules/prompt/functions/
+    #cd ..
+    #rm -rf prompt
+    #
+
+
+    # adding vi-mode indicator https://github.com/sindresorhus/pure/wiki
+    # this feature is in the master. no need.
+    # if grep -Fq 'PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"; then
+    #     :
+    # else
+    #     sed -i -e '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+    #     sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
+    # fi
+    ) &> /dev/null &
+    [[ ${VERBOSE} == YES ]] && wait || spinner "[0;93m[+][0m Installing prezto..."
+    echo "[0;92m[*][0m prezto installed"
 }
 
 echo

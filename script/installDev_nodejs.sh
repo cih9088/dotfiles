@@ -13,9 +13,10 @@ if [[ ! -z ${CONFIG+x} ]]; then
         (
         # curl -sL install-node.now.sh/lts | sed 's/read yn < \/dev\/tty/yn = y/' | sh -s -- --prefix=${HOME}/.local
         curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local --yes
-        ) >&3 2>&4 &
+        ) >&3 2>&4 \
+            && echo -e "\033[2K \033[100D${marker_ok} node.js is installed [$1]" \
+            || echo -e "\033[2K \033[100D${marker_err} node.js install is failed [$1]. use VERBOSE=YES for error message" &
         [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing node.js..."
-        echo "${marker_ok} node.js installed [local]"
     else
         echo "${marker_err} node.js is not installed"
     fi

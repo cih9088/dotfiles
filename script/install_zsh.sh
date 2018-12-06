@@ -16,6 +16,7 @@ setup_func() {
         if [ -d $HOME/.local/src/zsh-* ]; then
             cd $HOME/.local/src/zsh-*
             make uninstall
+            make clean
             cd ..
             rm -rf $HOME/.local/src/zsh-*
         fi
@@ -44,9 +45,10 @@ EOS
             fi
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} zsh is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} zsh install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing zsh..."
-    echo "${marker_ok} zsh installed [$1]"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then

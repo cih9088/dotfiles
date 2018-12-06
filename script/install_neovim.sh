@@ -6,6 +6,8 @@ NVIM_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/neovim/neovim/
 NVIM_LATEST_VERSION=${NVIM_LATEST_VERSION##v}
 NVIM_VERSION=${1:-${NVIM_LATEST_VERSION}}
 
+XCLIP_VERSION=0.12
+
 ################################################################
 set -e
 
@@ -13,24 +15,28 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
 
-setup_func() {
+setup_func_neovim() {
     (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
         if [[ $platform == "OSX" ]]; then
             wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-macos.tar.gz
             tar -xvzf nvim-macos.tar.gz
-            cp -r nvim-osx64/* $HOME/.local/
+            yes | \cp -rf nvim-osx64/* $HOME/.local/
         elif [[ $platform == "LINUX" ]]; then
+            rm -rf $HOME/.local/bin/nvim || true
+            rm -rf $HOME/.local/man/man1/nvim.1 || true
+            rm -rf $HOME/.local/share/nvim/runtim || true
             # https://github.com/neovim/neovim/issues/7620
             # https://github.com/neovim/neovim/issues/7537
             wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
-            # chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract
-            # cp -r squashfs-root/usr/bin $HOME/.local
-            # cp -r squashfs-root/usr/man $HOME/.local
-            # cp -r squashfs-root/usr/share/nvim $HOME/.local/share
-            chmod u+x nvim.appimage && mv nvim.appimage nvim
-            cp nvim $HOME/.local/bin
+            chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract
+            yes | \cp -rf squashfs-root/usr/bin $HOME/.local
+            yes | \cp -rf squashfs-root/usr/man $HOME/.local
+            yes | \cp -rf squashfs-root/usr/share/nvim $HOME/.local/share
+            # yes | \cp -rf squashfs-root/usr/* $HOME/.local
+            # chmod u+x nvim.appimage && mv nvim.appimage nvim
+            # cp nvim $HOME/.local/bin
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -45,9 +51,41 @@ EOS
             sudo apt-get install neovim
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} neovim is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} neovim install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim..."
-    echo "${marker_ok} neovim installed [$1]"
+
+    (
+    if [[ $1 = local ]]; then
+        if [ -d $HOME/.local/src/xclip-* ]; then
+            cd $HOME/.local/src/xclip-*
+            make uninstall
+            make clean
+            cd ..
+            rm -rf $HOME/.local/src/xclip-*
+        fi
+        cd $TMP_DIR
+        wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
+        tar xvzf xclip-${XCLIP_VERSION}.tar.gz
+        cd xclip-${XCLIP_VERSION}
+        ./configure --prefix=$HOME/.local --disable-shared
+        make
+        make install
+        cd $TMP_DIR
+        rm -rf $HOME/.local/src/xclip-*
+        mv xclip-${XCLIP_VERSION} $HOME/.local/src
+    else
+        if [[ $platform == "OSX" ]]; then
+            :
+        elif [[ $platform == "LINUX" ]]; then
+            sudo apt-get -y install xclip
+        fi
+    fi
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} X11 clipboard(xclip / pbcopy / pbpaste) is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} X11 clipboard(xclip / pbcopy / pbpaste) install is failed [$1]. use VERBOSE=YES for error message" &
+    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing X11 clipboard(xclip / pbcopy / pbpaste)..."
 
     # clean up
     if [[ $$ = $BASHPID ]]; then
@@ -74,7 +112,7 @@ main() {
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_nvim_install} == "yes" ]]; then
-            [[ ${CONFIG_nvim_local} == "yes" ]] && setup_func 'local' || setup_func 'system'
+            [[ ${CONFIG_nvim_local} == "yes" ]] && setup_func_neovim 'local' || setup_func_neovim 'system'
         else
             echo "${marker_err} neovim is not installed"
         fi
@@ -89,8 +127,8 @@ main() {
 
             read -p "${marker_que} Install locally or sytemwide? " yn
             case $yn in
-                [Ll]ocal* ) echo "${marker_info} Install neovim ${NVIM_VERSION} locally"; setup_func 'local'; break;;
-                [Ss]ystem* ) echo "${marker_info} Install latest neovim systemwide"; setup_func 'system'; break;;
+                [Ll]ocal* ) echo "${marker_info} Install neovim ${NVIM_VERSION} locally"; setup_func_neovim 'local'; break;;
+                [Ss]ystem* ) echo "${marker_info} Install latest neovim systemwide"; setup_func_neovim 'system'; break;;
                 * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
             esac
         done

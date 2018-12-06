@@ -22,6 +22,7 @@ pip install virtualenv --user
 pip install virtualenvwrapper --user
 pip3 install virtualenv --user
 pip3 install virtualenvwrapper --user
-) >&3 2>&4 &
+) >&3 2>&4 \
+    && echo -e "\033[2K \033[100D${marker_ok} python dev is installed [$1]" \
+    || echo -e "\033[2K \033[100D${marker_err} python dev install is failed [$1]. use VERBOSE=YES for error message" &
 [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing python dev..."
-echo "${marker_ok} python dev installed"

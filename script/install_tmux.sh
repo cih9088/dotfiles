@@ -31,6 +31,7 @@ setup_func() {
         if [ -d $HOME/.local/src/libevent-* ]; then
             cd $HOME/.local/src/libevent-*
             make uninstall
+            make clean
             cd ..
             rm -rf $HOME/.local/src/libevent-*
         fi
@@ -80,6 +81,7 @@ EOS
         if [ -d $HOME/.local/src/tmux-* ]; then
             cd $HOME/.local/src/tmux-*
             make uninstall
+            make clean
             cd ..
             rm -rf $HOME/.local/src/tmux-*
         fi
@@ -144,9 +146,10 @@ EOS
             sudo mv tmux-${TMUX_VERSION} /usr/local/src
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} tmux is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} tmux install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tmux..."
-    echo "${marker_ok} tmux installed"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then

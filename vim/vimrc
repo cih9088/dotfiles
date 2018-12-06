@@ -127,6 +127,7 @@
     " Plugins for etc. {{{
         Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
         Plug 'junegunn/fzf.vim'
+        Plug 'pbogut/fzf-mru.vim'
         Plug 'junegunn/goyo.vim'
         Plug 'junegunn/limelight.vim'
         " Plug 'metakirby5/codi.vim'
@@ -1005,7 +1006,7 @@
                     \ { 'a': '~/dotfiles/nvim/init.vim' },
                     \ { 's': '~/dotfiles/zsh/zshrc' },
                     \ { 'd': '~/dotfiles/zsh/zpreztorc' },
-                    \ { 'f': '~/dotfiles/tmux/tmux.conf.local' }
+                    \ { 'f': '~/dotfiles/tmux/tmux.conf' }
                     \]
         let g:startify_change_to_dir = 0
     " }}}
@@ -1017,6 +1018,7 @@
         nnoremap <leader>C :Commits<CR>
         nnoremap <leader>L :BLines<CR>
         nnoremap <leader>P :ProjectFiles<CR>
+        nnoremap <leader>M :FZFMru<CR>
 
         " Search project root
         function! s:find_git_root()

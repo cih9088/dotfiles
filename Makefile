@@ -112,7 +112,7 @@ install: prepare installZsh changeDefaultShell installPrezto updateDotfiles \
 installDev: installDevNodejs installDevPython installDevShell
 	@echo "[42m[*] InstallDev has done.[0m"
 
-init: install update installDev
+init: prepare install update installDev prepare_clean
 	@echo "[42m[*] Init has done.[0m"
 
 .PHONY: prepare prerequisites installZsh installPrezto updatePrezto installNeovim installTmux \

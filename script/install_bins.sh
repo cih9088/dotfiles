@@ -27,6 +27,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 setup_func_tree() {
     (
     if [[ $1 = local ]]; then
+        if [ -d $HOME/.local/src/tree-* ]; then
+            cd $HOME/.local/src/tree-*
+            make clean
+            cd ..
+            rm -rf $HOME/.local/src/tree-*
+        fi
         cd $TMP_DIR
         wget http://mama.indstate.edu/users/ice/tree/src/tree-${TREE_VERSION}.tgz
         tar -xvzf tree-${TREE_VERSION}.tgz
@@ -47,9 +53,10 @@ EOS
             sudo apt-get -y install tree
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} tree is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} tree install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tree..."
-    echo "${marker_ok} tree installed [$1]"
 }
 
 # fd
@@ -57,18 +64,20 @@ setup_func_fd() {
     (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
+        rm -rf $HOME/.local/bin/fd || true
+        rm -rf $HOME/.local/man/man1/fd.1 || true
         if [[ $platform == "OSX" ]]; then
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
             tar -xvzf fd-v${FD_VERSION}-x86_64-apple-darwin.tar.gz
             cd fd-v${FD_VERSION}-x86_64-apple-darwin
-            cp fd $HOME/.local/bin
-            cp fd.1 $HOME/.local/man/man1
+            yes | \cp -rf fd $HOME/.local/bin
+            yes | \cp -rf fd.1 $HOME/.local/man/man1
         elif [[ $platform == "LINUX" ]]; then
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd-v${FD_VERSION}-x86_64-unknown-linux-gnu.tar.gz
             tar -xvzf fd-v${FD_VERSION}-x86_64-unknown-linux-gnu.tar.gz
             cd fd-v${FD_VERSION}-x86_64-unknown-linux-gnu
-            cp fd $HOME/.local/bin
-            cp fd.1 $HOME/.local/man/man1
+            yes | \cp -rf fd $HOME/.local/bin
+            yes | \cp -rf fd.1 $HOME/.local/man/man1
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -82,16 +91,17 @@ EOS
             sudo dpkg -i fd_${FD_VERSION}_amd64.deb
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} fd is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} fd install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing fd..."
-    echo "${marker_ok} fd installed [$1]"
 }
 
 # thefuck
 setup_func_thefuck() {
     (
     if [[ $1 = local ]]; then
-        pip3 install thefuck --user
+        pip3 install thefuck --user --upgrade
     else
         if [[ $platform == "OSX" ]]; then
             # brew install thefuck
@@ -99,12 +109,13 @@ setup_func_thefuck() {
 brew 'thefuck'
 EOS
         elif [[ $platform == "LINUX" ]]; then
-            sudo pip3 install thefuck
+            sudo pip3 install thefuck --upgrade
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} thefuck is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} thefuck install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing thefuck..."
-    echo "${marker_ok} thefuck installed [$1]"
 }
 
 # rg
@@ -112,18 +123,20 @@ setup_func_rg() {
     (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
+        rm -rf $HOME/.local/bin/rg || true
+        rm -rf $HOME/.local/man/man1/rg.1 || true
         if [[ $platform == "OSX" ]]; then
             wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep-${RG_VERSION}-x86_64-apple-darwin.tar.gz
             tar -xvzf ripgrep-${RG_VERSION}-x86_64-apple-darwin.tar.gz
             cd ripgrep-${RG_VERSION}-x86_64-apple-darwin
-            cp rg $HOME/.local/bin
-            cp doc/rg.1 $HOME/.local/man/man1
+            yes | \cp -rf rg $HOME/.local/bin
+            yes | \cp -rf doc/rg.1 $HOME/.local/man/man1
         elif [[ $platform == "LINUX" ]]; then
             wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl.tar.gz
             tar -xvzf ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl.tar.gz
             cd ripgrep-${RG_VERSION}-x86_64-unknown-linux-musl
-            cp rg $HOME/.local/bin
-            cp doc/rg.1 $HOME/.local/man/man1
+            yes | \cp -rf rg $HOME/.local/bin
+            yes | \cp -rf doc/rg.1 $HOME/.local/man/man1
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -137,40 +150,45 @@ EOS
             sudo dpkg -i ripgrep_${RG_VERSION}_amd64.deb
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} rg is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} rg install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing rg..."
-    echo "${marker_ok} rg installed [$1]"
 }
 
 
 setup_func_ranger() {
     (
-    rm -rf $HOME/.local/src/ranger
-    git clone https://github.com/cih9088/ranger $HOME/.local/src/ranger
+    rm -rf $HOME/.local/src/ranger || true
+    rm -rf $HOME/.local/bin/ranger || true
+    git clone https://github.com/ranger/ranger.git $HOME/.local/src/ranger
+    # git clone https://github.com/cih9088/ranger $HOME/.local/src/ranger
     $HOME/.local/src/ranger/ranger.py --copy-config=all
     ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} ranger is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} ranger install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing ranger..."
-    echo "${marker_ok} ranger installed [local]"
 }
 
 # tldr
 setup_func_tldr() {
     (
     if [[ $1 == local ]]; then
-        pip install tldr --user
+        pip install tldr --user --upgrade
     else
         if [[ $platform == "OSX" ]]; then
             brew bundle --file=- <<EOS
 brew 'tldr'
 EOS
         elif [[ $platform == "LINUX" ]]; then
-            sudo pip install tldr
+            sudo pip install tldr --upgrade
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} tldr is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} tldr install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tldr..."
-    echo "${marker_ok} tldr installed [$1]"
 }
 
 setup_func_bash_snippets() {
@@ -191,9 +209,10 @@ EOS
         fi
 
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} bash-snippets (transfer, cheat) is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} bash-snippets (transfer, cheat) install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing bash-snippets (transfer, cheat)..."
-    echo "${marker_ok} bash-snippets (transfer, cheat) installed [$1]"
 }
 
 

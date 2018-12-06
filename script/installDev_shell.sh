@@ -15,10 +15,11 @@ setup_func_shellcheck() {
             echo "${marker_err} Not available on OSX"
             exit 1
         elif [[ $platform == "LINUX" ]]; then
+            rm -rf $HOME/.local/bin/shellcheck || true
             wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz
             tar -xvJf shellcheck-stable.linux.x86_64.tar.xz
             cd shellcheck-stable
-            cp shellcheck $HOME/.local/bin
+            yes | \cp -rf shellcheck $HOME/.local/bin
         fi
     else
         if [[ $platform == "OSX" ]]; then
@@ -30,16 +31,18 @@ EOS
             sudo apt-get install shellcheck
         fi
     fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} shellcheck is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} shellcheck install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing shellcheck..."
-    echo "${marker_ok} shellcheck installed [$1]"
 
 }
 
 setup_func_bash_language_server() {
-    (npm i -g bash-language-server) >&3 2>&4
+    (npm i -g bash-language-server) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} bash-language-server is installed [$1]" \
+        || echo -e "\033[2K \033[100D${marker_err} bash-language-server install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing bash-language-server..."
-    echo "${marker_ok} bash-language-server installed [local]"
 }
 
 main() {

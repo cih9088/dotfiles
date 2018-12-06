@@ -33,7 +33,7 @@ brew "coreutils"
 brew "highlight"
 EOS
 elif [[ $platform == "LINUX" ]]; then
-    sudo apt-get install python-dev python-pip python3-dev python3-pip highlight
+    sudo apt-get install python-dev python-pip python3-dev python3-pip highlight xclip
 else
     echo 'not defined'; exit 1
 fi

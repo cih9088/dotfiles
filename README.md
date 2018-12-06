@@ -185,6 +185,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - open History: <kbd>leader</kbd> + <kbd>H</kbd>
     - open Commits: <kbd>leader</kbd> + <kbd>C</kbd>
     - open Blines: <kbd>leader</kbd> + <kbd>L</kbd>
+    - open MRU: <kbd>leader</kbd> + <kbd>M</kbd>
 - [vim-startify](https://github.com/mhinz/vim-startify): nice start
     - open startify: <kbd>leader</kbd> + <kbd>S</kbd>
 - [ctrlsf](https://github.com/dyng/ctrlsf.vim): powerful search
