@@ -117,6 +117,11 @@ main() {
             break
         done
     fi
+
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
+    fi
 }
 
 main "$@"

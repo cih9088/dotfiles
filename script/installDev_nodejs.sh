@@ -24,3 +24,8 @@ else
     curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local
     echo "${marker_ok} node.js installed [local]"
 fi
+
+# clean up
+if [[ $$ = $BASHPID ]]; then
+    rm -rf $TMP_DIR
+fi

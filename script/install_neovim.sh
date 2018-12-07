@@ -86,11 +86,6 @@ EOS
     #     && echo -e "\033[2K \033[100D${marker_ok} X11 clipboard(xclip / pbcopy / pbpaste) is installed [$1]" \
     #     || echo -e "\033[2K \033[100D${marker_err} X11 clipboard(xclip / pbcopy / pbpaste) install is failed [$1]. use VERBOSE=YES for error message" &
     # [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing X11 clipboard(xclip / pbcopy / pbpaste)..."
-
-    # clean up
-    if [[ $$ = $BASHPID ]]; then
-        rm -rf $TMP_DIR
-    fi
 }
 
 
@@ -170,10 +165,15 @@ main() {
     #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
     #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
     # fi
-    ) >&3 2>&4 &
+    ) >&3 2>&4 \
+        && echo -e "\033[2K \033[100D${marker_ok} neovim with python support is installed [local]" \
+        || echo -e "\033[2K \033[100D${marker_err} neovim with python support install is failed [local]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim with python support..."
-    echo "${marker_ok} neovim with python support installed"
 
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
+    fi
 }
 
 main "$@"

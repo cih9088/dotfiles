@@ -20,22 +20,22 @@ spinner() {
     done
 }
 [[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/parser_yaml ${CONFIG} "CONFIG_")
+[[ "${VERBOSE:=NO}" == "YES" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
 ################################################################
 
 setup_func() {
     if [ -d "${ZDOTDIR:-$HOME}/.zprezto" ]; then
         rm -rf "${ZDOTDIR:-$HOME}/.zprezto"
-        echo "[0;93m[+][0m prezto is installed. Remove it and reinstall."
+        echo "[0;93m[+][0m It seems that prezto was installed before. Uninstall it and reinstall"
     fi
     (
     # Clone prezto the repository
-    #git clone --recursive https://github.com/cih9088/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
 
     # Create a new zsh configureation by copying the zsh config files
     setopt EXTENDED_GLOB
     for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
-        ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+        ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}" || true
     done
 
     ## Clone garrett prompt repository
@@ -56,9 +56,12 @@ setup_func() {
     #     sed -i -e '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
     #     sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
     # fi
-    ) &> /dev/null &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "[0;93m[+][0m Installing prezto..."
-    echo "[0;92m[*][0m prezto installed"
+    ) >&3 2>&4 &
+        # && echo -e "\033[2K \033[100D[0;92m[*][0m prezto is installed" \
+        # || echo -e "\033[2K \033[100D[0;91m[!][0m prezto install is failed. use VERBOSE=YES for error message" &
+    [[ "${VERBOSE}" == "YES" ]] && wait || spinner "[0;93m[+][0m Installing prezto..."
+    echo -e "\033[2K \033[100D[0;92m[*][0m prezto is installed" \
+
 }
 
 echo

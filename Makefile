@@ -20,7 +20,6 @@ prepare:
 	@mkdir -p ${HOME}/.local/shared
 	@mkdir -p ${HOME}/.local/man/man1
 	@mkdir -p ${HOME}/.config/alacritty
-	@mkdir -p $(TMP_DIR)
 
 prerequisites:
 	@( $(SCRIPTS_DIR)/prerequisites.sh )
@@ -34,7 +33,8 @@ prerequisitesTest:
 	@which -a pip3 || echo "[0;91mpip3 is not installed[0m"
 	@which -a wget || echo "[0;91mwget is not installed[0m"
 	@which -a xclip || echo "[0;91mxclip is not installed (for ubuntu)[0m"
-	@which -a pbcopy || echo "[0;91mpbcopy is not installed (for osx)[0m"
+	@which -a pbcopy || echo "[0;91mpbcopy is not installed (for osx specific)[0m"
+	@which -a reattatch-to-user-namespace || echo "[0;91mreattatch-to-user-namepsace is not installed (for osx specific)[0m"
 	@which -a git || echo "[0;91mgit is not installed[0m"
 
 installZsh: prepare
@@ -48,13 +48,6 @@ installNeovim: prepare
 
 installTmux: prepare
 	@( $(SCRIPTS_DIR)/install_tmux.sh $(tmux_version) )
-
-installTPM:
-	@echo
-	@echo "[0;93m[+][0m Installing TPM..."
-	@rm -rf ~/.tmux/plugins/tpm || true
-	@git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm >/dev/null 2>&1
-	@echo "[0;92m[*][0m TPM installed"
 
 installBins: prepare
 	@( $(SCRIPTS_DIR)/install_bins.sh )
@@ -93,18 +86,22 @@ updateNeovimPlugins:
 	@ln -snf $(PROJ_HOME)/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
 	@echo "[0;92m[*][0m neovim plugins updated"
 
-updateTmuxPlugins: installTPM
+updateTPM:
+	@echo
+	@echo "[0;93m[+][0m Updating TPM..."
+	@rm -rf ~/.tmux/plugins/tpm || true
+	@git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm >/dev/null 2>&1
+	@echo "[0;92m[*][0m TPM updated"
+
+updateTmuxPlugins: updateTPM 
 	@echo
 	@echo "[0;93m[+][0m Updating tmux plugins..."
 	@${HOME}/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1
+	@${HOME}/.tmux/plugins/tpm/scripts/update_plugin.sh "" all >/dev/null 2>&1
 	@echo "[0;92m[*][0m tmux plugins updated"
 
-prepare_clean:
-	@echo
-	@rm -rf $(TMP_DIR)
-
 clean:
-	@echo "Remove dotfiles and folder itself"
+	@echo "[0;92m[*][0m Remove dotfiles and configuration folders"
 	@rm -rf $(TMP_DIR)
 	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto ${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
@@ -113,23 +110,26 @@ clean:
 		${HOME}/.config/nvim ${HOME}/.config/alacritty
 	@rm -rf $(PROJ_HOME)
 
+update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateBins updatePrezto
+	@echo
+	@echo "[42m[*] Update has Finished.[0m"
 
-update: prepare updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto prepare_clean
-	@echo "[42m[*] Update has done.[0m"
-
-install: prepare installZsh changeDefaultShell installPrezto updateDotfiles \
-	installNeovim installTmux installTPM installBins prepare_clean
-	@echo "[42m[*] Install has done.[0m"
+install: prepare installZsh changeDefaultShell installPrezto \
+	installNeovim installTmux installBins
+	@echo
+	@echo "[42m[*] Install has Finished.[0m"
 
 installDev: installDevNodejs installDevPython installDevShell
-	@echo "[42m[*] InstallDev has done.[0m"
+	@echo
+	@echo "[42m[*] InstallDev has Finished.[0m"
 
-init: prepare install update installDev prepare_clean
-	@echo "[42m[*] Init has done.[0m"
+init: prepare install update installDev
+	@echo
+	@echo "[42m[*] Init has Finished.[0m"
 
 .PHONY: prepare prerequisites prerequisitesTest \
 	installZsh installPrezto updatePrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \
-	updateDotfiles updateNeovimPlugins updateTmuxPlugins prepare_clean installTPM \
+	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM\
 	clean update install installDev init \
 

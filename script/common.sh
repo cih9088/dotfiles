@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+################## Color ##########################
 
 # Reset
 Color_Off='[0m'       # Text Reset
@@ -74,6 +76,8 @@ On_IPurple='[0;105m'  # Purple
 On_ICyan='[0;106m'    # Cyan
 On_IWhite='[0;107m'   # White
 
+##################################################
+
 marker_ok="${IGreen}[*]${Color_Off}"
 marker_err="${IRed}[!]${Color_Off}"
 marker_info="${IYellow}[+]${Color_Off}"
@@ -107,15 +111,21 @@ if [[ $$ = $BASHPID ]]; then
         mkdir -p $HOME/.local/src
     fi
 
+    if [ ! -d $HOME/.local/shared ]; then
+        mkdir -p $HOME/.local/shared
+    fi
+
+    if [ ! -d $HOME/.local/man/man1 ]; then
+        mkdir -p $HOME/.local/man/man1
+    fi
+
+    if [ ! -d $HOME/.config ]; then
+        mkdir -p $HOME/.config
+    fi
+
     if [ ! -d $TMP_DIR ]; then
         mkdir -p $TMP_DIR
     fi
-fi
-
-if [ "${VERBOSE:=NO}" == YES ]; then
-    exec 3>&1 4>&2
-else
-    exec 3>/dev/null 4>/dev/null
 fi
 
 spinner() {
@@ -137,3 +147,7 @@ spinner() {
 }
 
 [[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/parser_yaml ${CONFIG} "CONFIG_") || true
+[[ "${VERBOSE:=NO}" == "YES" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
+trap "rm -rf ${TMP_DIR}" SIGINT SIGTERM EXIT
+# [[ "${BASH_SOURCE[0]}" != "${0}" ]] && echo "script ${BASH_SOURCE[0]} is being sourced ..."
+# [[ "${BASH_SUBSHELL}" != 0 ]] && echo "It is in subshll" || echo "It is not subshell"

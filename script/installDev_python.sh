@@ -26,3 +26,8 @@ pip3 install virtualenvwrapper --user
     && echo -e "\033[2K \033[100D${marker_ok} python dev is installed [$1]" \
     || echo -e "\033[2K \033[100D${marker_err} python dev install is failed [$1]. use VERBOSE=YES for error message" &
 [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing python dev..."
+
+# clean up
+if [[ $$ = $BASHPID ]]; then
+    rm -rf $TMP_DIR
+fi

@@ -49,11 +49,6 @@ EOS
         && echo -e "\033[2K \033[100D${marker_ok} zsh is installed [$1]" \
         || echo -e "\033[2K \033[100D${marker_err} zsh install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing zsh..."
-
-    # clean up
-    if [[ $$ = $BASHPID ]]; then
-        rm -rf $TMP_DIR
-    fi
 }
 
 main() {
@@ -70,6 +65,7 @@ main() {
     else
         echo "${marker_info} zsh is not found"
     fi
+    echo "${marker_info} Local install version (installing version: $ZSH_VERSION)"
 
     if [[ ! -z ${CONFIG+x} ]]; then
         if [[ ${CONFIG_zsh_install} == "yes" ]]; then
@@ -93,6 +89,11 @@ main() {
                 * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
             esac
         done
+    fi
+
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
     fi
 }
 

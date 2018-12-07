@@ -32,6 +32,7 @@ brew "pssh"
 brew "coreutils"
 brew "highlight"
 brew "git"
+brew "reattach-to-user-namespace"
 EOS
 elif [[ $platform == "LINUX" ]]; then
     sudo apt-get install python-dev python-pip python3-dev python3-pip highlight xclip wget git

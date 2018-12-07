@@ -88,22 +88,22 @@ EOS
         cd $TMP_DIR
 
         # install xclip
-        if [[ $platform == "OSX" ]]; then
-            echo 'reattatch-to-user-namespace will be installed using brew that need sudo privileges' >&2
-            brew install reattach-to-user-namespace
-            brew bundle --file=- <<EOS
-brew 'reattach-to-user-namespace'
-EOS
-        # elif [[ $platform == "LINUX" ]]; then
-        #     wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
-        #     tar -xvzf xclip-${XCLIP_VERSION}.tar.gz
-        #     cd xclip-${XCLIP_VERSION}
-        #     ./configure --prefix=$HOME/.local --disable-shared
-        #     make || exit $?
-        #     make install || exit $?
-        #     cd $TMP_DIR
-        #     mv xclip-${XCLIP_VERSION} $HOME/.local/src
-        fi
+#         if [[ $platform == "OSX" ]]; then
+#             echo 'reattatch-to-user-namespace will be installed using brew that need sudo privileges' >&2
+#             brew install reattach-to-user-namespace
+#             brew bundle --file=- <<EOS
+# brew 'reattach-to-user-namespace'
+# EOS
+#         elif [[ $platform == "LINUX" ]]; then
+#             wget http://kent.dl.sourceforge.net/project/xclip/xclip/${XCLIP_VERSION}/xclip-${XCLIP_VERSION}.tar.gz
+#             tar -xvzf xclip-${XCLIP_VERSION}.tar.gz
+#             cd xclip-${XCLIP_VERSION}
+#             ./configure --prefix=$HOME/.local --disable-shared
+#             make || exit $?
+#             make install || exit $?
+#             cd $TMP_DIR
+#             mv xclip-${XCLIP_VERSION} $HOME/.local/src
+#         fi
 
         # install tmux
         wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz
@@ -150,11 +150,6 @@ EOS
         && echo -e "\033[2K \033[100D${marker_ok} tmux is installed [$1]" \
         || echo -e "\033[2K \033[100D${marker_err} tmux install is failed [$1]. use VERBOSE=YES for error message" &
     [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tmux..."
-
-    # clean up
-    if [[ $$ = $BASHPID ]]; then
-        rm -rf $TMP_DIR
-    fi
 }
 
 main() {
@@ -195,6 +190,11 @@ main() {
                 * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
             esac
         done
+    fi
+
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
     fi
 }
 

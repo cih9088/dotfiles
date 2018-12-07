@@ -1,8 +1,1 @@
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
-!vimrc
-!undodir/*
-!after
-!andy_lightline.vim
+autoload

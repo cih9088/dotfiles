@@ -15,7 +15,7 @@ $ git pull
 
 ## Prerequisites
 The following list would be installed in your system. You need privilege (sudo). No need if you have them on your system.
-* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git
+* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git, reattatch-to-user-namespace
 * Ubuntu: python2, python2-pip, python3, python3-pip, wget, xclip, git
 ```bash
 $ cd ~/dotfiles
@@ -72,7 +72,7 @@ $ make update               # Update dotfiles and configurations
 $ cd ~/dotfiles
 
 # you could choose what to install in following list
-# [installZsh, installPrezto, installNeovim, installTmux, installTPM, installBins]
+# [installZsh, installPrezto, installNeovim, installTmux, installBins]
 # For instance,
 $ make installNeovim        # Install neovim only
 $ make installNeovim 0.2.0  # Specify version if intended to install locally
@@ -89,7 +89,7 @@ $ cd ~/dotfiles
 $ git pull
 
 # you could choose what to update in following list
-# [updateDotfiles updateNeovimPlugins updateTmuxPlugins updateBins updatePrezto]
+# [updateDotfiles, updateNeovimPlugins, updateTPM, updateTmuxPlugins, updateBins, updatePrezto]
 # For instance,
 $ make updateDotfiles       # Update dotfiles only
 ```
@@ -215,7 +215,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 For more detailed information please refer [tmux.conf](https://github.com/cih9088/dotfiles/blob/master/tmux/tmux.conf)
 - prefix: <kbd>Ctrl</kbd> + <kbd>a</kbd>
 - detach: <kbd>prefix</kbd> + <kbd>d</kbd>
-- toggle disable: <kbd>F12</kbd> (useful nested tmux)
+- toggle disable: <kbd>F12</kbd> (useful in nested tmux)
 - create new window: <kbd>prefix</kbd> + <kbd>c</kbd>
 - move window: <kbd>prefix</kbd> + [ <kbd>1</kbd>, ..., <kbd>9</kbd> ]
 - alternative move window: <kbd>prefix</kbd> + <kbd>'</kbd> + {window index}
@@ -225,9 +225,18 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 - kill current pane: <kbd>prefix</kbd> + <kbd>x</kbd>
 - resize pane: <kbd>prefix</kbd> + [ <kbd>H</kbd>, <kbd>J</kbd>, <kbd>K</kbd>, <kbd>L</kbd> ]
 - enter copy mode: <kbd>prefix</kbd> + <kbd>enter</kbd>
+    - select region: <kbd>v</kbd>
+    - copy selected region: <kbd>y</kbd>
+    - append selected region: <kbd>A</kbd>
+    - copy entire line: <kbd>Y</kbd>
+    - copy from the cursor to the end of the line: <kbd>D</kbd>
+- swap current window: <kbd>prefix</kbd> + [ <kbd>\<</kbd>, <kbd>\></kbd> ]
+- swap current pane: <kbd>prefix</kbd> + [ <kbd>[</kbd>, <kbd>]</kbd> ]
 - toggle synchronizing mode: <kbd>prefix</kbd> + <kbd>e</kbd>
 - toggle maximizing pane: <kbd>prefix</kbd> + <kbd>z</kbd>
 - renew environment variables (e.g. DISPLAY): <kbd>prefix</kbd> + <kbd>\$</kbd>
+- save tmux environment [tmux-resurrect](https://github.com/cih9088/tmux-resurrect): <kbd>prefix</kbd> + <kbd>Ctr</kbd> + <kbd>s</kbd>
+- restore tmux environment [tmux-resurrect](https://github.com/cih9088/tmux-resurrect): <kbd>prefix</kbd> + <kbd>Ctr</kbd> + <kbd>r</kbd>
 - go to pane with fzf: <kbd>prefix</kbd> + <kbd>0</kbd>
 <!-- - toggle mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd> -->
 
@@ -241,6 +250,5 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 
 ## TODO
 - tmux mouse mode
-- tmux consistent
 - the fuck version
 - duplicated which
