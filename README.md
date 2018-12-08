@@ -26,14 +26,14 @@ $ make prerequisites        # Install prerequisites (previlege is needed)
 ## How to install and update
 ### Variables
 - `CONFIG`: making script non-interactively. Create your own config based on `config_linux.yaml` \
-`make install CONFIG=config_linux.yaml`
+ex) `make install CONFIG=config_linux.yaml`
 - `VERBOSE`: making script verbose \
-`make install VERBOSE=YES`
+ex) `make install VERBOSE=YES`
 
 
 ### one-liner
-- Non-interactive init for ubuntu(default) `cd ~/dotfiles; make init CONFIG=config_linux.yaml`
-- Non-interactive init for osx(default) `cd ~/dotfiles; make init CONFIG=config_osx.yaml`
+- Non-interactive init for ubuntu `cd ~/dotfiles; make init CONFIG=config_linux.yaml`
+- Non-interactive init for osx `cd ~/dotfiles; make init CONFIG=config_osx.yaml`
 - Interactive init `cd ~/dotfiles; make init`
 - Install `cd ~/dotfiles; make install`
 - Update `cd ~/dotfiles; make update`
@@ -51,9 +51,9 @@ $ make init                 # includes install, update and installDev
                             # If you are new to my dotfiles, this is it. No further processes needed. 
                             # Recommended way for a newcomer.
 
-$ make install              # Install commands
+$ make install              # Install all commands
 # If you do not install dev environment, autocomplete of nvim for languages would not work at all.
-$ make installDev           # Install dev environment
+$ make installDev           # Install all dev environments
 ```
 
 ### Update
@@ -62,7 +62,7 @@ Note that update does not update any of commands installed but dotfiles, neovimp
 ```bash
 $ cd ~/dotfiles
 $ git pull
-$ make update               # Update dotfiles and configurations
+$ make update               # Update all of dotfiles and configurations
 ```
 
 
@@ -136,6 +136,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 - Few settings automatically disabled with files larger than 50mb
 - leader: <kbd>,</kbd> or <kbd>\\</kbd>
 - nohighlight: <kbd>leader</kbd> + <kbd>Space</kbd>
+- toggle paste mode: <kbd>F2</kbd>
 - buffers
     - new buffer: <kbd>Ctrl</kbd> + <kbd>b</kbd>
     - close buffer: <kbd>leader</kbd> + <kbd>b</kbd> + <kbd>q</kbd>
@@ -197,6 +198,9 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - replace surrounding: <kbd>s</kbd> + <kbd>r</kbd> + {deletion} + {addition}
 - [vim-dirvish](https://github.com/justinmk/vim-dirvish): file explore
     - open dirvish: <kbd>-</kbd>
+    - reload: <kbd>g</kbd> + <kbd>r/kbd>
+    - go to home: <kbd>g</kbd> + <kbd>~</kbd>
+    - hide hiddden files: <kbd>g</kbd> + <kbd>h</kbd>
 - [vim-rooter](https://github.com/airblade/vim-rooter): change pwd to project root. usefule with fzf
     - run rooter: <kbd>leader</kbd> + <kbd>R</kbd>
 - [nerdcommenter](https://github.com/scrooloose/nerdcommenter): Comment out easily
@@ -215,30 +219,38 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 For more detailed information please refer [tmux.conf](https://github.com/cih9088/dotfiles/blob/master/tmux/tmux.conf)
 - prefix: <kbd>Ctrl</kbd> + <kbd>a</kbd>
 - detach: <kbd>prefix</kbd> + <kbd>d</kbd>
-- toggle disable: <kbd>F12</kbd> (useful in nested tmux)
-- create new window: <kbd>prefix</kbd> + <kbd>c</kbd>
-- move window: <kbd>prefix</kbd> + [ <kbd>1</kbd>, ..., <kbd>9</kbd> ]
-- alternative move window: <kbd>prefix</kbd> + <kbd>'</kbd> + {window index}
-- rename window: <kbd>prefix</kbd> + <kbd>,</kbd>
-- split current pane vertically: <kbd>prefix</kbd> + <kbd>v</kbd>
-- split current pane horizontally: <kbd>prefix</kbd> + <kbd>h</kbd>
-- kill current pane: <kbd>prefix</kbd> + <kbd>x</kbd>
-- resize pane: <kbd>prefix</kbd> + [ <kbd>H</kbd>, <kbd>J</kbd>, <kbd>K</kbd>, <kbd>L</kbd> ]
-- enter copy mode: <kbd>prefix</kbd> + <kbd>enter</kbd>
+- reload config file: <kbd>prefix</kbd> + <kbd>r</kbd>
+- go to pane with fzf: <kbd>prefix</kbd> + <kbd>0</kbd>
+- window
+    - create new window: <kbd>prefix</kbd> + <kbd>c</kbd>
+	- kill current window: <kbd>prefix</kbd> + <kbd>X</kbd>
+    - navigate window: <kbd>prefix</kbd> + [ <kbd>1</kbd>, ..., <kbd>9</kbd> ]
+    - navigate window alternatively: <kbd>prefix</kbd> + <kbd>'</kbd> + {window index}
+    - rename window: <kbd>prefix</kbd> + <kbd>,</kbd>
+    - swap current window: <kbd>prefix</kbd> + [ <kbd>\<</kbd>, <kbd>\></kbd> ]
+- pane
+    - split current pane vertically: <kbd>prefix</kbd> + <kbd>v</kbd>
+    - split current pane horizontally: <kbd>prefix</kbd> + <kbd>h</kbd>
+    - kill current pane: <kbd>prefix</kbd> + <kbd>x</kbd>
+    - navigate pane: <kbd>prefix</kbd> + [ <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd> ]
+    - resize pane: <kbd>prefix</kbd> + [ <kbd>H</kbd>, <kbd>J</kbd>, <kbd>K</kbd>, <kbd>L</kbd> ]
+    - swap current pane: <kbd>prefix</kbd> + [ <kbd>[</kbd>, <kbd>]</kbd> ]
+- copy mode
+    - enter copy mode: <kbd>prefix</kbd> + <kbd>enter</kbd>
     - select region: <kbd>v</kbd>
     - copy selected region: <kbd>y</kbd>
-    - append selected region: <kbd>A</kbd>
-    - copy entire line: <kbd>Y</kbd>
+    - append selected region to clipboard: <kbd>A</kbd>
+    - copy current line: <kbd>Y</kbd>
     - copy from the cursor to the end of the line: <kbd>D</kbd>
-- swap current window: <kbd>prefix</kbd> + [ <kbd>\<</kbd>, <kbd>\></kbd> ]
-- swap current pane: <kbd>prefix</kbd> + [ <kbd>[</kbd>, <kbd>]</kbd> ]
-- toggle synchronizing mode: <kbd>prefix</kbd> + <kbd>e</kbd>
-- toggle maximizing pane: <kbd>prefix</kbd> + <kbd>z</kbd>
-- renew environment variables (e.g. DISPLAY): <kbd>prefix</kbd> + <kbd>\$</kbd>
-- save tmux environment [tmux-resurrect](https://github.com/cih9088/tmux-resurrect): <kbd>prefix</kbd> + <kbd>Ctr</kbd> + <kbd>s</kbd>
-- restore tmux environment [tmux-resurrect](https://github.com/cih9088/tmux-resurrect): <kbd>prefix</kbd> + <kbd>Ctr</kbd> + <kbd>r</kbd>
-- go to pane with fzf: <kbd>prefix</kbd> + <kbd>0</kbd>
-<!-- - toggle mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd> -->
+- toggle
+    - synchronizing mode: <kbd>prefix</kbd> + <kbd>e</kbd>
+    - mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd>
+    - maximizing pane: <kbd>prefix</kbd> + <kbd>z</kbd>
+    - disable tmux: <kbd>F12</kbd> (useful in nested tmux)
+- [tmux-resurrect](https://github.com/cih9088/tmux-resurrect)
+    - save tmux environment: <kbd>prefix</kbd> + <kbd>Ctrl</kbd> + <kbd>s</kbd>
+    - restore tmux environment: <kbd>prefix</kbd> + <kbd>Ctrl</kbd> + <kbd>r</kbd>
+<!-- - renew environment variables (e.g. DISPLAY): <kbd>prefix</kbd> + <kbd>\$</kbd> -->
 
 ## Issues
 1. ~~Showing following error message at the top of terminal when the zsh 5.5 +  started \
@@ -249,6 +261,5 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 ![abnormal font](https://imgur.com/wSb49GM.png)
 
 ## TODO
-- tmux mouse mode
 - the fuck version
 - duplicated which

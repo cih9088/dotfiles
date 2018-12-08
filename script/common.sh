@@ -97,35 +97,36 @@ if [[ $platform != OSX && $platform != LINUX ]]; then
     echo "${marker_err} $platform is not supported." >&2; exit 1
 fi
 
-if [[ $$ = $BASHPID ]]; then
-    PROJ_HOME=${PROJ_HOME:=$(git rev-parse --show-toplevel)}
-    TMP_DIR=${TMP_DIR:=${HOME}/tmp_install}
-    VERBOSE=${VERBOSE:=}
-    BIN_DIR=${BIN_DIR:=${PROJ_HOME}/bin}
 
-    if [ ! -d $HOME/.local/bin ]; then
-        mkdir -p $HOME/.local/bin
-    fi
+# if [[ $$ = $BASHPID ]]; then
+# fi
+PROJ_HOME=${PROJ_HOME:=$(git rev-parse --show-toplevel)}
+TMP_DIR=${TMP_DIR:=${HOME}/tmp_install}
+VERBOSE=${VERBOSE:=NO}
+BIN_DIR=${BIN_DIR:=${PROJ_HOME}/bin}
 
-    if [ ! -d $HOME/.local/src ]; then
-        mkdir -p $HOME/.local/src
-    fi
+if [ ! -d $HOME/.local/bin ]; then
+    mkdir -p $HOME/.local/bin
+fi
 
-    if [ ! -d $HOME/.local/shared ]; then
-        mkdir -p $HOME/.local/shared
-    fi
+if [ ! -d $HOME/.local/src ]; then
+    mkdir -p $HOME/.local/src
+fi
 
-    if [ ! -d $HOME/.local/man/man1 ]; then
-        mkdir -p $HOME/.local/man/man1
-    fi
+if [ ! -d $HOME/.local/shared ]; then
+    mkdir -p $HOME/.local/shared
+fi
 
-    if [ ! -d $HOME/.config ]; then
-        mkdir -p $HOME/.config
-    fi
+if [ ! -d $HOME/.local/man/man1 ]; then
+    mkdir -p $HOME/.local/man/man1
+fi
 
-    if [ ! -d $TMP_DIR ]; then
-        mkdir -p $TMP_DIR
-    fi
+if [ ! -d $HOME/.config ]; then
+    mkdir -p $HOME/.config
+fi
+
+if [ ! -d $TMP_DIR ]; then
+    mkdir -p $TMP_DIR
 fi
 
 spinner() {

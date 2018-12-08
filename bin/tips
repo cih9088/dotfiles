@@ -82,34 +82,33 @@ ${BIPurple}FZF${Color_Off}
     ${BIRed}M-c${Color_Off}     Go to the directory
 
 
-${BIPurple}PREZTO ARCHIVE MODULE${Color_Off}
----------------------
-    ${BIRed}archive${Color_Off}     creates an archive based on the provided archive name
-    ${BIRed}lsarchive${Color_Off}   lists the contents of one or more archives
-    ${BIRed}unarchive${Color_Off}   extracts the contents of one or more archives
-
-
 ${BIPurple}USEFUL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
 --------------------------------------
     ${BIRed}_${Color_Off}           executes a command as another user (sudo)
+    ${BIRed}e${Color_Off}           opens the default editor (nvim by default)
+    ${BIRed}p${Color_Off}           opens the default pager
     ${BIRed}b${Color_Off}           opens the default web browser
     ${BIRed}diffu${Color_Off}       shorthand for diff --unified
-    ${BIRed}e${Color_Off}           opens the default editor
-    ${BIRed}mkdir${Color_Off}       creates directories, including intermediary directories
-    ${BIRed}p${Color_Off}           opens the default pager
     ${BIRed}po${Color_Off}          removes a directory from the stack and changes to it (popd)
     ${BIRed}pu${Color_Off}          changes the directory and pushes the old directory onto the stack (pushd)
     ${BIRed}sa${Color_Off}          search aliases for a word
     ${BIRed}type${Color_Off}        displays all the attribute values of a shell parameter
 
-    ${BIRed}http-serve${Color_Off}  serves a directory via HTTP
+    ${BIRed}http-serve${Color_Off} ${BIGreen}arg${Color_Off}  serves a directory via HTTP with port number ${BIGreen}arg${Color_Off}
 
-    --------------------CUSTOM-------------------------
+    ---------------------------CUSTOM-----------------------------
     ${BIRed}c${Color_Off}               clear terminal
     ${BIRed}dircnt ${BIGreen}arg${Color_Off}      count directories and files in ${BIGreen}arg${Color_Off}
     ${BIRed}easy-useradd${Color_Off}    add user account
     ${BIRed}list-users${Color_Off}      list users
+    ${BIRed}sshget${Color_Off} ${BIGreen}arg${Color_Off}      get something from ${BIGreen}arg${Color_Off} through ssh (fzf based)
 
+
+${BIPurple}PREZTO ARCHIVE MODULE${Color_Off}
+---------------------
+    ${BIRed}archive${Color_Off}     creates an archive based on the provided archive name
+    ${BIRed}lsarchive${Color_Off}   lists the contents of one or more archives
+    ${BIRed}unarchive${Color_Off}   extracts the contents of one or more archives
 
 
 ${BIPurple}RSYNC ALIAS (PREZTO RSYNC MODULE)${Color_Off}

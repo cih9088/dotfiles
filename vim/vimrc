@@ -1024,7 +1024,6 @@
         function! s:find_git_root()
             return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
         endfunction
-
         command! ProjectFiles execute 'Files' s:find_git_root()
 
         " Customize fzf colors to match your color scheme
@@ -1043,11 +1042,6 @@
                     \ 'spinner': ['fg', 'Label'],
                     \ 'header':  ['fg', 'Comment'] 
                     \ }
-
-        " Override Colors command. You can safely do this in your .vimrc as fzf.vim
-        " will not override existing commands.
-        command! -bang Colors
-                    \ call fzf#vim#colors({'left': '15%', 'options': '--margin 10%,0'}, <bang>0)
 
         " Likewise, Files command with preview window
         command! -bang -nargs=? -complete=dir Files
@@ -1154,18 +1148,17 @@
         augroup dirvish_config
             autocmd!
 
-            " Map `t` to open in new tab.
-            autocmd FileType dirvish
-                        \  nnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
-                        \ |xnoremap <silent><buffer> t :call dirvish#open('tabedit', 0)<CR>
-
             " Map `gr` to reload.
             autocmd FileType dirvish nnoremap <silent><buffer>
                         \ gr :<C-U>Dirvish %<CR>
 
-            " Map `gh` to hide dot-prefixed files.  Press `R` to "toggle" (reload).
+            " Map `gh` to hide dot-prefixed files. Press `R` or `gr` to "toggle" (reload).
             autocmd FileType dirvish nnoremap <silent><buffer>
                         \ gh :silent keeppatterns g@\v/\.[^\/]+/?$@d _<cr>:setl cole=3<cr>
+
+            " Map ~ to go ${HOME} directory
+            autocmd FileType dirvish nnoremap <silent><buffer>
+                        \ g~ :<C-U>Dirvish ~<CR>
         augroup END
     " }}}
 

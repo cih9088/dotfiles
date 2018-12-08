@@ -16,8 +16,10 @@ if [ -d "${HOME}/dotfiles_old" ]; then
     rm -rf $HOME/dotfiles_old_old || true
     mv $HOME/dotfiles_old $HOME/dotfiles_old_old
     mkdir -p ~/dotfiles_old
+    mkdir -p ~/dotfiles_old/.config
 else
     mkdir -p ~/dotfiles_old
+    mkdir -p ~/dotfiles_old/.config
 fi
 
 VIM_DIR=${PROJ_HOME}/vim
@@ -42,13 +44,13 @@ fi
 ln -s -f ${VIM_DIR} $HOME/.vim
 
 if [ -e $HOME/.config/nvim ]; then
-    cp -RfL $HOME/.config/nvim $HOME/dotfiles_old
+    cp -RfL $HOME/.config/nvim $HOME/dotfiles_old/.config
     rm -rf $HOME/.config/nvim
 fi
 ln -s -f ${NVIM_DIR} $HOME/.config/nvim
 
 if [ -e $HOME/.tmux ]; then
-    cp -RfL $HOME/.tmux $HOME/dotfiles_old
+    cp -RfH $HOME/.tmux $HOME/dotfiles_old
     rm -rf $HOME/.tmux
 fi
 ln -s -f ${TMUX_DIR} $HOME/.tmux
@@ -96,7 +98,7 @@ fi
 ln -s -f ${GRIP_DIR} $HOME/.grip
 
 if [ -e $HOME/.config/alacritty ]; then
-    cp -RfL $HOME/.config/alacritty $HOME/dotfiles_old
+    cp -RfL $HOME/.config/alacritty $HOME/dotfiles_old/.config
     rm -rf $HOME/.config/alacritty
 fi
 ln -s -f ${CONFIG_DIR}/alacritty $HOME/.config/alacritty

@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+#
+# copied from https://github.com/DanielFGray/fzf-scripts/blob/master/sshget
+# modified by Andy <cih9088@gmail.com>
+
+# https://stackoverflow.com/a/4025065
+vercomp () {
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
+
+# bash version check
+bash_version=$(printf "%d.%d.%d" ${BASH_VERSINFO[@]:0:3})
+vercomp "${bash_version}" "4"
+[[ $? == 2 ]] && echo "This script requires bash version >= 4. Current bash version: ${bash_version}"
+
+
+declare -r esc=$'\033'
+declare -r c_reset="${esc}[0m"
+declare -r c_red="${esc}[31m"
+
+declare -r fifo='/tmp/sshget.fifo'
+declare -A domains=()
+declare -A paths=()
+declare -a files=()
+
+ssh_port=22
+
+err() {
+  printf "${c_red}%s${c_reset}\n" "$*" >&2
+}
+
+die() {
+  exit 1
+}
+
+usage() {
+  LESS=-FEXR less <<'HELP'
+sshget [-p <port_numer>] <user@host1:/path/to/search ...>
+HELP
+}
+
+has() {
+  local verbose=0
+  if [[ $1 = '-v' ]]; then
+    verbose=1
+    shift
+  fi
+  for c; do c="${c%% *}"
+    if ! command -v "$c" &> /dev/null; then
+      (( verbose > 0 )) && err "$c not found"
+      return 1
+    fi
+  done
+}
+
+has -v fzf rsync || die
+
+cleanup() {
+  [[ -e "$fifo" ]] && rm "$fifo"
+}
+trap cleanup SIGHUP SIGINT SIGTERM
+
+# argument parsing
+POSITIONAL=()
+while [[ $# -gt 0 ]]; do
+    # make it also '=' separated arguments
+    [[ $1 == --*=* ]] && set -- "${1%%=*}" "${1#*=}" "${@:2}"
+    key="$1"
+
+    case $key in
+        -p)
+            ssh_port=${2:?$1 needs argument(Usages: $1 argument)};
+            shift 2 ;;
+        *)
+            POSITIONAL+=("$1")
+            shift ;;
+    esac
+done
+if [ -n "${POSITIONAL:-}" ]; then
+    set -- "${POSITIONAL[@]}"
+fi
+! [[ $ssh_port =~ ^[0-9]+$ && $ssh_port -ge 0 && $ssh_port -le 65535 ]] \
+    && err "$ssh_port is not a valid port" && exit 1
+
+mkfifo "$fifo"
+
+if (( $# < 1 )); then
+  usage
+  die
+fi
+
+for a; do
+  host="${a%:*}"
+  path="${a##*:}"
+  domains+=( ["$a"]="$host" )
+  paths+=( ["$a"]="$path" )
+  shift
+done
+
+for s in "${!domains[@]}"; do
+  ssh -p ${ssh_port} "${domains[$s]}" "find ${paths[$s]}" | sed -r "s|^|${domains[$s]}:|" >> "$fifo" &
+done
+
+mapfile -t files < <(fzf -e --inline-info +s --multi --bind='Ctrl-A:toggle-all,`:jump' < "$fifo")
+
+if (( ${#files[@]} )); then
+  rsync --protect-args -auvzP -e "ssh -p ${ssh_port}" "${files[@]}" .
+fi
+
+cleanup
