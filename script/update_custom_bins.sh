@@ -8,8 +8,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_info} Coyping custom bin files..."
-
+[[ ${VERBOSE} == YES ]] || start_spinner "Updating custom bin files..."
+(
 # https://github.com/ChristopherSchultz/fast-file-count
 cd $BIN_DIR; cc -Wall -pedantic -o dircnt dircnt.c;
 
@@ -22,8 +22,10 @@ elif [[ $platform == "LINUX" ]]; then
         ln -snf ${BIN_DIR}/${file} $HOME/.local/bin/$file
     done
 fi
-
-echo "${marker_ok} custom bin files copied"
+) >&3 2>&4 || exit_code="$?" && true
+stop_spinner "${exit_code}" \
+    "custom bin files are updated [local]" \
+    "custom bin files update is failed [local]. use VERBOSE=YES for error message"
 
 # clean up
 if [[ $$ = $BASHPID ]]; then

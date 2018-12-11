@@ -67,38 +67,23 @@ installPythonVirtualenv:
 changeDefaultShell:
 	@( $(SCRIPTS_DIR)/change_defualt_to_zsh.sh )
 
-updateBins: prepare
-	@( $(SCRIPTS_DIR)/custom_bin_setup.sh )
+updateCustomBins: prepare
+	@( $(SCRIPTS_DIR)/update_custom_bins.sh )
 
 updatePrezto:
-	@echo
-	@echo "[0;93m[+][0m Updating prezto..."
-	@cd ~/.zprezto; git pull >/dev/null 2>&1; git submodule update --init --recursive >/dev/null 2>&1
-	@echo "[0;92m[*][0m prezto updated"
+	@( $(SCRIPTS_DIR)/update_prezto.sh )
 
 updateDotfiles:
-	@( $(SCRIPTS_DIR)/dot_setup.sh )
+	@( $(SCRIPTS_DIR)/update_dotfiles.sh )
 
 updateNeovimPlugins:
-	@echo
-	@echo "[0;93m[+][0m Updating neovim plugins..."
-	@nvim -E -s -u "${HOME}/.config/nvim/init.vim" +PlugInstall +PlugUpdate +PlugUpgrade +UpdateRemotePlugins +qall || true
-	@ln -snf $(PROJ_HOME)/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
-	@echo "[0;92m[*][0m neovim plugins updated"
+	@( $(SCRIPTS_DIR)/update_neovim_plugins.sh )
 
 updateTPM:
-	@echo
-	@echo "[0;93m[+][0m Updating TPM..."
-	@rm -rf ~/.tmux/plugins/tpm || true
-	@git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm >/dev/null 2>&1
-	@echo "[0;92m[*][0m TPM updated"
+	@( $(SCRIPTS_DIR)/update_tpm.sh )
 
 updateTmuxPlugins: updateTPM 
-	@echo
-	@echo "[0;93m[+][0m Updating tmux plugins..."
-	@${HOME}/.tmux/plugins/tpm/scripts/install_plugins.sh >/dev/null 2>&1
-	@${HOME}/.tmux/plugins/tpm/scripts/update_plugin.sh "" all >/dev/null 2>&1
-	@echo "[0;92m[*][0m tmux plugins updated"
+	@( $(SCRIPTS_DIR)/update_tmux_plugins.sh )
 
 clean:
 	@echo "[0;92m[*][0m Remove dotfiles and configuration folders"
@@ -110,7 +95,7 @@ clean:
 		${HOME}/.config/nvim ${HOME}/.config/alacritty
 	@rm -rf $(PROJ_HOME)
 
-update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateBins updatePrezto
+update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateCustomBins updatePrezto
 	@echo
 	@echo "[42m[*] Update has Finished.[0m"
 
@@ -128,8 +113,8 @@ init: prepare install update installDev
 	@echo "[42m[*] Init has Finished.[0m"
 
 .PHONY: prepare prerequisites prerequisitesTest \
-	installZsh installPrezto updatePrezto installNeovim installTmux \
+	installZsh installPrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \
-	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM\
+	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM updateCustomBins updatePrezto \
 	clean update install installDev init \
 

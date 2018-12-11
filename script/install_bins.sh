@@ -25,6 +25,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 # tree
 setup_func_tree() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing tree..."
     (
     if [[ $1 = local ]]; then
         if [ -d $HOME/.local/src/tree-* ]; then
@@ -53,14 +54,15 @@ EOS
             sudo apt-get -y install tree
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} tree is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} tree install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tree..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "tree is installed [$1]" \
+        "tree install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 # fd
 setup_func_fd() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing fd..."
     (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
@@ -91,14 +93,15 @@ EOS
             sudo dpkg -i fd_${FD_VERSION}_amd64.deb
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} fd is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} fd install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing fd..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "fd is installed [$1]" \
+        "fd install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 # thefuck
 setup_func_thefuck() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing thefuck..."
     (
     if [[ $1 = local ]]; then
         pip3 install thefuck --user --upgrade
@@ -112,14 +115,15 @@ EOS
             sudo pip3 install thefuck --upgrade
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} thefuck is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} thefuck install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing thefuck..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "thefuck is installed [$1]" \
+        "thefuck install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 # rg
 setup_func_rg() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing rg..."
     (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
@@ -150,14 +154,15 @@ EOS
             sudo dpkg -i ripgrep_${RG_VERSION}_amd64.deb
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} rg is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} rg install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing rg..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "rg is installed [$1]" \
+        "rg install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 
 setup_func_ranger() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing ranger..."
     (
     rm -rf $HOME/.local/src/ranger || true
     rm -rf $HOME/.local/bin/ranger || true
@@ -165,14 +170,15 @@ setup_func_ranger() {
     # git clone https://github.com/cih9088/ranger $HOME/.local/src/ranger
     $HOME/.local/src/ranger/ranger.py --copy-config=all
     ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} ranger is installed [local]" \
-        || echo -e "\033[2K \033[100D${marker_err} ranger install is failed [local]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing ranger..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "ranger is installed [local]" \
+        "ranger install is failed [local]. use VERBOSE=YES for error message"
 }
 
 # tldr
 setup_func_tldr() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing tldr..."
     (
     if [[ $1 == local ]]; then
         pip install tldr --user --upgrade
@@ -185,13 +191,14 @@ EOS
             sudo pip install tldr --upgrade
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} tldr is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} tldr install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tldr..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "tldr is installed [$1]" \
+        "tldr install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 setup_func_bash_snippets() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing bash-snippets..."
     (
     cd $TMP_DIR
     git clone https://github.com/alexanderepstein/Bash-Snippets
@@ -209,10 +216,10 @@ EOS
         fi
 
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} bash-snippets (transfer, cheat) is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} bash-snippets (transfer, cheat) install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing bash-snippets (transfer, cheat)..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "bash-snippets (transfer, cheat) is installed [$1]" \
+        "bash-snippets (transfer, cheat) install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 

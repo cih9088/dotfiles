@@ -11,7 +11,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 setup_func() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing zsh..."
     (
+    sleep 5
+    exit 0
     if [[ $1 = local ]]; then
         if [ -d $HOME/.local/src/zsh-* ]; then
             cd $HOME/.local/src/zsh-*
@@ -45,10 +48,10 @@ EOS
             fi
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} zsh is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} zsh install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing zsh..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "zsh is installed [$1]" \
+        "zsh install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 main() {

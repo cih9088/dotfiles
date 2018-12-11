@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 set -e
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${DIR}/spinner/spinner.sh
 ################## Color ##########################
 
 # Reset
@@ -129,23 +132,23 @@ if [ ! -d $TMP_DIR ]; then
     mkdir -p $TMP_DIR
 fi
 
-spinner() {
-    local info="$1"
-    local pid="$!"
-    local delay=0.75
-    local spinstr='|/-\'
-    local ctr=0
-    for (( i = 1; i <= $(printf "$info  [%c] " "$spinstr" | expand | wc -m ); i++ )); do
-        local ctr=$(( $ctr + 1 ))
-    done
-    while kill -0 $pid 2> /dev/null; do
-        local temp=${spinstr#?}
-        printf "$info  [%c]" "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\033[2K \033[${ctr}D"
-    done
-}
+# spinner() {
+#     local info="$1"
+#     local pid="$!"
+#     local delay=0.75
+#     local spinstr='|/-\'
+#     local ctr=0
+#     for (( i = 1; i <= $(printf "$info  [%c] " "$spinstr" | expand | wc -m ); i++ )); do
+#         local ctr=$(( $ctr + 1 ))
+#     done
+#     while kill -0 $pid 2> /dev/null; do
+#         local temp=${spinstr#?}
+#         printf "$info  [%c]" "$spinstr"
+#         local spinstr=$temp${spinstr%"$temp"}
+#         sleep $delay
+#         printf "\033[2K \033[${ctr}D"
+#     done
+# }
 
 [[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/parser_yaml ${CONFIG} "CONFIG_") || true
 [[ "${VERBOSE:=NO}" == "YES" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null

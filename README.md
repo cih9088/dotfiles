@@ -6,11 +6,12 @@ This is my dotfiles. Only tested in OSX and Ubuntu.
 ```bash
 # clone repository
 $ cd ~
-$ git clone https://github.com/cih9088/dotfiles.git ~/dotfiles
+$ git clone --recursive https://github.com/cih9088/dotfiles.git ~/dotfiles
 
 # or pull in case you have cloned already
 $ cd ~/dotfiles
 $ git pull
+$ git submodule update --init --recursive
 ```
 
 ## Prerequisites
@@ -62,6 +63,7 @@ Note that update does not update any of commands installed but dotfiles, neovimp
 ```bash
 $ cd ~/dotfiles
 $ git pull
+$ git submodule update --init --recursive
 $ make update               # Update all of dotfiles and configurations
 ```
 
@@ -87,6 +89,7 @@ $ make installDevShell      # Install shell dev environment only
 ```bash
 $ cd ~/dotfiles
 $ git pull
+$ git submodule update --init --recursive
 
 # you could choose what to update in following list
 # [updateDotfiles, updateNeovimPlugins, updateTPM, updateTmuxPlugins, updateBins, updatePrezto]

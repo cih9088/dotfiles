@@ -24,8 +24,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 
 setup_func() {
-    # install prerequisite
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing tmux..."
     (
+    # install prerequisite
     if [[ $1 = local ]]; then
         # libevent
         if [ -d $HOME/.local/src/libevent-* ]; then
@@ -146,10 +147,10 @@ EOS
             sudo mv tmux-${TMUX_VERSION} /usr/local/src
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} tmux is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} tmux install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing tmux..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "tmux is installed [$1]" \
+        "tmux install is failed [$1]. use VERBOSE=YES for error message"
 }
 
 main() {

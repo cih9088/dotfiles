@@ -16,6 +16,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 setup_func_neovim() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing neovim..."
     (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
@@ -51,10 +52,10 @@ EOS
             sudo apt-get install neovim
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} neovim is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} neovim install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "neovim is installed [$1]" \
+        "neovim install is failed [$1]. use VERBOSE=YES for error message"
 
     # (
     # if [[ $1 = local ]]; then
@@ -129,6 +130,7 @@ main() {
         done
     fi
 
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing neovim with python support..."
     # install neovim with python support
     (
     pip install virtualenv --user
@@ -165,10 +167,10 @@ main() {
     #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
     #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
     # fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} neovim with python support is installed [local]" \
-        || echo -e "\033[2K \033[100D${marker_err} neovim with python support install is failed [local]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing neovim with python support..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "neovim with python support is installed" \
+        "neovim with python support install is failed. use VERBOSE=YES for error message"
 
     # clean up
     if [[ $$ = $BASHPID ]]; then

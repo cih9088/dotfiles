@@ -8,6 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 
 setup_func_shellcheck() {
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing shellcheck..."
     (
     if [[ $1 = local ]]; then
         cd $TMP_DIR
@@ -31,25 +32,26 @@ EOS
             sudo apt-get install shellcheck
         fi
     fi
-    ) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} shellcheck is installed [$1]" \
-        || echo -e "\033[2K \033[100D${marker_err} shellcheck install is failed [$1]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing shellcheck..."
+    ) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "shellcheck is installed [$1]" \
+        "shellcheck install is failed [$1]. use VERBOSE=YES for error message"
 
 }
 
 setup_func_bash_language_server() {
-    (npm i -g bash-language-server) >&3 2>&4 \
-        && echo -e "\033[2K \033[100D${marker_ok} bash-language-server is installed [local]" \
-        || echo -e "\033[2K \033[100D${marker_err} bash-language-server install is failed [local]. use VERBOSE=YES for error message" &
-    [[ ${VERBOSE} == YES ]] && wait || spinner "${marker_info} Installing bash-language-server..."
+    [[ ${VERBOSE} == YES ]] || start_spinner "Installing bash-language-server..."
+    (npm i -g bash-language-server) >&3 2>&4 || exit_code="$?" && true
+    stop_spinner "${exit_code}" \
+        "bash-language-server is installed [local]" \
+        "bash-language-server install is failed [local]. use VERBOSE=YES for error message"
 }
 
 main() {
     echo
-    if [ -x "$(command -v shellchecker)" ]; then
-        echo "${marker_info} Following list is shellchecker installed on the system"
-        coms=($(which -a shellchecker | uniq))
+    if [ -x "$(command -v shellcheck)" ]; then
+        echo "${marker_info} Following list is shellcheck installed on the system"
+        coms=($(which -a shellcheck | uniq))
         (
             printf 'LOCATION,VERSION\n'
             for com in "${coms[@]}"; do
@@ -57,14 +59,14 @@ main() {
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
-        echo "${marker_info} shellchecker is not found"
+        echo "${marker_info} shellcheck is not found"
     fi
 
     if [[ ! -z ${CONFIG+x} ]]; then
-        if [[ ${CONFIG_shellchecker_install} == "yes" ]]; then
-            [[ ${CONFIG_shellchecker_local} == "yes" ]] && setup_func_shellcheck 'local' || setup_func_shellcheck 'system'
+        if [[ ${CONFIG_shellcheck_install} == "yes" ]]; then
+            [[ ${CONFIG_shellcheck_local} == "yes" ]] && setup_func_shellcheck 'local' || setup_func_shellcheck 'system'
         else
-            echo "${marker_ok} shellchecker is not installed"
+            echo "${marker_ok} shellcheck is not installed"
         fi
     else
         while true; do

@@ -8,8 +8,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_info} Copying dotfiles"
-
 if [ -d "${HOME}/dotfiles_old" ]; then
     echo "${marker_err} dotfiles_old folder already exists"
     echo "${marker_info} Rename it to 'dotfiles_old_old'"
@@ -22,6 +20,8 @@ else
     mkdir -p ~/dotfiles_old/.config
 fi
 
+[[ ${VERBOSE} == YES ]] || start_spinner "Updating dotfiles..."
+(
 VIM_DIR=${PROJ_HOME}/vim
 NVIM_DIR=${PROJ_HOME}/nvim
 TMUX_DIR=${PROJ_HOME}/tmux
@@ -113,4 +113,7 @@ if [[ $$ = $BASHPID ]]; then
     rm -rf $TMP_DIR
 fi
 
-echo "${marker_ok} dotfiles copied"
+) >&3 2>&4 || exit_code="$?" && true
+stop_spinner "${exit_code}" \
+    "dotfiles are updated [local]" \
+    "dotfiles udpate is failed [local]. use VERBOSE=YES for error message"
