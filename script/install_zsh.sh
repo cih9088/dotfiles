@@ -13,8 +13,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 setup_func() {
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing zsh..."
     (
-    sleep 5
-    exit 0
     if [[ $1 = local ]]; then
         if [ -d $HOME/.local/src/zsh-* ]; then
             cd $HOME/.local/src/zsh-*

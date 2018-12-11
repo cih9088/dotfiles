@@ -55,7 +55,7 @@ main() {
         (
             printf 'LOCATION,VERSION\n'
             for com in "${coms[@]}"; do
-                printf '%s,%s\n' "${com}" "$(${com} -version | head -2 | tail -1)"
+                printf '%s,%s\n' "${com}" "$(${com} -V | head -2 | tail -1)"
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
@@ -93,7 +93,7 @@ main() {
         (
             printf 'LOCATION,VERSION\n'
             for com in "${coms[@]}"; do
-                printf '%s,%s\n' "${com}" "$(${com} -version | head -2 | tail -1)"
+                printf '%s,%s\n' "${com}" "$(${com} --version | head -2 | tail -1)"
             done
         ) | column -t -s ',' | sed 's/^/    /'
     else
