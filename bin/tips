@@ -163,8 +163,11 @@ ${BIPurple}HISTORY MANIPULATION${Color_Off}
     ${BIRed}C-r${Color_Off}         search backwards in history
 
 
-${BIPurple}LINE EDITING${Color_Off}
-------------
+${BIPurple}LINE EDITING (READLINE)${Color_Off}
+-----------------------
+
+    ${BIRed}C-a${Color_Off}     move to the start of the current line
+    ${BIRed}C-e${Color_Off}     move to the end of the current line
     ${BIRed}M-d${Color_Off}     kill to end of word
     ${BIRed}C-w${Color_Off}     kill to beginning of word
     ${BIRed}C-k${Color_Off}     kill to end of line

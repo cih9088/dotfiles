@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 NVIM_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/neovim/neovim/releases/latest" |
     grep '"tag_name":' |

@@ -25,17 +25,7 @@ prerequisites:
 	@( $(SCRIPTS_DIR)/prerequisites.sh )
 
 prerequisitesTest:
-	@which -a python || echo "[0;91mpython is not installed[0m"
-	@which -a pip || echo "[0;91mpip is not installed[0m"
-	@which -a python2 || echo "[0;91mpython2 is not installed[0m"
-	@which -a pip3 || echo "[0;91mpip2 is not installed[0m"
-	@which -a python3 || echo "[0;91mpython3 is not installed[0m"
-	@which -a pip3 || echo "[0;91mpip3 is not installed[0m"
-	@which -a wget || echo "[0;91mwget is not installed[0m"
-	@which -a xclip || echo "[0;91mxclip is not installed (for ubuntu)[0m"
-	@which -a pbcopy || echo "[0;91mpbcopy is not installed (for osx specific)[0m"
-	@which -a reattatch-to-user-namespace || echo "[0;91mreattatch-to-user-namepsace is not installed (for osx specific)[0m"
-	@which -a git || echo "[0;91mgit is not installed[0m"
+	@( $(SCRIPTS_DIR)/prerequisites_test.sh )
 
 installZsh: prepare
 	@( $(SCRIPTS_DIR)/install_zsh.sh )

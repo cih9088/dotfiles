@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # change version you want to install on local
 LIBEVENT_VERSION=2.1.8

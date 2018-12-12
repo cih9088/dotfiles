@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # change version you want to install on local
 TREE_VERSION=1.7.0

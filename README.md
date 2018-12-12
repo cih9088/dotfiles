@@ -16,7 +16,7 @@ $ git submodule update --init --recursive
 
 ## Prerequisites
 The following list would be installed in your system. You need privilege (sudo). No need if you have them on your system.
-* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git, reattatch-to-user-namespace
+* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git, reattatch-to-user-namespace, xquartz
 * Ubuntu: python2, python2-pip, python3, python3-pip, wget, xclip, git
 ```bash
 $ cd ~/dotfiles
@@ -201,7 +201,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - replace surrounding: <kbd>s</kbd> + <kbd>r</kbd> + {deletion} + {addition}
 - [vim-dirvish](https://github.com/justinmk/vim-dirvish): file explore
     - open dirvish: <kbd>-</kbd>
-    - reload: <kbd>g</kbd> + <kbd>r/kbd>
+    - reload: <kbd>g</kbd> + <kbd>r</kbd>
     - go to home: <kbd>g</kbd> + <kbd>~</kbd>
     - hide hiddden files: <kbd>g</kbd> + <kbd>h</kbd>
 - [vim-rooter](https://github.com/airblade/vim-rooter): change pwd to project root. usefule with fzf
