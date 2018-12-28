@@ -43,6 +43,7 @@
 
     " Plugins for Language specific (syntax, completion, etc.) {{{
         Plug 'sheerun/vim-polyglot'
+        Plug 'Vimjas/vim-python-pep8-indent'  " becase of low performance of vim-polyglot
         " Plug 'tmhedberg/SimpylFold'
         Plug 'chrisbra/csv.vim'
         Plug 'lervag/vimtex'
@@ -54,19 +55,14 @@
                         \ 'branch': 'next',
                         \ 'do': 'bash install.sh',
                         \ }
-            " Plug 'ncm2/ncm2'
-            " Plug 'roxma/nvim-yarp'
-            " Plug 'ncm2/ncm2-bufword'
-            " Plug 'ncm2/ncm2-tmux'
-            " Plug 'ncm2/ncm2-path'
-            " " Plug 'ncm2/ncm2-jedi'
-            " Plug 'ncm2/ncm2-ultisnips'
             Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-            " Plug 'zchee/deoplete-jedi'
-            " Plug 'machakann/vim-Verdin', { 'for': ['vim'] }
             " Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-        elseif v:version >= 800
-            Plug 'maralla/completor.vim'
+        else
+            Plug 'Shougo/deoplete.nvim'
+            Plug 'roxma/nvim-yarp'
+            Plug 'roxma/vim-hug-neovim-rpc'
+            Plug 'zchee/deoplete-jedi'
+            Plug 'numirias/semshi'
         endif
     " }}}
 
@@ -79,8 +75,7 @@
         " Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
         " Plug 'scrooloose/nerdtree'
-        Plug 'justinmk/vim-dirvish'
-        Plug 'bounceme/remote-viewer'
+        Plug 'justinmk/vim-dirvish' | Plug 'bounceme/remote-viewer'
         Plug 'majutsushi/tagbar'
         Plug 'machakann/vim-sandwich'
         Plug 'easymotion/vim-easymotion'
@@ -193,6 +188,7 @@
         set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
         set wildignore+=*.swp,*~,._*
         set wildignore+=_pycache_,.DS_Store,.vscode,.localized
+
         " Resize panes whenever containing window resized.
         autocmd VimResized * wincmd =
 
@@ -202,6 +198,9 @@
         " if file has no extention, set it conf
         au BufNewFile,BufRead * if &ft == '' | set ft=conf | endif
         " autocmd BufNewFile,BufRead * if expand('%:t') !~ '\.' | set syntax=conf | endif
+
+        " diff: ignore whitespaces
+        set diffopt+=iwhite
     " }}}
 
     " Color scheme {{{
@@ -259,7 +258,7 @@
         set ruler           " show line and col
         set relativenumber  " show relative line numbers
         set number          " show absolute line numbers where your cursor is
-        set numberwidth=2   " keep the line number gutter narrow"
+        set numberwidth=3   " keep the line number gutter narrow
         set showcmd         " show command in bottom bar
         set cursorline      " highlight current line
         filetype indent on  " load filetype-specific index files
@@ -295,7 +294,7 @@
         map , <leader>
     " }}}
 
-    " remove trailing whitespaces on save {{{
+    " Remove trailing whitespaces on save {{{
         fun! StripTrailingWhitespaces()
             let l = line(".")
             let c = col(".")
@@ -306,7 +305,7 @@
             \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
     " }}}
 
-    " file is larger than 50mb {{{
+    " Disable few things on file larger than 50mb {{{
         let g:LargeFile = 1024 * 1024 * 50
         augroup LargeFile
             autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
@@ -359,8 +358,8 @@
     " }}}
 
     " keep search pattern in the middle of screen {{{
-    nnoremap n nzz
-    nnoremap N Nzz
+        nnoremap n nzz
+        nnoremap N Nzz
     " }}}
 
     " Make arrow keys do something useful {{{
@@ -418,20 +417,20 @@
     " }}}
 
     " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard {{{
-    map <leader>y "+y
-    noremap <leader>x "+x
-    noremap <leader>p "+p
+        map <leader>y "+y
+        noremap <leader>x "+x
+        noremap <leader>p "+p
     " }}}
 
     " Search in current visible window {{{
-    command! -nargs=1 WinSearch exe '/\%>'.(line('w0')-1).'l'.<q-args>.'\%<'.(line('w$')+1).'l'
-    nnoremap z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
+        command! -nargs=1 WinSearch exe '/\%>'.(line('w0')-1).'l'.<q-args>.'\%<'.(line('w$')+1).'l'
+        nnoremap z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
     " }}}
 
     " I am too lazy to take my hands from shift {{{
-    command! WQ wq
-    command! Wq wq
-    command! W w
+        command! WQ wq
+        command! Wq wq
+        command! W w
     " }}}
 
     " python break point implementation {{{
@@ -530,15 +529,10 @@
         nnoremap <silent> yoa :call ToggleConcealLevel()<CR>
     " }}}
 
-    " let terminal resize scale the internal windows {{{
-        autocmd VimResized * :wincmd =
-    " }}}
-
     " neovim python support {{{
         let g:python_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim2/bin/python")
         let g:python3_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim3/bin/python")
     " }}}
-
 
 " }}}
 
@@ -603,105 +597,131 @@
     " }}}
 
     " lightline {{{
-    let g:lightline#bufferline#show_number = 0
-    let g:lightline#bufferline#shorten_path = 1
-    let g:lightline#bufferline#enable_devicons = 1
-    let g:lightline#bufferline#unicode_symbols = 1
-    let g:lightline = {}
-    let g:lightline = {
-                \ 'colorscheme': 'andy_lightline',
-                \ 'active': {
-                \     'left': [['mode', 'paste'],
-                \              ['gitbranch', 'readonly', 'filename']],
-                \     'right': [['LC_error_count', 'LC_warning_count'],
-                \               ['lineinfo'],
-                \               ['percent'],
-                \               ['fileformat', 'fileencoding', 'filetype']]
-                \ },
-                \ 'tabline': {
-                \     'left': [['buffers']],
-                \     'right': [['close', 'tabs']]
-                \ },
-                \ 'component_function': {
-                \     'gitbranch': 'LightlineFugitive',
-                \     'filename': 'LightlineFilename',
-                \     'fileformat': 'LightlineFileformat',
-                \     'filetype': 'LightlineFiletype',
-                \     'fileencoding': 'LightlineFileencoding'
-                \ },
-                \ 'component_expand': {
-                \    'linter_checking': 'lightline#lsc#checking',
-                \    'linter_warnings': 'lightline#lsc#warnings',
-                \    'linter_errors': 'lightline#lsc#errors',
-                \    'linter_ok': 'lightline#lsc#ok',
-                \    'buffers': 'lightline#bufferline#buffers',
-                \    'LC_warning_count': 'LC_warning_count',
-                \    'LC_error_count': 'LC_error_count'
-                \ },
-                \ 'component_type': {
-                \    'linter_checking': 'left',
-                \    'linter_warnings': 'warning',
-                \    'linter_errors': 'error',
-                \    'linter_ok': 'left',
-                \    'buffers': 'tabsel',
-                \    'LC_warning_count': 'warning',
-                \    'LC_error_count': 'error'
-                \ },
-                \}
-    function! LightlineFileformat()
-        return winwidth(0) > 70 ? &fileformat : ''
-    endfunction
-    function! LightlineFiletype()
-        return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
-    endfunction
-    function! LightlineFileencoding()
-        return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
-    endfunction
-    function! LightlineModified()
-        return &ft =~ 'help\|vimfiler' ? '' : &modified ? '+' : &modifiable ? '' : '-'
-    endfunction
-    function! LightlineReadonly()
-        return &ft !~? 'help\|vimfiler' && &readonly ? 'RO' : ''
-    endfunction
-    function! LightlineFilename()
-        return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
-                    \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-                    \  &ft == 'unite' ? unite#get_status_string() :
-                    \  &ft == 'vimshell' ? vimshell#get_status_string() :
-                    \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-                    \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
-    endfunction
-    function! LightlineFugitive()
-        if &ft !~? 'vimfiler' && exists('*fugitive#head')
-            return fugitive#head()
-        endif
-        return ''
-    endfunction
-    function! LC_warning_count()
-        let current_buf_number = bufnr('%')
-        let qflist = getqflist()
-        let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
-        let count = len(current_buf_diagnostics)
-        return count > 0 && g:LanguageClient_loaded ? 'W: ' . count : ''
-    endfunction
+        let g:lightline#bufferline#show_number = 0
+        let g:lightline#bufferline#shorten_path = 1
+        let g:lightline#bufferline#enable_devicons = 1
+        let g:lightline#bufferline#unicode_symbols = 1
+        let g:lightline = {}
+        let g:lightline = {
+                    \ 'colorscheme': 'andy_lightline',
+                    \ 'active': {
+                    \     'left': [['mode', 'paste'],
+                    \              ['gitbranch', 'readonly', 'filename']],
+                    \     'right': [['LC_error_count', 'LC_warning_count'],
+                    \               ['lineinfo'],
+                    \               ['percent'],
+                    \               ['fileformat', 'fileencoding', 'filetype']]
+                    \ },
+                    \ 'tabline': {
+                    \     'left': [['buffers']],
+                    \     'right': [['close', 'tabs']]
+                    \ },
+                    \ 'component_function': {
+                    \     'gitbranch': 'LightlineFugitive',
+                    \     'filename': 'LightlineFilename',
+                    \     'fileformat': 'LightlineFileformat',
+                    \     'filetype': 'LightlineFiletype',
+                    \     'fileencoding': 'LightlineFileencoding',
+                    \     'cocstatus' : 'coc#status'
+                    \ },
+                    \ 'component_expand': {
+                    \    'linter_checking': 'lightline#lsc#checking',
+                    \    'linter_warnings': 'lightline#lsc#warnings',
+                    \    'linter_errors': 'lightline#lsc#errors',
+                    \    'linter_ok': 'lightline#lsc#ok',
+                    \    'buffers': 'lightline#bufferline#buffers',
+                    \    'LC_warning_count': 'LC_warning_count',
+                    \    'LC_error_count': 'LC_error_count',
+                    \    'Coc_warning_count': 'Coc_warning_count',
+                    \    'Coc_error_count': 'Coc_error_count'
+                    \ },
+                    \ 'component_type': {
+                    \    'linter_checking': 'left',
+                    \    'linter_warnings': 'warning',
+                    \    'linter_errors': 'error',
+                    \    'linter_ok': 'left',
+                    \    'buffers': 'tabsel',
+                    \    'LC_warning_count': 'warning',
+                    \    'LC_error_count': 'error',
+                    \    'Coc_warning_count': 'warning',
+                    \    'Coc_error_count': 'error'
+                    \ },
+                    \}
+        function! LightlineFileformat()
+            return winwidth(0) > 70 ? &fileformat : ''
+        endfunction
+        function! LightlineFiletype()
+            return winwidth(0) > 70 ? (&filetype !=# '' ? &filetype : 'no ft') : ''
+        endfunction
+        function! LightlineFileencoding()
+            return winwidth(0) > 70 ? (&fenc !=# '' ? &fenc : &enc) : ''
+        endfunction
+        function! LightlineModified()
+            return &ft =~ 'help\|vimfiler' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+        endfunction
+        function! LightlineReadonly()
+            return &ft !~? 'help\|vimfiler' && &readonly ? 'RO' : ''
+        endfunction
+        function! LightlineFilename()
+            return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
+                        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
+                        \  &ft == 'unite' ? unite#get_status_string() :
+                        \  &ft == 'vimshell' ? vimshell#get_status_string() :
+                        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
+                        \ ('' != LightlineModified() ? ' ' . LightlineModified() : '')
+        endfunction
+        function! LightlineFugitive()
+            if &ft !~? 'vimfiler' && exists('*fugitive#head')
+                return fugitive#head()
+            endif
+            return ''
+        endfunction
+        function! LC_warning_count()
+            let current_buf_number = bufnr('%')
+            let qflist = getqflist()
+            let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
+            let count = len(current_buf_diagnostics)
+            return count > 0 && g:LanguageClient_loaded ? 'W: ' . count : ''
+        endfunction
 
-    function! LC_error_count()
-        let current_buf_number = bufnr('%')
-        let qflist = getqflist()
-        let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
-        let count = len(current_buf_diagnostics)
-        return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
-    endfunction
+        function! LC_error_count()
+            let current_buf_number = bufnr('%')
+            let qflist = getqflist()
+            let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
+            let count = len(current_buf_diagnostics)
+            return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
+        endfunction
 
-    augroup lightline_lsc
-        autocmd!
-        autocmd User LanguageClientDiagnosticsChanged call lightline#update()
-    augroup END
+        augroup lightline_lsc
+            autocmd!
+            autocmd User LanguageClientDiagnosticsChanged call lightline#update()
+        augroup END
 
-    " let g:lightline#ale#indicator_checking = "\uf110"
-    " let g:lightline#ale#indicator_warnings = "\uf071  "
-    " let g:lightline#ale#indicator_errors = "\uf05e  "
-    " let g:lightline#ale#indicator_ok = "\uf00c"
+        function! Coc_warning_count()
+            let info = get(b:, 'coc_diagnostic_info', {})
+            if empty(info) | return '' | endif
+            if get(info, 'warning', 0)
+                return 'W: ' . info['warning']
+            endif
+        endfunction
+
+        function! Coc_error_count()
+            let info = get(b:, 'coc_diagnostic_info', {})
+            if empty(info) | return '' | endif
+            if get(info, 'error', 0)
+                return 'E: ' . info['error']
+            endif
+        endfunction
+
+        augroup coc
+            autocmd!
+            autocmd User CocDiagnosticChange call lightline#update()
+        augroup END
+
+        " let g:lightline#ale#indicator_checking = "\uf110"
+        " let g:lightline#ale#indicator_warnings = "\uf071  "
+        " let g:lightline#ale#indicator_errors = "\uf05e  "
+        " let g:lightline#ale#indicator_ok = "\uf00c"
     " }}}
 
     " " ALE {{{
@@ -793,18 +813,20 @@
                     \ 'auto_complete_delay': 20,
                     \ 'auto_refresh_delay': 30,
                     \ 'skip_chars': ['(', ')', '<', '>'],
+                    \ 'num_processes': 4,
+                    \ 'min_pattern_length': 2,
                     \ })
-
-        " if !exists('g:deoplete#omni#input_patterns')
-        "     let g:deoplete#omni#input_patterns = {}
-        " endif
-        " " let g:deoplete#disable_auto_complete = 1
-
-        " let g:deoplete#sources#jedi#show_docstring = 1
-        " let g:deoplete#sources#jedi#server_timeout = 100
 
         " automatically close preview window
         autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+        " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+        " found' messages
+        " set shortmess+=c
+
+        " set completeopt+=noinsert
+        " set completeopt-=preview
+
 
         " Register some default omnicomplete functions/patterns
         " to automatically trigger in deoplete {{
@@ -879,10 +901,6 @@
     "     inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
     "     inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
     "
-    "     " suppress the annoying 'match x of y', 'The only match' and 'Pattern not
-    "     " found' messages
-    "     set shortmess+=c
-    "
     "     " CTRL-C doesn't trigger the InsertLeave autocmd . map to <ESC> instead.
     "     inoremap <c-c> <ESC>
     "
@@ -905,6 +923,7 @@
     " " coc {{{
     "     " Smaller updatetime for CursorHold & CursorHoldI
     "     set updatetime=300
+    "
     "     " Use tab for trigger completion with characters ahead and navigate.
     "     " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
     "     inoremap <silent><expr> <TAB>
@@ -920,9 +939,6 @@
     "
     "     " Use <c-space> for trigger completion.
     "     inoremap <silent><expr> <c-space> coc#refresh()
-    "
-    "     " Use <C-x><C-o> to complete 'word', 'emoji' and 'include' sources
-    "     imap <silent> <C-x><C-o> <Plug>(coc-complete-custom)
     "
     "     " Use <cr> for confirm completion.
     "     " Coc only does snippet and additional edit on confirm.
@@ -949,9 +965,6 @@
     "       endif
     "     endfunction
     "
-    "     " Show signature help while editing
-    "     autocmd CursorHoldI * silent! call CocActionAsync('showSignatureHelp')
-    "
     "     " Highlight symbol under cursor on CursorHold
     "     autocmd CursorHold * silent call CocActionAsync('highlight')
     "
@@ -968,6 +981,8 @@
     "
     "     " Remap for do codeAction of current line
     "     nmap <leader>ac  <Plug>(coc-codeaction)
+    "     " Fix autofix problem of current line
+    "     nmap <leader>qf  <Plug>(coc-fix-current)
     "
     "     " Use `:Format` for format current buffer
     "     command! -nargs=0 Format :call CocAction('format')
@@ -991,6 +1006,7 @@
         let g:LanguageClient_diagnosticsEnable = 1
 
         nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+        nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
         nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
     " }}}
 
@@ -1073,7 +1089,7 @@
     " }}}
 
     " vim-polyglot {{{
-        let g:polyglot_disabled = ['latex']
+        let g:polyglot_disabled = ['latex', 'python', 'python-ident']
     " }}}
 
     " nrrwrgn {{{
@@ -1188,6 +1204,10 @@
         let g:diminactive_use_syntax = 0
         " let g:diminactive_buftype_blacklist = []
         " let g:diminactive_filetype_blacklist = []
+    " }}}
+
+    " unimpaired {{{
+        let g:nremap = {"[t": "", "]t": "", "[T": "", "]T": ""}
     " }}}
 
 " }}}

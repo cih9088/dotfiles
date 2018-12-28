@@ -170,6 +170,14 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - open terminal vertically: `:VT`
 - toggle conceal level: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>a</kbd>
 - [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
+    - navigate quickfix list: <kbd>\]</kbd> + <kbd>q</kbd>, <kbd>\[</kbd> + <kbd>q</kbd>
+    - navigate location list: <kbd>\]</kbd> + <kbd>l</kbd>, <kbd>\[</kbd> + <kbd>l</kbd>
+    - navigate SCM conflict: <kbd>\]</kbd> + <kbd>n</kbd>, <kbd>\[</kbd> + <kbd>n</kbd>
+    - toggle diff: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>d</kbd>
+    - toggle relativenumber: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>r</kbd>
+    - toggle number: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>n</kbd>
+- [vim-signify](https://github.com/mhinz/vim-signify)
+    - navigate hunk: <kbd>\]</kbd> + <kbd>c</kbd>, <kbd>\[</kbd> + <kbd>c</kbd>
 - [vim-easyaline](https://github.com/junegunn/vim-easy-align)
 - [vim-fugitive](https://github.com/tpope/vim-fugitive)
     - open Gstatus: <kbd>leader</kbd> + <kbd>G</kbd>

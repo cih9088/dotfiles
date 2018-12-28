@@ -97,11 +97,13 @@ ${BIPurple}USEFUL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
     ${BIRed}http-serve${Color_Off} ${BIGreen}arg${Color_Off}  serves a directory via HTTP with port number ${BIGreen}arg${Color_Off}
 
     ---------------------------CUSTOM-----------------------------
+    ${BIRed}~${Color_Off}               jump to home directory
     ${BIRed}c${Color_Off}               clear terminal
     ${BIRed}dircnt ${BIGreen}arg${Color_Off}      count directories and files in ${BIGreen}arg${Color_Off}
     ${BIRed}easy-useradd${Color_Off}    add user account
     ${BIRed}list-users${Color_Off}      list users
     ${BIRed}sshget${Color_Off} ${BIGreen}arg${Color_Off}      get something from ${BIGreen}arg${Color_Off} through ssh (fzf based)
+    ${BIRed}fkill${Color_Off}           kill process with FZF
 
 
 ${BIPurple}PREZTO ARCHIVE MODULE${Color_Off}
