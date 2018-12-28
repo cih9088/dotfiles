@@ -104,6 +104,13 @@ $ cd ~/dotfiles
 $ make clean        # delete installed dotfiles and folder itself (installed command remains)
 ```
 
+### [initialize OSX](https://github.com/donnemartin/dev-setup#osxprepsh-script)
+```bash
+$ cd ~/dotfiles
+$ make initOSX
+```
+
+
 
 ## Highligts
 

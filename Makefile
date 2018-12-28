@@ -21,6 +21,10 @@ prepare:
 	@mkdir -p ${HOME}/.local/man/man1
 	@mkdir -p ${HOME}/.config/alacritty
 
+initOSX:
+	@( $(SCRIPTS_DIR)/osx_prep.sh )
+	@( $(SCRIPTS_DIR)/osx_brew.sh )
+
 prerequisites:
 	@( $(SCRIPTS_DIR)/prerequisites.sh )
 
@@ -106,5 +110,5 @@ init: prepare install update installDev
 	installZsh installPrezto installNeovim installTmux \
 	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \
 	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM updateCustomBins updatePrezto \
-	clean update install installDev init \
+	clean update install installDev init initOSX \
 
