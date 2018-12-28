@@ -205,8 +205,9 @@ fi
 
 #   Custom functions
 #   --------------------------------------------------------------------------------------
-    cd() { # Always list directory contents upon 'cd'
-        builtin cd "$@" && (
+    unalias cd
+    cd() { # list directory contents based on file counts upon 'cd'
+        nocorrect builtin cd "$@" && (
         n_files=$(\ls -f | wc -l)
         term_size=$(( `tput lines` * `tput cols` / 100 ))
         if [ $n_files -lt $term_size ]; then
@@ -243,10 +244,11 @@ fi
         fi
     }
 
+    unalias man
     man () { # fix man page width for better readability
         local width="${COLUMNS:-100}"
         (( width > 100 )) && width=100
-        MANWIDTH="$width" command man "$@"
+        MANWIDTH="$width" nocorrect command man "$@"
     }
 
     z() { # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
