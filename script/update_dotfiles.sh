@@ -85,6 +85,12 @@ if [ -e $HOME/.zprofile ]; then
 fi
 ln -s -f ${ZSH_DIR}/zprofile $HOME/.zprofile
 
+if [ -e $HOME/.zlogout ]; then
+    cp -RfL $HOME/.zlogout $HOME/dotfiles_old
+    rm -rf $HOME/.zlogout
+fi
+ln -s -f ${ZSH_DIR}/zlogout $HOME/.zlogout
+
 if [ -e $HOME/.pylintrc ]; then
     cp -RfL $HOME/.pylintrc $HOME/dotfiles_old
     rm -rf $HOME/.pylintrc
