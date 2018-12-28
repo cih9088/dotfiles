@@ -38,7 +38,7 @@ vercomp () {
 # bash version check
 bash_version=$(printf "%d.%d.%d" ${BASH_VERSINFO[@]:0:3})
 vercomp "${bash_version}" "4"
-[[ $? == 2 ]] && echo "This script requires bash version >= 4. Current bash version: ${bash_version}"
+[[ $? == 2 ]] && echo "This script requires bash version >= 4. Current bash version: ${bash_version}" >&2 && exit 1
 
 
 declare -r esc=$'\033'
@@ -96,7 +96,7 @@ while [[ $# -gt 0 ]]; do
 
     case $key in
         -p)
-            ssh_port=${2:?$1 needs argument(Usages: $1 argument)};
+            ssh_port=${2:?$1 needs argument(Usages: $1 argument)}
             shift 2 ;;
         *)
             POSITIONAL+=("$1")
@@ -108,30 +108,32 @@ if [ -n "${POSITIONAL:-}" ]; then
 fi
 ! [[ $ssh_port =~ ^[0-9]+$ && $ssh_port -ge 0 && $ssh_port -le 65535 ]] \
     && err "$ssh_port is not a valid port" && exit 1
+[[ ${ssh_port} -eq 22 ]] && ssh_cmd="ssh" || ssh_cmd="ssh -p ${ssh_port}"
 
 mkfifo "$fifo"
 
 if (( $# < 1 )); then
-  usage
-  die
+    usage
+    die
 fi
 
 for a; do
-  host="${a%:*}"
-  path="${a##*:}"
-  domains+=( ["$a"]="$host" )
-  paths+=( ["$a"]="$path" )
-  shift
+    host="${a%:*}"
+    path="${a##*:}"
+    domains+=( ["$a"]="$host" )
+    paths+=( ["$a"]="$path" )
+    shift
 done
 
 for s in "${!domains[@]}"; do
-  ssh -p ${ssh_port} "${domains[$s]}" "find ${paths[$s]}" | sed -r "s|^|${domains[$s]}:|" >> "$fifo" &
+    ${ssh_cmd} "${domains[$s]}" "find ${paths[$s]}" | /usr/bin/sed "s|^|${domains[$s]}:|" >> "$fifo" &
 done
 
 mapfile -t files < <(fzf -e --inline-info +s --multi --bind='Ctrl-A:toggle-all,`:jump' < "$fifo")
 
 if (( ${#files[@]} )); then
-  rsync --protect-args -auvzP -e "ssh -p ${ssh_port}" "${files[@]}" .
+    # https://unix.stackexchange.com/a/222215
+    rsync -auvzP -e "${ssh_cmd}" $(echo "${files[@]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/") .
 fi
 
 cleanup
