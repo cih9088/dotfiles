@@ -106,5 +106,31 @@ brew cask install --appdir="/Applications" betterzip
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlimagesize webpquicklook suspicious-package quicklookase qlvideo
 
+
+# mas
+brew install mas
+
+while true; do
+    mas account >/dev/null 2>&1
+    [[ $? == 0 ]] && break
+    echo -n "Please signin Appstore manually and press any keys."
+    read anykey
+done
+
+# free stuff
+mas install 1278508951  # Trello
+mas install 1018899653  # HeliumLift
+mas install 937984704   # Amphetamine
+mas install 409183694   # Keynote
+mas install 409201541   # Pages
+mas install 409203825   # Numbers
+mas install 1295203466  # Microsoft Remote Desktop
+
+# not free
+mas install 445189367   # PopClip
+mas install 441258766   # Magnet
+mas install 461788075   # Movist
+
+
 # Remove outdated versions from the cellar.
 brew cleanup

@@ -1,16 +1,21 @@
 #!/usr/bin/env bash
-# -*- coding: UTF8 -*-
 
-##
-#   Command-line / Shell / Bash - snippets : List all normal user and system accounts in the system.
-#   Tested on RHEL / Debian Linux
-#   
-#   Author: Vivek Gite <www.cyberciti.biz>, under GPL v2.0+
-#   Updated by Andy (cih9088@gmail.com) to prettier output
-#   
-#   Sources :
-#   http://www.cyberciti.biz/faq/linux-list-users-command/
-#
+# copied from http://www.cyberciti.biz/faq/linux-list-users-command
+# modified by Andy <cih9088@gmail.com>
+
+set -euo pipefail
+trap "echo 'error: Script failed: see failed command above'" ERR
+
+Color_Off='[0m'       # Text Reset
+BRed='[1;31m'         # Red
+BGreen='[1;32m'       # Green
+Yellow='[0;33m'       # Yellow
+BIYellow='[1;93m'     # Yellow
+
+OPTIND=1
+SYSTEM_USERS=false
+LOCKED_USERS=false
+
 
 case "$OSTYPE" in
     solaris*) platform="SOLARIS" ;;
@@ -25,6 +30,57 @@ if [[ $platform != LINUX ]]; then
     echo "This script dose not support $platform." >&2
     exit 1
 fi
+
+usage() {
+    LESS=-FEXR less <<HELP
+
+${BRed}SYNOPSIS${Color_Off}
+    ${BRed}$(basename "$0")${Color_Off} [${BRed}-hsl${Color_Off}]
+
+
+${BRed}DESCRIPTION${Color_Off}
+    list users in system with easy
+
+
+${BRed}OPTIONS${Color_Off}
+    ${BRed}-s${Color_Off}
+        show system users as well
+
+    ${BRed}-l${Color_Off}
+        show locked users (need privilege)
+
+    ${BRed}-h${Color_Off}
+        show this help message
+HELP
+}
+
+while getopts 'hsl' option; do
+    case "$option" in
+        h) usage
+            exit
+            ;;
+        s) SYSTEM_USERS=true
+            ;;
+        l) LOCKED_USERS=true
+            if ! [ "$EUID" -eq 0 ]; then
+                echo 'Need privilege to list locked users' >&2
+                exit 1
+            fi
+            ;;
+        :) printf "missing argument for -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+[ "${1:-}" = "--" ] && shift
 
 _l="/etc/login.defs"
 _p="/etc/passwd"
@@ -43,7 +99,7 @@ echo ""
 echo "----------[ Sudo User Accounts ]---------------"
 grep '^sudo:.*$' /etc/group | cut -d: -f4 | tr ',' ' '
 
-if [ "$EUID" -eq 0 ];then
+if [ ${LOCKED_USERS} == true ]; then
     echo ""
     echo "---------[ Locked User Accounts ]--------------"
     shadow="/etc/shadow"
@@ -54,6 +110,8 @@ if [ "$EUID" -eq 0 ];then
     cat $shadow | awk -F ':' -v now=$(date +%s) '{if ( length($8) > 0 && ($8 < (now / 60 / 60 / 24)) ) printf "%s ", $1} END { printf "\n"; }'
 fi
 
-echo ""
-echo "---------[ System User Accounts ]--------------"
-awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( !($3 >= min && $3 <= max  && $7 != "/sbin/nologin")) print $0 }' "$_p" | column -s ':' -tn
+if [ ${SYSTEM_USERS} == true ]; then
+    echo ""
+    echo "---------[ System User Accounts ]--------------"
+    awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( !($3 >= min && $3 <= max  && $7 != "/sbin/nologin")) print $0 }' "$_p" | column -s ':' -tn
+fi

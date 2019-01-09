@@ -1,10 +1,18 @@
 #!/usr/bin/env bash
-#
+
 # copied from https://github.com/DanielFGray/fzf-scripts/blob/master/sshget
 # modified by Andy <cih9088@gmail.com>
 
+trap cleanup SIGHUP SIGINT SIGTERM
+
+Color_Off='[0m'       # Text Reset
+BRed='[1;31m'         # Red
+BGreen='[1;32m'       # Green
+Yellow='[0;33m'       # Yellow
+BIYellow='[1;93m'     # Yellow
+
 # https://stackoverflow.com/a/4025065
-vercomp () {
+vercomp () { # version checker
     if [[ $1 == $2 ]]
     then
         return 0
@@ -61,8 +69,21 @@ die() {
 }
 
 usage() {
-  LESS=-FEXR less <<'HELP'
-sshget [-p <port_numer>] <user@host1:/path/to/search ...>
+  LESS=-FEXR less <<HELP
+
+${BRed}SYNOPSIS${Color_Off}
+    ${BRed}$(basename "$0")${Color_Off} [${BRed}-p${Color_Off} ${BGreen}port_number${Color_Off}] ${BGreen}user@host1:/path/to/search${Color_Off}
+
+
+${BRed}DESCRIPTION${Color_Off}
+    scp combining with fzf
+
+
+${BRed}OPTIONS${Color_Off}
+    ${BRed}-p${Color_Off} ${BGreen}port_number${Color_Off}
+        specify port number for ssh. 
+        If not specified, use predefined or 22.
+
 HELP
 }
 
@@ -85,7 +106,6 @@ has -v fzf rsync || die
 cleanup() {
   [[ -e "$fifo" ]] && rm "$fifo"
 }
-trap cleanup SIGHUP SIGINT SIGTERM
 
 # argument parsing
 POSITIONAL=()
@@ -96,7 +116,7 @@ while [[ $# -gt 0 ]]; do
 
     case $key in
         -p)
-            ssh_port=${2:?$1 needs argument(Usages: $1 argument)}
+            ssh_port="${2:?$1 needs argument(Usages: $1 argument)}"
             shift 2 ;;
         *)
             POSITIONAL+=("$1")
@@ -114,6 +134,7 @@ mkfifo "$fifo"
 
 if (( $# < 1 )); then
     usage
+    cleanup
     die
 fi
 

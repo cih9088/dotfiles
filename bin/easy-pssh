@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+trap "echo 'error: Script failed: see failed command above'" ERR
+
+Color_Off='[0m'       # Text Reset
+BRed='[1;31m'         # Red
+BGreen='[1;32m'       # Green
+Yellow='[0;33m'       # Yellow
+BIYellow='[1;93m'     # Yellow
+
+OPTIND=1
+INLINE=false
+
+
+case "$OSTYPE" in
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
+esac
+
+usage() {
+    LESS=-FEXR less <<HELP
+
+${BRed}SYNOPSIS${Color_Off}
+    ${BRed}$(basename "$0")${Color_Off} [${BRed}-i${Color_Off}] ${BGreen}hosts_file${Color_Off} ${BGreen}command...${Color_Off}
+
+
+${BRed}DESCRIPTION${Color_Off}
+    ${BRed}pssh${Color_Off} with easy
+
+
+${BRed}OPTIONS${Color_Off}
+    ${BRed}-i${Color_Off}
+        display stdout and stderr as each host completes
+        if this option is not specified, stdout goes to pssh_outdir and stderr goes to pssh_errdir
+
+    ${BRed}-h${Color_Off}
+        show this help message
+HELP
+}
+
+while getopts 'hi' option; do
+    case "$option" in
+        h) usage
+            exit
+            ;;
+        i) INLINE=true
+            ;;
+        :) printf "missing argument for -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+[ "${1:-}" = "--" ] && shift
+
+has() {
+    local verbose=0
+    if [[ $1 = '-v' ]]; then
+        verbose=1
+        shift
+    fi
+    for c; do c="${c%% *}"
+        if ! command -v "$c" &> /dev/null; then
+            (( verbose > 0 )) && err "$c not found"
+            return 1
+        fi
+    done
+}
+
+easy-pssh() { # Easy pssh command
+    local inline="$1"; shift
+    local hosts_file="$1"; shift
+    local cmd="$@"
+
+    if [ ${inline} == false ]; then
+        local tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+    fi
+    
+    sudo=$(echo $cmd | awk '{print $1}')
+
+    if [[ $sudo == 'sudo' ]]; then
+        echo "Enter the sudo passwd for the remote user: "
+        read -s pswd
+
+        if [[ ${inline} == true ]]; then
+            echo "$pswd" | pssh -t 0 -h ${hosts_file} -i -I "sudo -S -- sh -c '$cmd'"
+        else
+            echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
+            echo
+            echo "$pswd" | pssh -t 0 -h ${hosts_file} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
+        fi
+    else
+        if [[ ${inline} == true ]]; then
+            pssh -h ${hosts_file} -t 0 -i $cmd
+        else
+            echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
+            echo
+            pssh -h ${hosts_file} -t 0 -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir $cmd
+        fi
+    fi
+}
+
+has -v pssh || exit 1
+
+easy-pssh $INLINE $@
+

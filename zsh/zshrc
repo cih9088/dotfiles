@@ -216,34 +216,6 @@ fi
         )
     }
 
-    easy-pssh() { # Easy pssh command
-        local host_list="$1"; shift
-        local option="$1"
-        if [[ $option == '-i' ]]; then
-            shift
-        fi
-
-        local cmd="$@"
-        sudo=$(echo $cmd | awk '{print $1}')
-
-        if [[ $sudo == 'sudo' ]]; then
-            echo "Enter the sudo passwd for the remote user: "
-            read -s pswd
-
-            if [[ $option == '-i' ]]; then
-                echo "$pswd" | pssh -h $host_list -i -I "sudo -S -- sh -c '$cmd'"
-            else
-                echo "$pswd" | pssh -h $host_list -o $HOME/pssh_outdir -e $HOME/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
-            fi
-        else
-            if [[ $option == '-i' ]]; then
-                pssh -h $host_list -t 0 -i $cmd
-            else
-                pssh -h $host_list -t 0 -o $HOME/pssh_outdir -e $HOME/pssh_errdir $cmd
-            fi
-        fi
-    }
-
     unalias man
     man () { # fix man page width for better readability
         local width="${COLUMNS:-100}"

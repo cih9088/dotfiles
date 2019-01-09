@@ -3,6 +3,18 @@
 set -euo pipefail
 trap "echo 'error: Script failed: see failed command above'" ERR
 
+Color_Off='[0m'       # Text Reset
+BRed='[1;31m'         # Red
+BGreen='[1;32m'       # Green
+Yellow='[0;33m'       # Yellow
+BIYellow='[1;93m'     # Yellow
+
+OPTIND=1
+SUDOUSER=false
+DEFAULT_PASSWD="0000" 
+DEFAULT_GROUP="$(groups | awk '{print $1}')"
+
+
 case "$OSTYPE" in
     solaris*) platform="SOLARIS" ;;
     darwin*)  platform="OSX" ;;
@@ -17,31 +29,44 @@ if [[ $platform != LINUX ]]; then
     exit 1
 fi
 
-DEFAULT_PASSWD="0000" 
-DEFAULT_GROUP="$(groups | awk '{print $1}')"
+usage() {
+    LESS=-FEXR less <<HELP
 
-usage="$(basename "$0") [-h] [-s] [-g arg] [-p args] username -- program to add user easily
+${BRed}SYNOPSIS${Color_Off}
+    ${BRed}$(basename "$0")${Color_Off} [${BRed}-hs${Color_Off}] [${BRed}-g${Color_Off} ${BGreen}default_group${Color_Off}] [${BRed}-p${Color_Off} ${BGreen}default_passwd${Color_Off}] ${BGreen}username${Color_Off}
 
-where:
-    -h  show this help message
-    -s  add user to sudo group
-    -g  default group
-    -p  default password
 
-CAVEAT:
-The deafult password is ${DEFAULT_PASSWD}.
-The default group is ${DEFAULT_GROUP}.
-The username 'guest' will be treated specially.
-    1. He will not be in a group of ${DEFAULT_GROUP} but in 'guest'
-    2. His home directory would be owned by root as user and ${DEFAULT_GROUP} as group
-    3. His home directory would be set as rwxr-xr-x
-    "
-OPTIND=1
-SUDOUSER=false
+${BRed}DESCRIPTION${Color_Off}
+    ${BRed}useradd${Color_Off} with easy
+
+
+${BRed}OPTIONS${Color_Off}
+    ${BRed}-s${Color_Off}
+        add user to sudo group
+
+    ${BRed}-g${Color_Off} ${BGreen}default_group${Color_Off}  
+        ${BGreen}username${Color_Off} would belong to ${BGreen}default_group${Color_Off}.
+        If not specified, ${BGreen}default_group${Color_Off} would be ${BIYellow}${DEFAULT_GROUP}${Color_Off}
+
+    ${BRed}-p${Color_Off} ${BGreen}default_passwd${Color_Off}  
+        The initial password of ${BGreen}username${Color_Off} would be ${BGreen}default_passwd${Color_Off}.
+        If not specified, ${BGreen}default_passwd${Color_Off} would be ${BIYellow}${DEFAULT_PASSWD}${Color_Off}
+
+    ${BRed}-h${Color_Off}
+        show this help message
+
+
+${BRed}CAVEAT${Color_Off}
+    The username ${BGreen}guest${Color_Off} will be treated specially.
+        1. He will not be in a group of ${BIYellow}${DEFAULT_GROUP}${Color_Off} but in ${BIYellow}guest${Color_Off}
+        2. His home directory would be owned by ${BIYellow}root as user and ${DEFAULT_GROUP} as group${Color_Off}
+        3. His home directory would be set as ${BIYellow}rwxr-xr-x${Color_Off}
+HELP
+}
 
 while getopts 'p:g:hs' option; do
     case "$option" in
-        h) echo "$usage"
+        h) usage
             exit
             ;;
         s) SUDOUSER=true
@@ -52,12 +77,12 @@ while getopts 'p:g:hs' option; do
             ;;
         :) printf "missing argument for -%s\n" "$OPTARG" >&2
             echo "" >&2
-            echo "$usage" >&2
+            usage >&2
             exit 1
             ;;
         \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
             echo "" >&2
-            echo "$usage" >&2
+            usage >&2
             exit 1
             ;;
     esac

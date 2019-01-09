@@ -97,12 +97,12 @@ ${BIPurple}USEFUL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
     ${BIRed}http-serve${Color_Off} ${BIGreen}arg${Color_Off}  serves a directory via HTTP with port number ${BIGreen}arg${Color_Off}
 
     ---------------------------CUSTOM-----------------------------
-    ${BIRed}~${Color_Off}               jump to home directory
     ${BIRed}c${Color_Off}               clear terminal
     ${BIRed}dircnt ${BIGreen}arg${Color_Off}      count directories and files in ${BIGreen}arg${Color_Off}
-    ${BIRed}easy-useradd${Color_Off}    add user account
+    ${BIRed}easy-useradd${Color_Off}    add user account with easy
+    ${BIRed}easy-pssh${Color_Off}       pssh with easy
     ${BIRed}list-users${Color_Off}      list users
-    ${BIRed}sshget${Color_Off} ${BIGreen}arg${Color_Off}      get something from ${BIGreen}arg${Color_Off} through ssh (fzf based)
+    ${BIRed}sshget${Color_Off}          get something through ssh (fzf based)
     ${BIRed}fkill${Color_Off}           kill process with FZF
 
 
@@ -127,7 +127,7 @@ ${BIPurple}RSYNC ALIAS (PREZTO RSYNC MODULE)${Color_Off}
 
 ${BIPurple}DIRECTORIES${Color_Off}
 -----------
-    ${BIRed}~${Color_Off}               Go to $HOME
+    ${BIRed}~${Color_Off}               jump to home directory
     ${BIRed}cd -${Color_Off}            Previous working directory
     ${BIRed}pushd ${BIGreen}arg${Color_Off}       Push ${BIGreen}arg${Color_Off} && cd ${BIGreen}arg${Color_Off}
     ${BIRed}popd${Color_Off}            Pop && cd
