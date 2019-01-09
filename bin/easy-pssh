@@ -65,6 +65,10 @@ done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
 
+err() {
+  printf "${BRed}%s${Color_Off}\n" "$*" >&2
+}
+
 has() {
     local verbose=0
     if [[ $1 = '-v' ]]; then
