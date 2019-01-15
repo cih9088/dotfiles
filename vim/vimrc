@@ -82,7 +82,8 @@
         Plug 'terryma/vim-multiple-cursors'
         Plug 'scrooloose/nerdcommenter'
         Plug 'Yggdroot/indentLine'
-        Plug 'jiangmiao/auto-pairs'
+        " Plug 'jiangmiao/auto-pairs'
+        Plug 'tmsvg/pear-tree'
         Plug 'christoomey/vim-tmux-navigator'
         Plug 'tpope/vim-repeat'
         Plug 'terryma/vim-expand-region'
@@ -128,7 +129,8 @@
         " Plug 'metakirby5/codi.vim'
         Plug 'mhinz/vim-startify'
         Plug 'wellle/tmux-complete.vim'
-        Plug 'blueyed/vim-diminactive'
+        Plug 'TaDaa/vimade'
+        " Plug 'tmux-plugins/vim-tmux-focus-events'
     " }}}
 
     " Initialize plugin system {{{
@@ -1158,6 +1160,37 @@
         let g:AutoPairsFlyMode = 0
     " }}}
 
+    " pear-tree {{{
+        " Default rules for matching:
+        let g:pear_tree_pairs = {
+                    \ '(': {'closer': ')'},
+                    \ '[': {'closer': ']'},
+                    \ '{': {'closer': '}'},
+                    \ "'": {'closer': "'"},
+                    \ '"': {'closer': '"'}
+                    \ }
+        " See pear-tree/ftplugin/ for filetype-specific matching rules
+
+        " Pear Tree is enabled for all filetypes by default
+        let g:pear_tree_ft_disabled = []
+
+        " Pair expansion is dot-repeatable by default
+        let g:pear_tree_repeatable_expand = 1
+
+        " Smart pairs are enabled
+        let g:pear_tree_smart_openers = 1
+        let g:pear_tree_smart_closers = 1
+        let g:pear_tree_smart_backspace = 1
+
+        " If enabled, smart pair functions timeout after 60ms
+        let g:pear_tree_timeout = 60
+
+        " Default mappings:
+        imap <BS> <Plug>(PearTreeBackspace)
+        imap <CR> <Plug>(PearTreeExpand)
+        imap <Esc> <Plug>(PearTreeFinishExpansion)
+    " }}}
+
     " vim-dirvish {{{
         let g:dirvish_mode = ':sort ,^.*[\/],'
 
@@ -1199,11 +1232,16 @@
         nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>
     " }}}
 
-    " vim-diminactive {{{
-        let g:diminactive_enable_focus = 0
-        let g:diminactive_use_syntax = 0
-        " let g:diminactive_buftype_blacklist = []
-        " let g:diminactive_filetype_blacklist = []
+    " vimade {{{
+        let g:vimade = {
+                    \ "normalid": '',
+                    \ "basefg": '',
+                    \ "basebg": '',
+                    \ "fadelevel": 0.4,
+                    \ "colbufsize": 30,
+                    \ "rowbufsize": 30,
+                    \ "checkinterval": 32,
+                    \ }
     " }}}
 
     " unimpaired {{{
