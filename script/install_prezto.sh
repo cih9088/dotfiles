@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 # Original URL of prezto
 # htts://github.com/sorin-ionescu/prezto
 
