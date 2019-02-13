@@ -34,6 +34,12 @@ brew install moreutils
 brew install findutils
 # Install GNU `sed`, overwriting the built-in `sed`.
 brew install gnu-sed --with-default-names
+# brew install gawk
+# brew install gnu-indent --with-default-names
+# brew install gnu-tar --with-default-names
+# brew install gnu-which --with-default-names
+# brew install gnutls
+
 # Install Bash 4.
 brew install bash
 brew tap homebrew/versions
@@ -49,8 +55,9 @@ brew install wget --with-iri
 # grep -q "$LINE" ~/.extra || echo "$LINE" >> ~/.extra
 
 # Install more recent versions of some OS X tools.
-# brew install grep
-# brew install openssh
+# brew install vim --override-system-vi
+brew install homebrew/dupes/grep
+brew install homebrew/dupes/openssh
 # brew install homebrew/dupes/screen
 # brew install homebrew/php/php55 --with-gmp
 
@@ -59,6 +66,8 @@ brew install ack
 # brew install dark-mode
 #brew install exiv2
 brew install git
+brew install watch
+brew install gzip
 # brew install git-lfs
 # brew install git-flow
 # brew install git-extras
@@ -68,11 +77,11 @@ brew install git
 # brew install lynx
 # brew install p7zip
 # brew install pigz
-# brew install pv
+brew install pv
 # brew install rename
 # brew install rhino
 # brew install speedtest_cli
-# brew install ssh-copy-id
+brew install ssh-copy-id
 # brew install tree
 # brew install webkit2png
 # brew install zopfli
@@ -102,9 +111,10 @@ brew cask install --appdir="/Applications" docker
 brew cask install --appdir="/Applications" betterzip
 # brew cask install --appdir="/Applications" 1password
 # brew cask install --appdir="/Applications" gimp
+brew cask install --appdir="/Applications" mactex
 
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
-brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlimagesize webpquicklook suspicious-package quicklookase qlvideo
+brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzip qlimagesize webpquicklook suspicious-package quicklookase qlvideo
 
 
 # mas

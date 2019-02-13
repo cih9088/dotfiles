@@ -21,6 +21,8 @@ pip install --no-cache-dir scikit-learn
 pip install --no-cache-dir tqdm
 pip install --no-cache-dir seaborn
 pip install --no-cache-dir tabulate
+pip install --no-cache-dir pyyaml
+pip install --no-cache-dir ipdb
 # pip install paramiko
 
 while true; do
