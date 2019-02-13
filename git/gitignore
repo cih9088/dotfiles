@@ -1,0 +1,20 @@
+# global gitignore
+#
+# OS generated files #
+######################
+*~
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+# IntelliJ Stuff #
+##################
+*.iml
+.idea
+ 
+*.swp
+*.swo

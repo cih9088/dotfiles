@@ -29,6 +29,7 @@ ZSH_DIR=${PROJ_HOME}/zsh
 PYLINT_DIR=${PROJ_HOME}/pylint
 CONFIG_DIR=${PROJ_HOME}/config
 GRIP_DIR=${PROJ_HOME}/grip
+GIT_DIR=${PROJ_HOME}/git
 
 # backup old files and replace it with mine
 if [ -e $HOME/.vimrc ]; then
@@ -108,6 +109,12 @@ if [ -e $HOME/.config/alacritty ]; then
     rm -rf $HOME/.config/alacritty
 fi
 ln -s -f ${CONFIG_DIR}/alacritty $HOME/.config/alacritty
+
+if [ -e $HOME/.gitignore ]; then
+    cp -RfL $HOME/.gitignore $HOME/dotfiles_old/.gitignore
+    rm -rf $HOME/.gitignore
+fi
+ln -s -f ${GIT_DIR}/gitignore $HOME/.gitignore
 
 # clean up dotfiles old if there is nothing backuped
 if [ -z "$(ls -A $HOME/dotfiles_old)" ]; then
