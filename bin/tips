@@ -106,14 +106,14 @@ ${BIPurple}USEFUL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
     ${BIRed}fkill${Color_Off}           kill process with FZF
 
 
-${BIPurple}PREZTO ARCHIVE MODULE${Color_Off}
+${BIPurple}ARCHIVE COMMAND (PREZTO ARCHIVE MODULE)${Color_Off}
 ---------------------
     ${BIRed}archive${Color_Off}     creates an archive based on the provided archive name
     ${BIRed}lsarchive${Color_Off}   lists the contents of one or more archives
     ${BIRed}unarchive${Color_Off}   extracts the contents of one or more archives
 
 
-${BIPurple}RSYNC ALIAS (PREZTO RSYNC MODULE)${Color_Off}
+${BIPurple}RSYNC (PREZTO RSYNC MODULE)${Color_Off}
 ---------------------------------
     ${BIRed}rsync-copy${Color_Off}          copies files and directories from source to destination.
     ${BIRed}rsync-move${Color_Off}          moves files and directories from source to destination.
@@ -131,6 +131,7 @@ ${BIPurple}DIRECTORIES${Color_Off}
     ${BIRed}cd -${Color_Off}            Previous working directory
     ${BIRed}pushd ${BIGreen}arg${Color_Off}       Push ${BIGreen}arg${Color_Off} && cd ${BIGreen}arg${Color_Off}
     ${BIRed}popd${Color_Off}            Pop && cd
+    ${BIRed}j${Color_Off}               fasd
     ${BIRed}z${Color_Off}               z command (fzf based)
     ${BIRed}z ${BIGreen}arg${Color_Off}           go to fuzzy ${BIGreen}arg${Color_Off} directly (fzf based)
 
@@ -168,12 +169,14 @@ ${BIPurple}HISTORY MANIPULATION${Color_Off}
 ${BIPurple}LINE EDITING (READLINE)${Color_Off}
 -----------------------
 
-    ${BIRed}C-a${Color_Off}     move to the start of the current line
-    ${BIRed}C-e${Color_Off}     move to the end of the current line
-    ${BIRed}M-d${Color_Off}     kill to end of word
-    ${BIRed}C-w${Color_Off}     kill to beginning of word
-    ${BIRed}C-k${Color_Off}     kill to end of line
-    ${BIRed}C-u${Color_Off}     kill to beginning of line
+    ${BIRed}C-a${Color_Off}     move to the beginning of the line
+    ${BIRed}M-b${Color_Off}     move back one word
+    ${BIRed}C-e${Color_Off}     move to the end of the line
+    ${BIRed}M-f${Color_Off}     move forward one word
+    ${BIRed}C-u${Color_Off}     delete to beginning of the the line
+    ${BIRed}C-w${Color_Off}     delete one word back
+    ${BIRed}C-k${Color_Off}     delete to end of the line
+    ${BIRed}M-d${Color_Off}     delete one word forward
     ${BIRed}M-r${Color_Off}     revert all modifications to current line
     ${BIRed}C-]${Color_Off}     search forwards in line
     ${BIRed}M-C-]${Color_Off}   search backwards in line
@@ -185,6 +188,8 @@ ${BIPurple}LINE EDITING (READLINE)${Color_Off}
     ${BIRed}M-#${Color_Off}     intert # at the beginning of the current line
     ${BIRed}C-x C-e${Color_Off} edit the line with default editor
     ${BIRed}C-x a${Color_Off}   get raw command
+    ${BIRed}C-l${Color_Off}     clear screen
+
 
 EOF
 

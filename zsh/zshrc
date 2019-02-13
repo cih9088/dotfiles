@@ -131,10 +131,6 @@ fi
     alias rsync-copy-sum='rsync-copy --info=progress2,name0 '
     alias rsync-move-sum='rsync-move --info=progress2,name0 '
 
-    # glg: display the graphic log
-    alias glg="git log --graph --abbrev-commit --decorate \
-    --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)' --all"
-
     if [[ ${platform} == "OSX" ]]; then
         alias f='open -a Finder ./'                     # f:            Opens current directory in MacOS Finder
         alias DT='tee ~/Desktop/terminalOut.txt'        # DT:           Pipe content to file on MacOS Desktop
@@ -182,18 +178,20 @@ fi
             eval $(tmux showenv -s SSH_AUTH_SOCK)
         }
     else
-        function refresh { }
+        function refresh { 
+            :
+        }
     fi
     function preexec() {
         refresh
     }
 
-#   vi mode for zsh
+#   vi mode for zsh (DEPRECATED) -> use readline shortcut!!
 #   --------------------------------------------------------------------------------------
-    if [ -n "$ZSH_VERSION" ]; then
-        bindkey -v
-        export KEYTIMEOUT=1
-    fi
+    # if [ -n "$ZSH_VERSION" ]; then
+    #     bindkey -v
+    #     export KEYTIMEOUT=1
+    # fi
 
 #    bring $EDITOR to amend your command through <C-x><C-e>
 #   --------------------------------------------------------------------------------------
