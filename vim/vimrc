@@ -131,6 +131,7 @@
         Plug 'wellle/tmux-complete.vim'
         Plug 'TaDaa/vimade'
         " Plug 'tmux-plugins/vim-tmux-focus-events'
+        Plug 'jpalardy/vim-slime'
     " }}}
 
     " Initialize plugin system {{{
@@ -1247,6 +1248,27 @@
     " unimpaired {{{
         let g:nremap = {"[t": "", "]t": "", "[T": "", "]T": ""}
     " }}}
+
+    " vim-slime {{
+        let g:slime_target = "tmux"
+        let g:slime_default_config = {"socket_name": "default", "target_pane": "{right-of}"}
+
+        " {last}	!	The last (previously active) pane
+        " {next}	+	The next pane by number
+        " {previous}	-	The previous pane by number
+        " {top}		The top pane
+        " {bottom}		The bottom pane
+        " {left}		The leftmost pane
+        " {right}		The rightmost pane
+        " {top-left}		The top-left pane
+        " {top-right}		The top-right pane
+        " {bottom-left}		The bottom-left pane
+        " {bottom-right}		The bottom-right pane
+        " {up-of}		The pane above the active pane
+        " {down-of}		The pane below the active pane
+        " {left-of}		The pane to the left of the active pane
+        " {right-of}		The pane to the right of the active pane
+    " }}
 
 " }}}
 
