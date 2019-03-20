@@ -19,5 +19,5 @@ echo -en "   MEM: " && /home/andy/dotfiles/bin/mem-usage | /home/andy/dotfiles/b
 echo
 echo -en "   GPU: " && /home/andy/dotfiles/bin/gpu-usage | /home/andy/dotfiles/bin/ascii-bar 40
 echo
-gpustat --no-header --color -ucP --gpuname-width 15 | sed 's/^/        /'
+gpustat --no-header --force-color -u --gpuname-width 15 | sed 's/^/        /'
 echo
