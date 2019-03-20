@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+################## Color ##########################
+
+# Reset
+Color_Off='[0m'       # Text Reset
+
+# Bold High Intensity
+BIWhite='[1;97m'      # White
+
+##################################################
+
+hostname="$(hostname)"
+now="$(date)"
+echo "${BIWhite}${hostname}${Color_Off} ${now}"
+echo -en "   CPU: " && /home/andy/dotfiles/bin/cpu-usage | /home/andy/dotfiles/bin/ascii-bar 40
+echo
+echo -en "   MEM: " && /home/andy/dotfiles/bin/mem-usage | /home/andy/dotfiles/bin/ascii-bar 40
+echo
+echo -en "   GPU: " && /home/andy/dotfiles/bin/gpu-usage | /home/andy/dotfiles/bin/ascii-bar 40
+echo
+gpustat --no-header --color -ucP --gpuname-width 15 | sed 's/^/        /'
+echo

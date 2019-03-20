@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# copied from https://github.com/wookayin/dotfiles/blob/c656584603e242ed605d32b9974e43b759c94a88/bin/ascii-bar
+# Draw an ascii bar figure from the percentage value read from stdin.
+# e.g.
+#    echo 17.73 | ascii-bar --width 20
+#    [||||                ] 17.73 %
+#
+
+width=${1:-20}
+if [[ ! $width =~ [0-9]+ ]]; then
+    echo "Invalid width: $width;"; return 1;
+fi
+
+awk "
+
+function red(s) {
+    printf \"\033[0;91m\" s \"\033[0m\";
+}
+
+function yellow(s) {
+    printf \"\033[0;93m\" s \"\033[0m\";
+}
+
+function white(s) {
+    printf \"\033[0;97m\" s \"\033[0m\";
+}
+
+function green(s) {
+    printf \"\033[0;92m\" s \"\033[0m\";
+}
+
+function red_float(s) {
+    printf(\"\033[0;91m%6.2f\033[0m\", s)
+}
+
+function yellow_float(s) {
+    printf(\"\033[0;93m%6.2f\033[0m\", s)
+}
+
+function white_float(s) {
+    printf(\"\033[0;97m%6.2f\033[0m\", s)
+}
+
+function green_float(s) {
+    printf(\"\033[0;92m%6.2f\033[0m\", s)
+}
+
+{
+PERCENT=\$1;
+
+printf \"[\";
+for(i=0;i<$width;++i)
+    if(i/$width < PERCENT/100.0) {
+        if ($width < 50) {
+            green(\"|\");
+        }
+        else if ($width < 75) {
+            yellow(\"|\");
+        }
+        else {
+            red(\"|\");
+        }
+    }
+    else {
+        printf \" \";
+    }
+printf \"] \";
+if ($width < 50) {
+    green_float(PERCENT)
+}
+else if ($width < 75) {
+    yellow(PERCENT)
+}
+else {
+    red(PERCENT)
+}
+printf \" %\";
+}"
