@@ -9,22 +9,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 echo
 [[ ${VERBOSE} == YES ]] || start_spinner "Installing python dev..."
 (
-
-    if [[ $1 = local ]]; then
-        curl https://pyenv.run | bash
-        git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${HOME}/andy/.pyenv/plugins/pyenv-virtualenvwrapper
-    else
-        if [[ $platform == "OSX" ]]; then
-            # brew install shellcheck
-            brew bundle --file=- <<EOS
+    if [[ $platform == "OSX" ]]; then
+        # brew install shellcheck
+        brew bundle --file=- <<EOS
 brew 'pyenv'
 brew 'pyenv-virtualenv'
 brew 'pyenv-virtualenvwrapper'
 EOS
-        elif [[ $platform == "LINUX" ]]; then
-            echo "${marker_err} Not available on OSX"
-            exit 1
-        fi
+    else
+        curl https://pyenv.run | bash
+        git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper
     fi
 
     pip install glances --user

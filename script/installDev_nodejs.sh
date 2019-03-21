@@ -12,7 +12,7 @@ if [[ ! -z ${CONFIG+x} ]]; then
         [[ ${VERBOSE} == YES ]] || start_spinner "Installing node.js..."
         (
         # curl -sL install-node.now.sh/lts | sed 's/read yn < \/dev\/tty/yn = y/' | sh -s -- --prefix=${HOME}/.local
-        curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local --yes
+        curl -sL install-node.now.sh/lts | bash -s -- --prefix=${HOME}/.local --yes
         ) >&3 2>&4 || exit_code="$?" && true
         stop_spinner "${exit_code}" \
             "node.js is installed [local]" \
@@ -23,7 +23,7 @@ if [[ ! -z ${CONFIG+x} ]]; then
 else
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing node.js..."
     (
-    curl -sL install-node.now.sh/lts | sh -s -- --prefix=${HOME}/.local --yes
+    curl -sL install-node.now.sh/lts | bash -s -- --prefix=${HOME}/.local --yes
     ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
         "node.js is installed [local]" \
