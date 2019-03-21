@@ -52,10 +52,10 @@ PERCENT=\$1;
 printf \"[\";
 for(i=0;i<$width;++i)
     if(i/$width < PERCENT/100.0) {
-        if ($width < 50) {
+        if (PERCENT < 50) {
             green(\"|\");
         }
-        else if ($width < 75) {
+        else if (PERCENT < 75) {
             yellow(\"|\");
         }
         else {
@@ -66,14 +66,14 @@ for(i=0;i<$width;++i)
         printf \" \";
     }
 printf \"] \";
-if ($width < 50) {
+if (PERCENT < 50) {
     green_float(PERCENT)
 }
-else if ($width < 75) {
-    yellow(PERCENT)
+else if (PERCENT < 75) {
+    yellow_float(PERCENT)
 }
 else {
-    red(PERCENT)
+    red_float(PERCENT)
 }
 printf \" %\";
 }"
