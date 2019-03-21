@@ -24,7 +24,7 @@ $ make prerequisitesTest    # Check what are installed and not
 $ make prerequisites        # Install prerequisites (previlege is needed)
 ```
 
-## How to install and update
+## How to install and update (Easy way)
 ### Variables
 - `CONFIG`: making script non-interactively. Create your own config based on `config_linux.yaml` \
 ex) `make install CONFIG=config_linux.yaml`
@@ -68,8 +68,8 @@ $ make update               # Update all of dotfiles and configurations
 ```
 
 
-### Advanced
-#### Install
+## Advanced
+### Install
 ```bash
 $ cd ~/dotfiles
 
@@ -85,7 +85,8 @@ $ make installNeovim 0.2.0  # Specify version if intended to install locally
 # For instance,
 $ make installDevShell      # Install shell dev environment only
 ```
-#### Update
+
+### Update
 ```bash
 $ cd ~/dotfiles
 $ git pull
@@ -97,14 +98,15 @@ $ git submodule update --init --recursive
 $ make updateDotfiles       # Update dotfiles only
 ```
 
-#### clean
+### Clean
 Clean up dotfiles, configurations and folder itself.
 ```bash
 $ cd ~/dotfiles
 $ make clean        # delete installed dotfiles and folder itself (installed command remains)
 ```
 
-### [initialize OSX](https://github.com/donnemartin/dev-setup#osxprepsh-script)
+### [Initialise OSX](https://github.com/donnemartin/dev-setup#osxprepsh-script)
+Setup macOS development environment with easy. Mostly copied from [here](https://github.com/donnemartin/dev-setup).
 ```bash
 $ cd ~/dotfiles
 $ make initOSX
@@ -113,6 +115,11 @@ $ make initOSX
 
 
 ## Highligts
+
+### List of Dev environment
+- python: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper)
+- nodejs: [nodejs](https://nodejs.org/en/)
+- shell: [shellchecker](https://www.shellcheck.net/), [bash-language-client](https://github.com/mads-hartmann/bash-language-server)
 
 ### [zsh](https://github.com/tmux/tmux)
 For more detailed information please refer [zshrc](https://github.com/cih9088/dotfiles/blob/master/zsh/zshrc)
@@ -185,7 +192,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - toggle number: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>n</kbd>
 - [vim-signify](https://github.com/mhinz/vim-signify)
     - navigate hunk: <kbd>\]</kbd> + <kbd>c</kbd>, <kbd>\[</kbd> + <kbd>c</kbd>
-- [vim-easyaline](https://github.com/junegunn/vim-easy-align)
+- [vim-easy-aline](https://github.com/junegunn/vim-easy-align)
 - [vim-fugitive](https://github.com/tpope/vim-fugitive)
     - open Gstatus: <kbd>leader</kbd> + <kbd>G</kbd>
 - [vim-easymotion](https://github.com/easymotion/vim-easymotion)
@@ -279,5 +286,5 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 ![abnormal font](https://imgur.com/wSb49GM.png)
 
 ## TODO
-- the fuck version
+- thefuck version
 - duplicated which

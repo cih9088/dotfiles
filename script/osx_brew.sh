@@ -44,6 +44,12 @@ brew install gnu-sed --with-default-names
 brew install bash
 brew tap homebrew/versions
 brew install bash-completion2
+# We installed the new shell, now we have to activate it
+echo "Adding the newly installed shell to the list of allowed shells"
+# Prompts for password
+sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
+# Change to the new shell, prompts for password
+chsh -s /usr/local/bin/bash
 
 # Install `wget` with IRI support.
 brew install wget --with-iri
@@ -97,6 +103,7 @@ brew install mosh
 
 # Core casks
 # brew cask install --appdir="/Applications" alfred
+brew cask install --appdir="~/Applications" iterm2
 brew cask install --appdir="/Applications" alacritty
 brew cask install --appdir="/Applications" xquartz
 
