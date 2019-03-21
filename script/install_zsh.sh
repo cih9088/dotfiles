@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # change version you want to install on local
-ZSH_VERSION=5.6.2
+ZSH_VERSION=latest
 
 ################################################################
 set -e
@@ -22,8 +22,19 @@ setup_func() {
             rm -rf $HOME/.local/src/zsh-*
         fi
         cd $TMP_DIR
-        wget http://www.zsh.org/pub/zsh-${ZSH_VERSION}.tar.xz
-        tar -xvJf zsh-${ZSH_VERSION}.tar.xz
+
+        if [[ ${ZSH_VERSION} == "latest" ]]; then
+            wget https://sourceforge.net/projects/zsh/files/latest/download -O zsh-${ZSH_VERSION}.tar.xz
+            tar -xvJf zsh-${ZSH_VERSION}.tar.xz
+            for file in ./*; do
+                if [[ -d "${file}" ]] && [[ "${file}" == *"zsh-"* ]]; then
+                    ZSH_VERSION=$(echo ${file##*zsh-})
+                fi
+            done
+        else
+            wget https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VERSION}/zsh-${ZSH_VERSION}.tar.xz/download -O zsh-${ZSH_VERSION}.tar.xz
+            tar -xvJf zsh-${ZSH_VERSION}.tar.xz
+        fi
         cd zsh-${ZSH_VERSION}
         ./configure --prefix=$HOME/.local
         make || exit $?
