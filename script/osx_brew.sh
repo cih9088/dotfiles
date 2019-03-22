@@ -21,7 +21,7 @@ fi
 brew update
 
 # Upgrade any already-installed formulae.
-brew upgrade --all
+brew upgrade
 
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -33,7 +33,7 @@ brew install moreutils
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
 brew install findutils
 # Install GNU `sed`, overwriting the built-in `sed`.
-brew install gnu-sed --with-default-names
+brew install gnu-sed
 # brew install gawk
 # brew install gnu-indent --with-default-names
 # brew install gnu-tar --with-default-names
@@ -42,17 +42,17 @@ brew install gnu-sed --with-default-names
 
 # Install Bash 4.
 brew install bash
-brew tap homebrew/versions
-brew install bash-completion2
+# brew install bash-completion2
 # We installed the new shell, now we have to activate it
-echo "Adding the newly installed shell to the list of allowed shells"
+# echo "Adding the newly installed shell to the list of allowed shells"
 # Prompts for password
-sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
+# sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
 # Change to the new shell, prompts for password
-chsh -s /usr/local/bin/bash
+# chsh -s /usr/local/bin/bash
 
 # Install `wget` with IRI support.
-brew install wget --with-iri
+# brew install wget --with-iri
+brew install wget
 
 # Install ruby-build and rbenv
 # brew install ruby-build
@@ -62,13 +62,13 @@ brew install wget --with-iri
 
 # Install more recent versions of some OS X tools.
 # brew install vim --override-system-vi
-brew install homebrew/dupes/grep
-brew install homebrew/dupes/openssh
+brew install grep
+brew install openssh
 # brew install homebrew/dupes/screen
 # brew install homebrew/php/php55 --with-gmp
 
 # Install other useful binaries.
-brew install ack
+# brew install ack
 # brew install dark-mode
 #brew install exiv2
 brew install git
@@ -124,29 +124,29 @@ brew cask install --appdir="/Applications" mactex
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzip qlimagesize webpquicklook suspicious-package quicklookase qlvideo
 
 
-# mas
-brew install mas
-
-while true; do
-    mas account >/dev/null 2>&1
-    [[ $? == 0 ]] && break
-    echo -n "Please signin Appstore manually and press any keys."
-    read anykey
-done
-
-# free stuff
-mas install 1278508951  # Trello
-mas install 1018899653  # HeliumLift
-mas install 937984704   # Amphetamine
-mas install 409183694   # Keynote
-mas install 409201541   # Pages
-mas install 409203825   # Numbers
-mas install 1295203466  # Microsoft Remote Desktop
-
-# not free
-mas install 445189367   # PopClip
-mas install 441258766   # Magnet
-mas install 461788075   # Movist
+## mas
+#brew install mas
+#
+#while true; do
+#    mas account >/dev/null 2>&1
+#    [[ $? == 0 ]] && break
+#    echo -n "Please signin Appstore manually and press any keys."
+#    read anykey
+#done
+#
+## free stuff
+#mas install 1278508951  # Trello
+#mas install 1018899653  # HeliumLift
+#mas install 937984704   # Amphetamine
+#mas install 409183694   # Keynote
+#mas install 409201541   # Pages
+#mas install 409203825   # Numbers
+#mas install 1295203466  # Microsoft Remote Desktop
+#
+## not free
+#mas install 445189367   # PopClip
+#mas install 441258766   # Magnet
+#mas install 461788075   # Movist
 
 
 # Remove outdated versions from the cellar.

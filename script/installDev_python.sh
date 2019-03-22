@@ -10,12 +10,9 @@ echo
 [[ ${VERBOSE} == YES ]] || start_spinner "Installing python dev..."
 (
     if [[ $platform == "OSX" ]]; then
-        # brew install shellcheck
-        brew bundle --file=- <<EOS
-brew 'pyenv'
-brew 'pyenv-virtualenv'
-brew 'pyenv-virtualenvwrapper'
-EOS
+        brew install pyenv
+        brew install pyenv-virtualenv
+        brew install pyenv-virtualenvwrapper
     else
         curl https://pyenv.run | bash
         git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper

@@ -43,10 +43,7 @@ setup_func() {
         mv zsh-${ZSH_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install zsh
-            brew bundle --file=- <<EOS
-brew 'zsh'
-EOS
+            brew install zsh
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install zsh
             # Adding installed zsh to /etc/shells

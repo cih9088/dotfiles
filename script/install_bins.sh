@@ -46,10 +46,7 @@ setup_func_tree() {
         mv tree-${TREE_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install tree
-            brew bundle --file=- <<EOS
-brew 'tree'
-EOS
+            brew install tree
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y install tree
         fi
@@ -83,10 +80,7 @@ setup_func_fd() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install fd
-            brew bundle --file=- <<EOS
-brew 'fd'
-EOS
+            brew install fd
         elif [[ $platform == "LINUX" ]]; then
             cd $TMP_DIR
             wget https://github.com/sharkdp/fd/releases/download/v${FD_VERSION}/fd_${FD_VERSION}_amd64.deb
@@ -107,10 +101,7 @@ setup_func_thefuck() {
         pip3 install thefuck --user --upgrade
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install thefuck
-            brew bundle --file=- <<EOS
-brew 'thefuck'
-EOS
+            brew install thefuck
         elif [[ $platform == "LINUX" ]]; then
             sudo pip3 install thefuck --upgrade
         fi
@@ -144,10 +135,7 @@ setup_func_rg() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install ripgrep
-            brew bundle --file=- <<EOS
-brew 'ripgrep'
-EOS
+            brew install ripgrep
         elif [[ $platform == "LINUX" ]]; then
             cd $TMP_DIR
             wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb
@@ -184,9 +172,7 @@ setup_func_tldr() {
         pip install tldr --user --upgrade
     else
         if [[ $platform == "OSX" ]]; then
-            brew bundle --file=- <<EOS
-brew 'tldr'
-EOS
+            brew install tldr
         elif [[ $platform == "LINUX" ]]; then
             sudo pip install tldr --upgrade
         fi
@@ -208,9 +194,7 @@ setup_func_bash_snippets() {
         ./install.sh --prefix=$HOME/.local transfer cheat
     else
         if [[ $platform == "OSX" ]]; then
-            brew bundle --file=- <<EOS
-brew "bash-snippets", args: ["with-cheat", "with-transfer", "without-all-tools"]
-EOS
+            brew install bash-snippets
         elif [[ $platform == "LINUX" ]]; then
             ./install.sh transfer cheat
         fi

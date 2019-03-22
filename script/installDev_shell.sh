@@ -24,10 +24,7 @@ setup_func_shellcheck() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install shellcheck
-            brew bundle --file=- <<EOS
-brew 'shellcheck'
-EOS
+            brew install shellcheck
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get install shellcheck
         fi

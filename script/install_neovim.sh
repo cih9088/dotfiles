@@ -41,10 +41,7 @@ setup_func_neovim() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install neovim
-            brew bundle --file=- <<EOS
-brew 'neovim'
-EOS
+            brew install neovim
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get install software-properties-common
             sudo add-apt-repository ppa:neovim-ppa/stable
@@ -133,40 +130,52 @@ main() {
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing neovim with python support..."
     # install neovim with python support
     (
-    pip install virtualenv --user
-    pip install virtualenvwrapper --user
+    #pip install virtualenv --user
+    #pip install virtualenvwrapper --user
     pip3 install virtualenv --user
-    pip3 install virtualenvwrapper --user
+    #pip3 install virtualenvwrapper --user
 
-    rm -rf ${HOME}/.virtualenvs/neovim2 || true
-    rm -rf ${HOME}/.virtualenvs/neovim3 || true
+    export WORKON_HOME=${HOME}/.virtualenvs
 
-    if [[ $platform == "OSX" ]]; then
-        source ${HOME}/Library/Python/3.7/bin/virtualenvwrapper.sh
-    elif [[ $platform == "LINUX" ]]; then
-        source ${HOME}/.local/bin/virtualenvwrapper.sh
-    fi
+    rm -rf ${WORKON_HOME}/neovim2 || true
+    rm -rf ${WORKON_HOME}/neovim3 || true
 
     VIRENV_NAME=neovim2
-    export WORKON_HOME=$HOME/.virtualenvs
-    export VIRTUALENVWRAPPER_PYTHON=$(which python2)
-    mkvirtualenv -p `which python2` ${VIRENV_NAME} || true
+    virtualenv --python=$(which python2) ${WORKON_HOME}/${VIRENV_NAME}
+    source ${WORKON_HOME}/neovim2/bin/activate
     pip install neovim
 
     VIRENV_NAME=neovim3
-    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-    mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
+    virtualenv --python=$(which python3) ${WORKON_HOME}/${VIRENV_NAME}
+    source ${WORKON_HOME}/neovim3/bin/activate
     pip install neovim
 
-    # if [[ $1 = local ]]; then
-    #     pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-    #     pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-    #     pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-    # else
-    #     pip install --no-cache-dir --upgrade --force-reinstall neovim || true
-    #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
-    #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
-    # fi
+#    if [[ $platform == "OSX" ]]; then
+#        source ${HOME}/Library/Python/3.7/bin/virtualenvwrapper_lazy.sh
+#    elif [[ $platform == "LINUX" ]]; then
+#        source ${HOME}/.local/bin/virtualenvwrapper_lazy.sh
+#    fi
+#
+#    VIRENV_NAME=neovim2
+#    export WORKON_HOME=$HOME/.virtualenvs
+#    export VIRTUALENVWRAPPER_PYTHON=$(which python2)
+#    mkvirtualenv -p `which python2` ${VIRENV_NAME} || true
+#    pip install neovim
+#
+#    VIRENV_NAME=neovim3
+#    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+#    mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
+#    pip install neovim
+#
+#    # if [[ $1 = local ]]; then
+#    #     pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+#    #     pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+#    #     pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
+#    # else
+#    #     pip install --no-cache-dir --upgrade --force-reinstall neovim || true
+#    #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
+#    #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
+#    # fi
     ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
         "neovim with python support is installed" \

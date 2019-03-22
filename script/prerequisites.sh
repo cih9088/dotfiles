@@ -3,6 +3,12 @@
 ################################################################
 set -e
 
+# Ask for the administrator password upfront
+sudo -v
+
+# Keep-alive: update existing `sudo` time stamp until `osxprep.sh` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
@@ -12,8 +18,8 @@ echo
 (
     # install brew for macos
     if [[ $platform == "OSX" ]]; then
-        if [[ -x "$(hash brew)" ]]; then
-            /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        if [[ ! "$(command -v brew)" ]]; then
+            /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" </dev/null
         fi
     elif [[ $platform == "LINUX" ]]; then
         :
@@ -30,21 +36,19 @@ echo
 [[ ${VERBOSE} == YES ]] || start_spinner "Installing prerequisites..."
 (
     if [[ $platform == "OSX" ]]; then
-        brew bundle --file=- <<EOS
-tap "homebrew/bundle"
-tap "homebrew/core"
-tap "homebrew/cask"
-brew "bash"
-brew "python2"
-brew "python"
-brew "wget"
-brew "pssh"
-brew "coreutils"
-brew "highlight"
-brew "git"
-brew "reattach-to-user-namespace"
-cask "xquartz"
-EOS
+        brew tap homebrew/bundle
+        brew tap homebrew/core
+        brew tap homebrew/cask
+        brew install bash
+        brew install python2
+        brew install python
+        brew install wget
+        brew install pssh
+        brew install coreutils
+        brew install highlight
+        brew install git
+        brew install reattach-to-user-namespace
+        brew cask install xquartz
     elif [[ $platform == "LINUX" ]]; then
         sudo apt-get install -y python-dev python-pip python3-dev python3-pip highlight xclip wget git
     else

@@ -64,12 +64,7 @@ setup_func() {
         mv ncurses-${NCURSES_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install libevent ncurses
-            # brew uninstall tmux
-            brew bundle --file=- <<EOS
-brew 'libevent'
-brew 'ncurses'
-EOS
+            brew install libevent ncurses
         elif [[ $platform == "LINUX" ]]; then
             sudo apt-get -y remove libevent-dev libncurses-dev
             sudo apt-get -y install libevent-dev libncurses-dev
@@ -118,13 +113,9 @@ EOS
         mv tmux-${TMUX_VERSION} $HOME/.local/src
     else
         if [[ $platform == "OSX" ]]; then
-            # brew install reattach-to-user-namespace
-            # brew install tmux
-            brew bundle --file=- <<EOS
-brew 'reattach-to-user-namespace'
-brew 'tmux'
-EOS
-        elif [[ $platform == "LINUX" ]]; then
+            brew install reattach-to-user-namespace
+            brew install tmux
+
             if [ -d /usr/local/src/tmux-* ]; then
                 cd /usr/local/src/tmux-*
                 sudo make uninstall
