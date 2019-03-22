@@ -154,7 +154,14 @@ mapfile -t files < <(fzf -e --inline-info +s --multi --bind='Ctrl-A:toggle-all,`
 
 if (( ${#files[@]} )); then
     # https://unix.stackexchange.com/a/222215
-    rsync -auvzP -e "${ssh_cmd}" $(echo "${files[@]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/") .
+    for idx in ${!files[@]}; do
+        files[idx]="$(echo "${files[idx]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"
+        # rsync per file becase of compatability with old version
+        # https://stackoverflow.com/a/15818000
+        rsync -auvzP -e "${ssh_cmd}" "${files[idx]}" .
+    done
+    # echo rsync -auvzP --dry-run -e "${ssh_cmd}" "${files[@]}" .
+    # echo rsync -auvzP -e "${ssh_cmd}" \'"$(echo "${files[@]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"\' .
 fi
 
 cleanup
