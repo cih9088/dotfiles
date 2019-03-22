@@ -4,7 +4,7 @@
     "suggest.autoTrigger": "always",
     "suggest.snippetIndicator": "~",
     "suggest.timeout": 2000,
-    "suggest.echodocSupport": true,
+    "suggest.echodocSupport": false,
 
     "languageserver": {
         "bash": {
