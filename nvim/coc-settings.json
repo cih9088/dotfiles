@@ -1,0 +1,44 @@
+{
+    "suggest.maxPreviewWidth": 50,
+    "suggest.enablePreview": true,
+    "suggest.autoTrigger": "always",
+    "suggest.snippetIndicator": "~",
+    "suggest.timeout": 2000,
+    "suggest.echodocSupport": true,
+
+    "languageserver": {
+        "bash": {
+            "command": "bash-language-server",
+            "args": ["start"],
+            "filetypes": ["sh"],
+            "ignoredRootPaths": ["~"]
+        },
+        "mpls":{
+            "command": "dotnet",
+            "args": ["exec", "~/.mpls/output/bin/Release/Microsoft.Python.LanguageServer.dll"],
+            "shell": true,
+            "trace.server": "verbose",
+            "filetypes": ["python"],
+            "initializationOptions": {
+                "interpreter": {
+                    "properties": {
+                        "InterpreterPath": "/usr/local/bin/python",
+                        "UseDefaultDatabase": true
+                    }
+                },
+                "testEnvironment": false,
+                "analysisUpdates": true,
+                "traceLogging": true,
+                "asyncStartup": true
+            }
+        },
+        "ccls": {
+            "command": "ccls",
+            "filetypes": ["c", "cpp", "objc", "objcpp"],
+            "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
+            "initializationOptions": {
+                "cacheDirectory": "/tmp/ccls"
+            }
+        }
+    }
+}

@@ -48,9 +48,10 @@ echo
         brew install highlight
         brew install git
         brew install reattach-to-user-namespace
+        brew install cmake
         brew cask install xquartz
     elif [[ $platform == "LINUX" ]]; then
-        sudo apt-get install -y python-dev python-pip python3-dev python3-pip highlight xclip wget git
+        sudo apt-get install -y python-dev python-pip python3-dev python3-pip highlight xclip wget git cmake
     else
         echo 'not defined'; exit 1
     fi

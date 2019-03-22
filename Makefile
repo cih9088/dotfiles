@@ -39,6 +39,7 @@ installPrezto: prepare
 
 installNeovim: prepare
 	@( $(SCRIPTS_DIR)/install_neovim.sh $(nvim_version) )
+	@( $(SCRIPTS_DIR)/install_coc.sh )
 
 installTmux: prepare
 	@( $(SCRIPTS_DIR)/install_tmux.sh $(tmux_version) )
@@ -54,6 +55,9 @@ installDevPython:
 
 installDevNodejs:
 	@( $(SCRIPTS_DIR)/installDev_nodejs.sh )
+
+installDevC:
+	@( $(SCRIPTS_DIR)/installDev_c.sh )
 
 installPythonVirtualenv:
 	@( $(SCRIPTS_DIR)/virenv_setup.sh )
@@ -98,7 +102,7 @@ install: prepare installZsh changeDefaultShell installPrezto \
 	@echo
 	@echo "[42m[*] Install has Finished.[0m"
 
-installDev: installDevNodejs installDevPython installDevShell
+installDev: installDevNodejs installDevPython installDevShell installDevC
 	@echo
 	@echo "[42m[*] InstallDev has Finished.[0m"
 
@@ -108,7 +112,7 @@ init: prepare install update installDev
 
 .PHONY: prepare prerequisites prerequisitesTest \
 	installZsh installPrezto installNeovim installTmux \
-	installBins installDevShell installDevPython installPythonVirtualenv changeDefaultShell \
+	installBins installDevShell installDevPython installDevNodejs installDevC installPythonVirtualenv changeDefaultShell \
 	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM updateCustomBins updatePrezto \
 	clean update install installDev init initOSX \
 

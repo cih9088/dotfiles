@@ -16,7 +16,7 @@ $ git submodule update --init --recursive
 
 ## Prerequisites
 The following list would be installed in your system. You need privilege (sudo). No need if you have them on your system.
-* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git, reattatch-to-user-namespace, xquartz
+* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git, reattatch-to-user-namespace, xquartz, cmake
 * Ubuntu: python2, python2-pip, python3, python3-pip, wget, xclip, git
 ```bash
 $ cd ~/dotfiles
@@ -120,6 +120,7 @@ $ make initOSX
 - python: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper)
 - nodejs: [nodejs](https://nodejs.org/en/)
 - shell: [shellchecker](https://www.shellcheck.net/), [bash-language-client](https://github.com/mads-hartmann/bash-language-server)
+- c: [ccls](https://github.com/MaskRay/ccls)
 
 ### [zsh](https://github.com/tmux/tmux)
 For more detailed information please refer [zshrc](https://github.com/cih9088/dotfiles/blob/master/zsh/zshrc)
@@ -271,6 +272,7 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
     - synchronizing mode: <kbd>prefix</kbd> + <kbd>e</kbd>
     - mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd>
     - maximizing pane: <kbd>prefix</kbd> + <kbd>z</kbd>
+    - detatch pane and create new window: <kbd>prefix</kbd> + <kbd>+</kbd> (require tmux version > 2.8)
     - disable tmux: <kbd>F12</kbd> (useful in nested tmux)
 - [tmux-resurrect](https://github.com/cih9088/tmux-resurrect)
     - save tmux environment: <kbd>prefix</kbd> + <kbd>Ctrl</kbd> + <kbd>s</kbd>

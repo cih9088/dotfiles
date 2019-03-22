@@ -31,6 +31,7 @@ echo
     pip install virtualenvwrapper --user
     pip3 install virtualenv --user
     pip3 install virtualenvwrapper --user
+
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
     "python dev is installed [local]" \

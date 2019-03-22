@@ -48,22 +48,23 @@ fi
 
     # add yarn to PATH
     [[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
-    [[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
+    [[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
+        export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
 
-    # # clutter path
-    # if [ -n "$PATH" ]; then
-    #     old_PATH=$PATH:; PATH=
-    #     while [ -n "$old_PATH" ]; do
-    #         x=${old_PATH%%:*}       # the first remaining entry
-    #         case $PATH: in
-    #             *:"$x":*) ;;          # already there
-    #             *) PATH=$PATH:$x;;    # not there yet
-    #         esac
-    #         old_PATH=${old_PATH#*:}
-    #     done
-    #     PATH=${PATH#:}
-    #     unset old_PATH x
-    # fi
+    # clutter path
+    if [ -n "$PATH" ]; then
+        old_PATH=$PATH:; PATH=
+        while [ -n "$old_PATH" ]; do
+            x=${old_PATH%%:*}       # the first remaining entry
+            case $PATH: in
+                *:"$x":*) ;;          # already there
+                *) PATH=$PATH:$x;;    # not there yet
+            esac
+            old_PATH=${old_PATH#*:}
+        done
+        PATH=${PATH#:}
+        unset old_PATH x
+    fi
 
 
 #   Set default blocksize for ls, df, du
@@ -213,6 +214,11 @@ fi
     #     bindkey -v
     #     export KEYTIMEOUT=1
     # fi
+    #
+
+#   Behaviour like readline!
+#   --------------------------------------------------------------------------------------
+    bindkey "^U" backward-kill-line
 
 #    bring $EDITOR to amend your command through <C-x><C-e>
 #   --------------------------------------------------------------------------------------
