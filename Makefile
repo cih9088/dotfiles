@@ -39,7 +39,6 @@ installPrezto: prepare
 
 installNeovim: prepare
 	@( $(SCRIPTS_DIR)/install_neovim.sh $(nvim_version) )
-	@( $(SCRIPTS_DIR)/install_coc.sh )
 
 installTmux: prepare
 	@( $(SCRIPTS_DIR)/install_tmux.sh $(tmux_version) )
@@ -55,6 +54,7 @@ installDevPython:
 
 installDevNodejs:
 	@( $(SCRIPTS_DIR)/installDev_nodejs.sh )
+	@( $(SCRIPTS_DIR)/install_coc.sh )
 
 installDevC:
 	@( $(SCRIPTS_DIR)/installDev_c.sh )
