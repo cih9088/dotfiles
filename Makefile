@@ -87,10 +87,13 @@ clean:
 	@echo "[0;92m[*][0m Remove dotfiles and configuration folders"
 	@rm -rf $(TMP_DIR)
 	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
-		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto ${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
+		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \
+		${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
+		${HOME}/.gitignore \
 		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
 		${HOME}/.vimrc ${HOME}/.vim \
-		${HOME}/.config/nvim ${HOME}/.config/alacritty
+		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger
+	@find ${HOME}/.local/bin -type l ! -exec test -e {}\; -print | xargs rm -rf
 	@rm -rf $(PROJ_HOME)
 
 update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateCustomBins updatePrezto
