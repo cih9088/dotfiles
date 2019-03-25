@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-# change version you want to install on local
-ZSH_VERSION=latest
-
 ################################################################
 set -e
 
@@ -10,10 +7,25 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
 
+ZSH_LATEST_VERSION=latest
+ZSH_VERSION=${1:-${ZSH_LATEST_VERSION}}
+
+################################################################
+
 setup_func() {
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing zsh..."
     (
     if [[ $1 = local ]]; then
+
+        if [[ ${ZSH_VERSION} != 'latest' ]]; then
+            curl -s --head https://sourceforge.net/projects/zsh/files/zsh/${ZSH_VERSION}/zsh-${ZSH_VERSION}.tar.xz/download | head -n 1 | grep "HTTP/1.[01] [23].." > /dev/null
+            if [[ $? != 0 ]]; then
+                printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off} ${ZSH_VERSION} is not a valid version\n" >&2
+                printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off} please visit https://sourceforge.net/projects/zsh/files/zsh/ for valid versions\n" >&2
+                exit 1
+            fi
+        fi
+
         if [ -d $HOME/.local/src/zsh-* ]; then
             cd $HOME/.local/src/zsh-*
             make uninstall

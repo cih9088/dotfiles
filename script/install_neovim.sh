@@ -1,13 +1,5 @@
 #!/usr/bin/env bash
 
-NVIM_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/neovim/neovim/releases/latest" |
-    grep '"tag_name":' |
-    sed -E 's/.*"([^"]+)".*/\1/')
-NVIM_LATEST_VERSION=${NVIM_LATEST_VERSION##v}
-NVIM_VERSION=${1:-${NVIM_LATEST_VERSION}}
-
-XCLIP_VERSION=0.12
-
 ################################################################
 set -e
 
@@ -15,26 +7,53 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
 
+NVIM_LATEST_VERSION="$(${PROJ_HOME}/script/get_latest_release neovim/neovim)"
+NVIM_VERSION=${1:-${NVIM_LATEST_VERSION}}
+if [[ ${NVIM_VERSION} != 'nightly' ]] && [[ ${NVIM_VERSION} != "v"* ]]; then
+    NVIM_VERSION="v${NVIM_VERSION}"
+fi
+
+XCLIP_VERSION=0.12
+
+################################################################
+
+
 setup_func_neovim() {
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing neovim..."
     (
     if [[ $1 = local ]]; then
+        curl -s --head https://github.com/neovim/neovim/releases/tag/${NVIM_VERSION} | head -n 1 | grep "HTTP/1.[01] [23].." > /dev/null
+        if [[ $? != 0 ]]; then
+            printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off} ${NVIM_VERSION} is not a valid version\n" >&2
+            printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off} please visit https://github.com/neovim/neovim/tags for valid versions\n" >&2
+            exit 1
+        fi
+
         cd $TMP_DIR
+        rm -rf ${HOME}/.local/bin/nvim || true
+        rm -rf ${HOME}/.local/man/man1/nvim.1 || true
+        rm -rf ${HOME}/.local/share/nvim/runtim || true
         if [[ $platform == "OSX" ]]; then
-            wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim-macos.tar.gz
+            if [[ ${NVIM_VERSION} == 'nightly' ]]; then
+                wget https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz
+            else
+                wget https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-macos.tar.gz
+            fi
             tar -xvzf nvim-macos.tar.gz
             yes | \cp -rf nvim-osx64/* $HOME/.local/
         elif [[ $platform == "LINUX" ]]; then
-            rm -rf $HOME/.local/bin/nvim || true
-            rm -rf $HOME/.local/man/man1/nvim.1 || true
-            rm -rf $HOME/.local/share/nvim/runtim || true
+            if [[ ${NVIM_VERSION} == 'nightly' ]]; then
+                wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+            else
+                wget https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim.appimage
+            fi
             # https://github.com/neovim/neovim/issues/7620
             # https://github.com/neovim/neovim/issues/7537
-            wget https://github.com/neovim/neovim/releases/download/v${NVIM_VERSION}/nvim.appimage
             chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract
             yes | \cp -rf squashfs-root/usr/bin $HOME/.local
             yes | \cp -rf squashfs-root/usr/man $HOME/.local
             yes | \cp -rf squashfs-root/usr/share/nvim $HOME/.local/share
+
             # yes | \cp -rf squashfs-root/usr/* $HOME/.local
             # chmod u+x nvim.appimage && mv nvim.appimage nvim
             # cp nvim $HOME/.local/bin
@@ -150,32 +169,6 @@ main() {
     source ${WORKON_HOME}/neovim3/bin/activate
     pip install neovim
 
-#    if [[ $platform == "OSX" ]]; then
-#        source ${HOME}/Library/Python/3.7/bin/virtualenvwrapper_lazy.sh
-#    elif [[ $platform == "LINUX" ]]; then
-#        source ${HOME}/.local/bin/virtualenvwrapper_lazy.sh
-#    fi
-#
-#    VIRENV_NAME=neovim2
-#    export WORKON_HOME=$HOME/.virtualenvs
-#    export VIRTUALENVWRAPPER_PYTHON=$(which python2)
-#    mkvirtualenv -p `which python2` ${VIRENV_NAME} || true
-#    pip install neovim
-#
-#    VIRENV_NAME=neovim3
-#    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-#    mkvirtualenv -p `which python3` ${VIRENV_NAME} || true
-#    pip install neovim
-#
-#    # if [[ $1 = local ]]; then
-#    #     pip install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-#    #     pip2 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-#    #     pip3 install --no-cache-dir --upgrade --force-reinstall --user neovim || true
-#    # else
-#    #     pip install --no-cache-dir --upgrade --force-reinstall neovim || true
-#    #     pip2 install --no-cache-dir --upgrade --force-reinstall neovim || true
-#    #     pip3 install --no-cache-dir --upgrade --force-reinstall neovim || true
-#    # fi
     ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
         "neovim with python support is installed" \

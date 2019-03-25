@@ -14,6 +14,11 @@ ifeq (installTmux,$(firstword $(MAKECMDGOALS)))
     $(eval $(tmux_version):;@:)
 endif
 
+ifeq (installAsh,$(firstword $(MAKECMDGOALS)))
+    zsh_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+    $(eval $(zsh_version):;@:)
+endif
+
 prepare:
 	@mkdir -p ${HOME}/.local/bin
 	@mkdir -p ${HOME}/.local/src
@@ -32,7 +37,7 @@ prerequisitesTest:
 	@( $(SCRIPTS_DIR)/prerequisites_test.sh )
 
 installZsh: prepare
-	@( $(SCRIPTS_DIR)/install_zsh.sh )
+	@( $(SCRIPTS_DIR)/install_zsh.sh $(zsh_version) )
 
 installPrezto: prepare
 	@( $(SCRIPTS_DIR)/install_prezto.sh )

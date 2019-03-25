@@ -5,12 +5,6 @@ LIBEVENT_VERSION=2.1.8
 NCURSES_VERSION=6.1
 XCLIP_VERSION=0.12
 
-TMUX_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/tmux/tmux/releases/latest" |
-    grep '"tag_name":' |
-    sed -E 's/.*"([^"]+)".*/\1/')
-TMUX_LATEST_VERSION=${TMUX_LATEST_VERSION##v}
-TMUX_VERSION=${1:-${TMUX_LATEST_VERSION}}
-
 # based on https://gist.github.com/ryin/3106801#gistcomment-2191503
 # tmux will be installed in $HOME/.local/bin if you specify to install without root access
 # It's assumed that wget and a C/C++ compiler are installed.
@@ -20,6 +14,11 @@ set -e
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
+################################################################
+
+TMUX_LATEST_VERSION="$(${PROJ_HOME}/script/get_latest_release tmux/tmux)"
+TMUX_VERSION=${1:-${TMUX_LATEST_VERSION}}
+
 ################################################################
 
 
@@ -74,6 +73,14 @@ setup_func() {
 
     # install tmux
     if [[ $1 == local ]]; then
+
+        curl -s --head https://github.com/tmux/tmux/releases/tag/${TMUX_VERSION} | head -n 1 | grep "HTTP/1.[01] [23].." > /dev/null
+        if [[ $? != 0 ]]; then
+            printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off} ${TMUX_VERSION} is not a valid version\n" >&2
+            printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off} please visit https://github.com/tmux/tmux/tags for valid versions\n" >&2
+            exit 1
+        fi
+
         if [ -d $HOME/.local/src/tmux-* ]; then
             cd $HOME/.local/src/tmux-*
             make uninstall

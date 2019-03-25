@@ -76,8 +76,10 @@ $ cd ~/dotfiles
 # you could choose what to install in following list
 # [installZsh, installPrezto, installNeovim, installTmux, installBins]
 # For instance,
-$ make installNeovim        # Install neovim only
-$ make installNeovim 0.2.0  # Specify version if intended to install locally
+$ make installNeovim          # Install neovim only with latest stable version
+$ make installNeovim 0.2.0    # Specify version if intended to install locally
+$ make installNeovim nightly  # even nightly is available (neovim only)
+# version specification is only available for zsh, neovim ,tmux
 
 # DEV ENVIRONMENT
 # you could choose what to install in following list

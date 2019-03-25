@@ -37,8 +37,12 @@ else
         brew install node
         brew install yarn
     else
-        curl -sL install-node.now.sh/lts | bash -s -- --prefix=${HOME}/.local --yes
-        curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+        if ! command -v node > /dev/null; then
+            curl -sL install-node.now.sh/lts | bash -s -- --prefix=${HOME}/.local --yes
+        fi
+        if ! command -v yarn > /dev/null; then
+            curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
+        fi
     fi
     ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
