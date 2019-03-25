@@ -1,0 +1,17 @@
+snippet tf
+import tensorflow as tf
+endsnippet
+
+snippet np
+import numpy as np
+endsnippet
+
+snippet pickleload
+with open(${1:file_to_load}, 'rb') as f:
+	${2:my_var} = pickle.load(f)
+endsnippet
+
+snippet pickledump
+with open(${1:file_to_dump}, 'wb') as f:
+	pickle.dump(${2:my_var}, f)
+endsnippet
