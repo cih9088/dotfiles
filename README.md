@@ -119,7 +119,7 @@ $ make initOSX
 ## Highligts
 
 ### List of Dev environment
-- python: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper)
+- python: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper), [mpls](https://github.com/Microsoft/python-language-server)
 - nodejs: [nodejs](https://nodejs.org/en/)
 - shell: [shellchecker](https://www.shellcheck.net/), [bash-language-client](https://github.com/mads-hartmann/bash-language-server)
 - c: [ccls](https://github.com/MaskRay/ccls)

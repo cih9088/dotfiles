@@ -27,20 +27,20 @@ fi
 rm -rf ${HOME}/.mpls || true
 mkdir -p ${HOME}/.mpls
 
-MPLS_VERSION="$(${PROJ_HOME}/script/get_latest_release 'Microsoft/python-language-server')"
-wget https://github.com/Microsoft/python-language-server/archive/${MPLS_VERSION}.tar.gz -P ${HOME}/.mpls
-(
-cd ${HOME}/.mpls
-tar -xvzf ${MPLS_VERSION}.tar.gz --strip-components=1
-cd ${HOME}/.mpls/src/LanguageServer/Impl
-${HOME}/.local/bin/dotnet build --configuration Release
-)
-
-# git clone https://github.com/Microsoft/python-language-server.git ${HOME}/.mpls
+# MPLS_VERSION="$(${PROJ_HOME}/script/get_latest_release 'Microsoft/python-language-server')"
+# wget https://github.com/Microsoft/python-language-server/archive/${MPLS_VERSION}.tar.gz -P ${HOME}/.mpls
 # (
+# cd ${HOME}/.mpls
+# tar -xvzf ${MPLS_VERSION}.tar.gz --strip-components=1
 # cd ${HOME}/.mpls/src/LanguageServer/Impl
 # ${HOME}/.local/bin/dotnet build --configuration Release
 # )
+
+git clone https://github.com/Microsoft/python-language-server.git ${HOME}/.mpls
+(
+cd ${HOME}/.mpls/src/LanguageServer/Impl
+${HOME}/.local/bin/dotnet build --configuration Release
+)
 
 # Install extensions
 mkdir -p ~/.config/coc/extensions

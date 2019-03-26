@@ -82,74 +82,78 @@ ${BIPurple}FZF${Color_Off}
     ${BIRed}M-c${Color_Off}     Go to the directory
 
 
-${BIPurple}USEFUL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
+${BIPurple}GENERAL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
 --------------------------------------
-    ${BIRed}_${Color_Off}           executes a command as another user (sudo)
-    ${BIRed}e${Color_Off}           opens the default editor (nvim by default)
-    ${BIRed}p${Color_Off}           opens the default pager
-    ${BIRed}b${Color_Off}           opens the default web browser
-    ${BIRed}diffu${Color_Off}       shorthand for diff --unified
-    ${BIRed}po${Color_Off}          removes a directory from the stack and changes to it (popd)
-    ${BIRed}pu${Color_Off}          changes the directory and pushes the old directory onto the stack (pushd)
-    ${BIRed}sa${Color_Off}          search aliases for a word
-    ${BIRed}type${Color_Off}        displays all the attribute values of a shell parameter
+    ${BIRed}_${Color_Off}           Executes a command as another user (sudo)
+    ${BIRed}e${Color_Off}           Opens the default editor (nvim by default)
+    ${BIRed}p${Color_Off}           Opens the default pager
+    ${BIRed}b${Color_Off}           Opens the default web browser
+    ${BIRed}diffu${Color_Off}       Shorthand for diff --unified
+    ${BIRed}po${Color_Off}          Removes a directory from the stack and changes to it (popd)
+    ${BIRed}pu${Color_Off}          Changes the directory and pushes the old directory onto the stack (pushd)
+    ${BIRed}sa${Color_Off}          Search aliases for a word
+    ${BIRed}type${Color_Off}        Displays all the attribute values of a shell parameter
 
-    ${BIRed}http-serve${Color_Off} ${BIGreen}arg${Color_Off}  serves a directory via HTTP with port number ${BIGreen}arg${Color_Off}
+    ${BIRed}http-serve${Color_Off} ${BIGreen}arg${Color_Off}  Serves a directory via HTTP with port number ${BIGreen}arg${Color_Off}
 
-    ---------------------------CUSTOM-----------------------------
-    ${BIRed}c${Color_Off}               clear terminal
-    ${BIRed}dircnt ${BIGreen}arg${Color_Off}      count directories and files in ${BIGreen}arg${Color_Off}
-    ${BIRed}easy-useradd${Color_Off}    add user account with easy
-    ${BIRed}easy-pssh${Color_Off}       pssh with easy
-    ${BIRed}list-users${Color_Off}      list users
-    ${BIRed}sshget${Color_Off}          get something through ssh (fzf based)
-    ${BIRed}fkill${Color_Off}           kill process with FZF
+    ${BIRed}c${Color_Off}               Clear terminal
+    ${BIRed}dircnt ${BIGreen}arg${Color_Off}      Count directories and files in ${BIGreen}arg${Color_Off}
+    ${BIRed}easy-useradd${Color_Off}    Add user account with easy
+    ${BIRed}easy-pssh${Color_Off}       Pssh with easy
+    ${BIRed}list-users${Color_Off}      List users
+    ${BIRed}sshget${Color_Off}          Get something through ssh (fzf based)
+    ${BIRed}fkill${Color_Off}           Kill process with FZF
+    ${BIRed}cpu-usage${Color_Off}       Show cpu usage
+    ${BIRed}mem-usage${Color_Off}       Show memory usage
+    ${BIRed}gpu-usage${Color_Off}       Show gpu usage
+    ${BIRed}path${Color_Off}            Show all executable path
+    ${BIRed}fix_stty${Color_Off}        Restore terminal settings
+    ${BIRed}tm${Color_Off}              Create tmux session or attach or switch to exsiting one
 
 
 ${BIPurple}ARCHIVE COMMAND (PREZTO ARCHIVE MODULE)${Color_Off}
 ---------------------
-    ${BIRed}archive${Color_Off}     creates an archive based on the provided archive name
-    ${BIRed}lsarchive${Color_Off}   lists the contents of one or more archives
-    ${BIRed}unarchive${Color_Off}   extracts the contents of one or more archives
+    ${BIRed}archive${Color_Off}     Creates an archive based on the provided archive name
+    ${BIRed}lsarchive${Color_Off}   Lists the contents of one or more archives
+    ${BIRed}unarchive${Color_Off}   Extracts the contents of one or more archives
 
 
 ${BIPurple}RSYNC (PREZTO RSYNC MODULE)${Color_Off}
 ---------------------------------
-    ${BIRed}rsync-copy${Color_Off}          copies files and directories from source to destination.
-    ${BIRed}rsync-move${Color_Off}          moves files and directories from source to destination.
-    ${BIRed}rsync-update${Color_Off}        updates files and directories on destination.
-    ${BIRed}rsync-synchronize${Color_Off}   synchronizes files and directories between source and destination.
+    ${BIRed}rsync-copy${Color_Off}          Copies files and directories from source to destination.
+    ${BIRed}rsync-move${Color_Off}          Moves files and directories from source to destination.
+    ${BIRed}rsync-update${Color_Off}        Updates files and directories on destination.
+    ${BIRed}rsync-synchronize${Color_Off}   Synchronizes files and directories between source and destination.
 
-    --------------------CUSTOM-------------------------
-    ${BIRed}rsync-copy-sum${Color_Off}      summary version of rsync-copy
-    ${BIRed}rsync-move-sum${Color_Off}      summary version of rsync-move
+    ${BIRed}rsync-copy-sum${Color_Off}      Summary version of rsync-copy
+    ${BIRed}rsync-move-sum${Color_Off}      Summary version of rsync-move
 
 
 ${BIPurple}DIRECTORIES${Color_Off}
 -----------
-    ${BIRed}~${Color_Off}               jump to home directory
+    ${BIRed}~${Color_Off}               Jump to home directory
     ${BIRed}cd -${Color_Off}            Previous working directory
     ${BIRed}pushd ${BIGreen}arg${Color_Off}       Push ${BIGreen}arg${Color_Off} && cd ${BIGreen}arg${Color_Off}
     ${BIRed}popd${Color_Off}            Pop && cd
     ${BIRed}j${Color_Off}               fasd
     ${BIRed}z${Color_Off}               z command (fzf based)
-    ${BIRed}z ${BIGreen}arg${Color_Off}           go to fuzzy ${BIGreen}arg${Color_Off} directly (fzf based)
+    ${BIRed}z ${BIGreen}arg${Color_Off}           Go to fuzzy ${BIGreen}arg${Color_Off} directly (fzf based)
 
 
 ${BIPurple}LIST DIRECTORIES (PREZTO UTILITY MODULE)${Color_Off}
 ----------------------------------------
-    ${BIRed}ls${Color_Off}      lists with directories grouped first (GNU only).
-    ${BIRed}l${Color_Off}       lists in one column, hidden files.
-    ${BIRed}ll${Color_Off}      lists human readable sizes.
-    ${BIRed}lr${Color_Off}      lists human readable sizes, recursively.
-    ${BIRed}la${Color_Off}      lists human readable sizes, hidden files.
-    ${BIRed}lm${Color_Off}      lists human readable sizes, hidden files through pager.
-    ${BIRed}lx${Color_Off}      lists sorted by extension (GNU only).
-    ${BIRed}lk${Color_Off}      lists sorted by size, largest last.
-    ${BIRed}lt${Color_Off}      lists sorted by date, most recent last.
-    ${BIRed}lc${Color_Off}      lists sorted by date, most recent last, shows change time.
-    ${BIRed}lu${Color_Off}      lists sorted by date, most recent last, shows access time.
-    ${BIRed}sl${Color_Off}      lists directory contents (ls).
+    ${BIRed}ls${Color_Off}      Lists with directories grouped first (GNU only).
+    ${BIRed}l${Color_Off}       Lists in one column, hidden files.
+    ${BIRed}ll${Color_Off}      Lists human readable sizes.
+    ${BIRed}lr${Color_Off}      Lists human readable sizes, recursively.
+    ${BIRed}la${Color_Off}      Lists human readable sizes, hidden files.
+    ${BIRed}lm${Color_Off}      Lists human readable sizes, hidden files through pager.
+    ${BIRed}lx${Color_Off}      Lists sorted by extension (GNU only).
+    ${BIRed}lk${Color_Off}      Lists sorted by size, largest last.
+    ${BIRed}lt${Color_Off}      Lists sorted by date, most recent last.
+    ${BIRed}lc${Color_Off}      Lists sorted by date, most recent last, shows change time.
+    ${BIRed}lu${Color_Off}      Lists sorted by date, most recent last, shows access time.
+    ${BIRed}sl${Color_Off}      Lists directory contents (ls).
 
 
 ${BIPurple}HISTORY MANIPULATION${Color_Off}
@@ -162,33 +166,33 @@ ${BIPurple}HISTORY MANIPULATION${Color_Off}
     ${BIRed}!\$${Color_Off}          Last command's last argument
     ${BIRed}!!:*${Color_Off}        Last command's arguments
     ${BIRed}!!:x-y${Color_Off}      Arguments x to y of last command
-    ${BIRed}C-s${Color_Off}         search forwards in history
-    ${BIRed}C-r${Color_Off}         search backwards in history
+    ${BIRed}C-s${Color_Off}         Search forwards in history
+    ${BIRed}C-r${Color_Off}         Search backwards in history
 
 
 ${BIPurple}LINE EDITING (READLINE)${Color_Off}
 -----------------------
 
-    ${BIRed}C-a${Color_Off}     move to the beginning of the line
-    ${BIRed}M-b${Color_Off}     move back one word
-    ${BIRed}C-e${Color_Off}     move to the end of the line
-    ${BIRed}M-f${Color_Off}     move forward one word
-    ${BIRed}C-u${Color_Off}     delete to beginning of the the line
-    ${BIRed}C-w${Color_Off}     delete one word back
-    ${BIRed}C-k${Color_Off}     delete to end of the line
-    ${BIRed}M-d${Color_Off}     delete one word forward
-    ${BIRed}M-r${Color_Off}     revert all modifications to current line
-    ${BIRed}C-]${Color_Off}     search forwards in line
-    ${BIRed}M-C-]${Color_Off}   search backwards in line
-    ${BIRed}C-t${Color_Off}     transpose characters
-    ${BIRed}M-t${Color_Off}     transpose words
-    ${BIRed}M-u${Color_Off}     uppercase word
-    ${BIRed}M-l${Color_Off}     lowercase word
-    ${BIRed}M-c${Color_Off}     capitalize word
-    ${BIRed}M-#${Color_Off}     intert # at the beginning of the current line
-    ${BIRed}C-x C-e${Color_Off} edit the line with default editor
-    ${BIRed}C-x a${Color_Off}   get raw command
-    ${BIRed}C-l${Color_Off}     clear screen
+    ${BIRed}C-a${Color_Off}     Move to the beginning of the line
+    ${BIRed}M-b${Color_Off}     Move back one word
+    ${BIRed}C-e${Color_Off}     Move to the end of the line
+    ${BIRed}M-f${Color_Off}     Move forward one word
+    ${BIRed}C-u${Color_Off}     Delete to beginning of the the line
+    ${BIRed}C-w${Color_Off}     Delete one word back
+    ${BIRed}C-k${Color_Off}     Delete to end of the line
+    ${BIRed}M-d${Color_Off}     Delete one word forward
+    ${BIRed}M-r${Color_Off}     Revert all modifications to current line
+    ${BIRed}C-]${Color_Off}     Search forwards in line
+    ${BIRed}M-C-]${Color_Off}   Search backwards in line
+    ${BIRed}C-t${Color_Off}     Transpose characters
+    ${BIRed}M-t${Color_Off}     Transpose words
+    ${BIRed}M-u${Color_Off}     Uppercase word
+    ${BIRed}M-l${Color_Off}     Lowercase word
+    ${BIRed}M-c${Color_Off}     Capitalize word
+    ${BIRed}M-#${Color_Off}     Intert # at the beginning of the current line
+    ${BIRed}C-x C-e${Color_Off} Edit the line with default editor
+    ${BIRed}C-x a${Color_Off}   Get raw command
+    ${BIRed}C-l${Color_Off}     Clear screen
 
 
 EOF

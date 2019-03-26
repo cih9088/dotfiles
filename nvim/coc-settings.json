@@ -3,8 +3,20 @@
     "suggest.enablePreview": true,
     "suggest.autoTrigger": "always",
     "suggest.snippetIndicator": "~",
+    "suggest.preferCompleteThanJumpPlaceholder": false,
     "suggest.timeout": 2000,
     "suggest.echodocSupport": false,
+    "coc.preferences.hoverTarget": "float",
+    "coc.preferences.enableFloatHighlight": true,
+    "coc.source.file.ignoreHidden": false,
+    "list.nextKeymap": "<C-n>",
+    "list.previousKeymap": "<C-p>",
+
+
+    "snippets.ultisnips.directories": [
+        "UltiSnips",
+        "snips"
+    ],
 
     "languageserver": {
         "bash": {
@@ -23,13 +35,16 @@
                 "interpreter": {
                     "properties": {
                         "InterpreterPath": "/usr/local/bin/python",
+                        "Version": "2.7.16",
                         "UseDefaultDatabase": true
                     }
                 },
                 "testEnvironment": false,
                 "analysisUpdates": true,
                 "traceLogging": true,
-                "asyncStartup": true
+                "asyncStartup": true,
+                "searchPath": [
+                ]
             }
         },
         "ccls": {

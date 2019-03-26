@@ -156,13 +156,14 @@ fi
     if [[ ${platform} == "OSX" ]]; then
         alias f='open -a Finder ./'                     # f:            Opens current directory in MacOS Finder
         alias DT='tee ~/Desktop/terminalOut.txt'        # DT:           Pipe content to file on MacOS Desktop
+        function trash () { command mv "$@" ~/.Trash ; }    # trash:        Moves a file to the MacOS trash
+        function ql () { qlmanage -p "$*" >& /dev/null; }   # ql:           Opens any file in MacOS Quicklook Preview
     fi
     alias ~="cd ~"                                      # ~:            Go Home
     alias c='clear'                                     # c:            Clear terminal display
     alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
+    alias fix_stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
     function mcd () { mkdir -p "$1" && cd "$1"; }       # mcd:          Makes new Dir and jumps inside
-    function trash () { command mv "$@" ~/.Trash ; }    # trash:        Moves a file to the MacOS trash
-    function ql () { qlmanage -p "$*" >& /dev/null; }   # ql:           Opens any file in MacOS Quicklook Preview
 
     ########## commented in favour of zprezto ##########
     # alias cp='cp -iv'                           # Preferred 'cp' implementation
@@ -178,7 +179,6 @@ fi
     # alias less='less -FSRXc'                    # Preferred 'less' implementation
     # alias which='type -all'                     # which:        Find executables
     # alias show_options='shopt'                  # Show_options: display bash options settings
-    # alias fix_stty='stty sane'                  # fix_stty:     Restore terminal settings when screwed up
     # alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
 
     # Full Recursive Directory Listing
@@ -248,53 +248,93 @@ fi
         MANWIDTH="$width" nocorrect command man "$@"
     }
 
-    z() { # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
-        [ $# -gt 0 ] && fasd_cd -d "$*" && return
-        local dir
-        dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m)" && cd "${dir}" || return 1
-    }
-
-    tm() { # tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
-        # `tm` will allow you to select your tmux session via fzf.
-        # `tm irc` will attach to the irc session (if it exists), else it will create it.
-        [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-        if [ $1 ]; then
-            tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
-        fi
-        session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
-    }
-
-    ftpane() { # ftpane - switch pane (@george-b)
-        local panes current_window current_pane target target_window target_pane
-        panes=$(tmux list-panes -s -F '#I:#P - #{pane_current_path} #{pane_current_command}')
-        current_pane=$(tmux display-message -p '#I:#P')
-        current_window=$(tmux display-message -p '#I')
-
-        target=$(echo "$panes" | grep -v "$current_pane" | fzf +m --reverse) || return
-
-        target_window=$(echo $target | awk 'BEGIN{FS=":|-"} {print$1}')
-        target_pane=$(echo $target | awk 'BEGIN{FS=":|-"} {print$2}' | cut -c 1)
-
-        if [[ $current_window -eq $target_window ]]; then
-            tmux select-pane -t ${target_window}.${target_pane}
-        else
-            tmux select-pane -t ${target_window}.${target_pane} &&
-                tmux select-window -t $target_window
-        fi
-    }
-
-    fkill() { # kill processes - list only the ones you can kill
-        local pid 
-        if [ "$UID" != "0" ]; then
-            pid=$(ps -f -u $UID | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
-        else
-            pid=$(ps -ef | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
+    if command -v fzf > /dev/null; then
+        if command -v fasd > /dev/null; then
+            z() { # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
+                [ $# -gt 0 ] && fasd_cd -d "$*" && return
+                local dir
+                dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m --height=30)" && cd "${dir}" || return 1
+            }
         fi
 
-        if [ "x$pid" != "x" ]; then
-            echo $pid | xargs kill -${1:-9}
+
+        if command -v tmux > /dev/null; then
+            tm() { # tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
+                # `tm` will allow you to select your tmux session via fzf.
+                # `tm irc` will attach to the irc session (if it exists), else it will create it.
+                [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+                if [ $1 ]; then
+                    tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
+                fi
+                session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --select-1 --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
+            }
+
+            ftpane() { # ftpane - switch pane (@george-b)
+                local panes current_window current_pane target target_window target_pane
+                panes=$(tmux list-panes -s -F '#I:#P - #{pane_current_path} #{pane_current_command}')
+                current_pane=$(tmux display-message -p '#I:#P')
+                current_window=$(tmux display-message -p '#I')
+
+                target=$(echo "$panes" | grep -v "$current_pane" | fzf +m --reverse) || return
+
+                target_window=$(echo $target | awk 'BEGIN{FS=":|-"} {print$1}')
+                target_pane=$(echo $target | awk 'BEGIN{FS=":|-"} {print$2}' | cut -c 1)
+
+                if [[ $current_window -eq $target_window ]]; then
+                    tmux select-pane -t ${target_window}.${target_pane}
+                else
+                    tmux select-pane -t ${target_window}.${target_pane} &&
+                        tmux select-window -t $target_window
+                fi
+            }
         fi
-    }
+
+        fkill() { # kill processes - list only the ones you can kill
+            local pid 
+            if [ "$UID" != "0" ]; then
+                pid=$(ps -f -u $UID | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
+            else
+                pid=$(ps -ef | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
+            fi
+
+            if [ "x$pid" != "x" ]; then
+                echo $pid | xargs kill -${1:-9}
+            fi
+        }
+        if [[ ${platform} == "OSX" ]]; then
+            # Install (one or multiple) selected application(s)
+            # using "brew search" as source input
+            # mnemonic [B]rew [I]nstall [P]lugin
+            bip() {
+                local inst=$(brew search | fzf -m)
+
+                if [[ $inst ]]; then
+                    for prog in $(echo $inst);
+                    do; brew install $prog; done;
+                    fi
+            }
+            # Update (one or multiple) selected application(s)
+            # mnemonic [B]rew [U]pdate [P]lugin
+            bup() {
+                local upd=$(brew leaves | fzf -m)
+
+                if [[ $upd ]]; then
+                    for prog in $(echo $upd);
+                    do; brew upgrade $prog; done;
+                    fi
+            }
+            # Delete (one or multiple) selected application(s)
+            # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
+            bcp() {
+                local uninst=$(brew leaves | fzf -m)
+
+                if [[ $uninst ]]; then
+                    for prog in $(echo $uninst);
+                    do; brew uninstall $prog; done;
+                    fi
+            }
+        fi
+    fi
 
 
 
