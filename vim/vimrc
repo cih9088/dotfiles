@@ -44,7 +44,6 @@
     " }}}
 
     " Plugins for Language specific (syntax, completion, etc.) {{{
-        " 
         Plug 'sheerun/vim-polyglot'
         Plug 'Vimjas/vim-python-pep8-indent'  " becase of low performance of vim-polyglot
         Plug 'plasticboy/vim-markdown'
@@ -346,11 +345,11 @@
         nnoremap g* :let @/ = expand('<cword>')\|set hlsearch<C-M>
     " }}}
 
-    " Turns off vim's crazy default regex characters (very magic) {{{
-        nnoremap / /\v
-        vnoremap / /\v
-        cnoremap s/ s/\v
-    " }}}
+    " " Turns off vim's crazy default regex characters (very magic) {{{
+    "     nnoremap / /\v
+    "     vnoremap / /\v
+    "     cnoremap s/ s/\v
+    " " }}}
 
     " do not exit from visual mode when shifting {{{
         vnoremap < <gv

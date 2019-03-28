@@ -12,6 +12,11 @@
     "list.nextKeymap": "<C-n>",
     "list.previousKeymap": "<C-p>",
 
+    "python.jediEnabled": false,
+    "python.trace.server": "off",
+    "python.venvFolders": ["envs", ".pyenv", ".direnv", ".virtualenvs"],
+    "python.venvPath": "~/.virtualenvs",
+    "python.autoUpdateLanguageServer": true,
 
     "snippets.ultisnips.directories": [
         "UltiSnips",
@@ -25,28 +30,6 @@
             "filetypes": ["sh"],
             "ignoredRootPaths": ["~"]
         },
-        "mpls":{
-            "command": "dotnet",
-            "args": ["exec", "~/.mpls/output/bin/Release/Microsoft.Python.LanguageServer.dll"],
-            "shell": true,
-            "trace.server": "verbose",
-            "filetypes": ["python"],
-            "initializationOptions": {
-                "interpreter": {
-                    "properties": {
-                        "InterpreterPath": "/usr/local/bin/python",
-                        "Version": "2.7.16",
-                        "UseDefaultDatabase": true
-                    }
-                },
-                "testEnvironment": false,
-                "analysisUpdates": true,
-                "traceLogging": true,
-                "asyncStartup": true,
-                "searchPath": [
-                ]
-            }
-        },
         "ccls": {
             "command": "ccls",
             "filetypes": ["c", "cpp", "objc", "objcpp"],
@@ -55,5 +38,6 @@
                 "cacheDirectory": "/tmp/ccls"
             }
         }
-    }
+    },
+    "python.pythonPath": "/Users/andy/.virtualenvs/venv/bin/python"
 }
