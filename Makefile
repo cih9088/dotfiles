@@ -59,7 +59,6 @@ installDevPython:
 
 installDevNodejs:
 	@( $(SCRIPTS_DIR)/installDev_nodejs.sh )
-	@( $(SCRIPTS_DIR)/install_coc.sh )
 
 installDevC:
 	@( $(SCRIPTS_DIR)/installDev_c.sh )
@@ -79,7 +78,8 @@ updatePrezto:
 updateDotfiles:
 	@( $(SCRIPTS_DIR)/update_dotfiles.sh )
 
-updateNeovimPlugins:
+updateNeovimPlugins: installDevNodejs
+	@( $(SCRIPTS_DIR)/install_coc.sh )
 	@( $(SCRIPTS_DIR)/update_neovim_plugins.sh )
 
 updateTPM:
@@ -110,7 +110,7 @@ install: prepare installZsh changeDefaultShell installPrezto \
 	@echo
 	@echo "[42m[*] Install has Finished.[0m"
 
-installDev: installDevNodejs installDevPython installDevShell installDevC
+installDev: installDevNodejs installDevPython installDevShell
 	@echo
 	@echo "[42m[*] InstallDev has Finished.[0m"
 

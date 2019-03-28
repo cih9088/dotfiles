@@ -42,6 +42,23 @@ echo
 # ${HOME}/.local/bin/dotnet build --configuration Debug
 # )
 
+if ! command -v node > /dev/null; then
+    exit 1
+fi
+
+if ! command -v yarn > /dev/null; then
+    exit 1
+fi
+
+DIR=~/.local/share/nvim/plugged
+# For vim user, the directory is different
+# DIR=~/.vim/pack/coc/start
+mkdir -p $DIR
+cd $DIR
+git clone https://github.com/neoclide/coc.nvim.git --depth=1
+cd $DIR/coc.nvim
+yarn install
+
 # Install extensions
 mkdir -p ~/.config/coc/extensions
 cd ~/.config/coc/extensions
