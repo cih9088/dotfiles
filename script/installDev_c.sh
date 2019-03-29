@@ -27,10 +27,33 @@ echo
 
     cmake --build Release --target install 
     )
+
+    coc_languageserver='
+        "ccls": {
+            "command": "ccls",
+            "filetypes": ["c", "cpp", "objc", "objcpp"],
+            "rootPatterns": [".ccls", "compile_commands.json", ".vim/", ".git/", ".hg/"],
+            "initializationOptions": {
+                "cacheDirectory": "/tmp/ccls"
+            }
+        }
+    '
+
+    # write languageserver, delete empty line first, delete empty line last, insert comma
+    sed -e '/"languageserver":/r '<(echo "${coc_languageserver}") ${PROJ_HOME}/nvim/coc-settings.json | \
+        sed -e '/"languageserver":/{n;d;}' | \
+        tac | sed -e '/^    }$/ N;s/^    }\n$/    }/;' | tac | \
+        sed -e '/"languageserver":/,/^    }$/ s/^[[:space:]]*$/        ,/' > ${TMP_DIR}/tmp
+
+    rm -rf ${PROJ_HOME}/nvim/coc-settings.json || true
+    mv ${TMP_DIR}/tmp ${PROJ_HOME}/nvim/coc-settings.json
+
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
     "c dev are updated [local]" \
     "c dev udpate is failed [local]. use VERBOSE=YES for error message"
+
+
 
 # clean up
 if [[ $$ = $BASHPID ]]; then

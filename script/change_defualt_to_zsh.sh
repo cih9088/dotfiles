@@ -8,14 +8,15 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 local_change() {
-    if [[ -e $HOME/.local/bin/zsh ]]; then
-        if grep -Fxq "exec $HOME/.local/bin/zsh -l" $HOME/.bashrc; then
+    loginshell_rc=".${SHELL##*/}rc"
+    if [[ -e ${HOME}/.local/bin/zsh ]]; then
+        if grep -Fq "exec ${HOME}/.local/bin/zsh -l" ${HOME}/${loginshell_rc}; then
             :
         else
-            echo -e "if [[ -e $HOME/.local/bin/zsh ]]; then\n\texec $HOME/.local/bin/zsh -l\nfi" >> $HOME/.bashrc
+            echo -e "if [[ -e ${HOME}/.local/bin/zsh ]]; then\n\texec ${HOME}/.local/bin/zsh -l\nfi" >> ${HOME}/${loginshell_rc}
         fi
     else
-        echo "${marker_err} $HOME/.local/bin/zsh does not exist"
+        echo "${marker_err} ${HOME}/.local/bin/zsh does not exist"
         false
     fi
 }

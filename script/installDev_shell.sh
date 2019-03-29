@@ -38,7 +38,28 @@ setup_func_shellcheck() {
 
 setup_func_bash_language_server() {
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing bash-language-server..."
-    (npm i -g bash-language-server) >&3 2>&4 || exit_code="$?" && true
+    (
+    npm i -g bash-language-server
+
+    coc_languageserver='
+        "bash": {
+            "command": "bash-language-server",
+            "args": ["start"],
+            "filetypes": ["sh"],
+            "ignoredRootPaths": ["~"]
+        }
+    '
+
+    # write languageserver, delete empty line first, delete empty line last, insert comma
+    sed -e '/"languageserver":/r '<(echo "${coc_languageserver}") ${PROJ_HOME}/nvim/coc-settings.json | \
+        sed -e '/"languageserver":/{n;d;}' | \
+        tac | sed -e '/^    }$/ N;s/^    }\n$/    }/;' | tac | \
+        sed -e '/"languageserver":/,/^    }$/ s/^[[:space:]]*$/        ,/' > ${TMP_DIR}/tmp
+
+    rm -rf ${PROJ_HOME}/nvim/coc-settings.json || true
+    mv ${TMP_DIR}/tmp ${PROJ_HOME}/nvim/coc-settings.json
+
+    ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
         "bash-language-server is installed [local]" \
         "bash-language-server install is failed [local]. use VERBOSE=YES for error message"

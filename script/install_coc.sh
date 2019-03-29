@@ -42,14 +42,6 @@ echo
 # ${HOME}/.local/bin/dotnet build --configuration Debug
 # )
 
-if ! command -v node > /dev/null; then
-    exit 1
-fi
-
-if ! command -v yarn > /dev/null; then
-    exit 1
-fi
-
 DIR=~/.local/share/nvim/plugged
 # For vim user, the directory is different
 # DIR=~/.vim/pack/coc/start
