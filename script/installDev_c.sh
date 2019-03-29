@@ -37,7 +37,7 @@ echo
                 "cacheDirectory": "/tmp/ccls"
             }
         }
-    '
+'
 
     # write languageserver, delete empty line first, delete empty line last, insert comma
     sed -e '/"languageserver":/r '<(echo "${coc_languageserver}") ${PROJ_HOME}/nvim/coc-settings.json | \
