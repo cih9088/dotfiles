@@ -87,6 +87,7 @@ easy-pssh() { # Easy pssh command
     local inline="$1"; shift
     local hosts_file="$1"; shift
     local cmd="$@"
+    local n_host=$(wc -l < ${hosts_file})
 
     if [ ${inline} == false ]; then
         local tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
@@ -99,19 +100,19 @@ easy-pssh() { # Easy pssh command
         read -s pswd
 
         if [[ ${inline} == true ]]; then
-            echo "$pswd" | pssh -t 0 -h ${hosts_file} -i -I "sudo -S -- sh -c '$cmd'"
+            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} -i -I "sudo -S -- sh -c '$cmd'"
         else
             echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
             echo
-            echo "$pswd" | pssh -t 0 -h ${hosts_file} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
+            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
         fi
     else
         if [[ ${inline} == true ]]; then
-            pssh -h ${hosts_file} -t 0 -i $cmd
+            pssh -p ${n_host} -h ${hosts_file} -t 0 -i "$cmd"
         else
             echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
             echo
-            pssh -h ${hosts_file} -t 0 -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir $cmd
+            pssh -p ${n_host} -h ${hosts_file} -t 0 -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir "$cmd"
         fi
     fi
 }

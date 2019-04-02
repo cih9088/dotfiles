@@ -171,13 +171,12 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - horizontal split: <kbd>Ctrl</kbd> + <kbd>w</kbd> + <kbd>h</kbd>
     - vertical split: <kbd>Ctrl</kbd> + <kbd>w</kbd> + <kbd>v</kbd>
     - resize split: <kbd>&uparrow;</kbd>, <kbd>&downarrow;</kbd>, <kbd>&leftarrow;</kbd>, <kbd>&rightarrow;</kbd>
-    - equal split: <kbd>Ctrl</kbd> + <kbd>=</kbd>
+    - equal split: <kbd>Ctrl</kbd> + <kbd>w</kbd> + <kbd>=</kbd>
 - system clipboard
     - yank to system clipboard: <kbd>leader</kbd> + <kbd>y</kbd>
     - cut to system clipboard: <kbd>leader</kbd> + <kbd>x</kbd>
     - paste from system clipboard: <kbd>leader</kbd> + <kbd>p</kbd>
 - search in current visible window: `:WinSearch {args}`
-- python breakpoint: <kbd>leader</kbd> + <kbd>b</kbd>
 - replace a word under the curser or visually select then
     - <kbd>c</kbd> + <kbd>*</kbd>
     - repeat: <kbd>.</kbd>
@@ -193,6 +192,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - toggle diff: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>d</kbd>
     - toggle relativenumber: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>r</kbd>
     - toggle number: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>n</kbd>
+    - toggle wrap: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>w</kbd>
 - [vim-signify](https://github.com/mhinz/vim-signify)
     - navigate hunk: <kbd>\]</kbd> + <kbd>c</kbd>, <kbd>\[</kbd> + <kbd>c</kbd>
 - [vim-easy-aline](https://github.com/junegunn/vim-easy-align)
@@ -202,12 +202,16 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - fast movement with two characters <kbd>s</kbd> + {char} + {char}
 - [tagbar](https://github.com/majutsushi/tagbar)
     - toggle tagbar: <kbd>leader</kbd> + <kbd>T</kbd>
-- [deoplete](https://github.com/Shougo/deoplete.nvim): autocompletion
-    - forward: <kbd>Tab</kbd>
-    - backward: <kbd>Shift</kbd> + <kbd>Tab</kbd>
-- [neosnippet](https://github.com/Shougo/neosnippet.vim): snippet
-    - expand or jump: <kbd>Ctrl</kbd> + <kbd>k</kbd>
-    - jump: <kbd>Tab</kbd>
+- [coc.nvim](https://github.com/neoclide/coc.nvim): autocompletion and more
+- [ultisnips](https://github.com/SirVer/ultisnips): snippet
+    - expand or jump forward: <kbd>Ctrl</kbd> + <kbd>j</kbd>
+    - jump backward: <kbd>Ctrl</kbd> + <kbd>k</kbd>
+<!-- - [deoplete](https://github.com/Shougo/deoplete.nvim): autocompletion -->
+<!--     - forward: <kbd>Tab</kbd> -->
+<!--     - backward: <kbd>Shift</kbd> + <kbd>Tab</kbd> -->
+<!-- - [neosnippet](https://github.com/Shougo/neosnippet.vim): snippet -->
+<!--     - expand or jump: <kbd>Ctrl</kbd> + <kbd>k</kbd> -->
+<!--     - jump: <kbd>Tab</kbd> -->
 - [fzf](https://github.com/junegunn/fzf.vim): fuzzy finder
     - open Files: <kbd>leader</kbd> + <kbd>F</kbd>
     - open ProjectFiles: <kbd>leader</kbd> + <kbd>P</kbd>
@@ -272,9 +276,9 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
     - copy from the cursor to the end of the line: <kbd>D</kbd>
 - toggle
     - synchronizing mode: <kbd>prefix</kbd> + <kbd>e</kbd>
-    - mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd>
+	- mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd>
     - maximizing pane: <kbd>prefix</kbd> + <kbd>z</kbd>
-    - detatch pane and create new window: <kbd>prefix</kbd> + <kbd>+</kbd> (require tmux version > 2.8)
+    - advanced maximizing pane: <kbd>prefix</kbd> + <kbd>+</kbd> (require tmux version > 2.8)
     - disable tmux: <kbd>F12</kbd> (useful in nested tmux)
 - [tmux-resurrect](https://github.com/cih9088/tmux-resurrect)
     - save tmux environment: <kbd>prefix</kbd> + <kbd>Ctrl</kbd> + <kbd>s</kbd>

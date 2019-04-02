@@ -162,7 +162,7 @@ fi
     alias ~="cd ~"                                      # ~:            Go Home
     alias c='clear'                                     # c:            Clear terminal display
     alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
-    alias fix_stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
+    alias fix-stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
     function mcd () { mkdir -p "$1" && cd "$1"; }       # mcd:          Makes new Dir and jumps inside
 
     ########## commented in favour of zprezto ##########
@@ -452,7 +452,7 @@ fi
 #   6.  NETWORKING
 #   ======================================================================================
 
-    alias myip='curl ip.appspot.com'                    # myip:         Public facing IP Address
+    alias myip='dig myip.opendns.com @resolver1.opendns.com +short'                    # myip:         Public facing IP Address
     alias netCons='lsof -i'                             # netCons:      Show all open TCP/IP sockets
     alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
     alias lsock='sudo lsof -i -P'                       # lsock:        Display open sockets

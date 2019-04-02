@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+# refernece: https://blog.sleeplessbeastie.eu/2019/01/07/how-to-convert-seconds-to-human-readable-time/
+
+# Convert seconds to human readable time
+
+# reusable function to pretty print time 
+function pretty_time() {
+  # calculate seconds for each time period
+  seconds_in_year=$(  echo "(365.2425  * 24 * 60 * 60)/1" | bc)
+  seconds_in_month=$( echo "(30.436875 * 24 * 60 * 60)/1" | bc)
+  seconds_in_day=$(   echo "(            24 * 60 * 60)/1" | bc)
+  seconds_in_hour=$(  echo "(                 60 * 60)/1" | bc)
+  seconds_in_minute=60
+
+  seconds_param="$1"
+
+  time_string=""
+
+  # take care of years
+  if [ "$seconds_param" -ge "$seconds_in_year" ]; then
+    years=$(expr $seconds_param \/ $seconds_in_year)
+    seconds_param=$(expr $seconds_param - $years \* $seconds_in_year)
+    if [ "$years" -gt "1" ]; then
+      time_string="$years years"
+    elif [ "$years" -eq "1" ]; then
+      time_string="$years year"
+    fi
+  fi
+  # take care of months
+  if [ "$seconds_param" -ge "$seconds_in_month" ]; then
+    months=$(expr $seconds_param \/ $seconds_in_month)
+    seconds_param=$(expr $seconds_param - $months \* $seconds_in_month)
+    if [ "$months" -gt "1" ]; then
+      time_string="$time_string $months months"
+    elif [ "$months" -eq "1" ]; then
+      time_string="$time_string $months month"
+    fi
+  fi
+
+  # take care of days
+  if [ "$seconds_param" -ge "$seconds_in_day" ]; then
+    days=$(expr $seconds_param \/ $seconds_in_day)
+    seconds_param=$(expr $seconds_param - $days \* $seconds_in_day)
+    if [ "$days" -gt "1" ]; then
+      time_string="$time_string $days days"
+    elif [ "$days" -eq "1" ]; then
+      time_string="$time_string $days day"
+    fi
+  fi
+  
+  # take care of hours
+  if [ "$seconds_param" -ge "$seconds_in_hour" ]; then
+    hours=$(expr $seconds_param \/ $seconds_in_hour)
+    seconds_param=$(expr $seconds_param - $hours \* $seconds_in_hour)
+    if [ "$hours" -gt "1" ]; then
+      time_string="$time_string $hours hours"
+    elif [ "$hours" -eq "1" ]; then
+      time_string="$time_string $hours hour"
+    fi
+  fi
+  
+  # take care of minutes
+  if [ "$seconds_param" -ge "$seconds_in_minute" ]; then
+    minutes=$(expr $seconds_param \/ $seconds_in_minute)
+    seconds_param=$(expr $seconds_param - $minutes \* $seconds_in_minute)
+    if [ "$minutes" -gt "1" ]; then
+      time_string="$time_string $minutes minutes"
+    elif [ "$minutes" -eq "1" ]; then
+      time_string="$time_string $minutes minute"
+    fi
+  fi
+  
+  # take care of seconds
+  seconds=$seconds_param
+  if [ "$seconds" -gt "1" ]; then
+      time_string="$time_string $seconds seconds"
+  elif [ "$seconds" -eq "1" ]; then
+      time_string="$time_string $seconds second"
+  fi
+  
+  echo "$time_string" | sed "s/^ //"
+}
+  
+if [ "$#" -lt "1" ]; then
+  echo "Please execute shell script with single argument or multiple arguments:"
+  echo "  $ ${0} 44 86400 26900 99000 189020 4360520 87232200"
+else
+  for seconds in "$@"; do
+    case $seconds in
+      ""|0|*[!0-9]*) 
+         printf "%18s ! %s\n" "${seconds}" "invalid number of seconds" ;;
+      *) 
+         # printf "%10s seconds = %s\n" "${seconds}" "$(pretty_time $seconds)" ;;
+         printf "%s\n" "$(pretty_time $seconds)" ;;
+    esac
+  done
+fi

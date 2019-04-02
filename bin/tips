@@ -107,7 +107,7 @@ ${BIPurple}GENERAL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
     ${BIRed}mem-usage${Color_Off}       Show memory usage
     ${BIRed}gpu-usage${Color_Off}       Show gpu usage
     ${BIRed}path${Color_Off}            Show all executable path
-    ${BIRed}fix_stty${Color_Off}        Restore terminal settings
+    ${BIRed}fix-stty${Color_Off}        Restore terminal settings
     ${BIRed}tm${Color_Off}              Create tmux session or attach or switch to exsiting one
 
 

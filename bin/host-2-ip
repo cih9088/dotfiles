@@ -1,0 +1,50 @@
+#!/bin/bash
+# Resolve hostname to IP address
+# https://blog.sleeplessbeastie.eu/2018/10/29/how-to-resolve-hostname-to-ip-address-within-a-shell-script/
+
+# define local or remote DNS server
+dns_server="208.67.222.123"
+
+# function to get IP address
+function get_ip {
+  ip_address=""
+  if [ -n "$1" ]; then
+    hostname="${1}"
+    if [ -z "$dns_server" ]; then
+      # use primary Google DNS server if it is not provided
+      dns_server="8.8.8.8"
+    fi
+
+    if [ -z "query_type" ]; then
+      # query A record for IPv4  by default, use AAAA for IPv6
+      query_type="A"
+    fi
+    # check
+    host -t ${query_type}  ${hostname} &>/dev/null ${dns_server}
+    if [ "$?" -eq "0" ]; then
+      # get
+      ip_address="$(host -t ${query_type} ${hostname} ${dns_server} | awk '/has.*address/ {print $NF; exit}')"
+    else
+      exit 1
+    fi
+  else
+    exit 2
+  fi
+  echo $ip_address
+}
+
+# main
+hostname="${1}"
+for query in "A-IPv4" "AAAA-IPv6"; do
+  query_type="$(echo $query | cut -d- -f 1)"
+  ipversion="$(echo $query | cut -d- -f 2)"
+
+  address="$(get_ip ${hostname})"
+  if [ "$?" -eq "0" ]; then
+    if [ -n "${address}" ]; then
+      echo "Host ${hostname} has ${ipversion} address $address"
+    fi
+  else
+    echo "There was some kind of error"
+  fi
+done

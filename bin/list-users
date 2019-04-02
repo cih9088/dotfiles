@@ -15,6 +15,7 @@ BIYellow='[1;93m'     # Yellow
 OPTIND=1
 SYSTEM_USERS=false
 LOCKED_USERS=false
+GROUP_LIST=()
 
 
 case "$OSTYPE" in
@@ -51,10 +52,14 @@ ${BRed}OPTIONS${Color_Off}
 
     ${BRed}-h${Color_Off}
         show this help message
+
+    ${BRed}-g${Color_Off}
+        comma sperated list of groups to show additionally
+
 HELP
 }
 
-while getopts 'hsl' option; do
+while getopts 'g:hsl' option; do
     case "$option" in
         h) usage
             exit
@@ -66,6 +71,8 @@ while getopts 'hsl' option; do
                 echo 'Need privilege to list locked users' >&2
                 exit 1
             fi
+            ;;
+        g) GROUP_LIST=(${OPTARG//,/ })
             ;;
         :) printf "missing argument for -%s\n" "$OPTARG" >&2
             echo "" >&2
@@ -96,14 +103,26 @@ echo "----------[ Normal User Accounts ]---------------"
 awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( $3 >= min && $3 <= max  && $7 != "/sbin/nologin" ) print $0 }' "$_p" | column -s ':' -tn
 
 echo ""
-echo "----------[ Sudo User Accounts ]---------------"
+echo "----------[ Sudo Group Accounts ]---------------"
 grep '^sudo:.*$' /etc/group | cut -d: -f4 | tr ',' ' '
+
+if [[ ${#GROUP_LIST[@]} -ne 0 ]]; then
+    for gr in ${GROUP_LIST[@]}; do
+        echo ""
+        echo "----------[ $gr Group Accounts ]---------------"
+        if grep '^'$gr':.*$' /etc/group > /dev/null 2>&1; then
+            grep '^'$gr':.*$' /etc/group | cut -d: -f4 | tr ',' ' '
+        fi
+    done
+fi
 
 if [ ${LOCKED_USERS} == true ]; then
     echo ""
     echo "---------[ Locked User Accounts ]--------------"
     shadow="/etc/shadow"
-    cat $shadow | grep ! | awk -F ':' '{printf "%s ", $1} END { printf "\n" }'
+    if cat $shadow | grep '!' > /dev/null 2>&1; then
+        cat $shadow | grep ! | awk -F ':' '{printf "%s ", $1} END { printf "\n" }'
+    fi
 
     echo ""
     echo "---------[ Expired User Accounts ]-------------"
@@ -115,3 +134,4 @@ if [ ${SYSTEM_USERS} == true ]; then
     echo "---------[ System User Accounts ]--------------"
     awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( !($3 >= min && $3 <= max  && $7 != "/sbin/nologin")) print $0 }' "$_p" | column -s ':' -tn
 fi
+

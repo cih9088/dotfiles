@@ -147,7 +147,20 @@ for a; do
 done
 
 for s in "${!domains[@]}"; do
-    ${ssh_cmd} "${domains[$s]}" "find ${paths[$s]}" | /usr/bin/sed "s|^|${domains[$s]}:|" >> "$fifo" &
+    # ${ssh_cmd} -q "${domains[$s]}"
+    # if [[ $? -ne 0 ]]; then
+    #     if command -v sshpass >/dev/null; then
+    #         echo "Enter the passwd for ${domains[$s]}"
+    #         read -s pswd
+    #     else
+    #         echo "This script requires ssh keypair or sshpass command" >&2
+    #         exit 1
+    #     fi
+    #     sshpass -f <(echo $pswd) ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+    # else
+    #     ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+    # fi
+    ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
 done
 
 mapfile -t files < <(fzf -e --inline-info +s --multi --bind='Ctrl-A:toggle-all,`:jump' < "$fifo")

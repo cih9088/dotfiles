@@ -42,6 +42,10 @@ echo
 # ${HOME}/.local/bin/dotnet build --configuration Debug
 # )
 
+[[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
+[[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
+    export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
+
 DIR=~/.local/share/nvim/plugged
 # For vim user, the directory is different
 # DIR=~/.vim/pack/coc/start
@@ -60,10 +64,9 @@ then
 fi
 
 # Change arguments to extensions you need
-[[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
-[[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
-    export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
 yarn add coc-json coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-snippets coc-python
+
+cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
 
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \

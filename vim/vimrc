@@ -102,8 +102,8 @@
         Plug 'kshenoy/vim-signature'
         " Plug 'tpope/vim-sensible'
         Plug 'junegunn/vim-easy-align'
-        Plug 'michaeljsmith/vim-indent-object'
         Plug 'kana/vim-textobj-user'
+        Plug 'michaeljsmith/vim-indent-object'
         Plug 'idbrii/textobj-word-column.vim'
         Plug 'junegunn/gv.vim'
         " Plug 'yuttie/comfortable-motion.vim'
@@ -922,9 +922,6 @@
     " " }}}
 
     " Ultisnips {{{
-        " let g:UltiSnipsExpandTrigger="<c-j>"
-        " let g:UltiSnipsJumpForwardTrigger="<c-j>"
-        " let g:UltiSnipsJumpBackwardTrigger="<c-k>"
         let g:UltiSnipsExpandTrigger="<c-j>"
         let g:UltiSnipsJumpForwardTrigger="<c-j>"
         let g:UltiSnipsJumpBackwardTrigger="<c-k>"
@@ -965,11 +962,6 @@
                     \ pumvisible() ? "\<C-n>" :
                     \ <SID>check_back_space() ? "\<TAB>" :
                     \ coc#refresh()
-        " inoremap <silent><expr> <TAB>
-        "             \ pumvisible() ? coc#_select_confirm() :
-        "             \ <SID>coc#expandableOrJumpable() ? coc#rpc#request('doKeymap', ['snippets-expand-jump','']) :
-        "             \ <SID>check_back_space() ? "\<TAB>" :
-        "             \ coc#refresh()
         inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
         function! s:check_back_space() abort
@@ -985,8 +977,8 @@
         inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
         " Use `[c` and `]c` for navigate diagnostics
-        " nmap <silent> [c <Plug>(coc-diagnostic-prev)
-        " nmap <silent> ]c <Plug>(coc-diagnostic-next)
+        nmap <silent> [d <Plug>(coc-diagnostic-prev)
+        nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
         " Remap keys for gotos
         nmap <silent> gd <Plug>(coc-definition)
@@ -1294,18 +1286,26 @@
         let g:slime_target = "tmux"
         let g:slime_default_config = {"socket_name": "default", "target_pane": "{right-of}"}
     " }}}
-    
+
     " vimtex {{{
         let g:tex_flavor='latex'
         let g:vimtex_view_method='zathura'
         let g:vimtex_quickfix_mode=0
         let g:tex_conceal='abdmg'
     " }}}
-    
+
     " markdown-preview {{{
         let g:mkdp_open_to_the_world = 1
         let g:mkdp_port = '31000'
     " }}}
+
+    " {{{
+        augroup qs_colors
+            autocmd!
+            autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+            autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+        augroup END
+    "}}}
 
 " }}}
 
