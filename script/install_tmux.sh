@@ -123,6 +123,7 @@ setup_func() {
             brew install reattach-to-user-namespace
             brew install tmux
 
+        elif [[ $platform == "LINUX" ]]; then
             if [ -d /usr/local/src/tmux-* ]; then
                 cd /usr/local/src/tmux-*
                 sudo make uninstall
