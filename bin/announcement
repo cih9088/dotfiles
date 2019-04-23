@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+DELETE=false
+
+while getopts 'm:d' option; do
+    case "$option" in
+        m) msg="${OPTARG}"
+            ;;
+        d) DELETE=true
+            ;;
+        :) printf "missing argument for -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+[ "${1:-}" = "--" ] && shift
+
+profiles=(
+/etc/profile
+/etc/zsh/zprofile
+)
+
+if [ "$EUID" -ne 0 ];then
+    echo "Please run this script as root"
+    exit 1
+fi
+
+for profile in ${profiles[@]}; do
+    if [ ${DELETE} == true ]; then
+        head -1 ${profile} | grep -q '^#'
+        if [ $? != 0 ]; then
+            sed -i -e "0,/^read/d" ${profile}
+        else
+            :
+        fi
+    else
+        head -1 ${profile} | grep -q '^#'
+        if [ $? == 0 ]; then
+            sed -i -e "1i echo ''" -e "1i read -p 'Please read ANNOUNCEMENT carefully. Press enter to continue.'" ${profile}
+            sed -i -e "1i echo ''" -e "1i echo ''" -e "1i echo -e '\\\033[0;93mANNOUNCEMENT ($(date +%c)):\\\033[0;0m'" -e "1i echo -e \"\\\033[0;93m${msg}\\\033[0;0m\"" ${profile}
+        else
+            echo 'announce exists' >&2
+        fi
+    fi
+done
+
