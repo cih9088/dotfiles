@@ -231,26 +231,47 @@
         "     endif
         " endif
 
-        " if (has("termguicolors"))
-        "     set termguicolors
-        "     set t_9b=[48;2;%lu;%lu;%lum
-        "     set t_8f=[38;2;%lu;%lu;%lum
-        " endif
+        if (has("termguicolors"))
+            set termguicolors
+            set t_9b=[48;2;%lu;%lu;%lum
+            set t_8f=[38;2;%lu;%lu;%lum
+        endif
 
         " set t_Co=256        " Enable 256 color terminal
         syntax enable       " enable syntax processing
+        let $NVIM_TUI_ENABLE_TRUE_COLOR=1
         set background=dark " lihgt / dark
-        let g:seoul256_background = 237
+        " colorscheme kuroi
+        let g:seoul256_background = 236
         colorscheme seoul256
         " colorscheme base16-default-dark
-        " colorscheme base16-eighties
+        " colorscheme base17-eighties
         " colorscheme gruvbox
         " colorscheme hybrid
         " colorscheme dracula
         " colorscheme Tomorrow-Night-Eighties
         " colorscheme onedark
         " colorscheme PaperColor
-    " }}}
+
+        " seoul 256 terminal color
+        let g:terminal_color_0  = '#4e4e4e'
+        let g:terminal_color_1  = '#d68787'
+        let g:terminal_color_2  = '#5f865f'
+        let g:terminal_color_3  = '#d8af5f'
+        let g:terminal_color_4  = '#85add4'
+        let g:terminal_color_5  = '#d7afaf'
+        let g:terminal_color_6  = '#87afaf'
+        let g:terminal_color_7  = '#d0d0d0'
+        let g:terminal_color_8  = '#626262'
+        let g:terminal_color_9  = '#d75f87'
+        let g:terminal_color_10 = '#87af87'
+        let g:terminal_color_11 = '#ffd787'
+        let g:terminal_color_12 = '#add4fb'
+        let g:terminal_color_13 = '#ffafaf'
+        let g:terminal_color_14 = '#87d7d7'
+        let g:terminal_color_15 = '#e4e4e4'
+
+        " }}}
 
     " Spaces & Tabs {{{
         set tabstop=4       " number of visual spaces per TAB
@@ -801,9 +822,11 @@
     " }}}
 
     " Indentlines {{{
+        " let g:indentLine_setColors = 0
         let g:indentLine_enabled = 1
-        " let g:indentLine_char = '│'
-        let g:indentLine_char = '┊'
+        let g:indentLine_char = '│'
+        " let g:indentLine_char = '┊'
+        " let g:indentLine_char_list = ['|', '¦', '┆', '┊']
     " }}}
 
     " Goyo {{{
@@ -1105,7 +1128,8 @@
         command! ProjectFiles execute 'Files' s:find_git_root()
 
         " Customize fzf colors to match your color scheme
-        let g:fzf_colors = {
+        let g:fzf_colors =
+                    \ {
                     \ 'fg':      ['fg', 'Normal'],
                     \ 'bg':      ['bg', 'Normal'],
                     \ 'hl':      ['fg', 'Comment'],
@@ -1118,8 +1142,7 @@
                     \ 'pointer': ['fg', 'Exception'],
                     \ 'marker':  ['fg', 'Keyword'],
                     \ 'spinner': ['fg', 'Label'],
-                    \ 'header':  ['fg', 'Comment'] 
-                    \ }
+                    \ 'header':  ['fg', 'Comment'] }
 
         " Likewise, Files command with preview window
         command! -bang -nargs=? -complete=dir Files
@@ -1267,7 +1290,7 @@
                 \ "normalncid": '',
                 \ "basefg": '',
                 \ "basebg": '',
-                \ "fadelevel": 0.4,
+                \ "fadelevel": 0.5,
                 \ "colbufsize": 15,
                 \ "rowbufsize": 15,
                 \ "checkinterval": 100,

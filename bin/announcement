@@ -2,6 +2,11 @@
 
 DELETE=false
 
+profiles=(
+/etc/profile
+/etc/zsh/zprofile
+)
+
 while getopts 'm:d' option; do
     case "$option" in
         m) msg="${OPTARG}"
@@ -23,31 +28,52 @@ done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
 
-profiles=(
-/etc/profile
-/etc/zsh/zprofile
-)
-
 if [ "$EUID" -ne 0 ];then
     echo "Please run this script as root"
     exit 1
 fi
 
+case "$OSTYPE" in
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
+esac
+
+if [[ $platform != LINUX ]]; then
+    echo "This script dose not support $platform." >&2
+    exit 1
+fi
+
+lines=$(echo -e "${msg}" | wc -l)
+
+
 for profile in ${profiles[@]}; do
-    if [ ${DELETE} == true ]; then
-        head -1 ${profile} | grep -q '^#'
-        if [ $? != 0 ]; then
-            sed -i -e "0,/^read/d" ${profile}
+    if [ -f ${profile} ]; then
+        if [ ${DELETE} == true ]; then
+            head -1 ${profile} | grep -q '^#'
+            if [ $? != 0 ]; then
+                sed -i -e '/^#/,$!d' ${profile}
+            else
+                :
+            fi
         else
-            :
-        fi
-    else
-        head -1 ${profile} | grep -q '^#'
-        if [ $? == 0 ]; then
-            sed -i -e "1i echo ''" -e "1i read -p 'Please read ANNOUNCEMENT carefully. Press enter to continue.'" ${profile}
-            sed -i -e "1i echo ''" -e "1i echo ''" -e "1i echo -e '\\\033[0;93mANNOUNCEMENT ($(date +%c)):\\\033[0;0m'" -e "1i echo -e \"\\\033[0;93m${msg}\\\033[0;0m\"" ${profile}
-        else
-            echo 'announce exists' >&2
+            head -1 ${profile} | grep -q '^#'
+            if [ $? == 0 ]; then
+                if command -v whiptail > /dev/null; then
+                    sed -i -e "1i whiptail --title 'Announcement' --msgbox '${msg}' "'${height} ${width}' ${profile}
+                    sed -i -e '1i [ ${COLUMNS} -lt 79 ] && width=$(( ${COLUMNS} - 10 )) || width=79' ${profile}
+                    sed -i -e '1i [ ${LINES} -lt 7 ] && height=$(( ${LINES} - 5 )) || height='"$(( 7 + ${lines} ))" ${profile}
+                    sed -i -e '1i eval `resize`' ${profile}
+                    sed -i -e "1i echo ''" -e "1i echo ''" -e "1i echo -e '\\\033[0;93mannouncement ($(date +%c)):\\\033[0;0m'" -e "1i echo -e \"\\\033[0;93m${msg}\\\033[0;0m\"" ${profile}
+                # else
+                    # sed -i -e "1i echo ''" -e "1i read -p 'Please read announcement carefully. Press enter to continue.'" ${profile}
+                fi
+            else
+                echo 'announce exists' >&2
+            fi
         fi
     fi
 done
