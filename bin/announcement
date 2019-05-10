@@ -76,14 +76,13 @@ for profile in ${profiles[@]}; do
                     sed -i -e '1i me=$(whoami)' ${profile}
                     sed -i -e '1i logged_users=( $(<${logged_users_file}) )' ${profile}
                     sed -i -e '1i if [[ -f ${logged_users_file} ]]; then' ${profile}
-                    sed -i -e "1i logged_users_file=/tmp/announcement_users" ${profile}
                     sed -i -e '1i [ ${COLUMNS} -lt 79 ] && width=$(( ${COLUMNS} - 10 )) || width=79' ${profile}
                     sed -i -e '1i [ ${LINES} -lt 7 ] && height=$(( ${LINES} - 5 )) || height='"$(( 7 + ${lines} ))" ${profile}
                     sed -i -e '1i eval `resize`' ${profile}
-                    sed -i -e "1i echo ''" -e "1i echo ''" -e "1i echo -e '\\\033[0;93mannouncement ($(date +%c)):\\\033[0;0m'" -e "1i echo -e \"\\\033[0;93m${msg}\\\033[0;0m\"" ${profile}
-                # else
-                    # sed -i -e "1i echo ''" -e "1i read -p 'Please read announcement carefully. Press enter to continue.'" ${profile}
+                    sed -i -e '1i [[ $- == *i* && -z $TMUX ]] && echo $(whoami) >> ${logged_users_file} || true' ${profile}
+                    sed -i -e "1i logged_users_file=/tmp/announcement_users" ${profile}
                 fi
+                sed -i -e "1i echo ''" -e "1i echo ''" -e "1i echo -e '\\\033[0;93mAnnouncement ($(date +%c)):\\\033[0;0m'" -e "1i echo -e \"\\\033[0;93m${msg}\\\033[0;0m\"" ${profile}
             else
                 echo 'announce exists' >&2
             fi
