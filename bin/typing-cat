@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+trap "echo 'error: Script failed: see failed command above'" ERR
+
+Color_Off='[0m'       # Text Reset
+BRed='[1;31m'         # Red
+BGreen='[1;32m'       # Green
+Yellow='[0;33m'       # Yellow
+BIYellow='[1;93m'     # Yellow
+
+OPTIND=1
+t=0.06
+
+usage() {
+    LESS=-FEXR less <<HELP
+
+${BRed}SYNOPSIS${Color_Off}
+    ${BRed}$(basename "$0")${Color_Off} [${BRed}-t${Color_Off} ${BGreen}time_interval${Color_Off}] ${BGreen}file${Color_Off}
+
+
+${BRed}DESCRIPTION${Color_Off}
+    print ${BGreen}file${Color_Off} like typing
+
+
+${BRed}OPTIONS${Color_Off}
+    ${BRed}-t${Color_Off} ${BGreen}time_interval${Color_Off}  
+        time interval for each of character in second. Default value is ${BIYellow}0.06 s${Color_Off}
+
+    ${BRed}-h${Color_Off}
+        show this help message
+HELP
+}
+
+while getopts 't:h' option; do
+    case "$option" in
+        h) usage
+            exit
+            ;;
+        t) t=${OPTARG}
+            ;;
+        :) printf "missing argument for -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+[ "${1:-}" = "--" ] && shift
+
+while IFS= read -r x; do
+    for (( i = 0; i < ${#x}; i++ )); do
+        echo -n "${x[@]:${i}:1}"
+        sleep ${t}
+    done
+    echo
+done < "${1:-/dev/stdin}"
