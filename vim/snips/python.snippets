@@ -6,6 +6,12 @@ snippet np
 import numpy as np
 endsnippet
 
+snippet plt
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+endsnippet
+
 snippet pickleload
 with open(${1:file_to_load}, 'rb') as f:
 	${2:my_var} = pickle.load(f)

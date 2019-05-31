@@ -12,8 +12,8 @@ if [[ ! -z ${CONFIG+x} ]]; then
         [[ ${VERBOSE} == YES ]] || start_spinner "Installing node.js..."
         (
         if [[ $platform == "OSX" ]]; then
-            brew install node
-            brew install yarn
+            brew install node || true
+            brew install yarn || true
         else
             # curl -sL install-node.now.sh/lts | sed 's/read yn < \/dev\/tty/yn = y/' | sh -s -- --prefix=${HOME}/.local
             if ! command -v node > /dev/null; then
@@ -34,8 +34,8 @@ else
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing node.js..."
     (
     if [[ $platform == "OSX" ]]; then
-        brew install node
-        brew install yarn
+        brew install node || true
+        brew install yarn || true
     else
         if ! command -v node > /dev/null; then
             curl -sL install-node.now.sh/lts | bash -s -- --prefix=${HOME}/.local --yes

@@ -47,20 +47,24 @@ echo
     export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
 
 DIR=~/.local/share/nvim/plugged
-# For vim user, the directory is different
-# DIR=~/.vim/pack/coc/start
-mkdir -p $DIR
-cd $DIR
-git clone https://github.com/neoclide/coc.nvim.git --depth=1
-cd $DIR/coc.nvim
-yarn install
+if [ ! -d ${DIR}/coc.nvim ]; then
+    # For vim user, the directory is different
+    # DIR=~/.vim/pack/coc/start
+    mkdir -p $DIR
+    cd $DIR
+    git clone https://github.com/neoclide/coc.nvim.git --depth=1
+    cd $DIR/coc.nvim
+    yarn install
+fi
 
 # Install extensions
-mkdir -p ~/.config/coc/extensions
-cd ~/.config/coc/extensions
-if [ ! -f package.json ]
-then
-  echo '{"dependencies":{}}'> package.json
+if [ ! -d '~/.config/coc/extensions' ]; then
+    mkdir -p ~/.config/coc/extensions
+    cd ~/.config/coc/extensions
+    if [ ! -f package.json ]
+    then
+      echo '{"dependencies":{}}'> package.json
+    fi
 fi
 
 # Change arguments to extensions you need

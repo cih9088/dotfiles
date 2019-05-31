@@ -34,7 +34,6 @@
         Plug 'dracula/vim', { 'as': 'dracula' }
         Plug 'junegunn/seoul256.vim'
         Plug 'itchyny/lightline.vim'
-        " Plug 'maximbaz/lightline-ale'
         " Plug 'Palpatineli/lightline-lsc-nvim'
         Plug 'mgee/lightline-bufferline'
         Plug 'NLKNguyen/papercolor-theme'
@@ -54,14 +53,9 @@
         " Plug 'davidhalter/jedi-vim'
         if has('nvim')
             Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
-            " Plug 'autozimu/LanguageClient-neovim', {
-            "             \ 'branch': 'next',
-            "             \ 'do': 'bash install.sh',
-            "             \ }
-            " Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
             Plug 'Shougo/neco-vim'
             Plug 'neoclide/coc-neco'
-            Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+            Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
         else
             Plug 'Shougo/deoplete.nvim'
             Plug 'roxma/nvim-yarp'
@@ -73,7 +67,6 @@
     " }}}
 
     " Plugins for Convenient coding {{{
-        " Plug 'w0rp/ale'
         " Plug 'Shougo/neosnippet.vim'
         " Plug 'Shougo/neosnippet-snippets'
         Plug 'Shougo/context_filetype.vim'
@@ -81,17 +74,17 @@
         Plug 'honza/vim-snippets'
         " Plug 'scrooloose/nerdtree'
         Plug 'justinmk/vim-dirvish' | Plug 'bounceme/remote-viewer'
-        " Plugins 'tpope/vim-vimnegar'
+        " Plug 'tpope/vim-vinegar'
         Plug 'majutsushi/tagbar'
         Plug 'machakann/vim-sandwich'
-        Plug 'easymotion/vim-easymotion'
+        " Plug 'easymotion/vim-easymotion'
         Plug 'terryma/vim-multiple-cursors'
         Plug 'scrooloose/nerdcommenter'
         Plug 'Yggdroot/indentLine'
         Plug 'jiangmiao/auto-pairs'
         Plug 'christoomey/vim-tmux-navigator'
         Plug 'tpope/vim-repeat'
-        Plug 'terryma/vim-expand-region'
+        " Plug 'terryma/vim-expand-region'
         Plug 'tpope/vim-fugitive'
         Plug 'tpope/vim-unimpaired'
         Plug 'tpope/vim-obsession'
@@ -107,7 +100,6 @@
         Plug 'idbrii/textobj-word-column.vim'
         Plug 'junegunn/gv.vim'
         " Plug 'yuttie/comfortable-motion.vim'
-        " Plug 'kien/rainbow_parentheses.vim'
         Plug 'chrisbra/NrrwRgn'
         Plug 'dyng/ctrlsf.vim'
         Plug 'unblevable/quick-scope'
@@ -270,6 +262,9 @@
         let g:terminal_color_13 = '#ffafaf'
         let g:terminal_color_14 = '#87d7d7'
         let g:terminal_color_15 = '#e4e4e4'
+        highlight Pmenu ctermfg=252 guifg=#d9d9d9 ctermbg=238 guibg=#565656
+        highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
+        " let g:seoul256_srgb = 1
 
         " }}}
 
@@ -320,6 +315,11 @@
 
 " VIM REMAPPING AND FUNCTIONS {{{
 
+    " neovim python support {{{
+        let g:python_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim2/bin/python")
+        let g:python3_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim3/bin/python")
+    " }}}
+
     " leader is now comma {{{
         map , <leader>
     " }}}
@@ -335,8 +335,8 @@
             \ autocmd BufWritePre <buffer> :call StripTrailingWhitespaces()
     " }}}
 
-    " Disable few things on file larger than 50mb {{{
-        let g:LargeFile = 1024 * 1024 * 50
+    " Disable few things on file larger than 250mb {{{
+        let g:LargeFile = 1024 * 1024 * 250
         augroup LargeFile
             autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
         augroup END
@@ -557,11 +557,6 @@
         nnoremap <silent> rc :call ChangeReg()<CR>
     " }}}
 
-    " neovim python support {{{
-        let g:python_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim2/bin/python")
-        let g:python3_host_prog = system("echo -n ${HOME}/.virtualenvs/neovim3/bin/python")
-    " }}}
-
     " Move visual block {{{
         vnoremap J :m '>+1<CR>gv=gv
         vnoremap K :m '<-2<CR>gv=gv
@@ -589,11 +584,32 @@
         endfunction
 
         command! -nargs=1 -complete=command Redir silent call Redir(<q-args>)
+        " Usage:
+        " 	:Redir hi ............. show the full output of command ':hi' in a scratch window
+        " 	:Redir !ls -al ........ show the full output of command ':!ls -al' in a scratch window
+    " }}}
+
+    " {{{ Add parentheses to the current line
+        " https://vimrcfu.com/snippet/267
+
+        " wrap the current line in (), e.g:
+        nnoremap () mMI(<esc>A)<esc>`M
+
+        " wrap the rest of the line in ()
+        nnoremap )) mMi(<esc>A)<esc>`M
+
+        " wrap the line so far in ()
+        nnoremap (( mMI(<esc>`Mla)<esc>
+    " }}}
+
+    " {{{ Change grep to rg if it exists
+        if executable('rg')
+            set grepprg=rg\ -S\ --vimgrep
+        endif
+        autocmd QuickFixCmdPost *grep* cwindow"
     " }}}
 
 " }}}
-
-
 
 " PLUGIN SETTING {{{
 
@@ -658,6 +674,7 @@
         let g:lightline#bufferline#shorten_path = 1
         let g:lightline#bufferline#enable_devicons = 1
         let g:lightline#bufferline#unicode_symbols = 1
+        let g:lightline#bufferline#unnamed = '[No Name]'
         let g:lightline = {}
         let g:lightline = {
                     \ 'colorscheme': 'seoul256',
@@ -670,7 +687,7 @@
                     \ },
                     \ 'tabline': {
                     \     'left': [['buffers']],
-                    \     'right': [['close', 'tabs']]
+                    \     'right': [['tabs', 'close']]
                     \ },
                     \ 'component_function': {
                     \     'gitbranch': 'LightlineFugitive',
@@ -681,26 +698,10 @@
                     \     'cocstatus' : 'coc#status'
                     \ },
                     \ 'component_expand': {
-                    \    'linter_checking': 'lightline#lsc#checking',
-                    \    'linter_warnings': 'lightline#lsc#warnings',
-                    \    'linter_errors': 'lightline#lsc#errors',
-                    \    'linter_ok': 'lightline#lsc#ok',
                     \    'buffers': 'lightline#bufferline#buffers',
-                    \    'LC_warning_count': 'LC_warning_count',
-                    \    'LC_error_count': 'LC_error_count',
-                    \    'Coc_warning_count': 'Coc_warning_count',
-                    \    'Coc_error_count': 'Coc_error_count'
                     \ },
                     \ 'component_type': {
-                    \    'linter_checking': 'left',
-                    \    'linter_warnings': 'warning',
-                    \    'linter_errors': 'error',
-                    \    'linter_ok': 'left',
                     \    'buffers': 'tabsel',
-                    \    'LC_warning_count': 'warning',
-                    \    'LC_error_count': 'error',
-                    \    'Coc_warning_count': 'warning',
-                    \    'Coc_error_count': 'error'
                     \ },
                     \}
         function! LightlineFileformat()
@@ -748,61 +749,16 @@
             return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
         endfunction
 
-        augroup lightline_lsc
-            autocmd!
-            autocmd User LanguageClientDiagnosticsChanged call lightline#update()
-        augroup END
-
-        function! Coc_warning_count()
-            let info = get(b:, 'coc_diagnostic_info', {})
-            if empty(info) | return '' | endif
-            if get(info, 'warning', 0)
-                return 'W: ' . info['warning']
-            endif
-        endfunction
-
-        function! Coc_error_count()
-            let info = get(b:, 'coc_diagnostic_info', {})
-            if empty(info) | return '' | endif
-            if get(info, 'error', 0)
-                return 'E: ' . info['error']
-            endif
-        endfunction
-
-        augroup coc
-            autocmd!
-            autocmd User CocDiagnosticChange call lightline#update()
-        augroup END
-
-        " let g:lightline#ale#indicator_checking = "\uf110"
-        " let g:lightline#ale#indicator_warnings = "\uf071  "
-        " let g:lightline#ale#indicator_errors = "\uf05e  "
-        " let g:lightline#ale#indicator_ok = "\uf00c"
     " }}}
 
-    " " ALE {{{
-    "     let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
-    "     let g:ale_linters = {
-    "                 \ 'python': ['pylint']
-    "                 \}
-    "     " show which linter is showing the message
-    "     let g:ale_sign_error = '✘'
-    "     let g:ale_sign_warning = '⚠'
-    "     hi ALEErrorSign    gui=bold guifg=#e6645f ctermfg=167
-    "     hi ALEWarningSign  gui=bold guifg=#b1b14d ctermfg=143
-    "     " no highlight (underline) on detected errors/warnings
-    "     let g:ale_set_highlights = 0
-    "     let g:ale_completion_enabled = 0
+    " " Easymotion {{{
+    "     " Disable default mappings
+    "     let g:EasyMotion_do_mapping = 0
+    "     " s{char}{char} to move to {char}{char}
+    "     nmap s <Plug>(easymotion-overwin-f2)
+    "     " Turn on case insensitive feature
+    "     let g:EasyMotion_smartcase = 1
     " " }}}
-
-    " Easymotion {{{
-        " Disable default mappings
-        let g:EasyMotion_do_mapping = 0
-        " s{char}{char} to move to {char}{char}
-        nmap s <Plug>(easymotion-overwin-f2)
-        " Turn on case insensitive feature
-        let g:EasyMotion_smartcase = 1
-    " }}}
 
     " " multiplecusors {{{
     "     " Disable Deoplete when selecting multiple cursors starts
@@ -999,7 +955,7 @@
         " Coc only does snippet and additional edit on confirm.
         inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
-        " Use `[c` and `]c` for navigate diagnostics
+        " Use `[d` and `]d` for navigate diagnostics
         nmap <silent> [d <Plug>(coc-diagnostic-prev)
         nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
@@ -1079,6 +1035,9 @@
         nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
         " Resume latest coc list
         nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+        nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
+        nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
     " }}}
 
     " " LanguageClient {{{
@@ -1290,10 +1249,10 @@
                 \ "normalncid": '',
                 \ "basefg": '',
                 \ "basebg": '',
-                \ "fadelevel": 0.5,
+                \ "fadelevel": 0.6,
                 \ "colbufsize": 15,
                 \ "rowbufsize": 15,
-                \ "checkinterval": 100,
+                \ "checkinterval": 500,
                 \ "usecursorhold": 0,
                 \ "detecttermcolors": 1,
                 \ 'enablesigns': 0,
@@ -1322,7 +1281,7 @@
         let g:mkdp_port = '31000'
     " }}}
 
-    " {{{
+    " {{{ Quick-scope
         augroup qs_colors
             autocmd!
             autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline

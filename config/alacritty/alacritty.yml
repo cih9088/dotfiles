@@ -52,7 +52,7 @@ window:
   decorations: full
 
   # When true, alacritty starts maximized.
-  start_maximized: true
+  start_maximized: false
 
 scrolling:
   # Maximum number of lines in the scrollback buffer.
@@ -190,6 +190,37 @@ colors:
     magenta: '0xffafaf'
     cyan:    '0x87d7d7'
     white:   '0xe4e4e4'
+
+# # Colors (One Dark)
+# colors:
+#   # Default colors
+#   primary:
+#     background: '0x282c34'
+#     foreground: '0xabb2bf'
+#
+#   # Normal colors
+#   normal:
+#     # NOTE: Use '0x131613' for the `black` color if you'd like to see
+#     # black text on the background.
+#     black:   '0x282c34'
+#     red:     '0xe06c75'
+#     green:   '0x98c379'
+#     yellow:  '0xd19a66'
+#     blue:    '0x61afef'
+#     magenta: '0xc678dd'
+#     cyan:    '0x56b6c2'
+#     white:   '0xabb2bf'
+#
+#   # Bright colors
+#   bright:
+#     black:   '0x5c6370'
+#     red:     '0xe06c75'
+#     green:   '0x98c379'
+#     yellow:  '0xd19a66'
+#     blue:    '0x61afef'
+#     magenta: '0xc678dd'
+#     cyan:    '0x56b6c2'
+#     white:   '0xffffff'
 
 # # Colors (Snazzy)
 # colors:
@@ -362,6 +393,8 @@ mouse:
     #   - (Linux) xdg-open
     #   - (Windows) explorer
     launcher: open
+    #  program: xdg-open
+    #  args: []
 
     # URL modifiers
     #
@@ -372,7 +405,7 @@ mouse:
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>"
 
-  # When set to `true`, selected text will be copied to both the primary and
+  # When set to `true`, selected text will be copied to the primary clipboard.
   save_to_clipboard: false
 
 # Allow terminal applications to change Alacritty's window title.
@@ -467,6 +500,8 @@ live_config_reload: true
 #   - ResetFontSize
 #   - ScrollPageUp
 #   - ScrollPageDown
+#   - ScrollLineUp
+#   - ScrollLineDown
 #   - ScrollToTop
 #   - ScrollToBottom
 #   - ClearHistory
