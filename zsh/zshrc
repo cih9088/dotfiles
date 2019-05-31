@@ -154,16 +154,19 @@ fi
     alias rsync-move-sum='rsync-move --info=progress2,name0 '
 
     if [[ ${platform} == "OSX" ]]; then
-        alias f='open -a Finder ./'                     # f:            Opens current directory in MacOS Finder
-        alias DT='tee ~/Desktop/terminalOut.txt'        # DT:           Pipe content to file on MacOS Desktop
-        function trash () { command mv "$@" ~/.Trash ; }    # trash:        Moves a file to the MacOS trash
-        function ql () { qlmanage -p "$*" >& /dev/null; }   # ql:           Opens any file in MacOS Quicklook Preview
+        alias f='open -a Finder ./'                             # f:            Opens current directory in MacOS Finder
+        alias DT='tee ~/Desktop/terminalOut.txt'                # DT:           Pipe content to file on MacOS Desktop
+        function trash () { command mv "$@" ~/.Trash ; }        # trash:        Moves a file to the MacOS trash
+        function ql () { qlmanage -p "$*" >& /dev/null; }       # ql:           Opens any file in MacOS Quicklook Preview
+    elif [[ ${platform} == "LINUX" ]]; then
+        alias clear-swap="sudo sh -c 'swapoff -a && swapon -a'" # clear-swap:   clear swap memory
     fi
     alias ~="cd ~"                                      # ~:            Go Home
     alias c='clear'                                     # c:            Clear terminal display
     alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
     alias fix-stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
     function mcd () { mkdir -p "$1" && cd "$1"; }       # mcd:          Makes new Dir and jumps inside
+    alias color256='curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash'
 
     ########## commented in favour of zprezto ##########
     # alias cp='cp -iv'                           # Preferred 'cp' implementation
@@ -188,9 +191,6 @@ fi
     # displays paginated result with colored search terms and two lines surrounding each hit.
     # Example: mans mplayer codec
     # mans () { man $1 | grep -iC2 --color=always $2 | less }
-
-    # to remind yourself of an alias (given some part of it)
-    showa () { /usr/bin/grep --color=always -i -a1 $@ ~/Library/init/bash/aliases.bash | grep -v '^\s*$' | less -FSRXc ; }
 
 #   update environment in tmux just before every command
 #   --------------------------------------------------------------------------------------
@@ -294,18 +294,6 @@ fi
             }
         fi
 
-        fkill() { # kill processes - list only the ones you can kill
-            local pid 
-            if [ "$UID" != "0" ]; then
-                pid=$(ps -f -u $UID | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
-            else
-                pid=$(ps -ef | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
-            fi
-
-            if [ "x$pid" != "x" ]; then
-                echo $pid | xargs kill -${1:-9}
-            fi
-        }
         if [[ ${platform} == "OSX" ]]; then
             # Install (one or multiple) selected application(s)
             # using "brew search" as source input
@@ -423,16 +411,16 @@ fi
 #       E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
 #       Without the 'sudo' it will only find processes of the current user
 #   --------------------------------------------------------------------------------------
-    findPid () { lsof -t -c "$@" ; }
+    # findPid () { lsof -t -c "$@" ; }
 
 #   memHogsTop, memHogsPs:  Find memory hogs
 #   --------------------------------------------------------------------------------------
-    alias memHogsTop='top -l 2 -o rsize | head -20'
-    alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
+    # alias memHogsTop='top -l 2 -o rsize | head -20'
+    # alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
 
 #   cpuHogs:  Find CPU hogs
 #   --------------------------------------------------------------------------------------
-    alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
+    # alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
 
 #   Continual 'top' listing (every 10 seconds)
 #   --------------------------------------------------------------------------------------
@@ -445,9 +433,41 @@ fi
 #   --------------------------------------------------------------------------------------
     # alias ttop="top -R -F -s 10 -o rsize"
 
-#   my_ps: List processes owned by my user:
+#   my-ps: List processes owned by my user:
 #   --------------------------------------------------------------------------------------
-    my_ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
+    my-ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
+
+#   fkill: kill process - list only the ones you can kill
+#   --------------------------------------------------------------------------------------
+    if command -v fzf > /dev/null; then
+        fkill() {
+            local pid 
+            if [ "$UID" != "0" ]; then
+                pid=$(ps -f -u $UID | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
+            else
+                pid=$(ps -ef | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
+            fi
+
+            if [ "x$pid" != "x" ]; then
+                echo $pid | xargs kill -${1:-9}
+            fi
+        }
+    fi
+
+    if [[ ${platform} == "LINUX" ]]; then
+        # https://www.commandlinefu.com/commands/view/4968/print-memory-utilization-percentage-for-a-specific-process-and-its-children#comment
+        howmuchmem () {
+            PROCNAME="$@"
+            echo RAM Used by $PROCNAME $(echo "scale=4; ($(ps axo rss,comm|grep $PROCNAME| awk '{ TOTAL += $1 } END { print TOTAL }')/$(free | head -n 2 | tail -n 1 | awk '{ print $2 }'))*100"|bc)%
+        }
+
+        intercept() {
+            pid="$1"
+            sudo strace -e write=1,2 -p $pid 2>&1 | sed -un "/^ |/p" | sed -ue "s/^.\{9\}\(.\{50\}\).\+/\1/g" -e 's/ //g' | xxd -r -p
+        }
+    fi
+
+
 
 
 
@@ -457,16 +477,15 @@ fi
 #   6.  NETWORKING
 #   ======================================================================================
 
-    alias myip='dig myip.opendns.com @resolver1.opendns.com +short'                    # myip:         Public facing IP Address
-    alias netCons='lsof -i'                             # netCons:      Show all open TCP/IP sockets
-    alias flushDNS='dscacheutil -flushcache'            # flushDNS:     Flush out the DNS Cache
-    alias lsock='sudo lsof -i -P'                       # lsock:        Display open sockets
-    alias lsockU='sudo lsof -nP | grep UDP'             # lsockU:       Display only open UDP sockets
-    alias lsockT='sudo lsof -nP | grep TCP'             # lsockT:       Display only open TCP sockets
-    alias ipInfo0='ipconfig getpacket en0'              # ipInfo0:      Get info on connections for en0
-    alias ipInfo1='ipconfig getpacket en1'              # ipInfo1:      Get info on connections for en1
-    alias openPorts='sudo lsof -i | grep LISTEN'        # openPorts:    All listening connections
-    alias showBlocked='sudo ipfw list'                  # showBlocked:  All ipfw rules inc/ blocked IPs
+    alias myip='dig myip.opendns.com @resolver1.opendns.com +short' # myip:         Public facing IP Address
+    alias flushDNS='dscacheutil -flushcache'                        # flushDNS:     Flush out the DNS Cache
+    alias lsock='sudo lsof -i -P'                                   # lsock:        Display open sockets
+    alias lsockU='sudo lsof -nP | grep UDP'                         # lsockU:       Display only open UDP sockets
+    alias lsockT='sudo lsof -nP | grep TCP'                         # lsockT:       Display only open TCP sockets
+    alias ipInfo0='ipconfig getpacket en0'                          # ipInfo0:      Get info on connections for en0
+    alias ipInfo1='ipconfig getpacket en1'                          # ipInfo1:      Get info on connections for en1
+    alias openPorts='sudo lsof -i -P | grep -i "listen"'            # openPorts:    All listening connections
+    alias showBlocked='sudo ipfw list'                              # showBlocked:  All ipfw rules inc/ blocked IPs
 
 #   display useful host related informaton
 #   --------------------------------------------------------------------------------------
@@ -487,25 +506,28 @@ fi
 #   7.  SYSTEMS OPERATIONS & INFORMATION
 #   ======================================================================================
 
-    alias mountReadWrite='/sbin/mount -uw /'    # mountReadWrite:   For use when booted into single-user
 
-#   cleanupDS:  Recursively delete .DS_Store files
-#   --------------------------------------------------------------------------------------
-    alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
+    if [[ ${platform} == "OSX" ]]; then
+    # alias mountReadWrite='/sbin/mount -uw /'    # mountReadWrite:   For use when booted into single-user
 
-#   finderShowHidden:   Show hidden files in Finder
-#   finderHideHidden:   Hide hidden files in Finder
-#   --------------------------------------------------------------------------------------
-    alias finderShowHidden='defaults write com.apple.finder ShowAllFiles TRUE'
-    alias finderHideHidden='defaults write com.apple.finder ShowAllFiles FALSE'
+#       cleanupDS:  Recursively delete .DS_Store files
+#       --------------------------------------------------------------------------------------
+        alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
 
-#   cleanupLS:  Clean up LaunchServices to remove duplicates in the "Open With" menu
-#   --------------------------------------------------------------------------------------
-    alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+#       finderShowHidden:   Show hidden files in Finder
+#       finderHideHidden:   Hide hidden files in Finder
+#       --------------------------------------------------------------------------------------
+        alias finderShowHidden='defaults write com.apple.finder ShowAllFiles TRUE'
+        alias finderHideHidden='defaults write com.apple.finder ShowAllFiles FALSE'
 
-#    screensaverDesktop: Run a screensaver on the Desktop
-#   --------------------------------------------------------------------------------------
-    alias screensaverDesktop='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
+#       cleanupLS:  Clean up LaunchServices to remove duplicates in the "Open With" menu
+#       --------------------------------------------------------------------------------------
+        alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
+
+#       screensaverDesktop: Run a screensaver on the Desktop
+#       --------------------------------------------------------------------------------------
+        alias screensaverDesktop='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
+    fi
 
 
 
@@ -515,16 +537,16 @@ fi
 #   8.  WEB DEVELOPMENT
 #   ======================================================================================
 
-    alias apacheEdit='sudo edit /etc/httpd/httpd.conf'      # apacheEdit:       Edit httpd.conf
-    alias apacheRestart='sudo apachectl graceful'           # apacheRestart:    Restart Apache
-    alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit /etc/hosts file
-    alias herr='tail /var/log/httpd/error_log'              # herr:             Tails HTTP error logs
-    alias apacheLogs="less +F /var/log/apache2/error_log"   # Apachelogs:   Shows apache error logs
-    httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
+    # alias apacheEdit='sudo edit /etc/httpd/httpd.conf'      # apacheEdit:       Edit httpd.conf
+    # alias apacheRestart='sudo apachectl graceful'           # apacheRestart:    Restart Apache
+    # alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit /etc/hosts file
+    # alias herr='tail /var/log/httpd/error_log'              # herr:             Tails HTTP error logs
+    # alias apacheLogs="less +F /var/log/apache2/error_log"   # Apachelogs:   Shows apache error logs
+    # httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
 
 #   httpDebug:  Download a web page and show info on what took time
 #   --------------------------------------------------------------------------------------
-    httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
+    # httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
 
 
 

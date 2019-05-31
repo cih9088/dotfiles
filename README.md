@@ -177,6 +177,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - cut to system clipboard: <kbd>leader</kbd> + <kbd>x</kbd>
     - paste from system clipboard: <kbd>leader</kbd> + <kbd>p</kbd>
 - search in current visible window: `:WinSearch {args}`
+- Redirect the output of a vim or external command into a scratch buffer: `:Redir hi` or `:Redir !ls -al`
 - replace a word under the curser or visually select then
     - <kbd>c</kbd> + <kbd>*</kbd>
     - repeat: <kbd>.</kbd>

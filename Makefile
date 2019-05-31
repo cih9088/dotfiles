@@ -85,7 +85,7 @@ updateNeovimPlugins: installDevNodejs
 updateTPM:
 	@( $(SCRIPTS_DIR)/update_tpm.sh )
 
-updateTmuxPlugins: updateTPM 
+updateTmuxPlugins: updateTPM
 	@( $(SCRIPTS_DIR)/update_tmux_plugins.sh )
 
 clean:

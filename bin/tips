@@ -108,6 +108,8 @@ ${BIPurple}GENERAL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
     ${BIRed}gpu-usage${Color_Off}       Show gpu usage
     ${BIRed}path${Color_Off}            Show all executable path
     ${BIRed}fix-stty${Color_Off}        Restore terminal settings
+    ${BIRed}clear-swap${Color_Off}      Clear swap memory
+    ${BIRed}intercept ${BIGreen}pid${Color_Off}   Intercept stdout/stderr of ${BIGreen}pid${Color_Off}
     ${BIRed}tm${Color_Off}              Create tmux session or attach or switch to exsiting one
 
 
