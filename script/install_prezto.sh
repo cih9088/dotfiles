@@ -24,6 +24,11 @@ setup_func() {
         ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}" || true
     done
 
+    # pure prompt update
+    cd ${HOME}/.zprezto/modules/prompt/external/pure
+    git checkout master
+    git pull
+
     ## Clone garrett prompt repository
     #git clone https://github.com/cih9088/zsh-prompt-garrett.git ./prompt
     #

@@ -13,6 +13,12 @@ echo
 cd ~/.zprezto
 git pull >/dev/null
 git submodule update --init --recursive
+
+
+# pure prompt update
+cd ${HOME}/.zprezto/modules/prompt/external/pure
+git checkout master
+git pull
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
     "prezto is updated [local]" \
