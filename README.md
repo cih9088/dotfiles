@@ -204,9 +204,15 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 - [tagbar](https://github.com/majutsushi/tagbar)
     - toggle tagbar: <kbd>leader</kbd> + <kbd>T</kbd>
 - [coc.nvim](https://github.com/neoclide/coc.nvim): autocompletion and more
-- [ultisnips](https://github.com/SirVer/ultisnips): snippet
-    - expand or jump forward: <kbd>Ctrl</kbd> + <kbd>j</kbd>
-    - jump backward: <kbd>Ctrl</kbd> + <kbd>k</kbd>
+    - navigate diagnostic: <kbd>\[</kbd> + <kbd>d</kbd>, <kbd>\]</kbd> + <kbd>d</kbd>
+    - go to definition: <kbd>g</kbd> + <kbd>d</kbd>
+    - go to implemtation: <kbd>g</kbd> + <kbd>i</kbd>
+    - preview document: <kbd>K</kbd>
+    - [ultisnips](https://github.com/SirVer/ultisnips): snippet
+        - expand or jump forward: <kbd>Ctrl</kbd> + <kbd>j</kbd>
+        - expand: <kbd>Ctrl</kbd> + <kbd>l</kbd>
+        - jump forward: <kbd>Ctrl</kbd> + <kbd>j</kbd>
+        - jump backward: <kbd>Ctrl</kbd> + <kbd>k</kbd>
 <!-- - [deoplete](https://github.com/Shougo/deoplete.nvim): autocompletion -->
 <!--     - forward: <kbd>Tab</kbd> -->
 <!--     - backward: <kbd>Shift</kbd> + <kbd>Tab</kbd> -->
