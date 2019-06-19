@@ -1,8 +1,8 @@
 " =============================================================================
-" Filename: autoload/lightline/colorscheme/andy_lightline.vim
+" Filename: autoload/lightline/colorscheme/seoul256_modified.vim
 " Author: Andy (base file: seoul256 by atweiden)
 " License: MIT License
-" Last Change: 2018/12/05 08:23:27.
+" Last Change: 2019/06/19 08:23:27.
 " =============================================================================
 let s:base03 = [ '#151513', 233 ]
 let s:base02 = [ '#30302c ', 236 ]
@@ -23,8 +23,8 @@ let s:green = [ '#87af87', 108 ]
 let s:white = [ '#d0d0d0', 252 ]
 
 let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
-let s:p.normal.left = [ [ s:base02, s:blue ], [ s:base3, s:base01 ] ]
-let s:p.normal.right = [ [ s:base02, s:base1 ], [ s:base02, s:base1 ], [ s:base2, s:base01 ] ]
+let s:p.normal.left = [ [ s:base02, s:blue ], [ s:base3, s:base01 ], [ s:base02, s:red ], [ s:base02, s:yellow ], [ s:base3, s:base01 ] ]
+let s:p.normal.right = [ [ s:base02, s:base1 ], [ s:base2, s:base01 ] ]
 let s:p.inactive.right = [ [ s:base02, s:base00 ], [ s:base0, s:base02 ] ]
 let s:p.inactive.left =  [ [ s:base0, s:base02 ], [ s:base00, s:base02 ] ]
 let s:p.insert.left = [ [ s:base02, s:green ], [ s:base3, s:base01 ] ]
@@ -35,10 +35,8 @@ let s:p.inactive.middle = [ [ s:base00, s:base02 ] ]
 let s:p.tabline.left = [ [ s:base3, s:base00 ] ]
 let s:p.tabline.tabsel = [ [ s:base3, s:base02 ] ]
 let s:p.tabline.middle = [ [ s:base01, s:base1 ] ]
-let s:p.tabline.right = copy(s:p.normal.right)
-" let s:p.normal.error = [ [ s:red, s:base02 ] ]
-" let s:p.normal.warning = [ [ s:yellow, s:base01 ] ]
+let s:p.tabline.right = [ [ s:base02, s:magenta ], [ s:white, s:base01 ] ]
 let s:p.normal.error = [ [ s:base02, s:red ] ]
-let s:p.normal.warning = [ [ s:base01, s:yellow ] ]
+let s:p.normal.warning = [ [ s:base02, s:yellow ] ]
 
-let g:lightline#colorscheme#andy_lightline#palette = lightline#colorscheme#flatten(s:p)
+let g:lightline#colorscheme#seoul256_modified#palette = lightline#colorscheme#flatten(s:p)
