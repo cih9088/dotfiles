@@ -294,11 +294,22 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 
 ## Issues
 1. ~~Showing following error message at the top of terminal when the zsh 5.5 +  started \
-    `/var/folders/vp/15xrzrrj4sx0dd3k6gsv1hmw0000gn/T//prezto-fasd-cache.501.zsh:compctl:17: unknown condition code:`~~ \
-    -> [it is now fixed with zsh 5.6.1 + ](https://github.com/sorin-ionescu/prezto/issues/1569)
-2. Showing abnormal font like below image \
--> [nerd font](https://github.com/ryanoasis/nerd-fonts) patched font is needed or change `g:lightline#bufferline#enable_devcons` to 0 in `.vimrc` \
-![abnormal font](https://imgur.com/wSb49GM.png)
+    `/var/folders/vp/15xrzrrj4sx0dd3k6gsv1hmw0000gn/T//prezto-fasd-cache.501.zsh:compctl:17: unknown condition code:`~~
+    > [it is now fixed with zsh 5.6.1 + ](https://github.com/sorin-ionescu/prezto/issues/1569)
+
+2. Showing abnormal font like below image
+    > ![abnormal font](https://imgur.com/wSb49GM.png) \
+    > [nerd font](https://github.com/ryanoasis/nerd-fonts) patched font is needed or change `g:lightline#bufferline#enable_devcons` to 0 in `.vimrc`
+
+3. vim colorscheme is somewhat weird
+    > run `truecolor-test` script if your terminal or terminal inside of tmux support truecolor. This should show smooth color transition if supported. [related issue](https://github.com/tmux/tmux/issues/1246)
+
+    - true color supported \
+    ![truecolor supported](https://imgur.com/Fnx9P2Y.png)
+    - true color not supported \
+    ![truecolor not supported](https://imgur.com/vsOcuqx.png)
+
+
 
 ## TODO
 - thefuck version
