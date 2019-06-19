@@ -31,11 +31,7 @@
         Plug 'morhetz/gruvbox'
         Plug 'w0ng/vim-hybrid'
         Plug 'joshdick/onedark.vim'
-        Plug 'dracula/vim', { 'as': 'dracula' }
         Plug 'junegunn/seoul256.vim'
-        Plug 'itchyny/lightline.vim'
-        " Plug 'Palpatineli/lightline-lsc-nvim'
-        Plug 'mgee/lightline-bufferline'
         Plug 'NLKNguyen/papercolor-theme'
         Plug 'ryanoasis/vim-devicons'
         " =========================================================
@@ -76,6 +72,7 @@
         Plug 'justinmk/vim-dirvish' | Plug 'bounceme/remote-viewer'
         " Plug 'tpope/vim-vinegar'
         Plug 'majutsushi/tagbar'
+        " Plug 'liuchengxu/vista.vim'
         Plug 'machakann/vim-sandwich'
         " Plug 'easymotion/vim-easymotion'
         Plug 'terryma/vim-multiple-cursors'
@@ -93,7 +90,6 @@
         " Plug 'airblade/vim-gitgutter'
         Plug 'mhinz/vim-signify'
         Plug 'kshenoy/vim-signature'
-        " Plug 'tpope/vim-sensible'
         Plug 'junegunn/vim-easy-align'
         Plug 'kana/vim-textobj-user'
         Plug 'michaeljsmith/vim-indent-object'
@@ -118,6 +114,9 @@
     " }}}
 
     " Plugins for etc. {{{
+        Plug 'itchyny/lightline.vim'
+        Plug 'mgee/lightline-bufferline'
+        Plug 'niklaas/lightline-gitdiff'
         Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
         Plug 'junegunn/fzf.vim'
         Plug 'pbogut/fzf-mru.vim'
@@ -204,9 +203,9 @@
         " diff: ignore whitespaces
         set diffopt+=iwhite
 
-        " only higlight the first 200 characters of each line to improve
+        " only higlight the first 500 characters of each line to improve
         " performance for long line
-        set synmaxcol=200
+        " set synmaxcol=500
     " }}}
 
     " Color scheme {{{
@@ -229,17 +228,18 @@
         " endif
 
         if (has("termguicolors"))
+            set t_8b="[48;2;%lu;%lu;%lum"
+            set t_8f="[38;2;%lu;%lu;%lum"
             set termguicolors
-            set t_9b=[48;2;%lu;%lu;%lum
-            set t_8f=[38;2;%lu;%lu;%lum
         endif
 
         " set t_Co=256        " Enable 256 color terminal
         syntax enable       " enable syntax processing
         let $NVIM_TUI_ENABLE_TRUE_COLOR=1
         set background=dark " lihgt / dark
+        " colorscheme forest-night
         " colorscheme kuroi
-        let g:seoul256_background = 236
+        let g:seoul256_background = 237
         colorscheme seoul256
         " colorscheme base16-default-dark
         " colorscheme base17-eighties
@@ -613,6 +613,10 @@
         autocmd QuickFixCmdPost *grep* cwindow"
     " }}}
 
+    " {{{ calulate any things
+        nnoremap Q 0yt=A<C-r>=<C-r>"<CR><Esc>
+        vnoremap Q c<C-r>=<C-r>"<CR><Esc>
+    " }}}
 " }}}
 
 " PLUGIN SETTING {{{
@@ -674,40 +678,74 @@
     " }}}
 
     " lightline {{{
+
         let g:lightline#bufferline#show_number = 0
         let g:lightline#bufferline#shorten_path = 1
-        let g:lightline#bufferline#enable_devicons = 1
-        let g:lightline#bufferline#unicode_symbols = 1
+        let g:lightline#bufferline#unicode_symbols = 2
         let g:lightline#bufferline#unnamed = '[No Name]'
+        let g:lightline#gitdiff#indicator_added = "+"
+        let g:lightline#gitdiff#indicator_deleted = "-"
+        let g:lightline#gitdiff#indicator_modified = "!"
         let g:lightline = {}
         let g:lightline = {
-                    \ 'colorscheme': 'seoul256',
+                    \ 'colorscheme': 'seoul256_modified',
                     \ 'active': {
-                    \     'left': [['mode', 'paste'],
-                    \              ['cocstatus', 'gitbranch', 'readonly', 'filename']],
-                    \     'right': [['lineinfo'],
-                    \               ['percent'],
-                    \               ['fileformat', 'fileencoding', 'filetype']]
+                    \     'left': [
+                    \           [ 'mode', 'paste' ],
+                    \           [ 'cocstatus', 'currentfunction', 'readonly', 'filename' ],
+                    \           [ 'coc_error' ], [ 'coc_warning' ],
+                    \     ],
+                    \     'right': [
+                    \           [ 'lineinfo' ],
+                    \           [ 'percent' ],
+                    \           [ 'fileformat', 'fileencoding', 'devicons_filetype' ]
+                    \     ],
+                    \ },
+                    \ 'tab': {
+                    \     'active': [ 'tabnum' ],
+                    \     'inactive': [ 'tabnum' ],
                     \ },
                     \ 'tabline': {
-                    \     'left': [['buffers']],
-                    \     'right': [['tabs', 'close']]
+                    \     'left': [ [ 'tabs', 'vim_logo', 'buffers'] ],
+                    \     'right': [ [ 'gitbranch'], [ 'gitdiff' ] ],
+                    \ },
+                    \ 'component': {
+                    \     'vim_logo': "\ue7c5",
                     \ },
                     \ 'component_function': {
+                    \     'readonly': 'LightlineReadonly',
                     \     'gitbranch': 'LightlineFugitive',
                     \     'filename': 'LightlineFilename',
                     \     'fileformat': 'LightlineFileformat',
                     \     'filetype': 'LightlineFiletype',
                     \     'fileencoding': 'LightlineFileencoding',
-                    \     'cocstatus' : 'coc#status'
+                    \     'currentfunction': 'CocCurrentFunction',
+                    \     'devicons_filetype': 'Devicons_Filetype',
+                    \     'devicons_fileformat': 'Devicons_Fileformat',
+                    \     'cocstatus' : 'CocStatus',
                     \ },
                     \ 'component_expand': {
                     \    'buffers': 'lightline#bufferline#buffers',
+                    \    'gitdiff': 'lightline#gitdiff#get',
+                    \    'coc_error': 'CocError',
+                    \    'coc_warning': 'CocWarning',
                     \ },
                     \ 'component_type': {
                     \    'buffers': 'tabsel',
                     \ },
-                    \}
+                    \ }
+
+        autocmd User CocDiagnosticChange call lightline#update()
+
+        function! CocCurrentFunction()
+            return get(b:, 'coc_current_function', '')
+        endfunction
+        function! Devicons_Filetype()
+            return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+        endfunction
+        function! Devicons_Fileformat()
+            return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+        endfunction
         function! LightlineFileformat()
             return winwidth(0) > 70 ? &fileformat : ''
         endfunction
@@ -721,7 +759,7 @@
             return &ft =~ 'help\|vimfiler' ? '' : &modified ? '+' : &modifiable ? '' : '-'
         endfunction
         function! LightlineReadonly()
-            return &ft !~? 'help\|vimfiler' && &readonly ? 'RO' : ''
+            return &ft !~? 'help\|vimfiler' && &readonly ? '' : ''
         endfunction
         function! LightlineFilename()
             return ('' != LightlineReadonly() ? LightlineReadonly() . ' ' : '') .
@@ -733,24 +771,38 @@
         endfunction
         function! LightlineFugitive()
             if &ft !~? 'vimfiler' && exists('*fugitive#head')
-                return fugitive#head()
+                if fugitive#head() !=# ''
+                    return fugitive#head() .  " " . "\ue725"
+                endif
+            else
+                return "\uf468"
             endif
-            return ''
         endfunction
-        function! LC_warning_count()
-            let current_buf_number = bufnr('%')
-            let qflist = getqflist()
-            let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'W'})
-            let count = len(current_buf_diagnostics)
-            return count > 0 && g:LanguageClient_loaded ? 'W: ' . count : ''
+        function! CocStatus() abort
+            let info = get(g:, 'coc_status', '')
+            if empty(info)
+                return ''
+            else
+                return info
+            endif
         endfunction
-
-        function! LC_error_count()
-            let current_buf_number = bufnr('%')
-            let qflist = getqflist()
-            let current_buf_diagnostics = filter(qflist, {index, dict -> dict['bufnr'] == current_buf_number && dict['type'] == 'E'})
-            let count = len(current_buf_diagnostics)
-            return count > 0 && g:LanguageClient_loaded ? 'E: ' . count : ''
+        function! CocError() abort
+            let info = get(b:, 'coc_diagnostic_info', {})
+            if empty(info) | return '' | endif
+            let msgs = []
+            if get(info, 'error', 0)
+                call add(msgs, 'E' . info['error'])
+            endif
+            return msgs
+        endfunction
+        function! CocWarning() abort
+            let info = get(b:, 'coc_diagnostic_info', {})
+            if empty(info) | return '' | endif
+            let msgs = []
+            if get(info, 'warning', 0)
+                call add(msgs, 'W' . info['warning'])
+            endif
+            return msgs
         endfunction
 
     " }}}
@@ -1042,8 +1094,8 @@
         " Resume latest coc list
         nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 
-        nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
-        nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
+        " nnoremap <expr><C-f> coc#util#has_float() ? coc#util#float_scroll(1) : "\<C-f>"
+        " nnoremap <expr><C-b> coc#util#has_float() ? coc#util#float_scroll(0) : "\<C-b>"
     " }}}
 
     " " LanguageClient {{{
@@ -1069,7 +1121,7 @@
         nnoremap <leader>S :Startify<CR>
 
         let g:startify_bookmarks = [
-                    \ { 'a': '~/dotfiles/nvim/init.vim' },
+                    \ { 'a': '~/dotfiles/vim/vimrc' },
                     \ { 's': '~/dotfiles/zsh/zshrc' },
                     \ { 'd': '~/dotfiles/zsh/zpreztorc' },
                     \ { 'f': '~/dotfiles/tmux/tmux.conf' }
@@ -1294,6 +1346,18 @@
             autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
         augroup END
     "}}}
+
+    " " {{{ vista
+    "     let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+    "     let g:vista#renderer#enable_icon = 1
+    "     let g:vista_default_executive = 'coc'
+    "     let g:vista#renderer#icons = {
+    "                 \   "function": "\uf794",
+    "                 \   "variable": "\uf71b",
+    "                 \  }
+    "
+    "     nmap <Leader>T :Vista!!<CR>
+    " " }}}
 
 " }}}
 
