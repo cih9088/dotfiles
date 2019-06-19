@@ -70,7 +70,15 @@ fi
 # Change arguments to extensions you need
 yarn add coc-json coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-snippets coc-python
 
-cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
+if [[ -f ${PROJ_HOME}/nvim/coc-settings.json ]]; then
+    rm -rf ${TMP_DIR}/coc-settings-base.json.trim || true
+    sed -e '/^{$/d' -e '/^}$/d' -e '/\s\{4\}}/d' -e '/languageserver/d' ${PROJ_HOME}/nvim/coc-settings-base.json >> ${TMP_DIR}/coc-settings-base.json.trim
+    sed -i -e "/^{$/,/languageserver/{ /^{$/{p; r ${TMP_DIR}/coc-settings-base.json.trim
+    }; /languageserver/p; d; /languageserver/d;}" ${PROJ_HOME}/nvim/coc-settings.json
+    rm -rf ${TMP_DIR}coc-settings-base.json.trim || true
+else
+    cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
+fi
 
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \

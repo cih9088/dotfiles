@@ -12,7 +12,7 @@
     "signature.preferShownAbove": false,
     "signature.hideOnTextChange": false,
     "codeLens.enable": true,
-    "coc.preferences.extensionUpdateCheck": true,
+    "coc.preferences.extensionUpdateCheck": "weekly",
     "coc.preferences.hoverTarget": "float",
     "coc.preferences.colorSupport": false,
     "coc.preferences.enableFloatHighlight": true,
