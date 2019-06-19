@@ -186,6 +186,8 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - open terminal horizontally: `:T`
     - open terminal vertically: `:VT`
 - toggle conceal level: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>a</kbd>
+- simple calculator
+    - after visual selection: <kbd>Q</kbd>
 - [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
     - navigate quickfix list: <kbd>\]</kbd> + <kbd>q</kbd>, <kbd>\[</kbd> + <kbd>q</kbd>
     - navigate location list: <kbd>\]</kbd> + <kbd>l</kbd>, <kbd>\[</kbd> + <kbd>l</kbd>
@@ -262,7 +264,7 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 - go to pane with fzf: <kbd>prefix</kbd> + <kbd>0</kbd>
 - window
     - create new window: <kbd>prefix</kbd> + <kbd>c</kbd>
-	- kill current window: <kbd>prefix</kbd> + <kbd>X</kbd>
+    - kill current window: <kbd>prefix</kbd> + <kbd>X</kbd>
     - navigate window: <kbd>prefix</kbd> + [ <kbd>1</kbd>, ..., <kbd>9</kbd> ]
     - navigate window alternatively: <kbd>prefix</kbd> + <kbd>'</kbd> + {window index}
     - rename window: <kbd>prefix</kbd> + <kbd>,</kbd>
@@ -283,7 +285,7 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
     - copy from the cursor to the end of the line: <kbd>D</kbd>
 - toggle
     - synchronizing mode: <kbd>prefix</kbd> + <kbd>e</kbd>
-	- mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd>
+    - mouse mode: <kbd>prefix</kbd> + <kbd>m</kbd>
     - maximizing pane: <kbd>prefix</kbd> + <kbd>z</kbd>
     - advanced maximizing pane: <kbd>prefix</kbd> + <kbd>+</kbd> (require tmux version > 2.8)
     - disable tmux: <kbd>F12</kbd> (useful in nested tmux)
