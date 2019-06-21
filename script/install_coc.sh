@@ -71,8 +71,9 @@ fi
 yarn add coc-json coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-snippets coc-python
 
 if [[ -f ${PROJ_HOME}/nvim/coc-settings.json ]]; then
+    cp ${PROJ_HOME}/nvim/coc-settings.json ${PROJ_HOME}/nvim/coc-settings.json.bak
     rm -rf ${TMP_DIR}/coc-settings-base.json.trim || true
-    sed -e '/^{$/d' -e '/^}$/d' -e '/\s\{4\}}/d' -e '/languageserver/d' ${PROJ_HOME}/nvim/coc-settings-base.json >> ${TMP_DIR}/coc-settings-base.json.trim
+    sed -e '/^{$/d' -e '/^}$/d' -e '/^    }$/d' -e '/languageserver/d' ${PROJ_HOME}/nvim/coc-settings-base.json >> ${TMP_DIR}/coc-settings-base.json.trim
     sed -i -e "/^{$/,/languageserver/{ /^{$/{p; r ${TMP_DIR}/coc-settings-base.json.trim
     }; /languageserver/p; d; /languageserver/d;}" ${PROJ_HOME}/nvim/coc-settings.json
     rm -rf ${TMP_DIR}coc-settings-base.json.trim || true
