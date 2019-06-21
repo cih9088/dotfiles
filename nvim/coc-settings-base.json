@@ -20,6 +20,12 @@
     "list.nextKeymap": "<C-n>",
     "list.previousKeymap": "<C-p>",
 
+    "diagnostic.displayByAle": false,
+    "diagnostic.checkCurrentLine": true,
+    "diagnostic.virtualText": false,
+    "diagnostic.virtualTextPrefix": "  ‣ ",
+    "diagnostic.virtualTextLineSeparator": " \\ ",
+
     "python.jediEnabled": false,
     "python.trace.server": "off",
     "python.venvFolders": ["envs", ".pyenv", ".direnv", ".virtualenvs"],

@@ -71,8 +71,8 @@
         " Plug 'scrooloose/nerdtree'
         Plug 'justinmk/vim-dirvish' | Plug 'bounceme/remote-viewer'
         " Plug 'tpope/vim-vinegar'
-        Plug 'majutsushi/tagbar'
-        " Plug 'liuchengxu/vista.vim'
+        " Plug 'majutsushi/tagbar'
+        Plug 'liuchengxu/vista.vim'
         Plug 'machakann/vim-sandwich'
         " Plug 'easymotion/vim-easymotion'
         Plug 'terryma/vim-multiple-cursors'
@@ -267,8 +267,10 @@
         let g:terminal_color_13 = '#ffafaf'
         let g:terminal_color_14 = '#87d7d7'
         let g:terminal_color_15 = '#e4e4e4'
-        highlight Pmenu ctermfg=252 guifg=#d9d9d9 ctermbg=238 guibg=#565656
+        highlight Pmenu ctermfg=187 guifg=#d7d7af ctermbg=95 guibg=#875f5f
         highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
+        " highlight Pmenu ctermfg=252 guifg=#d9d9d9 ctermbg=238 guibg=#565656
+        " highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
 
         " }}}
 
@@ -868,10 +870,10 @@
         autocmd! User GoyoLeave Limelight!
     " }}}
 
-    " Tagbar {{{
-        nmap <Leader>T :TagbarToggle<CR>
-        "autocmd VimEnter * nested :TagbarOpen
-    " }}}
+    " " Tagbar {{{
+    "     nmap <Leader>T :TagbarToggle<CR>
+    "     autocmd VimEnter * nested :TagbarOpen
+    " " }}}
 
     " Signature {{{
         let g:SignatureMarkTextHLDynamic = 1
@@ -1347,17 +1349,19 @@
         augroup END
     "}}}
 
-    " " {{{ vista
-    "     let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
-    "     let g:vista#renderer#enable_icon = 1
-    "     let g:vista_default_executive = 'coc'
-    "     let g:vista#renderer#icons = {
-    "                 \   "function": "\uf794",
-    "                 \   "variable": "\uf71b",
-    "                 \  }
-    "
-    "     nmap <Leader>T :Vista!!<CR>
-    " " }}}
+    " {{{ vista
+        " let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
+        let g:vista#renderer#enable_icon = 1
+        let g:vista_default_executive = 'ctags'
+        let g:vista_executive_for = {
+                    \ 'sh': 'coc',
+                    \ 'python': 'coc',
+                    \ 'yaml': 'coc',
+                    \ 'tex': 'coc',
+                    \ }
+
+        nmap <Leader>T :Vista!!<CR>
+    " }}}
 
 " }}}
 
