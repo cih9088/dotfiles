@@ -46,6 +46,7 @@
         Plug 'chrisbra/csv.vim'
         Plug 'lervag/vimtex'
         Plug 'ap/vim-css-color'
+        " Plug 'RRethy/vim-hexokinase'
         " Plug 'davidhalter/jedi-vim'
         if has('nvim')
             Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
@@ -785,7 +786,7 @@
             if empty(info)
                 return ''
             else
-                return info
+                return winwidth(0) > 100 ? (info): ''
             endif
         endfunction
         function! CocError() abort
@@ -1166,6 +1167,16 @@
         " Likewise, Files command with preview window
         command! -bang -nargs=? -complete=dir Files
                     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+        " Rg: start fzf
+        " Rg!: start fzf with preview window
+        command! -bang -nargs=* Rg
+          \ call fzf#vim#grep(
+          \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+          \   <bang>0 ? fzf#vim#with_preview('up:60%')
+          \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+          \   <bang>0)
+
     " }}}
 
     " Semshi {{{
@@ -1241,6 +1252,11 @@
     " quick-scope {{{
         " Trigger a highlight in the appropriate direction when pressing these keys:
         let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+        augroup qs_colors
+            autocmd!
+            highlight QuickScopePrimary guifg=#afff5f gui=underline ctermfg=155 cterm=underline
+            highlight QuickScopeSecondary guifg=#5fffff gui=underline ctermfg=81 cterm=underline
+        augroup END
     " }}}
 
     " vim-illuminate {{{
