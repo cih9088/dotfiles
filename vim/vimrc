@@ -130,6 +130,7 @@
         Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }}
         " Plug 'tmux-plugins/vim-tmux-focus-events'
         Plug 'jpalardy/vim-slime'
+        Plug 'lambdalisue/suda.vim'
     " }}}
 
     " Initialize plugin system {{{
@@ -1378,6 +1379,11 @@
 
         nmap <Leader>T :Vista!!<CR>
     " }}}
+
+    " {{{ suda
+        let g:suda_smart_edit = 1
+    " }}}
+
 
 " }}}
 
