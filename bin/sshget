@@ -115,6 +115,8 @@ while [[ $# -gt 0 ]]; do
     key="$1"
 
     case $key in
+        -h) usage
+            exit; ;;
         -p)
             ssh_port="${2:?$1 needs argument(Usages: $1 argument)}"
             shift 2 ;;
