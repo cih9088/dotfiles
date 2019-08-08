@@ -110,6 +110,18 @@ if [ -e $HOME/.config/alacritty ]; then
 fi
 ln -s -f ${CONFIG_DIR}/alacritty $HOME/.config/alacritty
 
+if [ -e $HOME/.config/yabai ]; then
+    cp -RfL $HOME/.config/yabai $HOME/dotfiles_old/.config
+    rm -rf $HOME/.config/yabai
+fi
+ln -s -f ${CONFIG_DIR}/yabai $HOME/.config/yabai
+
+if [ -e $HOME/.config/skhd ]; then
+    cp -RfL $HOME/.config/skhd $HOME/dotfiles_old/.config
+    rm -rf $HOME/.config/skhd
+fi
+ln -s -f ${CONFIG_DIR}/skhd $HOME/.config/skhd
+
 if [ -e $HOME/.gitignore ]; then
     cp -RfL $HOME/.gitignore $HOME/dotfiles_old/.gitignore
     rm -rf $HOME/.gitignore
