@@ -47,6 +47,7 @@ yabai -m rule --add app="^KakaoTalk$" manage=off
 yabai -m rule --add app="^Movist$" manage=off
 yabai -m rule --add app="Transmission" manage=off
 yabai -m rule --add app="Alfred Preferences" manage=off
+yabai -m rule --add app="Dictionary" manage=off
 yabai -m rule --add app="Window 10" space=3
 
 echo "yabai configuration loaded.."
