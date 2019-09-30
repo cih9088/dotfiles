@@ -42,6 +42,13 @@ setup_func_neovim() {
             tar -xvzf nvim-macos.tar.gz
             yes | \cp -rf nvim-osx64/* $HOME/.local/
         elif [[ $platform == "LINUX" ]]; then
+
+            if ! [  -x "$(command -v pyenv)" ]; then
+                curl https://pyenv.run | bash
+                rm -rf ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper || true
+                git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper
+            fi
+
             if [[ ${NVIM_VERSION} == 'nightly' ]]; then
                 wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
             else
@@ -60,8 +67,18 @@ setup_func_neovim() {
         fi
     else
         if [[ $platform == "OSX" ]]; then
+            brew install pyenv
             brew install neovim
+            brew install pyenv-virtualenv
+            brew install pyenv-virtualenvwrapper
         elif [[ $platform == "LINUX" ]]; then
+
+            if ! [  -x "$(command -v pyenv)" ]; then
+                curl https://pyenv.run | bash
+                rm -rf ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper || true
+                git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper
+            fi
+
             sudo apt-get install software-properties-common
             sudo add-apt-repository ppa:neovim-ppa/stable
             sudo apt-get update
@@ -149,6 +166,8 @@ main() {
     [[ ${VERBOSE} == YES ]] || start_spinner "Installing neovim with python support..."
     # install neovim with python support
     (
+    pyenv install -s 3.7.2
+    pyenv install -s 2.7.16
     #pip install virtualenv --user
     #pip install virtualenvwrapper --user
     pip3 install virtualenv --user
@@ -160,12 +179,12 @@ main() {
     rm -rf ${WORKON_HOME}/neovim3 || true
 
     VIRENV_NAME=neovim2
-    virtualenv --python=$(which python2) ${WORKON_HOME}/${VIRENV_NAME}
+    virtualenv --python=$(${HOME}/.pyenv/versions/2.7.16) ${WORKON_HOME}/${VIRENV_NAME}
     source ${WORKON_HOME}/neovim2/bin/activate
     pip install neovim
 
     VIRENV_NAME=neovim3
-    virtualenv --python=$(which python3) ${WORKON_HOME}/${VIRENV_NAME}
+    virtualenv --python=$(${HOME}/.pyenv/versions/3.7.2) ${WORKON_HOME}/${VIRENV_NAME}
     source ${WORKON_HOME}/neovim3/bin/activate
     pip install neovim
 
