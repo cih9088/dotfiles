@@ -165,7 +165,7 @@ for s in "${!domains[@]}"; do
     ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
 done
 
-mapfile -t files < <(fzf -e --inline-info +s --multi --bind='Ctrl-A:toggle-all,`:jump' < "$fifo")
+mapfile -t files < <(fzf -e --inline-info --no-sort --multi --bind='Ctrl-A:toggle-all,`:jump' < "$fifo")
 
 if (( ${#files[@]} )); then
     # https://unix.stackexchange.com/a/222215
