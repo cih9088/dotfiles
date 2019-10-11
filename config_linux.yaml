@@ -1,6 +1,7 @@
 zsh:
   install: yes
   local: yes
+  force: yes
 
 changeDefaultShell:
   change: yes
@@ -12,44 +13,64 @@ prezto:
 nvim:
   install: yes
   local: yes
+  force: yes
 
 tmux:
   install: yes
   local: yes
+  force: yes
 
 tree:
   install: yes
   local: yes
+  force: yes
 
 fd:
   install: yes
   local: yes
+  force: yes
 
 rg:
   install: yes
   local: yes
+  force: yes
 
 thefuck:
   install: yes
   local: yes
+  force: yes
 
 ranger:
   install: yes
+  force: yes
 
 tldr:
   install: yes
   local: yes
+  force: yes
 
 bash_snippets:
   install: yes
   local: yes
+  force: yes
 
-shellchecker:
+shellcheck:
   install: yes
   local: yes
+  force: yes
 
 bash_language_server:
   install: yes
+  force: yes
 
 nodejs:
   install: yes
+  force: no
+
+pyenv:
+  install: yes
+  force: no
+
+ccls:
+  install: no
+  force: yes

@@ -6,9 +6,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
 
-echo
-[[ ${VERBOSE} == YES ]] || start_spinner "Installing c dev..."
-(
+setup_func_local() {
+    force=$1
+    cd $TMP_DIR
+
     # ccls
     rm -rf ${HOME}/.ccls || true
     git clone --depth=1 --recursive https://github.com/MaskRay/ccls ${HOME}/.ccls
@@ -47,15 +48,14 @@ echo
 
     rm -rf ${PROJ_HOME}/nvim/coc-settings.json || true
     mv ${TMP_DIR}/tmp ${PROJ_HOME}/nvim/coc-settings.json
+}
 
-) >&3 2>&4 || exit_code="$?" && true
-stop_spinner "${exit_code}" \
-    "c dev are updated [local]" \
-    "c dev udpate is failed [local]. use VERBOSE=YES for error message"
+setup_func_system() {
+    setup_func_local $1
+}
 
+version_func() {
+    $1 --version
+}
 
-
-# clean up
-if [[ $$ = $BASHPID ]]; then
-    rm -rf $TMP_DIR
-fi
+main_script 'ccls' setup_func_local setup_func_system version_func

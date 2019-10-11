@@ -27,12 +27,11 @@
     " Plugins for pretty vim {{{
         "  scheme ============================================
         " Plug 'flazz/vim-colorschemes'
-        Plug 'chriskempson/base16-vim'
-        Plug 'morhetz/gruvbox'
-        Plug 'w0ng/vim-hybrid'
-        Plug 'joshdick/onedark.vim'
+        " Plug 'chriskempson/base16-vim'
+        " Plug 'morhetz/gruvbox'
+        " Plug 'w0ng/vim-hybrid'
+        " Plug 'joshdick/onedark.vim'
         Plug 'junegunn/seoul256.vim'
-        Plug 'NLKNguyen/papercolor-theme'
         Plug 'ryanoasis/vim-devicons'
         " =========================================================
 
@@ -42,11 +41,10 @@
         Plug 'sheerun/vim-polyglot'
         Plug 'Vimjas/vim-python-pep8-indent'  " becase of low performance of vim-polyglot
         Plug 'plasticboy/vim-markdown'
-        " Plug 'tmhedberg/SimpylFold'         " performance issue
         Plug 'chrisbra/csv.vim'
         Plug 'lervag/vimtex'
         Plug 'ap/vim-css-color'
-        " Plug 'RRethy/vim-hexokinase'
+        " Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
         " Plug 'davidhalter/jedi-vim'
         if has('nvim')
             Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
@@ -97,14 +95,14 @@
         Plug 'idbrii/textobj-word-column.vim'
         Plug 'junegunn/gv.vim'
         " Plug 'yuttie/comfortable-motion.vim'
-        Plug 'chrisbra/NrrwRgn'
-        Plug 'dyng/ctrlsf.vim'
+        " Plug 'chrisbra/NrrwRgn'
+        " Plug 'dyng/ctrlsf.vim'
         Plug 'unblevable/quick-scope'
-        Plug 'dhruvasagar/vim-table-mode'
+        " Plug 'dhruvasagar/vim-table-mode'
         Plug 'RRethy/vim-illuminate'
         " Plug 'haya14busa/is.vim'
         Plug 'junegunn/vim-peekaboo'
-        Plug 'AndrewRadev/splitjoin.vim'
+        " Plug 'AndrewRadev/splitjoin.vim'
         Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
         Plug 'airblade/vim-rooter'
         if has('nvim')
@@ -126,10 +124,10 @@
         " Plug 'metakirby5/codi.vim'
         Plug 'mhinz/vim-startify'
         Plug 'wellle/tmux-complete.vim'
-        Plug 'TaDaa/vimade'
+        " Plug 'TaDaa/vimade'
         Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }}
         " Plug 'tmux-plugins/vim-tmux-focus-events'
-        Plug 'jpalardy/vim-slime'
+        " Plug 'jpalardy/vim-slime'
         Plug 'lambdalisue/suda.vim'
     " }}}
 
@@ -579,7 +577,12 @@
                 endif
             endfor
             if a:cmd =~ '^!'
-                let output = system(matchstr(a:cmd, '^!\zs.*'))
+                if a:cmd =~' %'
+                    let cmd = substitute(a:cmd, ' %', ' ' . expand('%:p'), '')
+                else
+                    let cmd = a:cmd
+                endif
+                let output = system(matchstr(cmd, '^!\zs.*'))
             else
                 redir => output
                 execute a:cmd
@@ -621,6 +624,15 @@
         nnoremap Q 0yt=A<C-r>=<C-r>"<CR><Esc>
         vnoremap Q c<C-r>=<C-r>"<CR><Esc>
     " }}}
+
+    " {{{ yanking 
+        " reselect the yanked region with `gb`
+        nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
+        " paste without yanking in visual mode with `P`
+        xnoremap <expr> P '"_d"'.v:register.'P'
+    " }}}
+
+
 " }}}
 
 " PLUGIN SETTING {{{
@@ -1251,13 +1263,14 @@
     " }}}
 
     " quick-scope {{{
-        " Trigger a highlight in the appropriate direction when pressing these keys:
         let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-        augroup qs_colors
-            autocmd!
-            highlight QuickScopePrimary guifg=#afff5f gui=underline ctermfg=155 cterm=underline
-            highlight QuickScopeSecondary guifg=#5fffff gui=underline ctermfg=81 cterm=underline
-        augroup END
+        highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+        highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+        " augroup qs_colors
+        "     autocmd!
+        "     autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+        "     autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+        " augroup END
     " }}}
 
     " vim-illuminate {{{
@@ -1268,7 +1281,6 @@
 
     " csv {{{
         let g:csv_delim_test = ',;|'
-        " let g:csv_delim=','
     " }}}
 
     " python-syntax {{{
@@ -1321,20 +1333,23 @@
     " }}}
 
     " vimade {{{
-    let g:vimade = {
-                \ "normalid": '',
-                \ "normalncid": '',
-                \ "basefg": '',
-                \ "basebg": '',
-                \ "fadelevel": 0.6,
-                \ "colbufsize": 15,
-                \ "rowbufsize": 15,
-                \ "checkinterval": 500,
-                \ "usecursorhold": 0,
-                \ "detecttermcolors": 1,
-                \ 'enablesigns': 0,
-                \ 'signsretentionperiod': 4000,
-                \ }
+        let g:vimade = {
+                    \ "normalid": '',
+                    \ "normalncid": '',
+                    \ "basefg": '',
+                    \ "basebg": '',
+                    \ "fadelevel": 0.6,
+                    \ "colbufsize": 1,
+                    \ "rowbufsize": 0,
+                    \ "checkinterval": 100,
+                    \ "usecursorhold": 0,
+                    \ "detecttermcolors": 0,
+                    \ 'enablescroll': 0,
+                    \ 'fadepriority': 10,
+                    \ 'groupdiff': 1,
+                    \ 'groupscrollbind': 0,
+                    \ 'enablefocusfading': 1,
+                    \ }
     " }}}
 
     " unimpaired {{{
@@ -1358,14 +1373,6 @@
         let g:mkdp_port = '31000'
     " }}}
 
-    " {{{ Quick-scope
-        augroup qs_colors
-            autocmd!
-            autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
-            autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
-        augroup END
-    "}}}
-
     " {{{ vista
         " let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
         let g:vista#renderer#enable_icon = 1
@@ -1384,6 +1391,9 @@
         let g:suda_smart_edit = 1
     " }}}
 
+    " {{{
+        " let g:Hexokinase_highlighters = ['backgroundfull']
+    " }}}
 
 " }}}
 

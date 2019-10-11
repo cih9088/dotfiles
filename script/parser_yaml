@@ -19,5 +19,3 @@ function parse_yaml {
 }
 
 parse_yaml "$@"
-
-export hh='dd'

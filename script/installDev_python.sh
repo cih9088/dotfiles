@@ -6,9 +6,32 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
 
-echo
-[[ ${VERBOSE} == YES ]] || start_spinner "Installing python dev..."
-(
+TARGET='pyenv'
+
+setup_func_local() {
+    force=$1
+    cd $TMP_DIR
+
+    install=no
+    if [ -x "$(command -v pyenv)" ]; then
+        if [ ${force} == 'yes' ]; then
+            rm -rf ${HOME}/.pyenv || true
+            install=yes
+        fi
+    else
+        install=yes
+    fi
+
+    if [ ${install} == yes ]; then
+        curl https://pyenv.run | bash
+        git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper
+    fi
+}
+
+setup_func_system() {
+    force=$1
+    cd $TMP_DIR
+
     if [[ $platform == "OSX" ]]; then
         brew install pyenv
         brew install pyenv-virtualenv
@@ -18,26 +41,10 @@ echo
         git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${HOME}/.pyenv/plugins/pyenv-virtualenvwrapper
     fi
 
-    pip install glances --user
-    pip install grip --user
-    pip install gpustat --user
-    pip install ipdb --user
-    pip install pudb --user
-    pip install pylint --user
-    pip install pylint-venv --user
-    pip install jedi --user
-    pip install 'python-language-server[all]' --user
-    pip install virtualenv --user
-    pip install virtualenvwrapper --user
-    pip3 install virtualenv --user
-    pip3 install virtualenvwrapper --user
+}
 
-) >&3 2>&4 || exit_code="$?" && true
-stop_spinner "${exit_code}" \
-    "python dev is installed [local]" \
-    "python dev install is failed [local]. use VERBOSE=YES for error message"
+version_func() {
+    $1 --version | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+}
 
-# clean up
-if [[ $$ = $BASHPID ]]; then
-    rm -rf $TMP_DIR
-fi
+main_script ${TARGET} setup_func_local setup_func_system version_func

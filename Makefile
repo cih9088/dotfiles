@@ -51,7 +51,7 @@ installTmux: prepare
 installBins: prepare
 	@( $(SCRIPTS_DIR)/install_bins.sh )
 
-installDevShell:
+installDevShell: installDevNodejs
 	@( $(SCRIPTS_DIR)/installDev_shell.sh )
 
 installDevPython:
@@ -114,7 +114,7 @@ installDev: installDevNodejs installDevPython installDevShell
 	@echo
 	@echo "[42m[*] InstallDev has Finished.[0m"
 
-init: prepare install update installDev
+init: prepare installDev install update
 	@echo
 	@echo "[42m[*] Init has Finished.[0m"
 

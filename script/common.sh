@@ -103,9 +103,11 @@ fi
 
 # if [[ $$ = $BASHPID ]]; then
 # fi
+
 PROJ_HOME=${PROJ_HOME:=$(git rev-parse --show-toplevel)}
 TMP_DIR=${TMP_DIR:=${HOME}/tmp_install}
-VERBOSE=${VERBOSE:=NO}
+VERBOSE=$(echo ${VERBOSE:-NO} | tr '[:upper:]' '[:lower:]')
+FORCE=$(echo ${FORCE:-NO} | tr '[:upper:]' '[:lower:]')
 BIN_DIR=${BIN_DIR:=${PROJ_HOME}/bin}
 
 if [ ! -d $HOME/.local/bin ]; then
@@ -132,26 +134,109 @@ if [ ! -d $TMP_DIR ]; then
     mkdir -p $TMP_DIR
 fi
 
-# spinner() {
-#     local info="$1"
-#     local pid="$!"
-#     local delay=0.75
-#     local spinstr='|/-\'
-#     local ctr=0
-#     for (( i = 1; i <= $(printf "$info  [%c] " "$spinstr" | expand | wc -m ); i++ )); do
-#         local ctr=$(( $ctr + 1 ))
-#     done
-#     while kill -0 $pid 2> /dev/null; do
-#         local temp=${spinstr#?}
-#         printf "$info  [%c]" "$spinstr"
-#         local spinstr=$temp${spinstr%"$temp"}
-#         sleep $delay
-#         printf "\033[2K \033[${ctr}D"
-#     done
-# }
-
 [[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/parser_yaml ${CONFIG} "CONFIG_") || true
-[[ "${VERBOSE:=NO}" == "YES" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
+[[ "${VERBOSE}" == "yes" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
 trap "rm -rf ${TMP_DIR}" SIGINT SIGTERM EXIT
 # [[ "${BASH_SOURCE[0]}" != "${0}" ]] && echo "script ${BASH_SOURCE[0]} is being sourced ..."
 # [[ "${BASH_SUBSHELL}" != 0 ]] && echo "It is in subshll" || echo "It is not subshell"
+
+
+main_script() {
+    local target=$1
+    local setup_func_local=$2
+    local setup_func_system=$3
+    local version_func=$4
+
+    if [ -z ${target+x} ]; then
+        echo 'target is unset' >&2
+    fi
+    if [ -z ${setup_func_local+x} ]; then
+        echo 'setup_func_local is unset' >&2
+    fi
+    if [ -z ${setup_func_system+x} ]; then
+        echo 'setup_func_system is unset' >&2
+    fi
+
+    echo
+    if [ ! -z ${version_func+x} ]; then
+        if [ -x "$(command -v ${target})" ]; then
+            echo "${marker_info} Following list is ${target} installed on the system"
+            coms=($(which -a ${target} | uniq))
+            (
+                printf 'LOCATION,VERSION\n'
+                for com in "${coms[@]}"; do
+                    printf '%s,%s\n' "${com}" "$( ${version_func} ${com} )"
+                done
+            ) | column -t -s ',' | sed 's/^/    /'
+        else
+            echo "${marker_info} ${target} is not found on the system"
+        fi
+    fi
+
+    if [ ! -d $TMP_DIR ]; then
+        mkdir -p $TMP_DIR
+    fi
+
+    if [[ ! -z ${CONFIG+x} ]]; then
+        target_install="CONFIG_${target}_install"
+        target_local="CONFIG_${target}_local"
+        target_force="CONFIG_${target}_force"
+        target_install=${!target_install:-no}
+        target_local=${!target_local:-yes}
+        target_force=${!target_force:-no}
+
+        if [[ ${target_install} == "yes" ]]; then
+            [[ ${VERBOSE} == yes ]] || start_spinner "Installing ${target}... [force: ${target_force}]"
+            (
+                [[ ${target_local} == "yes" ]] \
+                    && ${setup_func_local} ${target_force} \
+                    || ${setup_func_system} ${target_force}
+            ) >&3 2>&4 || exit_code="$?" && true
+            stop_spinner "${exit_code}" \
+                "${target} is installed [force: ${target_force}]" \
+                "${target} install is failed [force: ${target_force}]. use VERBOSE=YES for debugging"
+        else
+            echo "${marker_ok} ${target} is not installed"
+        fi
+    else
+        target_force=${FORCE}
+        while true; do
+            read -p "${marker_que} Do you wish to install ${target}? (force_install: ${target_force}) " yn
+            case $yn in
+                [Yy]* ) :; ;;
+                [Nn]* ) echo "${marker_err} Aborting install ${target}"; break;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
+            esac
+
+            read -p "${marker_que} Install locally or sytemwide? " yn
+            case $yn in
+                [Ll]ocal* )
+                    echo "${marker_info} Install ${target} ${nodejs_VERSION} locally"
+                    [[ ${VERBOSE} == yes ]] || start_spinner "Installing ${target}... [force: ${target_force}]"
+                    (
+                        ${setup_func_local} ${target_force}
+                    ) >&3 2>&4 || exit_code="$?" && true
+                    stop_spinner "${exit_code}" \
+                        "${target} is installed [force: ${target_force}]" \
+                        "${target} install is failed [force: ${target_force}]. use VERBOSE=YES for debugging"
+                    break;;
+                [Ss]ystem* )
+                    echo "${marker_info} Install latest ${target} systemwide"
+                    [[ ${VERBOSE} == yes ]] || start_spinner "Installing ${target}... [force: ${target_force}]"
+                    (
+                        ${setup_func_system} ${target_force}
+                    ) >&3 2>&4 || exit_code="$?" && true
+                    stop_spinner "${exit_code}" \
+                        "${target} is installed [force: ${target_force}]" \
+                        "${target} install is failed [force: ${target_force}]. use VERBOSE=YES for debugging"
+                    break;;
+                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+            esac
+        done
+    fi
+
+    # clean up
+    if [[ $$ = $BASHPID ]]; then
+        rm -rf $TMP_DIR
+    fi
+}

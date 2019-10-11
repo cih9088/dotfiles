@@ -248,6 +248,10 @@ fi
         MANWIDTH="$width" nocorrect command man "$@"
     }
 
+    bak() { # make backup file followed by last modified date
+        cp "$1" "$1".$(date -d @$(stat -c '%Y' "$1") "+%y%m%d%H%M").bak
+    }
+
     if command -v fzf > /dev/null; then
         if command -v fasd > /dev/null; then
             z() { # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
@@ -404,6 +408,15 @@ fi
 #   ======================================================================================
 #   5.  PROCESS MANAGEMENT
 #   ======================================================================================
+
+    if [[ ${platform} == "OSX" ]]; then
+        alias ps-mem='ps aux -m | head -n 16'
+        alias ps-cpu='ps aux -r | head -n 16'
+    elif [[ ${platform} == "LINUX" ]]; then
+        alias ps-mem='ps aux --sort -rss | head -n 16'
+        alias ps-cpu='ps aux --sort -pcpu | head -n 16'
+    fi
+
 
 #   find out the pid of a specified process
 #   --------------------------------------------------------------------------------------

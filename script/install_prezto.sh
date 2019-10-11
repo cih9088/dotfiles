@@ -38,15 +38,6 @@ setup_func() {
     #rm -rf prompt
     #
 
-
-    # adding vi-mode indicator https://github.com/sindresorhus/pure/wiki
-    # this feature is in the master. no need.
-    # if grep -Fq 'PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"; then
-    #     :
-    # else
-    #     sed -i -e '457s/^/#/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
-    #     sed -i -e '458s/^/\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:primary'\''   format '\"'❯%f'\"'\'$'\n''	zstyle '\'':prezto:module:editor:info:keymap:alternate'\''   format '\"'❮%f'\"'\'$'\n''	PROMPT+='\''%(?.%F{magenta}.%F{red})${editor_info[keymap]} '\''\'$'\n/' "$HOME/.zprezto/modules/prompt/functions/prompt_pure_setup"
-    # fi
     ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
         "prezto is installed" \

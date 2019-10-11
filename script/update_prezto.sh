@@ -10,12 +10,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 echo
 [[ ${VERBOSE} == YES ]] || start_spinner "Updating prezto..."
 (
+# update prezto
 cd ~/.zprezto
 git pull >/dev/null
 git submodule update --init --recursive
 
-
-# pure prompt update
+# update pure prompt
 cd ${HOME}/.zprezto/modules/prompt/external/pure
 git checkout master
 git pull

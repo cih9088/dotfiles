@@ -50,8 +50,13 @@ echo
         brew install reattach-to-user-namespace
         brew install cmake
         brew cask install xquartz
+        brew install readline xz #pyenv
     elif [[ $platform == "LINUX" ]]; then
         sudo apt-get install -y python-dev python-pip python3-dev python3-pip highlight xclip wget git cmake
+        sudo apt-get -y install make build-essential libssl-dev zlib1g-dev libbz2-dev \
+            libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
+            xz-utils tk-dev libffi-dev liblzma-dev python-openssl #pyenv
+
     else
         echo 'not defined'; exit 1
     fi

@@ -314,5 +314,3 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
 
 
 ## TODO
-- thefuck version
-- duplicated which
