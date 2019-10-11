@@ -25,6 +25,7 @@ setup_func_python_support() {
     neovim2_virenv='neovim2'
 
     export WORKON_HOME=${HOME}/.virtualenvs
+    mkdir -p ${WORKON_HOME}
 
     rm -rf ${WORKON_HOME}/${neovim2_virenv} || true
     rm -rf ${WORKON_HOME}/${neovim3_virenv} || true
@@ -48,12 +49,12 @@ setup_func_python_support() {
     ${HOME}/.pyenv/bin/pyenv install -s ${neovim3_version}
     ${HOME}/.pyenv/bin/pyenv install -s ${neovim2_version}
 
-    virtualenv --python=$(${HOME}/.pyenv/versions/${neovim2_version}) ${neovim2_virenv}
-    source ${WORKON_HOME}/neovim2/bin/activate
+    virtualenv --python=${HOME}/.pyenv/versions/${neovim2_version}/bin/python ${WORKON_HOME}/${neovim2_virenv}
+    source ${WORKON_HOME}/${neovim2_virenv}/bin/activate
     pip install neovim
 
-    virtualenv --python=$(${HOME}/.pyenv/versions/${neovim3_version}) ${neovim3_virenv}
-    source ${WORKON_HOME}/neovim3/bin/activate
+    virtualenv --python=${HOME}/.pyenv/versions/${neovim3_version}/bin/python ${WORKON_HOME}/${neovim3_virenv}
+    source ${WORKON_HOME}/${neovim3_virenv}/bin/activate
     pip install neovim
 
 }

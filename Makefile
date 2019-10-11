@@ -42,7 +42,7 @@ installZsh: prepare
 installPrezto: prepare
 	@( $(SCRIPTS_DIR)/install_prezto.sh )
 
-installNeovim: prepare
+installNeovim: prepare installDevPython
 	@( $(SCRIPTS_DIR)/install_neovim.sh $(nvim_version) )
 
 installTmux: prepare
@@ -114,7 +114,7 @@ installDev: installDevNodejs installDevPython installDevShell
 	@echo
 	@echo "[42m[*] InstallDev has Finished.[0m"
 
-init: prepare installDev install update
+init: prepare install update installDev
 	@echo
 	@echo "[42m[*] Init has Finished.[0m"
 

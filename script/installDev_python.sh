@@ -13,7 +13,7 @@ setup_func_local() {
     cd $TMP_DIR
 
     install=no
-    if [ -x "$(command -v pyenv)" ]; then
+    if [ -x "$(command -v ${HOME}/.pyenv/bin/pyenv)" ]; then
         if [ ${force} == 'yes' ]; then
             rm -rf ${HOME}/.pyenv || true
             install=yes

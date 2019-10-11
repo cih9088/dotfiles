@@ -59,11 +59,15 @@ shellcheck:
   local: yes
   force: yes
 
-bash_language_server:
+bash-language-server:
   install: yes
   force: yes
 
-nodejs:
+node:
+  install: yes
+  force: no
+
+yarn:
   install: yes
   force: no
 
