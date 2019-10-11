@@ -1,3 +1,17 @@
 #!/usr/bin/env bash
 
+case "$OSTYPE" in
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
+esac
+
+if [[ $platform != LINUX ]]; then
+    echo "This script dose not support $platform." >&2
+    exit 1
+fi
+
 nvidia-smi --query-gpu=utilization.gpu,utilization.memory --format=csv,noheader,nounits | awk '{ total += $1; count++} END { print total/count}'
