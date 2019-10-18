@@ -34,7 +34,6 @@ default, focus, resize, warp < alt - l          :  yabai -m window --focus east 
   || (yabai -m display --focus first && yabai -m window --focus first)
 default, focus, resize, warp < alt - j          :  yabai -m window --focus south
 default, focus, resize, warp < alt - k          :  yabai -m window --focus north
-default, focus, resize, warp < alt - return     :  yabai -m window --focus largest
 
 # focus monitor cycle around
 default, focus, resize, warp < shift + alt - h  :  yabai -m display --focus prev \

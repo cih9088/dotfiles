@@ -185,6 +185,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 - terminal
     - open terminal horizontally: `:T`
     - open terminal vertically: `:VT`
+    - open terminal in floating window: `:FT`
 - toggle conceal level: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>a</kbd>
 - simple calculator
     - after visual selection: <kbd>Q</kbd>
@@ -201,9 +202,7 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 - [vim-easy-aline](https://github.com/junegunn/vim-easy-align)
 - [vim-fugitive](https://github.com/tpope/vim-fugitive)
     - open Gstatus: <kbd>leader</kbd> + <kbd>G</kbd>
-- [vim-easymotion](https://github.com/easymotion/vim-easymotion)
-    - fast movement with two characters <kbd>s</kbd> + {char} + {char}
-- [tagbar](https://github.com/majutsushi/tagbar)
+- [vista](https://github.com/liuchengxu/vista.vim)
     - toggle tagbar: <kbd>leader</kbd> + <kbd>T</kbd>
 - [coc.nvim](https://github.com/neoclide/coc.nvim): autocompletion and more
     - navigate diagnostic: <kbd>\[</kbd> + <kbd>d</kbd>, <kbd>\]</kbd> + <kbd>d</kbd>
@@ -231,8 +230,6 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - open MRU: <kbd>leader</kbd> + <kbd>M</kbd>
 - [vim-startify](https://github.com/mhinz/vim-startify): nice start
     - open startify: <kbd>leader</kbd> + <kbd>S</kbd>
-- [ctrlsf](https://github.com/dyng/ctrlsf.vim): powerful search
-    - search prompt: <kbd>Ctrl</kbd> + <kbd>f</kbd> + <kbd>f</kbd>
 - [vim-sandwich](https://github.com/machakann/vim-sandwich): easy surrounding modification
     - add surrounding: <kbd>s</kbd> + <kbd>a</kbd> + {motion/text object} + {addition}
     - delete surrounding: <kbd>s</kbd> + <kbd>d</kbd> + {deletion}
@@ -250,8 +247,6 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - yank and comment: <kbd>leader</kbd> + <kbd>c</kbd> + <kbd>y</kbd>
 - [auto-pair](https://github.com/jiangmiao/auto-pairs)
     - insert parens purely: <kbd>Ctrl</kbd> + <kbd>v</kbd> + {paren}
-- [NrrwRgn](https://github.com/chrisbra/NrrwRgn)
-    - open selected visual block as narrowed window: <kbd>leader</kbd> + <kbd>n</kbd> + <kbd>r</kbd>
 - [splitjoin](https://github.com/AndrewRadev/splitjoin.vim)
     - split one-liner into multiple lines: <kbd>g</kbd> + <kbd>S</kbd>
     - join a block into single-line statement: <kbd>g</kbd> + <kbd>J</kbd>

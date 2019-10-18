@@ -67,14 +67,11 @@
         Plug 'Shougo/context_filetype.vim'
         Plug 'sirver/ultisnips'
         Plug 'honza/vim-snippets'
-        " Plug 'scrooloose/nerdtree'
-        Plug 'justinmk/vim-dirvish' | Plug 'bounceme/remote-viewer'
+        Plug 'justinmk/vim-dirvish'
         " Plug 'tpope/vim-vinegar'
-        " Plug 'majutsushi/tagbar'
         Plug 'liuchengxu/vista.vim'
         Plug 'machakann/vim-sandwich'
-        " Plug 'easymotion/vim-easymotion'
-        Plug 'terryma/vim-multiple-cursors'
+        " Plug 'terryma/vim-multiple-cursors'
         Plug 'scrooloose/nerdcommenter'
         Plug 'Yggdroot/indentLine'
         Plug 'jiangmiao/auto-pairs'
@@ -95,8 +92,6 @@
         Plug 'idbrii/textobj-word-column.vim'
         Plug 'junegunn/gv.vim'
         " Plug 'yuttie/comfortable-motion.vim'
-        " Plug 'chrisbra/NrrwRgn'
-        " Plug 'dyng/ctrlsf.vim'
         Plug 'unblevable/quick-scope'
         " Plug 'dhruvasagar/vim-table-mode'
         Plug 'RRethy/vim-illuminate'
@@ -237,8 +232,6 @@
         syntax enable       " enable syntax processing
         let $NVIM_TUI_ENABLE_TRUE_COLOR=1
         set background=dark " lihgt / dark
-        " colorscheme forest-night
-        " colorscheme kuroi
         let g:seoul256_background = 237
         colorscheme seoul256
         " colorscheme base16-default-dark
@@ -248,7 +241,6 @@
         " colorscheme dracula
         " colorscheme Tomorrow-Night-Eighties
         " colorscheme onedark
-        " colorscheme PaperColor
 
         " seoul 256 terminal color
         let g:terminal_color_0  = '#4e4e4e'
@@ -518,22 +510,64 @@
 
     " Terminal inside of vim {{{
         " steal from https://github.com/vimlab/split-term.vim
-        let s:force_vertical = exists('g:split_term_vertical') ? 1 : 0
         fun! s:openBuffer(count, vertical)
             let cmd = a:vertical ? 'vnew' : 'new'
             let cmd = a:count ? a:count . cmd : cmd
             exe cmd
         endf
+        func! s:openFloatBuffer()
+            let s:float_term_border_win = 0
+            let s:float_term_win = 0
+            " Configuration
+            let height = float2nr((&lines - 2) * 0.6)
+            let row = float2nr((&lines - height) / 2)
+            let width = float2nr(&columns * 0.6)
+            let col = float2nr((&columns - width) / 2)
+            " Border Window
+            let border_opts = {
+                        \ 'relative': 'editor',
+                        \ 'row': row - 1,
+                        \ 'col': col - 2,
+                        \ 'width': width + 4,
+                        \ 'height': height + 2,
+                        \ 'style': 'minimal'
+                        \ }
+            let border_buf = nvim_create_buf(v:false, v:true)
+            let s:float_term_border_win = nvim_open_win(border_buf, v:true, border_opts)
+            " Terminal Window
+            let opts = {
+                        \ 'relative': 'editor',
+                        \ 'row': row,
+                        \ 'col': col,
+                        \ 'width': width,
+                        \ 'height': height,
+                        \ 'style': 'minimal'
+                        \ }
+            let buf = nvim_create_buf(v:false, v:true)
+            let s:float_term_win = nvim_open_win(buf, v:true, opts)
+            " Styling
+            hi FloatTermNormal term=None guibg=#2d3d45
+            call setwinvar(s:float_term_border_win, '&winhl', 'Normal:FloatTermNormal')
+            call setwinvar(s:float_term_win, '&winhl', 'Normal:FloatTermNormal')
+            " Close border window when terminal window close
+            autocmd TermClose * ++once :q | call nvim_win_close(s:float_term_border_win, v:true)
+        endf
         fun! s:openTerm(args, count, vertical)
             let params = split(a:args)
-            let direction = s:force_vertical ? 1 : a:vertical
+            let direction = a:vertical
 
-            call s:openBuffer(a:count, direction)
+            if a:vertical == 3
+                call s:openFloatBuffer()
+            else
+                call s:openBuffer(a:count, direction)
+            endif
+
             exe 'terminal' a:args
             exe 'startinsert'
         endf
-        command! -count -nargs=* T call s:openTerm(<q-args>, <count>, 0)
-        command! -count -nargs=* VT call s:openTerm(<q-args>, <count>, 1)
+        command -count -nargs=* T call s:openTerm(<q-args>, <count>, 0)
+        command -count -nargs=* VT call s:openTerm(<q-args>, <count>, 1)
+        command -count -nargs=* FT call s:openTerm(<q-args>, <count>, 3)
 
         tnoremap <Esc> <C-\><C-n>
         au TermOpen term://*fzf* tnoremap <buffer> <Esc> <Esc>
@@ -568,7 +602,7 @@
         vnoremap K :m '<-2<CR>gv=gv
     " }}}
 
-    " {{{ Redirect the output of a Vim or external command into a scratch buffer
+    " Redirect the output of a Vim or external command into a scratch buffer {{{
         " https://gist.github.com/romainl/eae0a260ab9c135390c30cd370c20cd7
         function! Redir(cmd)
             for win in range(1, winnr('$'))
@@ -596,11 +630,13 @@
 
         command! -nargs=1 -complete=command Redir silent call Redir(<q-args>)
         " Usage:
+        " 	:Redir %w !python ..... show the full output of command ':%w !python' in a scratch window
+        " 	:Redir .w !bash ....... show the full output of command ':.w !bash' in a scratch window
         " 	:Redir hi ............. show the full output of command ':hi' in a scratch window
         " 	:Redir !ls -al ........ show the full output of command ':!ls -al' in a scratch window
     " }}}
 
-    " {{{ Add parentheses to the current line
+    " Add parentheses to the current line {{{
         " https://vimrcfu.com/snippet/267
 
         " wrap the current line in (), e.g:
@@ -613,62 +649,37 @@
         nnoremap (( mMI(<esc>`Mla)<esc>
     " }}}
 
-    " {{{ Change grep to rg if it exists
+    " Change grep to rg if it exists {{{
         if executable('rg')
             set grepprg=rg\ -S\ --vimgrep
         endif
         autocmd QuickFixCmdPost *grep* cwindow"
     " }}}
 
-    " {{{ calulate any things
+    " calulate any things {{{
         nnoremap Q 0yt=A<C-r>=<C-r>"<CR><Esc>
         vnoremap Q c<C-r>=<C-r>"<CR><Esc>
     " }}}
 
-    " {{{ yanking 
+    " yanking {{{
         " reselect the yanked region with `gb`
         nnoremap <expr> gb '`[' . strpart(getregtype(), 0, 1) . '`]'
         " paste without yanking in visual mode with `P`
         xnoremap <expr> P '"_d"'.v:register.'P'
     " }}}
 
+    " auto marker {{{
+        augroup contextswitch
+            autocmd!
+            autocmd BufLeave *.py           normal! mP
+            autocmd BufLeave *.yaml,*.yml   normal! mY
+            autocmd BufLeave *.md           normal! mM
+        augroup END
+    " }}}
 
 " }}}
 
 " PLUGIN SETTING {{{
-
-    " " NERDtree {{{
-    "     nmap <leader>N :NERDTreeToggle<CR>
-    "     let NERDTreeQuitOnOpen = 1
-    "     let NERDTreeMinimalUI = 1
-    "     let NERDTreeDirArrows = 1
-    "     let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-    "     " automatically close nerdtree if it is the only left window
-    "     autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-    "     " startup Options (do NOT show automatically)
-    "     let g:nerdtree_tabs_open_on_console_startup = 0
-    "     let g:nerdtree_tabs_open_on_gui_startup = 0
-    "     " filter out some files, by extension
-    "     let NERDTreeIgnore = ['\.pyc$', '\.class$', '\.o$']
-    "     " NERDTress File highlighting
-    "     function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
-    "         exec 'autocmd filetype nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
-    "         exec 'autocmd filetype nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
-    "     endfunction
-    "     call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
-    "     call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
-    "     call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
-    "     call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
-    "     call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
-    "     call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
-    "     call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
-    "     call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
-    "     call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
-    "     call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
-    "     call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
-    "     call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
-    "     call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
-    " " }}}
 
     " NERDcommenter {{{
         " Add spaces after comment delimiters by default
@@ -823,15 +834,6 @@
 
     " }}}
 
-    " " Easymotion {{{
-    "     " Disable default mappings
-    "     let g:EasyMotion_do_mapping = 0
-    "     " s{char}{char} to move to {char}{char}
-    "     nmap s <Plug>(easymotion-overwin-f2)
-    "     " Turn on case insensitive feature
-    "     let g:EasyMotion_smartcase = 1
-    " " }}}
-
     " " multiplecusors {{{
     "     " Disable Deoplete when selecting multiple cursors starts
     "     function g:Multiple_cursors_before()
@@ -850,11 +852,11 @@
     " }}}
 
     " Indentlines {{{
-        " let g:indentLine_setColors = 0
-        let g:indentLine_enabled = 1
-        let g:indentLine_char = '│'
+        let g:indentLine_enabled    = 1
+        let g:indentLine_faster     = 1
+        " let g:indentLine_setConceal = 0
         " let g:indentLine_char = '┊'
-        " let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+        let g:indentLine_char_list = ['|', '¦', '┆', '┊']
     " }}}
 
     " Goyo {{{
@@ -1238,25 +1240,8 @@
         let g:polyglot_disabled = ['latex', 'python', 'python-ident']
     " }}}
 
-    " nrrwrgn {{{
-    " }}}
-
     " vim-markdown {{{
         let g:vim_markdown_math = 1
-    " }}}
-
-    " ctrlsf {{{
-        nmap     <C-F>f <Plug>CtrlSFPrompt
-        vmap     <C-F>f <Plug>CtrlSFVwordPath
-        vmap     <C-F>F <Plug>CtrlSFVwordExec
-        nmap     <C-F>n <Plug>CtrlSFCwordPath
-        nmap     <C-F>p <Plug>CtrlSFPwordPath
-        nnoremap <C-F>o :CtrlSFOpen<CR>
-        nnoremap <C-F>t :CtrlSFToggle<CR>
-        inoremap <C-F>t <Esc>:CtrlSFToggle<CR>
-
-        let g:ctrlsf_default_root = 'project'
-        let g:ctrlsf_winsize = '50%'
     " }}}
 
     " vim-sandwich {{{
@@ -1293,8 +1278,8 @@
 
     " vim-illuminate {{{
         hi illuminatedWord        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
-        let g:Illuminate_ftblacklist = ['nerdtree', 'python', 'tagbar']
-        let g:Illuminate_delay = 500
+        let g:Illuminate_ftblacklist = ['python', 'tagbar']
+        let g:Illuminate_delay = 250
     " }}}
 
     " csv {{{
@@ -1350,34 +1335,34 @@
         nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>
     " }}}
 
-    " vimade {{{
-        let g:vimade = {
-                    \ "normalid": '',
-                    \ "normalncid": '',
-                    \ "basefg": '',
-                    \ "basebg": '',
-                    \ "fadelevel": 0.6,
-                    \ "colbufsize": 1,
-                    \ "rowbufsize": 0,
-                    \ "checkinterval": 100,
-                    \ "usecursorhold": 0,
-                    \ "detecttermcolors": 0,
-                    \ 'enablescroll': 0,
-                    \ 'fadepriority': 10,
-                    \ 'groupdiff': 1,
-                    \ 'groupscrollbind': 0,
-                    \ 'enablefocusfading': 1,
-                    \ }
-    " }}}
+    " " vimade {{{
+    "     let g:vimade = {
+    "                 \ 'normalid': '',
+    "                 \ 'normalncid': '',
+    "                 \ 'basefg': '',
+    "                 \ 'basebg': '',
+    "                 \ 'fadelevel': 0.6,
+    "                 \ 'colbufsize': 1,
+    "                 \ 'rowbufsize': 0,
+    "                 \ 'checkinterval': 100,
+    "                 \ 'usecursorhold': 0,
+    "                 \ 'detecttermcolors': 0,
+    "                 \ 'enablescroll': 0,
+    "                 \ 'fadepriority': 10,
+    "                 \ 'groupdiff': 1,
+    "                 \ 'groupscrollbind': 0,
+    "                 \ 'enablefocusfading': 1,
+    "                 \ }
+    " " }}}
 
     " unimpaired {{{
         let g:nremap = {"[t": "", "]t": "", "[T": "", "]T": ""}
     " }}}
 
-    " vim-slime {{{
-        let g:slime_target = "tmux"
-        let g:slime_default_config = {"socket_name": "default", "target_pane": "{right-of}"}
-    " }}}
+    " " vim-slime {{{
+    "     let g:slime_target = "tmux"
+    "     let g:slime_default_config = {"socket_name": "default", "target_pane": "{right-of}"}
+    " " }}}
 
     " vimtex {{{
         let g:tex_flavor='latex'
@@ -1392,9 +1377,14 @@
     " }}}
 
     " {{{ vista
-        " let g:vista_icon_indent = ["╰─▸ ", "├─▸ "]
         let g:vista#renderer#enable_icon = 1
+        let g:vista#renderer#icons = {
+        \   "function": "\uf794",
+        \   "variable": "\uf71b",
+        \  }
+
         let g:vista_default_executive = 'ctags'
+
         let g:vista_executive_for = {
                     \ 'sh': 'coc',
                     \ 'python': 'coc',
