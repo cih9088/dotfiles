@@ -33,6 +33,7 @@
         " Plug 'joshdick/onedark.vim'
         Plug 'junegunn/seoul256.vim'
         Plug 'ryanoasis/vim-devicons'
+        Plug 'sainnhe/edge'
         " =========================================================
 
     " }}}
@@ -232,37 +233,38 @@
         syntax enable       " enable syntax processing
         let $NVIM_TUI_ENABLE_TRUE_COLOR=1
         set background=dark " lihgt / dark
-        let g:seoul256_background = 237
-        colorscheme seoul256
-        " colorscheme base16-default-dark
-        " colorscheme base17-eighties
-        " colorscheme gruvbox
-        " colorscheme hybrid
-        " colorscheme dracula
-        " colorscheme Tomorrow-Night-Eighties
-        " colorscheme onedark
-
-        " seoul 256 terminal color
-        let g:terminal_color_0  = '#4e4e4e'
-        let g:terminal_color_1  = '#d68787'
-        let g:terminal_color_2  = '#5f865f'
-        let g:terminal_color_3  = '#d8af5f'
-        let g:terminal_color_4  = '#85add4'
-        let g:terminal_color_5  = '#d7afaf'
-        let g:terminal_color_6  = '#87afaf'
-        let g:terminal_color_7  = '#d0d0d0'
-        let g:terminal_color_8  = '#626262'
-        let g:terminal_color_9  = '#d75f87'
-        let g:terminal_color_10 = '#87af87'
-        let g:terminal_color_11 = '#ffd787'
-        let g:terminal_color_12 = '#add4fb'
-        let g:terminal_color_13 = '#ffafaf'
-        let g:terminal_color_14 = '#87d7d7'
-        let g:terminal_color_15 = '#e4e4e4'
+        colorscheme edge
+        " let g:seoul256_background = 237
+        " colorscheme seoul256
+        " " colorscheme base16-default-dark
+        " " colorscheme base17-eighties
+        " " colorscheme gruvbox
+        " " colorscheme hybrid
+        " " colorscheme dracula
+        " " colorscheme Tomorrow-Night-Eighties
+        " " colorscheme onedark
+        "
+        " " seoul 256 terminal color
+        " let g:terminal_color_0  = '#4e4e4e'
+        " let g:terminal_color_1  = '#d68787'
+        " let g:terminal_color_2  = '#5f865f'
+        " let g:terminal_color_3  = '#d8af5f'
+        " let g:terminal_color_4  = '#85add4'
+        " let g:terminal_color_5  = '#d7afaf'
+        " let g:terminal_color_6  = '#87afaf'
+        " let g:terminal_color_7  = '#d0d0d0'
+        " let g:terminal_color_8  = '#626262'
+        " let g:terminal_color_9  = '#d75f87'
+        " let g:terminal_color_10 = '#87af87'
+        " let g:terminal_color_11 = '#ffd787'
+        " let g:terminal_color_12 = '#add4fb'
+        " let g:terminal_color_13 = '#ffafaf'
+        " let g:terminal_color_14 = '#87d7d7'
+        " let g:terminal_color_15 = '#e4e4e4'
         highlight Pmenu ctermfg=187 guifg=#d7d7af ctermbg=95 guibg=#875f5f
         highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
-        " highlight Pmenu ctermfg=252 guifg=#d9d9d9 ctermbg=238 guibg=#565656
-        " highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
+        " " highlight Pmenu ctermfg=252 guifg=#d9d9d9 ctermbg=238 guibg=#565656
+        " " highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
 
         " }}}
 
@@ -546,7 +548,7 @@
             let buf = nvim_create_buf(v:false, v:true)
             let s:float_term_win = nvim_open_win(buf, v:true, opts)
             " Styling
-            hi FloatTermNormal term=None guibg=#2d3d45
+            " hi FloatTermNormal term=None guibg=#2d3d45
             call setwinvar(s:float_term_border_win, '&winhl', 'Normal:FloatTermNormal')
             call setwinvar(s:float_term_win, '&winhl', 'Normal:FloatTermNormal')
             " Close border window when terminal window close
@@ -715,7 +717,7 @@
         let g:lightline#gitdiff#indicator_modified = "!"
         let g:lightline = {}
         let g:lightline = {
-                    \ 'colorscheme': 'seoul256_modified',
+                    \ 'colorscheme': 'edge',
                     \ 'active': {
                     \     'left': [
                     \           [ 'mode', 'paste' ],

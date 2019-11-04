@@ -56,6 +56,7 @@ focus, resize, warp < q                     :  yabai -m space --balance         
 focus, resize, warp < m                     :  yabai -m space --layout bsp;\
                                                open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"
 focus, resize, warp < 0x2B                  :  yabai -m space --layout float;\
+                                               open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"
 
 # move window
 warp < h                                    :  yabai -m window --warp west
