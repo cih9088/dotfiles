@@ -22,7 +22,7 @@ if [[ -r $modefile ]]; then
             echo "---"
             echo "Resize mode"
         elif [[ $skhd_mode == 'PREFIX' ]]; then
-            echo ":metal:"
+            echo ":sunglasses:"
             echo "---"
             echo "Prefix mode"
         fi
