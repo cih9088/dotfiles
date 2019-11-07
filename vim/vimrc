@@ -52,7 +52,7 @@
             Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' }
             Plug 'Shougo/neco-vim'
             Plug 'neoclide/coc-neco'
-            Plug 'neoclide/coc.nvim', {'tag': '*', 'branch': 'release'}
+            Plug 'neoclide/coc.nvim', {'branch': 'release'}
         else
             Plug 'Shougo/deoplete.nvim'
             Plug 'roxma/nvim-yarp'
