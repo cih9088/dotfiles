@@ -34,6 +34,7 @@
         Plug 'junegunn/seoul256.vim'
         Plug 'ryanoasis/vim-devicons'
         Plug 'sainnhe/edge'
+        Plug 'dracula/vim', { 'as': 'dracula' }
         " =========================================================
 
     " }}}
@@ -233,14 +234,16 @@
         syntax enable       " enable syntax processing
         let $NVIM_TUI_ENABLE_TRUE_COLOR=1
         set background=dark " lihgt / dark
+
         colorscheme edge
+        " colorscheme dracula
+
         " let g:seoul256_background = 237
         " colorscheme seoul256
         " " colorscheme base16-default-dark
         " " colorscheme base17-eighties
         " " colorscheme gruvbox
         " " colorscheme hybrid
-        " " colorscheme dracula
         " " colorscheme Tomorrow-Night-Eighties
         " " colorscheme onedark
         "
@@ -548,11 +551,11 @@
             let buf = nvim_create_buf(v:false, v:true)
             let s:float_term_win = nvim_open_win(buf, v:true, opts)
             " Styling
-            " hi FloatTermNormal term=None guibg=#2d3d45
+            " hi FloatTermNormal term=None guibg=#1a1b23
             call setwinvar(s:float_term_border_win, '&winhl', 'Normal:FloatTermNormal')
             call setwinvar(s:float_term_win, '&winhl', 'Normal:FloatTermNormal')
             " Close border window when terminal window close
-            autocmd TermClose * ++once :q | call nvim_win_close(s:float_term_border_win, v:true)
+            autocmd TermClose * ++once :bd! | call nvim_win_close(s:float_term_border_win, v:true)
         endf
         fun! s:openTerm(args, count, vertical)
             let params = split(a:args)
@@ -1222,17 +1225,14 @@
             hi semshiParameter       ctermfg=75  guifg=#5fafff
             hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline gui=underline
             hi semshiFree            ctermfg=218 guifg=#ffafd7
-            hi semshiBuiltin         ctermfg=207 guifg=#ff5fff
-            hi semshiAttribute       ctermfg=49  guifg=#00ffaf
+            " hi semshiBuiltin         ctermfg=207 guifg=#ff5fff
+            " hi semshiAttribute       ctermfg=49  guifg=#00ffaf
+            hi semshiAttribute       ctermfg=49  guifg=#02c085
             hi semshiSelf            ctermfg=249 guifg=#b2b2b2
             hi semshiUnresolved      ctermfg=226 guifg=#ffff00 cterm=underline gui=underline
             hi semshiSelected        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
 
             hi! def link  semshiBuiltin  Structure
-            " hi! def link semshiSelf Identifier
-            " hi semshiSelf           ctermfg=174     guifg=#d78787
-            hi semshiAttribute      ctermfg=121     guifg=#87ffaf
-            hi semshiParameter      ctermfg=103     guifg=#8787af
         endfunction
         autocmd FileType python call CustomSemshiHighlights()
         let g:semshi#error_sign = 0
