@@ -724,8 +724,8 @@
                     \ 'active': {
                     \     'left': [
                     \           [ 'mode', 'paste' ],
-                    \           [ 'cocstatus', 'currentfunction', 'readonly', 'filename' ],
-                    \           [ 'coc_error' ], [ 'coc_warning' ],
+                    \           [ 'cocstatus', 'currentfunction',
+                    \             'readonly', 'filename', 'coc_errors', 'coc_warnings' ],
                     \     ],
                     \     'right': [
                     \           [ 'lineinfo' ],
@@ -759,18 +759,20 @@
                     \ 'component_expand': {
                     \    'buffers': 'lightline#bufferline#buffers',
                     \    'gitdiff': 'lightline#gitdiff#get',
-                    \    'coc_error': 'CocError',
-                    \    'coc_warning': 'CocWarning',
+                    \    'coc_errors': 'LightlineCocErrors',
+                    \    'coc_warnings': 'LightlineCocWarnings',
                     \ },
                     \ 'component_type': {
                     \    'buffers': 'tabsel',
+                    \    'coc_errors': 'error',
+                    \    'coc_warnings': 'warning',
                     \ },
                     \ }
 
-        autocmd User CocDiagnosticChange call lightline#update()
+        autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
         function! CocCurrentFunction()
-            return get(b:, 'coc_current_function', '')
+            return winwidth(0) > 70 ? get(b:, 'coc_current_function', '') : ''
         endfunction
         function! Devicons_Filetype()
             return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
@@ -818,24 +820,32 @@
                 return winwidth(0) > 100 ? (info): ''
             endif
         endfunction
-        function! CocError() abort
-            let info = get(b:, 'coc_diagnostic_info', {})
-            if empty(info) | return '' | endif
-            let msgs = []
-            if get(info, 'error', 0)
-                call add(msgs, 'E' . info['error'])
+
+        function! s:lightline_coc_diagnostic(kind, sign) abort
+            let info = get(b:, 'coc_diagnostic_info', 0)
+            if empty(info) || get(info, a:kind, 0) == 0
+                return ''
             endif
-            return msgs
-        endfunction
-        function! CocWarning() abort
-            let info = get(b:, 'coc_diagnostic_info', {})
-            if empty(info) | return '' | endif
-            let msgs = []
-            if get(info, 'warning', 0)
-                call add(msgs, 'W' . info['warning'])
+            if a:sign == 'error'
+                let s = 'E'
+            elseif a:sign == 'warning'
+                let s = 'W'
             endif
-            return msgs
+            " try
+            "     let s = g:coc_user_config['diagnostic'][a:sign . 'Sign']
+            " catch
+            "     let s = ''
+            " endtry
+            return printf('%s %d', s, info[a:kind])
         endfunction
+        function! LightlineCocErrors() abort
+            return s:lightline_coc_diagnostic('error', 'error')
+        endfunction
+
+        function! LightlineCocWarnings() abort
+            return s:lightline_coc_diagnostic('warning', 'warning')
+        endfunction
+
 
     " }}}
 
