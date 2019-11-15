@@ -11,6 +11,7 @@ BIYellow='[1;93m'     # Yellow
 
 OPTIND=1
 INLINE=false
+ASKPASS=''
 
 
 case "$OSTYPE" in
@@ -26,7 +27,7 @@ usage() {
     LESS=-FEXR less <<HELP
 
 ${BRed}SYNOPSIS${Color_Off}
-    ${BRed}$(basename "$0")${Color_Off} [${BRed}-i${Color_Off}] ${BGreen}hosts_file${Color_Off} ${BGreen}command...${Color_Off}
+    ${BRed}$(basename "$0")${Color_Off} [${BRed}-iAh${Color_Off}] ${BGreen}hosts_file${Color_Off} ${BGreen}command...${Color_Off}
 
 
 ${BRed}DESCRIPTION${Color_Off}
@@ -38,15 +39,25 @@ ${BRed}OPTIONS${Color_Off}
         display stdout and stderr as each host completes
         if this option is not specified, stdout goes to pssh_outdir and stderr goes to pssh_errdir
 
+    ${BRed}-A${Color_Off}
+        Prompt for a password and pass it to ssh.  The  password  may  be  used  for
+        either  to  unlock  a  key  or for password authentication.  The password is
+        transferred in a fairly secure manner (e.g., it will not show up in argument
+        lists).  However, be aware that a root user on your system could potentially
+        intercept the password.
+
     ${BRed}-h${Color_Off}
         show this help message
+
 HELP
 }
 
-while getopts 'hi' option; do
+while getopts 'hiA' option; do
     case "$option" in
         h) usage
             exit
+            ;;
+        A) ASKPASS='-A'
             ;;
         i) INLINE=true
             ;;
@@ -84,40 +95,39 @@ has() {
 }
 
 easy-pssh() { # Easy pssh command
-    local inline="$1"; shift
     local hosts_file="$1"; shift
     local cmd="$@"
     local n_host=$(wc -l < ${hosts_file})
 
-    if [ ${inline} == false ]; then
+    if [ ${INLINE} == false ]; then
         local tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
     fi
-    
+
     sudo=$(echo $cmd | awk '{print $1}')
 
     if [[ $sudo == 'sudo' ]]; then
         echo "Enter the sudo passwd for the remote user: "
         read -s pswd
 
-        if [[ ${inline} == true ]]; then
-            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} -i -I "sudo -S -- sh -c '$cmd'"
+        if [[ ${INLINE} == true ]]; then
+            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} ${ASKPASS} -i -I "sudo -S -- sh -c '$cmd'"
         else
             echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
             echo
-            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
+            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} ${ASKPASS} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
         fi
     else
-        if [[ ${inline} == true ]]; then
-            pssh -p ${n_host} -h ${hosts_file} -t 0 -i "$cmd"
+        if [[ ${INLINE} == true ]]; then
+            pssh -p ${n_host} -h ${hosts_file} ${ASKPASS} -t 0 -i "$cmd"
         else
             echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
             echo
-            pssh -p ${n_host} -h ${hosts_file} -t 0 -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir "$cmd"
+            pssh -p ${n_host} -h ${hosts_file} -t 0 ${ASKPASS} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir "$cmd"
         fi
     fi
 }
 
 has -v pssh || exit 1
 
-easy-pssh $INLINE $@
+easy-pssh $@
 

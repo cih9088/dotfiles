@@ -118,10 +118,9 @@ brew cask install --appdir="/Applications" docker
 brew cask install --appdir="/Applications" betterzip
 # brew cask install --appdir="/Applications" 1password
 # brew cask install --appdir="/Applications" gimp
-brew cask install --appdir="/Applications" mactex
 
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
-brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzip qlimagesize webpquicklook suspicious-package quicklookase qlvideo
+brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv qlimagesize webpquicklook suspicious-package quicklookase qlvideo
 
 
 ## mas
