@@ -126,6 +126,7 @@
         " Plug 'tmux-plugins/vim-tmux-focus-events'
         " Plug 'jpalardy/vim-slime'
         Plug 'lambdalisue/suda.vim'
+        Plug 'psliwka/vim-smoothie'
     " }}}
 
     " Initialize plugin system {{{
