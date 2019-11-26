@@ -409,13 +409,47 @@ fi
 #   5.  PROCESS MANAGEMENT
 #   ======================================================================================
 
-    if [[ ${platform} == "OSX" ]]; then
-        alias ps-mem='ps aux -m | head -n 16'
-        alias ps-cpu='ps aux -r | head -n 16'
-    elif [[ ${platform} == "LINUX" ]]; then
-        alias ps-mem='ps aux --sort -rss | head -n 16'
-        alias ps-cpu='ps aux --sort -pcpu | head -n 16'
-    fi
+    ps-cpu () {
+        if [[ ${platform} == "OSX" ]]; then
+            local cmd='ps aux -r'
+        elif [[ ${platform} == "LINUX" ]]; then
+            local cmd='ps aux --sort -pcpu'
+        else
+            echo "${platform} is not supported" >&2
+            return 1
+        fi
+        eval ${cmd} | head -n 16 | awk '
+        {
+            ORS=""
+            print $1,"▁",$2,"▁",$3,"▁",$4,"▁",$8,"▁",$10,"▁"
+            for(i=11;i<=NF;++i) print $i,""
+            print "\n"
+        }
+        ' | column -t -s '▁' | cut -c -80
+    }
+
+    ps-mem () {
+        if [[ ${platform} == "OSX" ]]; then
+            local cmd='ps aux -m'
+        elif [[ ${platform} == "LINUX" ]]; then
+            local cmd='ps aux --sort -rss'
+        else
+            echo "${platform} is not supported" >&2
+            return 1
+        fi
+        eval ${cmd} | head -n 16 | awk '
+        {
+            ORS=""
+            print $1,"▁",$2,"▁",$3,"▁",$4,"▁",$8,"▁",$10,"▁"
+            for(i=11;i<=NF;++i) print $i,""
+            print "\n"
+        }
+        ' | column -t -s '▁' | cut -c -80
+    }
+
+    full-cmd () {
+        cat /proc/"$1"/cmdline | tr '\000' ' '
+    }
 
 
 #   find out the pid of a specified process
