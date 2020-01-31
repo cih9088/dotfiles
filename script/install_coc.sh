@@ -37,7 +37,7 @@ if [ ! -d '~/.config/coc/extensions' ]; then
 fi
 
 # Change arguments to extensions you need
-yarn add coc-json coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-snippets coc-python
+yarn add coc-json coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-snippets coc-python coc-go
 
 if [[ -f ${PROJ_HOME}/nvim/coc-settings.json ]]; then
     cp ${PROJ_HOME}/nvim/coc-settings.json ${PROJ_HOME}/nvim/coc-settings.json.bak

@@ -46,6 +46,7 @@
         Plug 'chrisbra/csv.vim'
         Plug 'lervag/vimtex'
         Plug 'ap/vim-css-color'
+        Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
         " Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }
         " Plug 'davidhalter/jedi-vim'
         if has('nvim')
@@ -1250,7 +1251,7 @@
     " }}}
 
     " vim-polyglot {{{
-        let g:polyglot_disabled = ['latex', 'python', 'python-ident']
+        let g:polyglot_disabled = ['latex', 'python', 'python-ident', 'go']
     " }}}
 
     " vim-markdown {{{
