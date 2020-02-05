@@ -28,18 +28,26 @@ resize                       < alt - space      ; default
 focus, resize, warp, prefix  < escape           ; default
 
 # focus window h and j cycles, this is dependent on the monitor order beeing correct
+# default, focus, resize, warp < alt - h          :  yabai -m window --focus west \
+#   || (yabai -m display --focus last && yabai -m window --focus last)
+# default, focus, resize, warp < alt - l          :  yabai -m window --focus east \
+#   || (yabai -m display --focus first && yabai -m window --focus first)
 default, focus, resize, warp < alt - h          :  yabai -m window --focus west \
-  || (yabai -m display --focus last && yabai -m window --focus last)
+  || (yabai -m display --focus first && yabai -m window --focus last)
 default, focus, resize, warp < alt - l          :  yabai -m window --focus east \
-  || (yabai -m display --focus first && yabai -m window --focus first)
+  || (yabai -m display --focus last && yabai -m window --focus last)
 default, focus, resize, warp < alt - j          :  yabai -m window --focus south
 default, focus, resize, warp < alt - k          :  yabai -m window --focus north
 
 # focus monitor cycle around
+# default, focus, resize, warp < shift + alt - h  :  yabai -m display --focus prev \
+#   || (yabai -m display --focus last || yabai -m display --focus first)
+# default, focus, resize, warp < shift + alt - l  :  yabai -m display --focus next \
+#   || (yabai -m display --focus first || yabai -m display --focus last)
 default, focus, resize, warp < shift + alt - h  :  yabai -m display --focus prev \
-  || (yabai -m display --focus last || yabai -m display --focus first)
-default, focus, resize, warp < shift + alt - l  :  yabai -m display --focus next \
   || (yabai -m display --focus first || yabai -m display --focus last)
+default, focus, resize, warp < shift + alt - l  :  yabai -m display --focus next \
+  || (yabai -m display --focus last || yabai -m display --focus first)
 
 focus, resize, warp < space                 :  yabai -m space --rotate 90                 # rotate tree
 focus, resize, warp < shift - space         :  yabai -m space --rotate 270                # rotate tree
