@@ -128,6 +128,8 @@
         " Plug 'jpalardy/vim-slime'
         Plug 'lambdalisue/suda.vim'
         Plug 'psliwka/vim-smoothie'
+        " Plug 'camspiers/animate.vim'
+        " Plug 'camspiers/lens.vim'
     " }}}
 
     " Initialize plugin system {{{
@@ -416,19 +418,23 @@
         nnoremap <C-b> :enew<CR>
         " conform changes (Yes, No, Cancel) instead of error
         " set confirm
-        " exit buffer
+        " close buffer
         nnoremap <leader>bq :bp <BAR> bd #<CR>
     " }}}
 
     " Tab navigations {{{
+        " tap previous
         nnoremap [t  :tabprevious<CR>
+        " tap next
         nnoremap ]t  :tabnext<CR>
         function! OpenCurrentAsNewTab()
             let l:currentPos = getcurpos()
             tabedit %
             call setpos(".", l:currentPos)
         endfunction
+        " new tap with current buffer
         nnoremap <C-t> :call OpenCurrentAsNewTab()<CR>
+        " close tap
         nnoremap <leader>tq :tabclose<CR>
     " }}}
 
@@ -440,7 +446,9 @@
         set splitbelow
         set splitright
         " Vim Split command remapping like tmux
+        " horizontal split
         nmap <C-W>h <C-W>s
+        " vertical split
         nmap <C-W>x <C-W>q
     " }}}
 
