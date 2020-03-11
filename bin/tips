@@ -82,7 +82,7 @@ ${BIPurple}FZF${Color_Off}
     ${BIRed}M-c${Color_Off}     Go to the directory
 
 
-${BIPurple}GENERAL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
+${BIPurple}GENERAL COMMAND (PREZTO UTILITY MODULE and .rc)${Color_Off}
 --------------------------------------
     ${BIRed}_${Color_Off}           Executes a command as another user (sudo)
     ${BIRed}e${Color_Off}           Opens the default editor (nvim by default)
@@ -102,15 +102,23 @@ ${BIPurple}GENERAL COMMAND (PREZTO UTILITY MODULE)${Color_Off}
     ${BIRed}easy-pssh${Color_Off}       Pssh with easy
     ${BIRed}list-users${Color_Off}      List users
     ${BIRed}sshget${Color_Off}          Get something through ssh (fzf based)
-    ${BIRed}fkill${Color_Off}           Kill process with FZF
-    ${BIRed}cpu-usage${Color_Off}       Show cpu usage
-    ${BIRed}mem-usage${Color_Off}       Show memory usage
-    ${BIRed}gpu-usage${Color_Off}       Show gpu usage
     ${BIRed}path${Color_Off}            Show all executable path
     ${BIRed}fix-stty${Color_Off}        Restore terminal settings
     ${BIRed}clear-swap${Color_Off}      Clear swap memory
     ${BIRed}intercept ${BIGreen}pid${Color_Off}   Intercept stdout/stderr of ${BIGreen}pid${Color_Off}
     ${BIRed}tm${Color_Off}              Create tmux session or attach or switch to exsiting one
+    ${BIRed}bak${Color_Off}             Make bakup file followed by last modified date
+
+
+${BIPurple}PROCESS MANAGEMENT${Color_Off}
+--------------------------------------
+    ${BIRed}cpu-usage${Color_Off}       Show cpu usage
+    ${BIRed}mem-usage${Color_Off}       Show memory usage
+    ${BIRed}gpu-usage${Color_Off}       Show gpu usage
+    ${BIRed}ps-cpu${Color_Off}          Show top 10 cpu usage process
+    ${BIRed}ps-mem${Color_Off}          Show top 10 memory usage process
+    ${BIRed}full-cmd${Color_Off} ${BIGreen}pid${Color_Off}    Show full command line of ${BIGreen}pid${Color_Off}
+    ${BIRed}fkill${Color_Off}           Kill process (fzf based)
 
 
 ${BIPurple}ARCHIVE COMMAND (PREZTO ARCHIVE MODULE)${Color_Off}
