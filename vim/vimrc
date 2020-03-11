@@ -94,7 +94,6 @@
         Plug 'michaeljsmith/vim-indent-object'
         Plug 'idbrii/textobj-word-column.vim'
         Plug 'junegunn/gv.vim'
-        " Plug 'yuttie/comfortable-motion.vim'
         Plug 'unblevable/quick-scope'
         " Plug 'dhruvasagar/vim-table-mode'
         Plug 'RRethy/vim-illuminate'
@@ -114,7 +113,7 @@
         Plug 'itchyny/lightline.vim'
         Plug 'mgee/lightline-bufferline'
         Plug 'niklaas/lightline-gitdiff'
-        Plug 'junegunn/fzf', {'dir': '~/.fzf', 'do': './install --all'}
+        Plug 'junegunn/fzf', { 'do': './install --all' }
         Plug 'junegunn/fzf.vim'
         Plug 'pbogut/fzf-mru.vim'
         Plug 'junegunn/goyo.vim'

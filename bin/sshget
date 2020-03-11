@@ -53,7 +53,8 @@ declare -r esc=$'\033'
 declare -r c_reset="${esc}[0m"
 declare -r c_red="${esc}[31m"
 
-declare -r fifo='/tmp/sshget.fifo'
+# declare -r fifo='/tmp/sshget.fifo'
+declare -r fifo="$(mktemp -d /tmp/sshget.XXXXXX)/fifo"
 declare -A domains=()
 declare -A paths=()
 declare -a files=()
@@ -149,20 +150,21 @@ for a; do
 done
 
 for s in "${!domains[@]}"; do
-    # ${ssh_cmd} -q "${domains[$s]}"
-    # if [[ $? -ne 0 ]]; then
-    #     if command -v sshpass >/dev/null; then
-    #         echo "Enter the passwd for ${domains[$s]}"
-    #         read -s pswd
-    #     else
-    #         echo "This script requires ssh keypair or sshpass command" >&2
-    #         exit 1
-    #     fi
-    #     sshpass -f <(echo $pswd) ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
-    # else
-    #     ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
-    # fi
-    ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+    ssh -o PasswordAuthentication=no -o BatchMode=yes "${domains[$s]}" exit &>/dev/null
+    if [[ $? -ne 0 ]]; then
+        if command -v sshpass >/dev/null; then
+            echo "Enter the passwd for ${domains[$s]}:"
+            read -s pswd
+        else
+            echo "This script requires ssh keypair or sshpass command" >&2
+            echo "Note that sshpass would expose your password in your command line so that it is not recommended in multi-user environment" >&2
+            cleanup
+            exit 1
+        fi
+        sshpass -f <(echo $pswd) ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+    else
+        ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+    fi
 done
 
 mapfile -t files < <(fzf -e --inline-info --no-sort --multi --bind='Ctrl-A:toggle-all,`:jump' < "$fifo")
