@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # change version you want to install on local
-TREE_VERSION=1.7.0
+TREE_VERSION=1.8.0
 
 FD_LATEST_VERSION=$(curl --silent "https://api.github.com/repos/sharkdp/fd/releases/latest" |
      grep '"tag_name":' |

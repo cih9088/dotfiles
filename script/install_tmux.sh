@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # change version you want to install on local
-LIBEVENT_VERSION=2.1.8
-NCURSES_VERSION=6.1
+LIBEVENT_VERSION=2.1.11
+NCURSES_VERSION=6.2
 XCLIP_VERSION=0.12
 
 # based on https://gist.github.com/ryin/3106801#gistcomment-2191503
@@ -52,8 +52,8 @@ setup_func_local() {
         rm -rf $HOME/.local/src/ncurses-*
     fi
     cd $TMP_DIR
-    wget http://invisible-island.net/datafiles/release/ncurses.tar.gz
-    tar -xvzf ncurses.tar.gz
+    wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${NCURSES_VERSION}.tar.gz
+    tar -xvzf ncurses-${NCURSES_VERSION}.tar.gz
     cd ncurses-${NCURSES_VERSION}
     ./configure --prefix=$HOME/.local
     make || exit $?

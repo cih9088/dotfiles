@@ -81,9 +81,12 @@ fi
 #   virtualenvwrapper
 #   --------------------------------------------------------------------------------------
     export WORKON_HOME=$HOME/.virtualenvs
-    export PROJECT_HOME=$HOME/working
-    # export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-    # export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+    export PROJECT_HOME=$HOME/workspace
+    # export VIRTUALENVWRAPPER_PYTHON=$HOME/.pyenv/shims/python
+    # export VIRTUALENVWRAPPER_VIRTUALENV=$HOME/.pyenv/shims/virtualenv
+    # export VIRTUALENVWRAPPER_VIRTUALENV_CLONE=$HOME/.pyenv/shims/virtualenv-clone
+    # export VIRTUALENVWRAPPER_SCRIPT=$HOME/.pyenv/shims/virtualenvwrapper.sh
+    # export VIRTUALENVWRAPPER_LAZY_SCRIPT=$HOME/.pyenv/shims/virtualenvwrapper_lazy.sh
     # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
     # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
@@ -200,7 +203,7 @@ fi
             eval $(tmux showenv -s SSH_AUTH_SOCK)
         }
     else
-        function refresh { 
+        function refresh {
             :
         }
     fi
@@ -495,7 +498,7 @@ fi
 #   --------------------------------------------------------------------------------------
     if command -v fzf > /dev/null; then
         fkill() {
-            local pid 
+            local pid
             if [ "$UID" != "0" ]; then
                 pid=$(ps -f -u $UID | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
             else
