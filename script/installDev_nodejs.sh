@@ -75,4 +75,4 @@ version_func_yarn() {
 
 main_script 'node' setup_func_node_local setup_func_node_system version_func_node
 
-main_script 'yarn' setup_func_yarn_local setup_func_yarn_system version_func version_func_yarn
+main_script 'yarn' setup_func_yarn_local setup_func_yarn_system version_func_yarn
