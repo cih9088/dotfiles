@@ -84,4 +84,4 @@ version_func_bash_language_server() {
 
 main_script 'shellcheck' setup_func_shellcheck_local setup_func_shellcheck_system version_func_shellcheck
 
-main_script 'bash-language-server' setup_func_bash_language_server_local setup_func_bash_language_server_system version_func_bash_language_server
+main_script 'bash_language_server' setup_func_bash_language_server_local setup_func_bash_language_server_system version_func_bash_language_server

@@ -691,6 +691,10 @@
         augroup END
     " }}}
 
+    " {{{ copy the current file's full absolute path.
+        command CopyFilePath let @+ = expand(has('win32') ? '%:p:gs?/?\\?' : '%:p')
+    " }}}
+
 " }}}
 
 " PLUGIN SETTING {{{
