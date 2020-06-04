@@ -668,6 +668,8 @@
             set grepprg=rg\ -S\ --vimgrep
         endif
         autocmd QuickFixCmdPost *grep* cwindow"
+        " no press enter screen
+        cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
     " }}}
 
     " calulate any things {{{
