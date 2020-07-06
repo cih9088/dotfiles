@@ -107,10 +107,13 @@ fi
     if [[ ${platform} == "LINUX" ]]; then
         export CUDA_DEVICE_ORDER=PCI_BUS_ID
         export CUDA_HOME=/usr/local/cuda
-        [[ ":$PATH:" != *":$CUDA_HOME/bin:"* ]] && export PATH="${PATH}:$CUDA_HOME/bin"
-        [[ ":$LD_LIBRARY_PATH:" != *":$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:"* ]] && \
-            export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$CUDA_HOME/extras/CUPTI/lib64:${LD_LIBRARY_PATH}"  # For CUDA Toolkit >= 9.0
-        # export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH                                      # For CUDA Toolkit <= 7.5
+        [[ ":${PATH}:" != *":${CUDA_HOME}/bin:"* ]] && export PATH="${PATH}:${CUDA_HOME}/bin"
+
+        # CUDA toolkit >= 9.0
+        [[ ":${LD_LIBRARY_PATH}:" != *":${CUDA_HOME}/lib64:"* ]] && \
+            export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}"
+        [[ ":${LD_LIBRARY_PATH}:" != *":${CUDA_HOME}/extras/CUPTI/lib64:"* ]] && \
+            export LD_LIBRARY_PATH="${CUDA_HOME}/extras/CUPTI/lib64:${LD_LIBRARY_PATH}"
     fi
 
 #   Set thefuck
@@ -142,14 +145,14 @@ fi
 #   --------------------------------------------------------------------------------------
     # GPU access
     if [[ ${platform} == "LINUX" ]]; then
-        alias gpu0='CUDA_VISIBLE_DEVICES=0 python '
-        alias gpu1='CUDA_VISIBLE_DEVICES=1 python '
-        alias gpu2='CUDA_VISIBLE_DEVICES=2 python '
-        alias gpu3='CUDA_VISIBLE_DEVICES=3 python '
-        alias gpu4='CUDA_VISIBLE_DEVICES=4 python '
-        alias gpu5='CUDA_VISIBLE_DEVICES=5 python '
-        alias gpu6='CUDA_VISIBLE_DEVICES=6 python '
-        alias gpu7='CUDA_VISIBLE_DEVICES=7 python '
+        alias gpu0='CUDA_VISIBLE_DEVICES=0 '
+        alias gpu1='CUDA_VISIBLE_DEVICES=1 '
+        alias gpu2='CUDA_VISIBLE_DEVICES=2 '
+        alias gpu3='CUDA_VISIBLE_DEVICES=3 '
+        alias gpu4='CUDA_VISIBLE_DEVICES=4 '
+        alias gpu5='CUDA_VISIBLE_DEVICES=5 '
+        alias gpu6='CUDA_VISIBLE_DEVICES=6 '
+        alias gpu7='CUDA_VISIBLE_DEVICES=7 '
     fi
 
     # rsync with progressbar

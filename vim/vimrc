@@ -116,19 +116,17 @@
         Plug 'junegunn/fzf', { 'do': './install --all' }
         Plug 'junegunn/fzf.vim'
         Plug 'pbogut/fzf-mru.vim'
-        Plug 'junegunn/goyo.vim'
-        Plug 'junegunn/limelight.vim'
+        Plug 'junegunn/goyo.vim', { 'on': ['Goyo', 'Goyo!'] }
+        Plug 'junegunn/limelight.vim', { 'on': ['Limelight', 'Limelight!', 'Limelight!!'] }
         " Plug 'metakirby5/codi.vim'
         Plug 'mhinz/vim-startify'
         Plug 'wellle/tmux-complete.vim'
         " Plug 'TaDaa/vimade'
-        Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }}
+        Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
         " Plug 'tmux-plugins/vim-tmux-focus-events'
         " Plug 'jpalardy/vim-slime'
         Plug 'lambdalisue/suda.vim'
         Plug 'psliwka/vim-smoothie'
-        " Plug 'camspiers/animate.vim'
-        " Plug 'camspiers/lens.vim'
     " }}}
 
     " Initialize plugin system {{{
@@ -283,6 +281,7 @@
         set smartindent     " smart indentation
         set copyindent      " copy the previous indentation on autoindenting
         set autoindent      " always set autoindenting on
+        autocmd FileType yaml setlocal shiftwidth=2 softtabstop=2
     " }}}
 
     " UI Config {{{
@@ -529,14 +528,14 @@
             let cmd = a:count ? a:count . cmd : cmd
             exe cmd
         endf
+        " steal from https://github.com/huytd/vim-config/blob/master/init.vim
         func! s:openFloatBuffer()
-            let s:float_term_border_win = 0
-            let s:float_term_win = 0
             " Configuration
             let height = float2nr((&lines - 2) * 0.6)
             let row = float2nr((&lines - height) / 2)
-            let width = float2nr(&columns * 0.6)
+            let width = float2nr(&columns * 0.8)
             let col = float2nr((&columns - width) / 2)
+
             " Border Window
             let border_opts = {
                         \ 'relative': 'editor',
@@ -546,8 +545,6 @@
                         \ 'height': height + 2,
                         \ 'style': 'minimal'
                         \ }
-            let border_buf = nvim_create_buf(v:false, v:true)
-            let s:float_term_border_win = nvim_open_win(border_buf, v:true, border_opts)
             " Terminal Window
             let opts = {
                         \ 'relative': 'editor',
@@ -557,20 +554,29 @@
                         \ 'height': height,
                         \ 'style': 'minimal'
                         \ }
+
+            let top = "╭" . repeat("─", width + 2) . "╮"
+            let mid = "│" . repeat(" ", width + 2) . "│"
+            let bot = "╰" . repeat("─", width + 2) . "╯"
+            let lines = [top] + repeat([mid], height) + [bot]
+
+            let bbuf = nvim_create_buf(v:false, v:true)
+            let s:float_term_border_win = nvim_open_win(bbuf, v:true, border_opts)
+            call setwinvar(s:float_term_border_win, '&winhighlight', 'NormalFloat:Todo')
+            call nvim_buf_set_lines(bbuf, 0, -1, v:true, lines)
+
             let buf = nvim_create_buf(v:false, v:true)
             let s:float_term_win = nvim_open_win(buf, v:true, opts)
-            " Styling
-            " hi FloatTermNormal term=None guibg=#1a1b23
-            call setwinvar(s:float_term_border_win, '&winhl', 'Normal:FloatTermNormal')
-            call setwinvar(s:float_term_win, '&winhl', 'Normal:FloatTermNormal')
+            call setwinvar(s:float_term_win, '&winhighlight', 'NormalFloat:Normal')
+
             " Close border window when terminal window close
             autocmd TermClose * ++once :bd! | call nvim_win_close(s:float_term_border_win, v:true)
         endf
-        fun! s:openTerm(args, count, vertical)
+        fun! s:openTerm(args, count, direction)
             let params = split(a:args)
-            let direction = a:vertical
+            let direction = a:direction
 
-            if a:vertical == 3
+            if a:direction == 3
                 call s:openFloatBuffer()
             else
                 call s:openBuffer(a:count, direction)
@@ -579,9 +585,10 @@
             exe 'terminal' a:args
             exe 'startinsert'
         endf
-        command -count -nargs=* T call s:openTerm(<q-args>, <count>, 0)
+        command -count -nargs=* HT call s:openTerm(<q-args>, <count>, 0)
         command -count -nargs=* VT call s:openTerm(<q-args>, <count>, 1)
-        command -count -nargs=* FT call s:openTerm(<q-args>, <count>, 3)
+        command -count -nargs=* T call s:openTerm(<q-args>, <count>, 3)
+        nnoremap <leader>R :T<CR>
 
         tnoremap <Esc> <C-\><C-n>
         au TermOpen term://*fzf* tnoremap <buffer> <Esc> <Esc>
@@ -1355,10 +1362,10 @@
         let g:tmux_navigator_disable_when_zoomed = 1
     " }}}
 
-    " vim-rooter {{{
-        nnoremap <leader>R :Rooter<CR>
-        let g:rooter_manual_only = 1
-    " }}}
+    " " vim-rooter {{{
+    "     nnoremap <leader>R :Rooter<CR>
+    "     let g:rooter_manual_only = 1
+    " " }}}
 
     " vim-which-key {{{
         nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>
@@ -1402,7 +1409,7 @@
 
     " markdown-preview {{{
         let g:mkdp_open_to_the_world = 1
-        let g:mkdp_port = '31000'
+        let g:mkdp_port = '40059'
     " }}}
 
     " {{{ vista

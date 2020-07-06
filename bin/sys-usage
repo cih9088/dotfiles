@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd)"
 ################## Color ##########################
 
 # Reset
@@ -24,14 +24,15 @@ if [[ $platform != LINUX ]]; then
     exit 1
 fi
 
+coproc gpudetailfd { ${DIR}/gpustat --no-header -c | sed 's/^/        /'; }
+exec 3>&${gpudetailfd[0]}
 hostname="$(hostname)"
 now="$(date)"
 echo "${BIWhite}${hostname}${Color_Off} ${now}"
-echo -en "   CPU: " && /home/andy/dotfiles/bin/cpu-usage | /home/andy/dotfiles/bin/ascii-bar 40
+echo -en "   CPU: " && ${DIR}/cpu-usage | ${DIR}/ascii-bar 40
 echo
-echo -en "   MEM: " && /home/andy/dotfiles/bin/mem-usage | /home/andy/dotfiles/bin/ascii-bar 40
+echo -en "   MEM: " && ${DIR}/mem-usage | ${DIR}/ascii-bar 40
 echo
-echo -en "   GPU: " && /home/andy/dotfiles/bin/gpu-usage | /home/andy/dotfiles/bin/ascii-bar 40
+echo -en "   GPU: " && ${DIR}/gpu-usage | ${DIR}/ascii-bar 40
 echo
-gpustat --no-header --force-color -u --gpuname-width 15 | sed 's/^/        /'
-echo
+echo "$(cat <&3)"
