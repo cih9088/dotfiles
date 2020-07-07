@@ -78,7 +78,7 @@ updatePrezto:
 updateDotfiles:
 	@( $(SCRIPTS_DIR)/update_dotfiles.sh )
 
-updateNeovimPlugins: installDevNodejs
+updateNeovimPlugins:
 	@( $(SCRIPTS_DIR)/install_coc.sh )
 	@( $(SCRIPTS_DIR)/update_neovim_plugins.sh )
 
