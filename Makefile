@@ -110,7 +110,7 @@ install: prepare installZsh changeDefaultShell installPrezto \
 	@echo
 	@echo "[42m[*] Install has Finished.[0m"
 
-installDev: installDevNodejs installDevPython installDevShell
+installDev: installDevNodejs installDevPython
 	@echo
 	@echo "[42m[*] InstallDev has Finished.[0m"
 

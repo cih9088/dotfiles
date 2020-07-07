@@ -26,6 +26,11 @@
     "diagnostic.virtualTextPrefix": "  ‣ ",
     "diagnostic.virtualTextLineSeparator": " \\ ",
 
+    "snippets.ultisnips.directories": [
+        "UltiSnips",
+        "snips"
+    ],
+
     "python.jediEnabled": false,
     "python.trace.server": "off",
     "python.venvFolders": ["envs", ".pyenv", ".direnv", ".virtualenvs"],
@@ -33,10 +38,11 @@
     "python.autoUpdateLanguageServer": true,
     "python.pythonPath": "python",
 
-    "snippets.ultisnips.directories": [
-        "UltiSnips",
-        "snips"
-    ],
+    "yaml.schemas": {
+        "kubernetes": "/*.yaml"
+    },
+
+    "sh.enable": true,
 
     "languageserver": {
     }
