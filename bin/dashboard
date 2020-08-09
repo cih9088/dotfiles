@@ -1,19 +1,34 @@
 #!/usr/bin/env bash
-
+ 
 targetfile=${1}
 
-n=0
-tmux new-window -n 'DASHBOARD'
+users=()
+machines=()
+ports=()
+
 while IFS= read -r line; do
-    if [[ n -gt 0 ]]; then
-        tmux split-window -h
-    fi
-    tmux select-pane -t:1
-    port=$( echo ${line} | awk -F: '{printf $2}')
-    user=$( echo ${line} | awk -F@ '{printf $1}')
-    machine=$( echo ${line} | awk -F@ '{printf $2}' | awk -F: '{printf $1}')
-    tmux send-keys "ssh -p ${port} ${user}@${machine}" C-m
-    n=$(( ${n} + 1 ))
-    tmux select-layout tiled
+    users+=("$( echo ${line} | awk -F@ '{printf $1}')")
+    machines+=("$( echo ${line} | awk -F@ '{printf $2}' | awk -F: '{printf $1}')")
+    ports+=("$( echo ${line} | awk -F: '{printf $2}')")
 done < ${targetfile}
-tmux set-window-option synchronize-pane 
+
+if command -v xpanes >/dev/null; then
+    echo $(
+    for i in ${!users[@]}; do
+        echo "-p ${ports[${i}]} ${users[${i}]}@${machines[${i}]}"
+    done | xpanes -t -s -c "ssh {}"
+)
+else
+    n=0
+    tmux new-window -n 'DASHBOARD'
+    for i in ${!users[@]}; do
+        if [[ n -gt 0 ]]; then
+            tmux split-window -h
+        fi
+        tmux select-pane -t:1
+        tmux send-keys "ssh -p ${ports[${i}]} ${users[${i}]}@${machines[${i}]}" C-m
+        n=$(( ${n} + 1 ))
+        tmux select-layout tiled
+    done
+    tmux set-window-option synchronize-pane
+fi

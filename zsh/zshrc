@@ -239,10 +239,12 @@ fi
     unalias cd
     cd() { # list directory contents based on file counts upon 'cd'
         nocorrect builtin cd "$@" && (
-        n_files=$(\ls -f | wc -l)
-        term_size=$(( `tput lines` * `tput cols` / 100 ))
-        if [ $n_files -lt $term_size ]; then
-            ls
+        n_files=$(\timeout 0.01 ls -f | wc -l)
+        if [ ${n_files} != 0 ]; then
+            term_size=$(( `tput lines` * `tput cols` / 100 ))
+            if [ ${n_files} -lt ${term_size} ]; then
+                ls
+            fi
         fi
         )
     }

@@ -42,6 +42,8 @@ zstyle ':prezto:load' pmodule \
   'rsync' \
   'python' \
   'ssh' \
+  'alias-tips' \
+  'tmux-xpanes' \
   'syntax-highlighting' \
   'history-substring-search' \
   'autosuggestions' \

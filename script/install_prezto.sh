@@ -17,6 +17,8 @@ setup_func() {
     (
     # Clone prezto the repository
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+    # Clone prezto-contrib repository
+    git clone --recurse-submodules https://github.com/belak/prezto-contrib "${ZDOTDIR:-$HOME}/.zprezto/contrib"
 
     # Create a new zsh configureation by copying the zsh config files
     setopt EXTENDED_GLOB
