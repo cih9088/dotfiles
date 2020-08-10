@@ -64,6 +64,9 @@ brew install wget
 # brew install vim --override-system-vi
 brew install grep
 brew install openssh
+brew tap esolitos/ipa
+brew install sshpass
+# brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 # brew install homebrew/dupes/screen
 # brew install homebrew/php/php55 --with-gmp
 

@@ -12,41 +12,43 @@ Yellow='[0;33m'       # Yellow
 BIYellow='[1;93m'     # Yellow
 
 # https://stackoverflow.com/a/4025065
-vercomp () { # version checker
-    if [[ $1 == $2 ]]
-    then
-        return 0
-    fi
-    local IFS=.
-    local i ver1=($1) ver2=($2)
-    # fill empty fields in ver1 with zeros
-    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
-    do
-        ver1[i]=0
-    done
-    for ((i=0; i<${#ver1[@]}; i++))
-    do
-        if [[ -z ${ver2[i]} ]]
-        then
-            # fill empty fields in ver2 with zeros
-            ver2[i]=0
-        fi
-        if ((10#${ver1[i]} > 10#${ver2[i]}))
-        then
-            return 1
-        fi
-        if ((10#${ver1[i]} < 10#${ver2[i]}))
-        then
-            return 2
-        fi
-    done
-    return 0
-}
+# vercomp () { # version checker
+#     if [[ $1 == $2 ]]
+#     then
+#         return 0
+#     fi
+#     local IFS=.
+#     local i ver1=($1) ver2=($2)
+#     # fill empty fields in ver1 with zeros
+#     for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+#     do
+#         ver1[i]=0
+#     done
+#     for ((i=0; i<${#ver1[@]}; i++))
+#     do
+#         if [[ -z ${ver2[i]} ]]
+#         then
+#             # fill empty fields in ver2 with zeros
+#             ver2[i]=0
+#         fi
+#         if ((10#${ver1[i]} > 10#${ver2[i]}))
+#         then
+#             return 1
+#         fi
+#         if ((10#${ver1[i]} < 10#${ver2[i]}))
+#         then
+#             return 2
+#         fi
+#     done
+#     return 0
+# }
 
 # bash version check
 bash_version=$(printf "%d.%d.%d" ${BASH_VERSINFO[@]:0:3})
-vercomp "${bash_version}" "4"
-[[ $? == 2 ]] && echo "This script requires bash version >= 4. Current bash version: ${bash_version}" >&2 && exit 1
+if ! [ $(printf "%s\n%s" "4" "${bash_version}" | sort -V | head -n1) = "4" ]; then
+    echo "This script requires bash version >= 4. Current bash version: ${bash_version}" >&2
+    exit 1
+fi
 
 
 declare -r esc=$'\033'
@@ -148,20 +150,22 @@ for a; do
     paths+=( ["$a"]="$path" )
     shift
 done
+pswd=
 
 for s in "${!domains[@]}"; do
     ssh -o PasswordAuthentication=no -o BatchMode=yes "${domains[$s]}" exit &>/dev/null
     if [[ $? -ne 0 ]]; then
         if command -v sshpass >/dev/null; then
-            echo "Enter the passwd for ${domains[$s]}:"
+            echo -n "Enter the passwd for ${domains[$s]}: "
             read -s pswd
+            echo
         else
             echo "This script requires ssh keypair or sshpass command" >&2
             echo "Note that sshpass would expose your password in your command line so that it is not recommended in multi-user environment" >&2
             cleanup
             exit 1
         fi
-        sshpass -f <(echo $pswd) ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+        SSHPASS=${pswd} sshpass -e ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
     else
         ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
     fi
@@ -175,7 +179,11 @@ if (( ${#files[@]} )); then
         files[idx]="$(echo "${files[idx]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"
         # rsync per file becase of compatability with old version
         # https://stackoverflow.com/a/15818000
-        rsync -auvzP -e "${ssh_cmd}" "${files[idx]}" .
+        if [ -z ${pswd} ]; then
+            rsync -auvzP -e "${ssh_cmd}" "${files[idx]}" .
+        else
+            SSHPASS=${pswd} rsync -auvzP --rsh="$(which sshpass) -e ${ssh_cmd}" ${files[idx]} .
+        fi
     done
     # echo rsync -auvzP --dry-run -e "${ssh_cmd}" "${files[@]}" .
     # echo rsync -auvzP -e "${ssh_cmd}" \'"$(echo "${files[@]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"\' .
