@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+Color_Off='[0m'       # Text Reset
+BRed='[1;31m'         # Red
+BGreen='[1;32m'       # Green
+Yellow='[0;33m'       # Yellow
+BIYellow='[1;93m'     # Yellow
+
+usage() {
+  LESS=-FEXR less <<HELP
+
+${BRed}SYNOPSIS${Color_Off}
+    ${BRed}$(basename "$0")${Color_Off} [${BRed}-h${Color_Off}]
+
+
+${BRed}DESCRIPTION${Color_Off}
+    copy ${HOME}/.ssh/config file to the servers
+
+
+${BRed}OPTIONS${Color_Off}
+    ${BRed}-h${Color_Off}
+        show this help message
+HELP
+}
+
+while getopts 'h' option; do
+    case "$option" in
+        h) usage
+            exit
+            ;;
+        :) printf "missing argument for -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+            echo "" >&2
+            usage >&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND -1))
+[ "${1:-}" = "--" ] && shift
+
+has() {
+  local verbose=0
+  if [[ $1 = '-v' ]]; then
+    verbose=1
+    shift
+  fi
+  for c; do c="${c%% *}"
+    if ! command -v "$c" &> /dev/null; then
+      (( verbose > 0 )) && err "$c not found"
+      return 1
+    fi
+  done
+  return 0
+}
+
+has -v awk fzf || exit 1
+
+config="${HOME}/.ssh/config"
+targets=$(cat ${config} \
+    | awk '$1=="Host"{print $2}' \
+    | grep -v '*')
+exit_code=$?
+[ ${exit_code} != 0 ] && exit ${exit_code}
+targets=$(echo ${targets} | tr ' ' '\n' \
+    | fzf --multi --height=30% --cycle --no-sort --layout=reverse \
+    --preview-window=down:2 \
+    --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;gsub(/^[ \t]+/,"", $0);print;getline; if ($0 ~ /HostName/) {;gsub(/^[ \t]+/,"", $0);print;}}'"'")
+
+if [ -z "${targets}" ]; then
+    exit 0
+fi
+
+use_sshpass=no
+has sshget && \
+    while true; do
+        read -p "Do you want to use sshpass for copying? " yn
+        case $yn in
+            [Yy]* ) use_sshpass=yes; break;;
+            [Nn]* ) :; break;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+
+
+if [ "${use_sshpass}" == yes ]; then
+    echo -n "Enter the passwd for them: "
+    read -s pswd
+    echo
+
+    while IFS= read -r target; do
+        echo "copying to ${target}..."
+        SSHPASS=${pswd} sshpass -e ssh ${target} mkdir -p ./.ssh
+        SSHPASS=${pswd} sshpass -e scp ${config} ${target}:./.ssh/config
+    done <<< "${targets}"
+else
+    while IFS= read -r target; do
+        echo "create .ssh directory in ${target}..."
+        ssh ${target} mkdir -p ./.ssh
+        echo "copying to ${target}..."
+        scp ${config} ${target}:./.ssh/config
+    done <<< "${targets}"
+fi
