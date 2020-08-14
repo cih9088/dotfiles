@@ -53,12 +53,10 @@ ex) `VERBOSE=true make install`
 
 ```bash
 $ cd ~/dotfiles
-$ make init                 # includes 'install', 'update' and 'installDevPython'
+$ make init                 # includes 'install', 'update'
                             # If you are new to my dotfiles, this is it. No further processes needed. 
                             # Recommended way for a newcomer.
-
 $ make install              # Install all commands
-# If you do not install dev environment, autocomplete of nvim for languages would not work at all.
 $ make installDev           # Install all dev environments
 ```
 
@@ -78,22 +76,26 @@ $ make update               # Update all of dotfiles and configurations
 ```bash
 $ cd ~/dotfiles
 
-# you could choose what to install in following list
-# [installZsh, installPrezto, installNeovim, installTmux]
-# [installBins: installTree, installFd installRg installRanger, installThefuck installTldr installBashSnippets]
+# COMMANDS
+# You could choose what to install in following list
+# [installZsh, installPrezto, installNeovim, installTmux,
+#  installTree, installFd installRg installRanger, installThefuck installTldr installBashSnippets]
 # For instance,
 $ make installNeovim          # Install neovim only with latest stable version
 $ make installNeovim 0.2.0    # Specify version if intended to install locally
 $ make installNeovim nightly  # even nightly is available (neovim only)
-$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr bash_snippets at once
+# NOTE: 'make installNeovim' depdends on 'installDevPython', 'installDevNodejs', 'installDevGo'
+# which means thoes dependencies are automatically installed. See below dev environments
 # NOTE: version specification is only available for limited target
-# installZsh, installNeovim, installTmux, installTree, installFd, installRg
+# [installZsh, installNeovim, installTmux, installTree, installFd, installRg]
+$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr bash_snippets at once
 
 # DEV ENVIRONMENT
-# you could choose what to install in following list
+# You could choose what to install in following list
 # [installDevPython, installDevNodejs, installDevC, installDevGo]
 # For instance,
-$ make installDevPython      # Install python dev environment only
+$ make installDevPython      # Install python dev environment
+$ make installDevGo          # Install golang dev environment
 ```
 
 ### Update
@@ -103,13 +105,15 @@ $ git pull
 $ git submodule update --init --recursive
 
 # you could choose what to update in following list
-# [updateDotfiles, updateNeovimPlugins, updateTPM, updateTmuxPlugins, updateBins, updatePrezto]
+# [updateDotfiles, updateNeovimPlugins, updateTPM, updateTmuxPlugins, updateCustomBins, updatePrezto]
 # For instance,
 $ make updateDotfiles       # Update dotfiles only
+$ make update               # Update all
 ```
 
 ### Clean
 Clean up dotfiles, configurations and folder itself.
+**Back up your local changes before clean up.**
 ```bash
 $ cd ~/dotfiles
 $ make clean        # delete installed dotfiles and folder itself (installed command remains)
@@ -149,15 +153,16 @@ For more detailed information please refer [zpreztorc](https://github.com/cih908
 , [utility](https://github.com/sorin-ionescu/prezto/tree/master/modules/utility)
 , [completion](https://github.com/sorin-ionescu/prezto/tree/master/modules/completion)
 , [fasd](https://github.com/sorin-ionescu/prezto/tree/master/modules/fasd)
-, [tmux](https://github.com/sorin-ionescu/prezto/tree/master/modules/tmux)
 , [git](https://github.com/sorin-ionescu/prezto/tree/master/modules/git)
 , [archive](https://github.com/sorin-ionescu/prezto/tree/master/modules/archive)
 , [rsync](https://github.com/sorin-ionescu/prezto/tree/master/modules/rsync)
 , [python](https://github.com/sorin-ionescu/prezto/tree/master/modules/python)
-, [autosuggestions](https://github.com/sorin-ionescu/prezto/tree/master/modules/autosuggestions)
+, [ssh](https://github.com/sorin-ionescu/prezto/tree/master/modules/ssh)
+, [alias-tips](https://github.com/belak/prezto-contrib/tree/master/alias-tips)
+, [tmux-xpanes](https://github.com/belak/prezto-contrib/tree/master/tmux-xpanes)
 , [syntax-highlighting](https://github.com/sorin-ionescu/prezto/tree/master/modules/syntax-highlighting)
 , [history-substring-search](https://github.com/sorin-ionescu/prezto/tree/master/modules/history-substring-search)
-, [ssh](https://github.com/sorin-ionescu/prezto/tree/master/modules/ssh)
+, [autosuggestions](https://github.com/sorin-ionescu/prezto/tree/master/modules/autosuggestions)
 , [prompt](https://github.com/sorin-ionescu/prezto/tree/master/modules/prompt)
 
 ### [nvim](https://github.com/neovim/neovim)
@@ -186,10 +191,10 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - cut to system clipboard: <kbd>leader</kbd> + <kbd>x</kbd>
     - paste from system clipboard: <kbd>leader</kbd> + <kbd>p</kbd>
 - Redirect the output of a vim or external command into a scratch buffer: `:Redir hi` or `:Redir !ls -al`
-<!-- - replace a word under the curser or visually select then -->
-<!--     - <kbd>c</kbd> + <kbd>*</kbd> -->
-<!--     - repeat: <kbd>.</kbd> -->
-<!--     - skip: <kbd>n</kbd> -->
+- replace a word under the curser or visually select then
+    - <kbd>c</kbd> + <kbd>*</kbd>
+    - repeat: <kbd>.</kbd>
+    - skip: <kbd>n</kbd>
 - terminal
     - open terminal horizontally: `:TermHorizontal`
     - open terminal vertically: `:TermVertical`
@@ -236,7 +241,6 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - open History: <kbd>leader</kbd> + <kbd>H</kbd>
     - open Commits: <kbd>leader</kbd> + <kbd>C</kbd>
     - open Blines: <kbd>leader</kbd> + <kbd>L</kbd>
-    - open MRU: <kbd>leader</kbd> + <kbd>M</kbd>
 - [vim-startify](https://github.com/mhinz/vim-startify): nice start
     - open startify: <kbd>leader</kbd> + <kbd>S</kbd>
 - [vim-sandwich](https://github.com/machakann/vim-sandwich): easy surrounding modification
@@ -248,17 +252,17 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - reload: <kbd>g</kbd> + <kbd>r</kbd>
     - go to home: <kbd>g</kbd> + <kbd>~</kbd>
     - hide hiddden files: <kbd>g</kbd> + <kbd>h</kbd>
-- [vim-rooter](https://github.com/airblade/vim-rooter): change pwd to project root. usefule with fzf
-    - run rooter: <kbd>leader</kbd> + <kbd>R</kbd>
+<!-- - [vim-rooter](https://github.com/airblade/vim-rooter): change pwd to project root. usefule with fzf -->
+<!--     - run rooter: <kbd>leader</kbd> + <kbd>R</kbd> -->
 - [nerdcommenter](https://github.com/scrooloose/nerdcommenter): Comment out easily
     - toggle comment: <kbd>leader</kbd> + <kbd>c</kbd> + <kbd>Space</kbd>
     - invert comment: <kbd>leader</kbd> + <kbd>c</kbd> + <kbd>i</kbd>
     - yank and comment: <kbd>leader</kbd> + <kbd>c</kbd> + <kbd>y</kbd>
 - [auto-pair](https://github.com/jiangmiao/auto-pairs)
     - insert parens purely: <kbd>Ctrl</kbd> + <kbd>v</kbd> + {paren}
-- [splitjoin](https://github.com/AndrewRadev/splitjoin.vim)
-    - split one-liner into multiple lines: <kbd>g</kbd> + <kbd>S</kbd>
-    - join a block into single-line statement: <kbd>g</kbd> + <kbd>J</kbd>
+<!-- - [splitjoin](https://github.com/AndrewRadev/splitjoin.vim) -->
+<!--     - split one-liner into multiple lines: <kbd>g</kbd> + <kbd>S</kbd> -->
+<!--     - join a block into single-line statement: <kbd>g</kbd> + <kbd>J</kbd> -->
 
 ### [tmux](https://github.com/tmux/tmux)
 For more detailed information please refer [tmux.conf](https://github.com/cih9088/dotfiles/blob/master/tmux/tmux.conf)

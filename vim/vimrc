@@ -65,9 +65,9 @@
         Plug 'Yggdroot/indentLine' " indent indicator
         Plug 'jiangmiao/auto-pairs' " insert and delete pairs automaticcaly
         Plug 'christoomey/vim-tmux-navigator' " seamlessly move between vim splits and tmux panes
-        Plug 'tpope/vim-repeat' "
+        Plug 'tpope/vim-repeat'
         Plug 'tpope/vim-fugitive' " git command in vim
-        Plug 'tpope/vim-unimpaired' " 
+        Plug 'tpope/vim-unimpaired'
         Plug 'tpope/vim-obsession'
         Plug 'tpope/vim-eunuch'
         Plug 'tpope/vim-abolish'
@@ -94,15 +94,15 @@
     " }}}
 
     " Plugins for etc. {{{
-        Plug 'itchyny/lightline.vim' " status line
-        Plug 'mgee/lightline-bufferline' " status line += buffer
-        Plug 'niklaas/lightline-gitdiff' " status line += git diff
-        Plug 'junegunn/fzf', { 'do': './install --all' } " fuzzy finder
-        Plug 'junegunn/fzf.vim' " fuzzy finder for vim
+        Plug 'itchyny/lightline.vim'                            " status line
+        Plug 'mgee/lightline-bufferline'                        " status line += buffer
+        Plug 'niklaas/lightline-gitdiff'                        " status line += git diff
+        Plug 'junegunn/fzf', { 'do': './install --all' }        " fuzzy finder
+        Plug 'junegunn/fzf.vim'                                 " fuzzy finder for vim
         " Plug 'junegunn/goyo.vim', { 'on': ['Goyo', 'Goyo!'] } " simplify
         Plug 'metakirby5/codi.vim', { 'on': ['Codi'] }
-        Plug 'mhinz/vim-startify' " fancy startup screen
-        Plug 'wellle/tmux-complete.vim' " add tmux complete
+        Plug 'mhinz/vim-startify'                               " fancy startup screen
+        Plug 'wellle/tmux-complete.vim'                         " add tmux complete
         " Plug 'TaDaa/vimade'
         Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug'] }
         " Plug 'tmux-plugins/vim-tmux-focus-events'
@@ -1247,10 +1247,10 @@
         if has_key(g:plugs, 'vim-startify')
             nnoremap <leader>S :Startify<CR>
             let g:startify_bookmarks = [
-                        \ { 'a': '~/.vimrc' },
-                        \ { 's': '~/.zshrc' },
-                        \ { 'd': '~/.zpreztorc' },
-                        \ { 'f': '~/.tmux.conf' },
+                        \ { 'a': '~/dotfiles/vim/vimrc' },
+                        \ { 's': '~/dotfiles/zsh/zshrc' },
+                        \ { 'd': '~/dotfiles/zsh/zpreztorc' },
+                        \ { 'f': '~/dotfiles/tmux/tmux.conf' }
                         \]
             let g:startify_change_to_dir = 0
         endif
