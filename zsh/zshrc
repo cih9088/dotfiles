@@ -241,8 +241,8 @@ fi
                     [ ${exit_code} != 0 ] && return ${exit_code}
                     targets=$(echo ${targets} \
                         | fzf --multi --height=30% --cycle --no-sort --layout=reverse \
-                        --preview-window=down:1 \
-                        --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;print;}'"'")
+                        --preview-window=down:2 \
+                        --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;gsub(/^[ \t]+/,"", $0);print;getline; if ($0 ~ /HostName/) {;gsub(/^[ \t]+/,"", $0);print;}}'"'")
                     [ ! -z "${targets}" ] && (echo ${targets} | xpanes -t -s -c "ssh {}")
                 else
                     if ps -p $$ -o ppid= \
@@ -268,6 +268,20 @@ fi
                 fi
             }
         fi
+
+
+        # if ${(z)VISUAL:-${(z)EDITOR}} -s <( echo ':if exists('"'"':Codi'"'"') | exit | else | cquit | endif' ); then
+        # fi
+        codi() {
+            local syntax="${1:-python}"
+            [ $# -gt 0 ] && shift
+            ${(z)VISUAL:-${(z)EDITOR}} -c \
+                "let g:startify_disable_at_vimenter = 1 |\
+                hi ColorColumn ctermbg=NONE |\
+                hi VertSplit ctermbg=NONE |\
+                hi NonText ctermfg=0 |\
+                Codi $syntax" "$@"
+        }
 
         if [[ ${platform} == "OSX" ]]; then
             # Install (one or multiple) selected application(s)
