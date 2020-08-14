@@ -23,54 +23,65 @@ fi
     esac
 
 
-#   Set PATH
+#   user's private bin directory
 #   --------------------------------------------------------------------------------------
-    # add user's private bin directories to PATH
     [[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && export PATH="$HOME/.local/bin:${PATH}"
 
-    # add yarn to PATH
+
+#   yarn to PATH
+#   --------------------------------------------------------------------------------------
     [[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
     [[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
         export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
 
-    # clutter path
-    if [ -n "$PATH" ]; then
-        old_PATH=$PATH:; PATH=
-        while [ -n "$old_PATH" ]; do
-            x=${old_PATH%%:*}       # the first remaining entry
-            case $PATH: in
-                *:"$x":*) ;;          # already there
-                *) PATH=$PATH:$x;;    # not there yet
-            esac
-            old_PATH=${old_PATH#*:}
-        done
-        PATH=${PATH#:}
-        unset old_PATH x
+
+#   goenv
+#   --------------------------------------------------------------------------------------
+    if [[ -s "${GOENV_ROOT:=$HOME/.goenv}/bin/goenv" ]]; then
+        [[ ":$PATH:" != *":${GOENV_ROOT}/bin:"* ]] && export PATH="${GOENV_ROOT}/bin:${PATH}"
     fi
+    if [[ -x "$(command -v goenv)" ]]; then
+        eval "$(goenv init - --no-rehash zsh)"
+        [[ ":$PATH:" != *":$GOROOT/bin:"* ]] && export PATH="$GOROOT/bin:$PATH"
+        [[ ":$PATH:" != *":$GOPATH/bin:"* ]] && export PATH="$PATH:$GOPATH/bin"
+    fi
+
+#   virtualenvwrapper
+#   --------------------------------------------------------------------------------------
+    export WORKON_HOME=$HOME/.virtualenvs
+    export PROJECT_HOME=$HOME/workspace
+    # Inside tmux session, these environment variables are changed 
+    # because of the change of PATH during zsh initialisation in non-tmux session
+    # This prevents no module found error in virtualenvwrapper
+    [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_PYTHON=$(which python)
+    [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+    [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+    [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+
+
+#   pyenv-virtualenvwrapper to use pyenv by default
+#   --------------------------------------------------------------------------------------
+    # export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
+
+
+#   pyenv -> DEPRECATED in favour of prezto python module
+#   --------------------------------------------------------------------------------------
+    # if [[ -s "${PYENV_ROOT:=$HOME/.pyenv}/bin/pyenv" ]]; then
+    #     [[ ":$PATH:" != *":${PYENV_ROOT}/bin:"* ]] && export PATH="${PYENV_ROOT}/bin:${PATH}"
+    # fi
+    # if [[ -x "$(command -v pyenv)" ]]; then
+    #     eval "$(pyenv init - --no-rehash zsh)"
+    #     eval "$(pyenv virtualenv-init - zsh)"
+    #     pyenv virtualenvwrapper_lazy
+    # fi
 
 
 #   Set default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
 #   --------------------------------------------------------------------------------------
     export BLOCKSIZE=1k
-
-
-#   virtualenvwrapper
-#   --------------------------------------------------------------------------------------
-    export WORKON_HOME=$HOME/.virtualenvs
-    export PROJECT_HOME=$HOME/workspace
-    # export VIRTUALENVWRAPPER_PYTHON=$HOME/.pyenv/shims/python
-    # export VIRTUALENVWRAPPER_VIRTUALENV=$HOME/.pyenv/shims/virtualenv
-    # export VIRTUALENVWRAPPER_VIRTUALENV_CLONE=$HOME/.pyenv/shims/virtualenv-clone
-    # export VIRTUALENVWRAPPER_SCRIPT=$HOME/.pyenv/shims/virtualenvwrapper.sh
-    # export VIRTUALENVWRAPPER_LAZY_SCRIPT=$HOME/.pyenv/shims/virtualenvwrapper_lazy.sh
-    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
-    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
-    #
-
-#   pyenv-virtualenvwrapper to use pyenv by default
-#   --------------------------------------------------------------------------------------
-    export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
 
 
 #   Add color to terminal
@@ -112,3 +123,22 @@ fi
 #   Set xpanes
 #   --------------------------------------------------------------------------------------
     export TMUX_XPANES_PANE_BORDER_FORMAT='#[bg=colour238] #[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[bg=colour238] #[default]'
+
+
+#   Clutter path
+#   --------------------------------------------------------------------------------------
+    if [ -n "$PATH" ]; then
+        old_PATH=$PATH:; PATH=
+        while [ -n "$old_PATH" ]; do
+            x=${old_PATH%%:*}       # the first remaining entry
+            case $PATH: in
+                *:"$x":*) ;;          # already there
+                *) PATH=$PATH:$x;;    # not there yet
+            esac
+            old_PATH=${old_PATH#*:}
+        done
+        PATH=${PATH#:}
+        unset old_PATH x
+    fi
+
+
