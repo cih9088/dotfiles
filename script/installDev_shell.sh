@@ -6,6 +6,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
 
+echo
+echo "${marker_title} Prepare to install shell environment"
+################################################################
+
 setup_func_shellcheck_local() {
     force=$1
     cd $TMP_DIR
@@ -17,15 +21,15 @@ setup_func_shellcheck_local() {
 
         install=no
         if [ -f ${HOME}/.local/bin/shellcheck ]; then
-            if [ ${force} == 'yes' ]; then
+            if [ ${force} == 'true' ]; then
                 rm -rf $HOME/.local/bin/shellcheck || true
-                install=yes
+                install='true'
             fi
         else
-            install=yes
+            install='true'
         fi
 
-        if [ ${install} == 'yes' ]; then
+        if [ ${install} == 'true' ]; then
             wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz
             tar -xvJf shellcheck-stable.linux.x86_64.tar.xz
             cd shellcheck-stable

@@ -12,6 +12,11 @@ $ git clone --recursive https://github.com/cih9088/dotfiles.git ~/dotfiles
 $ cd ~/dotfiles
 $ git pull
 $ git submodule update --init --recursive
+
+# make sure that you have commands `make`, `git`, `sudo`
+$ command -v make
+$ command -v git
+$ command -v sudo
 ```
 
 ## Prerequisites
@@ -25,16 +30,16 @@ $ make prerequisites        # Install prerequisites (previlege is needed)
 ```
 
 ## How to install and update (Easy way)
-### Variables
-- `CONFIG`: making script non-interactively. Create your own config based on `config_linux.yaml` \
-ex) `make install CONFIG=config_linux.yaml`
+### Environement Variables
+- `CONFIG`: making script non-interactively. Create your own config based on `config_*.yaml` in `~/dotfiles` \
+ex) `CONFIG=config_linux.yaml make install`
 - `VERBOSE`: making script verbose \
-ex) `make install VERBOSE=YES`
+ex) `VERBOSE=true make install`
 
 
 ### one-liner
-- Non-interactive init for ubuntu `cd ~/dotfiles; make init CONFIG=config_linux.yaml`
-- Non-interactive init for osx `cd ~/dotfiles; make init CONFIG=config_osx.yaml`
+- Non-interactive init for ubuntu `cd ~/dotfiles; CONFIG=config_linux.yaml make init`
+- Non-interactive init for osx `cd ~/dotfiles; CONFIG=config_osx.yaml make init`
 - Interactive init `cd ~/dotfiles; make init`
 - Install `cd ~/dotfiles; make install`
 - Update `cd ~/dotfiles; make update`
@@ -44,11 +49,11 @@ ex) `make install VERBOSE=YES`
 - Install **systemwide**: others could execute those commands (**homebrew** for OSX and **apt-get** (need privilege) for Ubuntu will be used.)
 - Install **locally**: others could not (All of commands would be installed in `$HOME/.local/bin`)
 
-**NOTE**: systemwide install is prefered for osx.
+**NOTE**: systemwide install is prefered for OSX.
 
 ```bash
 $ cd ~/dotfiles
-$ make init                 # includes install, update and installDev
+$ make init                 # includes 'install', 'update' and 'installDevPython'
                             # If you are new to my dotfiles, this is it. No further processes needed. 
                             # Recommended way for a newcomer.
 
@@ -74,18 +79,21 @@ $ make update               # Update all of dotfiles and configurations
 $ cd ~/dotfiles
 
 # you could choose what to install in following list
-# [installZsh, installPrezto, installNeovim, installTmux, installBins]
+# [installZsh, installPrezto, installNeovim, installTmux]
+# [installBins: installTree, installFd installRg installRanger, installThefuck installTldr installBashSnippets]
 # For instance,
 $ make installNeovim          # Install neovim only with latest stable version
 $ make installNeovim 0.2.0    # Specify version if intended to install locally
 $ make installNeovim nightly  # even nightly is available (neovim only)
-# version specification is only available for zsh, neovim ,tmux
+$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr bash_snippets at once
+# NOTE: version specification is only available for limited target
+# installZsh, installNeovim, installTmux, installTree, installFd, installRg
 
 # DEV ENVIRONMENT
 # you could choose what to install in following list
-# [installDevShell, installDevPython, installDevNodejs]
+# [installDevPython, installDevNodejs, installDevC, installDevGo]
 # For instance,
-$ make installDevShell      # Install shell dev environment only
+$ make installDevPython      # Install python dev environment only
 ```
 
 ### Update
@@ -118,11 +126,12 @@ $ make initOSX
 
 ## Highligts
 
-### List of Dev environment
-- python: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper), [mpls](https://github.com/Microsoft/python-language-server)
-- nodejs: [nodejs](https://nodejs.org/en/)
-- shell: [shellchecker](https://www.shellcheck.net/), [bash-language-client](https://github.com/mads-hartmann/bash-language-server)
-- c: [ccls](https://github.com/MaskRay/ccls)
+### List of Dev environment that would be installed
+- installDevPython: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper), [mpls](https://github.com/Microsoft/python-language-server)
+- installDevNodejs: [nodejs](https://nodejs.org/en/)
+- installDevShell: [shellchecker](https://www.shellcheck.net/), [bash-language-client](https://github.com/mads-hartmann/bash-language-server)
+- installDevC: [ccls](https://github.com/MaskRay/ccls)
+- installDevGo: [goenv](https://github.com/syndbg/goenv)
 
 ### [zsh](https://github.com/tmux/tmux)
 For more detailed information please refer [zshrc](https://github.com/cih9088/dotfiles/blob/master/zsh/zshrc)
@@ -159,12 +168,12 @@ For detailed information and plugins please refer [init.vim](https://github.com/
 - toggle paste mode: <kbd>F2</kbd>
 - buffers
     - new buffer: <kbd>Ctrl</kbd> + <kbd>b</kbd>
-    - close buffer: <kbd>leader</kbd> + <kbd>b</kbd> + <kbd>q</kbd>
+    - close buffer: <kbd>leader</kbd> + <kbd>b</kbd> + <kbd>x</kbd>
     - navigate buffer: <kbd>\]</kbd> + <kbd>b</kbd>, <kbd>\[</kbd> + <kbd>b</kbd>
     - go back to previous buffer: <kbd>Ctrl</kbd> + <kbd>w</kbd> + <kbd>Tab</kbd>
 - tabs
     - new tab: <kbd>Ctrl</kbd> + <kbd>t</kbd>
-    - close tab: <kbd>leader</kbd> + <kbd>t</kbd> + <kbd>q</kbd>
+    - close tab: <kbd>leader</kbd> + <kbd>t</kbd> + <kbd>x</kbd>
     - navigate tab: <kbd>\]</kbd> + <kbd>t</kbd>, <kbd>\[</kbd> + <kbd>t</kbd>
 - splits
     - navigate split: <kbd>Ctrl</kbd> + [ <kbd>h</kbd>, <kbd>j</kbd>, <kbd>k</kbd>, <kbd>l</kbd> ]
@@ -176,16 +185,16 @@ For detailed information and plugins please refer [init.vim](https://github.com/
     - yank to system clipboard: <kbd>leader</kbd> + <kbd>y</kbd>
     - cut to system clipboard: <kbd>leader</kbd> + <kbd>x</kbd>
     - paste from system clipboard: <kbd>leader</kbd> + <kbd>p</kbd>
-- search in current visible window: `:WinSearch {args}`
 - Redirect the output of a vim or external command into a scratch buffer: `:Redir hi` or `:Redir !ls -al`
-- replace a word under the curser or visually select then
-    - <kbd>c</kbd> + <kbd>*</kbd>
-    - repeat: <kbd>.</kbd>
-    - skip: <kbd>n</kbd>
+<!-- - replace a word under the curser or visually select then -->
+<!--     - <kbd>c</kbd> + <kbd>*</kbd> -->
+<!--     - repeat: <kbd>.</kbd> -->
+<!--     - skip: <kbd>n</kbd> -->
 - terminal
-    - open terminal horizontally: `:T`
-    - open terminal vertically: `:VT`
-    - open terminal in floating window: `:FT`
+    - open terminal horizontally: `:TermHorizontal`
+    - open terminal vertically: `:TermVertical`
+    - open terminal in floating window: `:TermFloat`
+    - open terminal <kbd>leader</kbd> + <kbd>R</kbd>
 - toggle conceal level: <kbd>y</kbd> + <kbd>o</kbd> + <kbd>a</kbd>
 - simple calculator
     - after visual selection: <kbd>Q</kbd>

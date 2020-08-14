@@ -8,7 +8,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-[[ ${VERBOSE} == YES ]] || start_spinner "Updating prezto..."
+echo "${marker_title} Prepare to update prezto"
+################################################################
+
+[[ ${VERBOSE} == "true" ]] \
+    && echo "${marker_info} Updating prezto..." \
+    || start_spinner "Updating prezto..."
 (
 # update prezto
 cd ~/.zprezto
@@ -22,4 +27,4 @@ git pull
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
     "prezto is updated [local]" \
-    "prezto udpate is failed [local]. use VERBOSE=YES for error message"
+    "prezto udpate is failed [local]. use VERBOSE=true for error message"

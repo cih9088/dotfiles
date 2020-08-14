@@ -1,82 +1,165 @@
+#######################
+# installZsh
+#######################
+
 zsh:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
 
 changeDefaultShell:
-  change: yes
-  local: no
-  force: yes
+  change: true
+  local: false
+  force: true
+
+#######################
+# installPrezto
+#######################
 
 prezto:
-  install: yes
-  force: yes
+  install: true
+  force: true
+
+#######################
+# installNeovim
+#######################
 
 nvim:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+# installTmux
+#######################
 
 tmux:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+# installTree
+#######################
 
 tree:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+# installFd
+#######################
 
 fd:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+# installRg
+#######################
 
 rg:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+# installThefuck
+#######################
 
 thefuck:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+# installRanger
+#######################
 
 ranger:
-  install: yes
-  force: yes
+  install: true
+  force: true
+
+#######################
+#  installTldr
+#######################
 
 tldr:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+#  installBashSnippets
+#######################
 
 bash_snippets:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
+
+#######################
+# installDevshell
+#######################
 
 shellchecker:
-  install: yes
-  local: no
-  force: yes
+  install: true
+  local: false
+  force: true
 
 bash-language-server:
-  install: yes
-  force: yes
+  install: true
+  force: true
+
+#######################
+# installDevNodejs
+#######################
 
 node:
-  install: yes
-  force: no
+  install: true
+  local: false
+  force: false
 
 yarn:
-  install: yes
-  force: no
+  install: false
+  local: false
+  force: false
+
+#######################
+# installDevPython
+#######################
 
 pyenv:
-  install: yes
-  force: no
+  install: true
+  local: false
+  force: false
+
+# install pyenv python2 and python3
+python2:
+  install: true
+
+python3:
+  install: true
+
+#######################
+# installDevGo
+#######################
+
+goenv:
+  install: true
+  local: false
+  force: false
+
+# install goenv golang
+go:
+  install: true
+
+#######################
+# installDevC
+#######################
 
 ccls:
-  install: no
-  force: yes
+  install: false
+  force: true

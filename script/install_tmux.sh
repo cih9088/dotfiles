@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # change version you want to install on local
-LIBEVENT_VERSION=2.1.11
+LIBEVENT_VERSION=2.1.12
 NCURSES_VERSION=6.2
 XCLIP_VERSION=0.12
 
@@ -16,10 +16,13 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/common.sh
 ################################################################
 
+echo
+echo "${marker_title} Prepare to install tmux"
+
 TARGET="tmux"
 TMUX_LATEST_VERSION="$(${PROJ_HOME}/script/get_latest_release tmux/tmux)"
 TMUX_VERSION=${1:-${TMUX_LATEST_VERSION}}
-
+$(${PROJ_HOME}/script/check_release tmux/tmux ${TMUX_VERSION}) || exit $?
 ################################################################
 
 setup_func_local() {
@@ -61,19 +64,9 @@ setup_func_local() {
     cd $TMP_DIR
     mv ncurses-${NCURSES_VERSION} $HOME/.local/src
 
-    # tmux
-    curl -s --head https://github.com/tmux/tmux/releases/tag/${TMUX_VERSION} | head -n 1 | grep "HTTP/1.[01] [23].." > /dev/null
-    if [[ $? != 0 ]]; then
-        printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off}" >&2
-        printf " ${TMUX_VERSION} is not a valid version\n" >&2
-        printf "\033[2K\033[${ctr}D${IRed}[!]${Color_Off}" >&2
-        printf " please visit https://github.com/tmux/tmux/tags for valid versions\n" >&2
-        exit 1
-    fi
-
     install=no
     if [ -f ${HOME}/.local/bin/tmux ]; then
-        if [ ${force} == 'yes' ]; then
+        if [ ${force} == 'true' ]; then
             if [ -d $HOME/.local/src/tmux-* ]; then
                 cd $HOME/.local/src/tmux-*
                 make uninstall || true
@@ -81,13 +74,13 @@ setup_func_local() {
                 cd ..
                 rm -rf $HOME/.local/src/tmux-*
             fi
-            install=yes
+            install=true
         fi
     else
-        install=yes
+        install=true
     fi
 
-    if [ ${install} == 'yes' ]; then
+    if [ ${install} == 'true' ]; then
         cd $TMP_DIR
         wget https://github.com/tmux/tmux/releases/download/${TMUX_VERSION}/tmux-${TMUX_VERSION}.tar.gz
         tar -xvzf tmux-${TMUX_VERSION}.tar.gz

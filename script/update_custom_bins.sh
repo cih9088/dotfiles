@@ -8,7 +8,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-[[ ${VERBOSE} == YES ]] || start_spinner "Updating custom bin files..."
+echo "${marker_title} Prepare to update bin directory"
+################################################################
+
+[[ ${VERBOSE} == "true" ]] \
+    && echo "${marker_info} Updating custom bin files..." \
+    || start_spinner "Updating custom bin files..."
 (
 # https://github.com/ChristopherSchultz/fast-file-count
 cd $BIN_DIR; cc -Wall -pedantic -o dircnt dircnt.c;
@@ -25,7 +30,7 @@ fi
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
     "custom bin files are updated [local]" \
-    "custom bin files update is failed [local]. use VERBOSE=YES for error message"
+    "custom bin files update is failed [local]. use VERBOSE=true for error message"
 
 # clean up
 if [[ $$ = $BASHPID ]]; then

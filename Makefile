@@ -1,6 +1,5 @@
 export PATH := ${HOME}/.local/bin:${PATH}
 export PROJ_HOME := $(shell git rev-parse --show-toplevel)
-export TMP_DIR := ${HOME}/tmp_install
 export BIN_DIR := $(PROJ_HOME)/bin
 export SCRIPTS_DIR := $(PROJ_HOME)/script
 
@@ -14,9 +13,24 @@ ifeq (installTmux,$(firstword $(MAKECMDGOALS)))
     $(eval $(tmux_version):;@:)
 endif
 
-ifeq (installAsh,$(firstword $(MAKECMDGOALS)))
+ifeq (installZsh,$(firstword $(MAKECMDGOALS)))
     zsh_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
     $(eval $(zsh_version):;@:)
+endif
+
+ifeq (installTree,$(firstword $(MAKECMDGOALS)))
+    tree_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+    $(eval $(tree_version):;@:)
+endif
+
+ifeq (installFd,$(firstword $(MAKECMDGOALS)))
+    fd_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+    $(eval $(fd_version):;@:)
+endif
+
+ifeq (installRg,$(firstword $(MAKECMDGOALS)))
+    rg_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+    $(eval $(rg_version):;@:)
 endif
 
 prepare:
@@ -42,16 +56,34 @@ installZsh: prepare
 installPrezto: prepare
 	@( $(SCRIPTS_DIR)/install_prezto.sh )
 
-installNeovim: prepare installDevPython
+installNeovim: prepare installDevPython installDevNodejs installDevGo
 	@( $(SCRIPTS_DIR)/install_neovim.sh $(nvim_version) )
 
 installTmux: prepare
 	@( $(SCRIPTS_DIR)/install_tmux.sh $(tmux_version) )
 
-installBins: prepare
-	@( $(SCRIPTS_DIR)/install_bins.sh )
+installTree: prepare
+	@( $(SCRIPTS_DIR)/install_tree.sh $(tree_version) )
 
-installDevShell: installDevNodejs
+installFd: prepare
+	@( $(SCRIPTS_DIR)/install_fd.sh $(fd_version) )
+
+installRg: prepare
+	@( $(SCRIPTS_DIR)/install_rg.sh $(rg_version) )
+
+installRanger: prepare
+	@( $(SCRIPTS_DIR)/install_ranger.sh )
+
+installThefuck: prepare
+	@( $(SCRIPTS_DIR)/install_thefuck.sh )
+
+installTldr: prepare
+	@( $(SCRIPTS_DIR)/install_tldr.sh )
+
+installBashSnippets: prepare
+	@( $(SCRIPTS_DIR)/install_bash_snippets.sh )
+
+installDevShell:
 	@( $(SCRIPTS_DIR)/installDev_shell.sh )
 
 installDevPython:
@@ -62,6 +94,9 @@ installDevNodejs:
 
 installDevC:
 	@( $(SCRIPTS_DIR)/installDev_c.sh )
+
+installDevGo:
+	@( $(SCRIPTS_DIR)/installDev_go.sh )
 
 installPythonVirtualenv:
 	@( $(SCRIPTS_DIR)/virenv_setup.sh )
@@ -79,7 +114,6 @@ updateDotfiles:
 	@( $(SCRIPTS_DIR)/update_dotfiles.sh )
 
 updateNeovimPlugins:
-	@( $(SCRIPTS_DIR)/install_coc.sh )
 	@( $(SCRIPTS_DIR)/update_neovim_plugins.sh )
 
 updateTPM:
@@ -89,38 +123,42 @@ updateTmuxPlugins: updateTPM
 	@( $(SCRIPTS_DIR)/update_tmux_plugins.sh )
 
 clean:
-	@echo "[0;92m[*][0m Remove dotfiles and configuration folders"
-	@rm -rf $(TMP_DIR)
+	@echo "[0;92m[*][0m Remove all configurations files"
 	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \
 		${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
 		${HOME}/.gitignore \
 		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
 		${HOME}/.vimrc ${HOME}/.vim \
-		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger
-	@find ${HOME}/.local/bin -type l ! -exec test -e {}\; -print | xargs rm -rf
+		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger \
+		${HOME}/.config/yabai ${HOME}/.config/skhd
+	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
 	@rm -rf $(PROJ_HOME)
+
+installBins: prepare installTree installFd installRg installRanger \
+	installThefuck installTldr installBashSnippets
 
 update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateCustomBins updatePrezto
 	@echo
-	@echo "[42m[*] Update has Finished.[0m"
+	@echo "[42m[30m[*] Update has Finished.[0m"
 
 install: prepare installZsh changeDefaultShell installPrezto \
 	installNeovim installTmux installBins
 	@echo
-	@echo "[42m[*] Install has Finished.[0m"
+	@echo "[42m[30m[*] Install has Finished.[0m"
 
-installDev: installDevNodejs installDevPython
+installDev: prepare installDevPython installDevC installDevNodejs installDevGo
 	@echo
-	@echo "[42m[*] InstallDev has Finished.[0m"
+	@echo "[42m[30m[*] InstallDev has Finished.[0m"
 
-init: prepare install update installDev
+init: prepare install update
 	@echo
-	@echo "[42m[*] Init has Finished.[0m"
+	@echo "[42m[30m[*] Init has Finished.[0m"
 
 .PHONY: prepare prerequisites prerequisitesTest \
 	installZsh installPrezto installNeovim installTmux \
-	installBins installDevShell installDevPython installDevNodejs installDevC installPythonVirtualenv changeDefaultShell \
+	installBins installPythonVirtualenv \
+	installDevShell installDevPython installDevNodejs installDevC installDevGo changeDefaultShell \
 	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM updateCustomBins updatePrezto \
 	clean update install installDev init initOSX \
 

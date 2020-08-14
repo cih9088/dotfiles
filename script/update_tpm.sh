@@ -8,11 +8,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-[[ ${VERBOSE} == YES ]] || start_spinner "Updating TPM..."
+echo "${marker_title} Prepare to update tpm"
+################################################################
+
+[[ ${VERBOSE} == "true" ]] \
+    && echo "${marker_info} Updating TMP..." \
+    || start_spinner "Updating TPM..."
 (
 rm -rf ${HOME}/.tmux/plugins/tpm || true
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
     "TPM is updated [local]" \
-    "TPM udpate is failed [local]. use VERBOSE=YES for error message"
+    "TPM udpate is failed [local]. use VERBOSE=true for error message"

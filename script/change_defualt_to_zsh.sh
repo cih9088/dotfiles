@@ -33,8 +33,8 @@ main() {
     # change default shell to zsh
     echo
     if [[ ! -z ${CONFIG+x} ]]; then
-        if [[ ${CONFIG_changeDefaultShell_change} == "yes" ]]; then
-            if [[ ${CONFIG_changeDefaultShell_local} == "yes" ]]; then
+        if [[ ${CONFIG_changeDefaultShell_change} == "true" ]]; then
+            if [[ ${CONFIG_changeDefaultShell_local} == "true" ]]; then
                 local_change \
                 && echo "${marker_ok} Changed default shell to local zsh" \
                 || echo "${marker_err} Change default shell to local zsh is failed"

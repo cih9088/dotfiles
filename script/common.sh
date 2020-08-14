@@ -9,6 +9,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 # Reset
 Color_Off='[0m'       # Text Reset
 
+Bold='[1m'            # Bold
+Italic='[4m'          # Italic
+
 # Regular Colors
 Black='[0;30m'        # Black
 Red='[0;31m'          # Red
@@ -85,6 +88,7 @@ marker_ok="${IGreen}[*]${Color_Off}"
 marker_err="${IRed}[!]${Color_Off}"
 marker_info="${IYellow}[+]${Color_Off}"
 marker_que="${ICyan}[?]${Color_Off}"
+marker_title="${IPurple}[#]${Color_Off}"
 
 
 case "$OSTYPE" in
@@ -104,10 +108,8 @@ fi
 # if [[ $$ = $BASHPID ]]; then
 # fi
 
-PROJ_HOME=${PROJ_HOME:=$(git rev-parse --show-toplevel)}
-TMP_DIR=${TMP_DIR:=${HOME}/tmp_install}
-VERBOSE=$(echo ${VERBOSE:-NO} | tr '[:upper:]' '[:lower:]')
-FORCE=$(echo ${FORCE:-NO} | tr '[:upper:]' '[:lower:]')
+PROJ_HOME=${PROJ_HOME:-$(git rev-parse --show-toplevel)}
+VERBOSE=$(echo ${VERBOSE:-false} | tr '[:upper:]' '[:lower:]')
 BIN_DIR=${BIN_DIR:=${PROJ_HOME}/bin}
 
 if [ ! -d $HOME/.local/bin ]; then
@@ -130,37 +132,24 @@ if [ ! -d $HOME/.config ]; then
     mkdir -p $HOME/.config
 fi
 
-if [ ! -d $TMP_DIR ]; then
-    mkdir -p $TMP_DIR
-fi
-
 [[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/parser_yaml ${CONFIG} "CONFIG_") || true
-[[ "${VERBOSE}" == "yes" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
-trap "rm -rf ${TMP_DIR}" SIGINT SIGTERM EXIT
+[[ "${VERBOSE}" == "true" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
 # [[ "${BASH_SOURCE[0]}" != "${0}" ]] && echo "script ${BASH_SOURCE[0]} is being sourced ..."
 # [[ "${BASH_SUBSHELL}" != 0 ]] && echo "It is in subshll" || echo "It is not subshell"
 
 
 main_script() {
+    TMP_DIR=${TMP_DIR:-$(mktemp -d -t dotfiles.andy.XXXXX)}
+
     local target=$1
     local setup_func_local=$2
     local setup_func_system=$3
     local version_func=$4
 
-    if [ -z ${target+x} ]; then
-        echo 'target is unset' >&2
-    fi
-    if [ -z ${setup_func_local+x} ]; then
-        echo 'setup_func_local is unset' >&2
-    fi
-    if [ -z ${setup_func_system+x} ]; then
-        echo 'setup_func_system is unset' >&2
-    fi
-
-    echo
+    # if version_func is given, process version checker
     if [ ! -z ${version_func+x} ]; then
         if [ -x "$(command -v ${target})" ]; then
-            echo "${marker_info} Following list is ${target} installed on the system"
+            echo "${marker_info} Following list is ${Bold}${Italic}${target}${Color_Off} installed on the machine"
             coms=($(which -a ${target} | uniq))
             (
                 printf 'LOCATION,VERSION\n'
@@ -169,69 +158,100 @@ main_script() {
                 done
             ) | column -t -s ',' | sed 's/^/    /'
         else
-            echo "${marker_info} ${target} is not found on the system"
+            echo "${marker_info} ${Bold}${Italic}${target}${Color_Off} is not found on the machine"
         fi
     fi
 
-    if [ ! -d $TMP_DIR ]; then
-        mkdir -p $TMP_DIR
-    fi
-
+    # install non-interactively
     if [[ ! -z ${CONFIG+x} ]]; then
         target_install="CONFIG_${target}_install"
         target_local="CONFIG_${target}_local"
         target_force="CONFIG_${target}_force"
-        target_install=${!target_install:-no}
-        target_local=${!target_local:-yes}
-        target_force=${!target_force:-no}
+        target_install=${!target_install:-false}
+        target_local=${!target_local:-true}
+        target_force=${!target_force:-false}
 
-        if [[ ${target_install} == "yes" ]]; then
-            [[ ${VERBOSE} == yes ]] || start_spinner "Installing ${target}... [force: ${target_force}]"
+        if [[ ${target_install} == "true" ]]; then
+            [[ ${VERBOSE} == "true" ]] \
+                && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
+                || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
             (
-                [[ ${target_local} == "yes" ]] \
+            # if local install and system install are not identical
+            if [[ ${setup_func_local} != ${setup_func_system} ]]; then
+                [[ ${target_local} == "true" ]] \
                     && ${setup_func_local} ${target_force} \
                     || ${setup_func_system} ${target_force}
+            # if local install and system install are identical
+            else
+                    ${setup_func_local} ${target_force}
+            fi
             ) >&3 2>&4 || exit_code="$?" && true
             stop_spinner "${exit_code}" \
-                "${target} is installed [force: ${target_force}]" \
-                "${target} install is failed [force: ${target_force}]. use VERBOSE=YES for debugging"
+                "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
+                "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
         else
-            echo "${marker_ok} ${target} is not installed"
+            echo "${marker_ok} ${Bold}${Italic}${target}${Color_Off} is not installed"
         fi
+    # install interactively
     else
-        target_force=${FORCE}
         while true; do
-            read -p "${marker_que} Do you wish to install ${target}? (force_install: ${target_force}) " yn
+            read -p "${marker_que} Do you wish to install ${Bold}${Italic}${target}${Color_Off}? " yn
             case $yn in
                 [Yy]* ) :; ;;
-                [Nn]* ) echo "${marker_err} Aborting install ${target}"; break;;
+                [Nn]* ) echo "${marker_err} Aborting install ${Bold}${Italic}${target}${Color_Off}"; echo; break;;
                 * ) echo "${marker_err} Please answer yes or no"; continue;;
             esac
 
-            read -p "${marker_que} Install locally or sytemwide? " yn
+            read -p "${marker_que} Do you wish to update ${Bold}${Italic}${target}${Color_Off} if it was already installed? " yn
             case $yn in
-                [Ll]ocal* )
-                    echo "${marker_info} Install ${target} ${nodejs_VERSION} locally"
-                    [[ ${VERBOSE} == yes ]] || start_spinner "Installing ${target}... [force: ${target_force}]"
-                    (
-                        ${setup_func_local} ${target_force}
-                    ) >&3 2>&4 || exit_code="$?" && true
-                    stop_spinner "${exit_code}" \
-                        "${target} is installed [force: ${target_force}]" \
-                        "${target} install is failed [force: ${target_force}]. use VERBOSE=YES for debugging"
-                    break;;
-                [Ss]ystem* )
-                    echo "${marker_info} Install latest ${target} systemwide"
-                    [[ ${VERBOSE} == yes ]] || start_spinner "Installing ${target}... [force: ${target_force}]"
-                    (
-                        ${setup_func_system} ${target_force}
-                    ) >&3 2>&4 || exit_code="$?" && true
-                    stop_spinner "${exit_code}" \
-                        "${target} is installed [force: ${target_force}]" \
-                        "${target} install is failed [force: ${target_force}]. use VERBOSE=YES for debugging"
-                    break;;
-                * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+                [Yy]* ) target_force=true; ;;
+                [Nn]* ) target_force=false:; ;;
+                * ) echo "${marker_err} Please answer yes or no"; continue;;
             esac
+
+            # if local install and system installare not identical
+            if [[ ${setup_func_local} != ${setup_func_system} ]]; then
+                read -p "${marker_que} Install locally or sytemwide? " yn
+                case $yn in
+                    [Ll]ocal* )
+                        echo "${marker_info} Install ${Bold}${Italic}${target}${Color_Off} locally"
+                        [[ ${VERBOSE} == "true" ]] \
+                            && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
+                            || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
+                        (
+                            ${setup_func_local} ${target_force}
+                        ) >&3 2>&4 || exit_code="$?" && true
+                        stop_spinner "${exit_code}" \
+                            "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
+                            "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
+                        break;;
+                    [Ss]ystem* )
+                        echo "${marker_info} Install latest ${Bold}${Italic}${target}${Color_Off} systemwide"
+                        [[ ${VERBOSE} == "true" ]] \
+                            && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
+                            || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
+                        (
+                            ${setup_func_system} ${target_force}
+                        ) >&3 2>&4 || exit_code="$?" && true
+                        stop_spinner "${exit_code}" \
+                            "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
+                            "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
+                        break;;
+                    * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
+                esac
+            # if local install and system install are identical
+            else
+                [[ ${VERBOSE} == "true" ]] \
+                    && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
+                    || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
+                (
+                    ${setup_func_local} ${target_force}
+                ) >&3 2>&4 || exit_code="$?" && true
+                stop_spinner "${exit_code}" \
+                    "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
+                    "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
+                break
+            fi
         done
     fi
 
@@ -239,4 +259,9 @@ main_script() {
     if [[ $$ = $BASHPID ]]; then
         rm -rf $TMP_DIR
     fi
+}
+
+random-string() {
+    local length=${1:-32}
+    echo $(cat /dev/urandom | env LC_CTYPE=C tr -dc 'a-zA-Z0-9' | fold -w ${length} | head -n 1)
 }

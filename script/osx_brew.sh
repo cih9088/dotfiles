@@ -21,7 +21,7 @@ fi
 brew update
 
 # Upgrade any already-installed formulae.
-brew upgrade
+brew upgrade --all
 
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -46,9 +46,9 @@ brew install bash
 # We installed the new shell, now we have to activate it
 # echo "Adding the newly installed shell to the list of allowed shells"
 # Prompts for password
-# sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
+sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
 # Change to the new shell, prompts for password
-# chsh -s /usr/local/bin/bash
+chsh -s /usr/local/bin/bash
 
 # Install `wget` with IRI support.
 # brew install wget --with-iri

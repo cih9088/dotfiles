@@ -15,7 +15,9 @@ which -a pip3 || echo "${IRed}pip2 is not installed${Color_Off}"
 which -a python3 || echo "${IRed}python3 is not installed${Color_Off}"
 which -a pip3 || echo "${IRed}pip3 is not installed${Color_Off}"
 which -a wget || echo "${IRed}wget is not installed${Color_Off}"
+which -a curl || echo "${IRed}curl is not installed${Color_Off}"
 which -a git || echo "${IRed}git is not installed${Color_Off}"
+which -a column || echo "${IRed}column is not installed${Color_Off}"
 
 if [[ $platform == "OSX" ]]; then
     which -a pbcopy || echo "${IRed}pbcopy is not installed${Color_Off}"
