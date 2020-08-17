@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to update bin directory"
+echo "${marker_title} Prepare to ${Bold}${Underline}update bin directory${Color_Off}"
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \

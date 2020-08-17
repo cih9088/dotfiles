@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to update tpm"
+echo "${marker_title} Prepare to ${Bold}${Underline}update tpm${Color_Off}"
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \

@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install C environment"
+echo "${marker_title} Prepare to ${Bold}${Underline}install C environment${Color_Off}"
 
 LLVM_VERSION=10.0.0
 ################################################################

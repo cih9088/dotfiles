@@ -10,7 +10,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 Color_Off='[0m'       # Text Reset
 
 Bold='[1m'            # Bold
-Italic='[4m'          # Italic
+Underline='[4m'       # Underline
 
 # Regular Colors
 Black='[0;30m'        # Black
@@ -149,7 +149,7 @@ main_script() {
     # if version_func is given, process version checker
     if [ ! -z ${version_func+x} ]; then
         if [ -x "$(command -v ${target})" ]; then
-            echo "${marker_info} Following list is ${Bold}${Italic}${target}${Color_Off} installed on the machine"
+            echo "${marker_info} Following list is ${Bold}${Underline}${target}${Color_Off} installed on the machine"
             coms=($(which -a ${target} | uniq))
             (
                 printf 'LOCATION,VERSION\n'
@@ -158,7 +158,7 @@ main_script() {
                 done
             ) | column -t -s ',' | sed 's/^/    /'
         else
-            echo "${marker_info} ${Bold}${Italic}${target}${Color_Off} is not found on the machine"
+            echo "${marker_info} ${Bold}${Underline}${target}${Color_Off} is not found on the machine"
         fi
     fi
 
@@ -173,8 +173,8 @@ main_script() {
 
         if [[ ${target_install} == "true" ]]; then
             [[ ${VERBOSE} == "true" ]] \
-                && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
-                || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
+                && echo "${marker_info} Installing ${Bold}${Underline}${target}${Color_Off}..." \
+                || start_spinner "Installing ${Bold}${Underline}${target}${Color_Off}... [force: ${target_force}]"
             (
             # if local install and system install are not identical
             if [[ ${setup_func_local} != ${setup_func_system} ]]; then
@@ -187,22 +187,22 @@ main_script() {
             fi
             ) >&3 2>&4 || exit_code="$?" && true
             stop_spinner "${exit_code}" \
-                "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
-                "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
+                "${Bold}${Underline}${target}${Color_Off} is installed [force: ${target_force}]" \
+                "${Bold}${Underline}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
         else
-            echo "${marker_ok} ${Bold}${Italic}${target}${Color_Off} is not installed"
+            echo "${marker_ok} ${Bold}${Underline}${target}${Color_Off} is not installed"
         fi
     # install interactively
     else
         while true; do
-            read -p "${marker_que} Do you wish to install ${Bold}${Italic}${target}${Color_Off}? " yn
+            read -p "${marker_que} Do you wish to install ${Bold}${Underline}${target}${Color_Off}? " yn
             case $yn in
                 [Yy]* ) :; ;;
-                [Nn]* ) echo "${marker_err} Aborting install ${Bold}${Italic}${target}${Color_Off}"; echo; break;;
+                [Nn]* ) echo "${marker_err} Aborting install ${Bold}${Underline}${target}${Color_Off}"; echo; break;;
                 * ) echo "${marker_err} Please answer yes or no"; continue;;
             esac
 
-            read -p "${marker_que} Do you wish to update ${Bold}${Italic}${target}${Color_Off} if it was already installed? " yn
+            read -p "${marker_que} Do you wish to update ${Bold}${Underline}${target}${Color_Off} if it was already installed? " yn
             case $yn in
                 [Yy]* ) target_force=true; ;;
                 [Nn]* ) target_force=false:; ;;
@@ -214,42 +214,42 @@ main_script() {
                 read -p "${marker_que} Install locally or sytemwide? " yn
                 case $yn in
                     [Ll]ocal* )
-                        echo "${marker_info} Install ${Bold}${Italic}${target}${Color_Off} locally"
+                        echo "${marker_info} Install ${Bold}${Underline}${target}${Color_Off} locally"
                         [[ ${VERBOSE} == "true" ]] \
-                            && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
-                            || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
+                            && echo "${marker_info} Installing ${Bold}${Underline}${target}${Color_Off}..." \
+                            || start_spinner "Installing ${Bold}${Underline}${target}${Color_Off}... [force: ${target_force}]"
                         (
                             ${setup_func_local} ${target_force}
                         ) >&3 2>&4 || exit_code="$?" && true
                         stop_spinner "${exit_code}" \
-                            "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
-                            "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
+                            "${Bold}${Underline}${target}${Color_Off} is installed [force: ${target_force}]" \
+                            "${Bold}${Underline}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
                         break;;
                     [Ss]ystem* )
-                        echo "${marker_info} Install latest ${Bold}${Italic}${target}${Color_Off} systemwide"
+                        echo "${marker_info} Install latest ${Bold}${Underline}${target}${Color_Off} systemwide"
                         [[ ${VERBOSE} == "true" ]] \
-                            && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
-                            || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
+                            && echo "${marker_info} Installing ${Bold}${Underline}${target}${Color_Off}..." \
+                            || start_spinner "Installing ${Bold}${Underline}${target}${Color_Off}... [force: ${target_force}]"
                         (
                             ${setup_func_system} ${target_force}
                         ) >&3 2>&4 || exit_code="$?" && true
                         stop_spinner "${exit_code}" \
-                            "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
-                            "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
+                            "${Bold}${Underline}${target}${Color_Off} is installed [force: ${target_force}]" \
+                            "${Bold}${Underline}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
                         break;;
                     * ) echo "${marker_err} Please answer locally or systemwide"; continue;;
                 esac
             # if local install and system install are identical
             else
                 [[ ${VERBOSE} == "true" ]] \
-                    && echo "${marker_info} Installing ${Bold}${Italic}${target}${Color_Off}..." \
-                    || start_spinner "Installing ${Bold}${Italic}${target}${Color_Off}... [force: ${target_force}]"
+                    && echo "${marker_info} Installing ${Bold}${Underline}${target}${Color_Off}..." \
+                    || start_spinner "Installing ${Bold}${Underline}${target}${Color_Off}... [force: ${target_force}]"
                 (
                     ${setup_func_local} ${target_force}
                 ) >&3 2>&4 || exit_code="$?" && true
                 stop_spinner "${exit_code}" \
-                    "${Bold}${Italic}${target}${Color_Off} is installed [force: ${target_force}]" \
-                    "${Bold}${Italic}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
+                    "${Bold}${Underline}${target}${Color_Off} is installed [force: ${target_force}]" \
+                    "${Bold}${Underline}${target}${Color_Off} install is failed [force: ${target_force}]. use VERBOSE=true for debugging"
                 break
             fi
         done

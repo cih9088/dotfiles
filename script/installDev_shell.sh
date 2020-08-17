@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install shell environment"
+echo "${marker_title} Prepare to ${Bold}${Underline}install shell environment${Color_Off}"
 ################################################################
 
 setup_func_shellcheck_local() {

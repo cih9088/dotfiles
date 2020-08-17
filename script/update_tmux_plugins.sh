@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to update tmux plugin"
+echo "${marker_title} Prepare to ${Bold}${Underline}update tmux plugin${Color_Off}"
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \

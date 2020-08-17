@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install rg"
+echo "${marker_title} Prepare to ${Bold}${Underline}install rg${Color_Off}"
 
 RG_LATEST_VERSION="$(${PROJ_HOME}/script/get_latest_release BurntSushi/ripgrep)"
 RG_VERSION=${1:-${RG_LATEST_VERSION##v}}

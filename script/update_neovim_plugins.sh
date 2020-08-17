@@ -8,13 +8,13 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to update neovim plugin"
+echo "${marker_title} Prepare to ${Bold}${Underline}update neovim plugin${Color_Off}"
 
 export PATH="${HOME}/.pyenv/bin:$PATH"
 eval "$(pyenv init -)"
 export PATH="${HOME}/.goenv/bin:$PATH"
 eval "$(goenv init -)"
-goenv global $(goenv versions --bare | grep '^[0-9.]\+$' | sort -rV | head)
+export PATH="${HOME}/.local/bin:$PATH"
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \
@@ -23,14 +23,11 @@ goenv global $(goenv versions --bare | grep '^[0-9.]\+$' | sort -rV | head)
 (
 
 # plugin update
-# nvim -E -s -u "${HOME}/.config/nvim/init.vim" +PlugInstall +PlugUpgrade +PlugUpdate +UpdateRemotePlugins +qall || true
-
-# plugin update
-nvim +PlugInstall +PlugUpgrade +PlugUpdate +UpdateRemotePlugins +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugInstall +PlugUpgrade +PlugUpdate +UpdateRemotePlugins +qall
 
 # install coc extensions
-nvim +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-go coc-sh' +qall
-nvim +CocUpdateSync +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-go coc-sh' +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +CocUpdateSync +qall
 
 # ln -snf ${PROJ_HOME}/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
 ) >&3 2>&4 || exit_code="$?" && true

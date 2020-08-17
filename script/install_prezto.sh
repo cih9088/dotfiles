@@ -8,17 +8,17 @@
 [[ "${VERBOSE:=false}" == "true" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
 
 echo
-echo "[0;93m[+][0m Prepare to install prezto"
+echo "[0;95m[#][0m Prepare to [1m[4minstall prezto[0m"
 ################################################################
 
 setup_func() {
     if [ -d "${ZDOTDIR:-$HOME}/.zprezto" ]; then
         rm -rf "${ZDOTDIR:-$HOME}/.zprezto"
-        echo "[0;93m[+][0m It seems that prezto was installed before. Uninstall and reinstall it"
+        echo "[0;93m[+][0m It seems that [1m[4mprezto[0m was installed before. Uninstall and reinstall it"
     fi
     [[ ${VERBOSE} == "true" ]] \
-        && echo "[0;93m[+][0m Installing prezto..." \
-        || start_spinner "Installing prezto..."
+        && echo "[0;93m[+][0m Installing [1m[4mprezto[0m..." \
+        || start_spinner "Installing [1m[4mprezto[0m..."
     (
     # Clone prezto the repository
     git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
@@ -47,23 +47,23 @@ setup_func() {
 
     ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
-        "prezto is installed" \
-        "prezto install is failed. use VERBOSE=true for error message"
+        "[1m[4mprezto[0m is installed" \
+        "[1m[4mprezto[0m install is failed. use VERBOSE=true for error message"
 }
 
 if [[ ! -z ${CONFIG+x} ]]; then
     if [[ ${CONFIG_prezto_install} == "true" ]]; then
         setup_func
     else
-        echo "[0;92m[!][0m prezto is not installed"
+        echo "[0;92m[!][0m [1m[4mprezto[0m is not installed"
     fi
 else
     while true; do
-        read "yn?[0;96m[?][0m Do you wish to install prezto? "
+        read "yn?[0;96m[?][0m Do you wish to install [1m[4mprezto[0m? "
         # vared -p "Do you wish to install prezto? " -c yn
         case $yn in
-            [Yy]* ) echo "[0;93m[+][0m Install prezto"; setup_func; break;;
-            [Nn]* ) echo "[0;91m[!][0m Aborting install prezto"; break;;
+            [Yy]* ) echo "[0;93m[+][0m Install [1m[4mprezto[0m"; setup_func; break;;
+            [Nn]* ) echo "[0;91m[!][0m Aborting install [1m[4mprezto[0m"; break;;
             * ) echo "[0;91m[!][0mPlease answer yes or no";;
         esac
     done

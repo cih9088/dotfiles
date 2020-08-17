@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install nvim"
+echo "${marker_title} Prepare to ${Bold}${Underline}install nvim${Color_Off}"
 
 NVIM_LATEST_VERSION="$(${PROJ_HOME}/script/get_latest_release neovim/neovim)"
 NVIM_VERSION=${1:-${NVIM_LATEST_VERSION##v}}

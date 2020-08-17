@@ -26,7 +26,6 @@
     "diagnostic.virtualTextPrefix": "  ‣ ",
     "diagnostic.virtualTextLineSeparator": " \\ ",
 
-    "snippets.userSnippetsDirectory": "snips",
     "snippets.ultisnips.directories": [
         "UltiSnips",
         "snips",

@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install ranger"
+echo "${marker_title} Prepare to ${Bold}${Underline}install ranger${Color_Off}"
 ################################################################
 
 setup_func_ranger_local() {

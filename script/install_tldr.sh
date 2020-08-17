@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install tldr"
+echo "${marker_title} Prepare to ${Bold}${Underline}install tldr${Color_Off}"
 ################################################################
 
 setup_func_tldr_local() {
@@ -34,7 +34,7 @@ setup_func_tldr_system() {
 }
 
 version_func_tldr() {
-    $1 --version | head -1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+    $1 --verbose | head -3 | grep tldr | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
 }
 
-main_script 'tldr' setup_func_tldr_local setup_func_tldr_system version_func_tldr
+main_script 'tldr' setup_func_tldr_local setup_func_tldr_system

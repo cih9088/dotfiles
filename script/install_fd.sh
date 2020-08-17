@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install fd"
+echo "${marker_title} Prepare to ${Bold}${Underline}install fd${Color_Off}"
 
 FD_LATEST_VERSION="$(${PROJ_HOME}/script/get_latest_release sharkdp/fd)"
 FD_VERSION=${1:-${FD_LATEST_VERSION##v}}

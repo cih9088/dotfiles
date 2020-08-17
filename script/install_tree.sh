@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install tree"
+echo "${marker_title} Prepare to ${Bold}${Underline}install tree${Color_Off}"
 
 TREE_VERSION=${1:-1.8.0}
 ################################################################

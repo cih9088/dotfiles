@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install golang environment"
+echo "${marker_title} Prepare to ${Bold}${Underline}install golang environment${Color_Off}"
 
 # use sytem python
 export GOENV_ROOT=${HOME}/.goenv
@@ -69,9 +69,11 @@ golang_install() {
     eval "$(goenv init -)"
 
     goenv latest install -s
+    goenv global $(goenv versions --bare | grep '^[0-9.]\+$' | sort -rV | head)
 }
 
 golang_version_func() {
+    eval "$(goenv init -)"
     $1 version | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}'
 }
 

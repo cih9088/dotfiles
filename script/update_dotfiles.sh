@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to update dotfiles"
+echo "${marker_title} Prepare to ${Bold}${Underline}update dotfiles${Color_Off}"
 ################################################################
 
 backup_directory=${HOME}/dotfiles.$(date "+%y%m%d%H%M").$(random-string 6).bak

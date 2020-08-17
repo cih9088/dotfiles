@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to update coc"
+echo "${marker_title} Prepare to ${Bold}${Underline}update coc${Color_Off}"
 ################################################################
 
 echo

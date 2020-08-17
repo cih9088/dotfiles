@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install thefuck"
+echo "${marker_title} Prepare to ${Bold}${Underline}install thefuck${Color_Off}"
 ################################################################
 
 setup_func_thefuck_local() {

@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install bash_snippets"
+echo "${marker_title} Prepare to ${Bold}${Underline}install bash_snippets${Color_Off}"
 ################################################################
 
 setup_func_bash_snippets_local() {

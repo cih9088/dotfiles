@@ -7,7 +7,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 echo
-echo "${marker_title} Prepare to install python environment"
+echo "${marker_title} Prepare to ${Bold}${Underline}install python environment${Color_Off}"
 
 # use sytem python
 export PYENV_ROOT=${HOME}/.pyenv
@@ -88,6 +88,7 @@ python3_install() {
 }
 
 python_version_func() {
+    eval "$(pyenv init -)"
     $1 --version 2>&1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
 }
 
