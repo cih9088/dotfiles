@@ -345,7 +345,7 @@
             autocmd BufReadPre * let f=getfsize(expand("<afile>")) | if f > g:LargeFile || f == -2 | call LargeFile() | endif
         augroup END
 
-        function LargeFile()
+        function! LargeFile()
             " no syntax highlighting etc
             " set eventignore+=FileType
             " save memory when other file is viewed
@@ -418,12 +418,23 @@
     " }}}
 
     " Buffer navigation {{{
+        function! s:buffernavigation(cmd)
+            let buf = bufnr()
+            execute a:cmd
+            while ( &buftype == 'terminal' 
+                        \ || &filetype == 'fugitive'
+                        \ || &filetype == 'dirvish') 
+                        \ && bufnr() != buf
+                execute a:cmd
+            endwhile
+        endfunction
+
         " Go back to previous buffer
         nmap <C-W><tab> :e#<CR>
         " buffer previous
-        nnoremap [b :bprevious<CR>
+        nnoremap [b :<c-u>call <SID>buffernavigation('bprevious')<CR>
         " buffer next
-        nnoremap ]b :bnext<CR>
+        nnoremap ]b :<c-u>call <SID>buffernavigation('bnext')<CR>
         " new empty buffer
         nnoremap <C-b> :enew<CR>
         " conform changes (Yes, No, Cancel) instead of error
@@ -541,48 +552,6 @@
             let cmd = a:count ? a:count . cmd : cmd
             exe cmd
         endf
-        " func! s:openFloatBuffer()
-        "     " Configuration
-        "     let height = float2nr((&lines - 2) * 0.6)
-        "     let row = float2nr((&lines - height) / 2)
-        "     let width = float2nr(&columns * 0.8)
-        "     let col = float2nr((&columns - width) / 2)
-        "     let top = "╭" . repeat("─", width + 2) . "╮"
-        "     let mid = "│" . repeat(" ", width + 2) . "│"
-        "     let bot = "╰" . repeat("─", width + 2) . "╯"
-        "     let lines = [top] + repeat([mid], height) + [bot]
-        "
-        "     " Border Window
-        "     let border_opts = {
-        "                 \ 'relative': 'editor',
-        "                 \ 'row': row - 1,
-        "                 \ 'col': col - 2,
-        "                 \ 'width': width + 4,
-        "                 \ 'height': height + 2,
-        "                 \ 'style': 'minimal'
-        "                 \ }
-        "     " Terminal Window
-        "     let opts = {
-        "                 \ 'relative': 'editor',
-        "                 \ 'row': row,
-        "                 \ 'col': col,
-        "                 \ 'width': width,
-        "                 \ 'height': height,
-        "                 \ 'style': 'minimal'
-        "                 \ }
-        "
-        "     let bbuf = nvim_create_buf(v:false, v:true)
-        "     let s:float_term_border_win = nvim_open_win(bbuf, v:true, border_opts)
-        "     call setwinvar(s:float_term_border_win, '&winhighlight', 'NormalFloat:Todo')
-        "     call nvim_buf_set_lines(bbuf, 0, -1, v:true, lines)
-        "
-        "     let buf = nvim_create_buf(v:false, v:true)
-        "     let s:float_term_win = nvim_open_win(buf, v:true, opts)
-        "     call setwinvar(s:float_term_win, '&winhighlight', 'NormalFloat:Normal')
-        "
-        "     " Close border window when terminal window close
-        "     autocmd TermClose * ++once :bd! | call nvim_win_close(s:float_term_border_win, v:true)
-        " endf
         " steal https://github.com/junegunn/fzf.vim/issues/821#issuecomment-581273191
         func! s:openFloatBuffer()
             " Configuration
@@ -667,9 +636,9 @@
             exe 'terminal' a:args
             exe 'startinsert'
         endf
-        command -count -nargs=* TermHorizontal call s:openTerm(<q-args>, <count>, 0)
-        command -count -nargs=* TermVertical call s:openTerm(<q-args>, <count>, 1)
-        command -count -nargs=* TermFloat call s:openTerm(<q-args>, <count>, 3)
+        command! -count -nargs=* TermHorizontal call s:openTerm(<q-args>, <count>, 0)
+        command! -count -nargs=* TermVertical call s:openTerm(<q-args>, <count>, 1)
+        command! -count -nargs=* TermFloat call s:openTerm(<q-args>, <count>, 3)
         if has('nvim-0.4') || has('patch-8.2.191')
             nnoremap <leader>R :TermFloat<CR>
         else
@@ -760,9 +729,32 @@
         if executable('rg')
             set grepprg=rg\ -S\ --vimgrep
         endif
-        autocmd QuickFixCmdPost *grep* cwindow"
-        " no press enter screen
-        cnoreabbrev <expr> grep  (getcmdtype() ==# ':' && getcmdline() =~# '^grep')  ? 'silent grep'  : 'grep'
+    " }}}
+
+    " Improve grep {{{
+        " https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
+        function! Grep(...)
+            if exists("*expandcmd")
+                return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
+            else
+                " neovim v0.4.4 has no expandcmd()
+                let l:expands = []
+                for elem in a:000
+                    let l:expands += [expand(elem)]
+                endfor
+                return system(join([&grepprg] + l:expands), ' ')
+            endif
+        endfunction
+        command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
+        command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
+        " Open the location/quickfix window automatically if there are valid entries in the list
+        augroup quickfix
+            autocmd!
+            autocmd QuickFixCmdPost cgetexpr cwindow
+            autocmd QuickFixCmdPost lgetexpr lwindow
+        augroup END
+        cnoreabbrev <expr> grep (getcmdtype() ==# ':' && getcmdline() ==# 'grep') ? 'Grep' : 'grep'
+        cnoreabbrev <expr> lgrep (getcmdtype() ==# ':' && getcmdline() ==# 'lgrep') ? 'LGrep' : 'lgrep'
     " }}}
 
     " calulate any things {{{
@@ -787,7 +779,7 @@
     " }}}
 
     " {{{ copy the current file's full absolute path.
-        command CopyFilePath let @+ = expand(has('win32') ? '%:p:gs?/?\\?' : '%:p')
+        command! CopyFilePath let @+ = expand(has('win32') ? '%:p:gs?/?\\?' : '%:p')
     " }}}
 
 " }}}
@@ -1125,6 +1117,9 @@
                                 \ }}})
             endif
 
+            " add user defined snippets
+            call coc#config('snippets.userSnippetsDirectory', split(system('dirname ' . $MYVIMRC))[-1] . '/snips')
+
             " Use <C-j> for jump to next placeholder, it's default of coc.nvim
             let g:coc_snippet_next = '<c-j>'
 
@@ -1247,10 +1242,10 @@
         if has_key(g:plugs, 'vim-startify')
             nnoremap <leader>S :Startify<CR>
             let g:startify_bookmarks = [
-                        \ { 'a': '~/dotfiles/vim/vimrc' },
-                        \ { 's': '~/dotfiles/zsh/zshrc' },
-                        \ { 'd': '~/dotfiles/zsh/zpreztorc' },
-                        \ { 'f': '~/dotfiles/tmux/tmux.conf' }
+                        \ { 'a': $MYVIMRC },
+                        \ { 's': split(system('dirname $(dirname ' . $MYVIMRC. ')'))[-1] . '/zsh/zshrc' },
+                        \ { 'd': split(system('dirname $(dirname ' . $MYVIMRC. ')'))[-1] . '/zsh/zpreztorc' },
+                        \ { 'f': split(system('dirname $(dirname ' . $MYVIMRC. ')'))[-1] . '/tmux/tmux.conf' },
                         \]
             let g:startify_change_to_dir = 0
         endif
@@ -1309,7 +1304,7 @@
 
     " numirias/semshi {{{
         if has_key(g:plugs, 'semshi')
-            function CustomSemshiHighlights()
+            function! CustomSemshiHighlights()
                 hi semshiLocal           ctermfg=209 guifg=#ff875f
                 hi semshiGlobal          ctermfg=214 guifg=#ffaf00
                 hi semshiImported        ctermfg=214 guifg=#ffaf00 cterm=bold gui=bold
@@ -1338,6 +1333,8 @@
 
     " machakann/vim-sandwich {{{
         if has_key(g:plugs, 'vim-sandwich')
+            " vim-surround mapping
+            runtime macros/sandwich/keymap/surround.vim
             " if you have not copied default recipes
             let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
 

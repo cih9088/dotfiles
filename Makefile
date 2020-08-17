@@ -123,6 +123,7 @@ updateTmuxPlugins: updateTPM
 	@( $(SCRIPTS_DIR)/update_tmux_plugins.sh )
 
 clean:
+	@( sed -i -e '/\/.local\/bin\/zsh ]]; then/,+3d' .bashrc )
 	@echo "[0;92m[*][0m Remove all configurations files"
 	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \

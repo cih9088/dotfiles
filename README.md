@@ -319,6 +319,8 @@ For more detailed information please refer [tmux.conf](https://github.com/cih908
     - true color not supported \
     ![truecolor not supported](https://imgur.com/vsOcuqx.png)
 
+4. virtualenvwrapper is not installed propely.
+    > `pip install virtualenv` first
 
 
 ## TODO
