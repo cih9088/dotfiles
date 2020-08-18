@@ -53,7 +53,10 @@ setup_func_fd_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew install fd
+        brew list fd || brew install fd
+        if [ ${force} == 'true' ]; then
+            brew upgrade fd
+        fi
     elif [[ $platform == "LINUX" ]]; then
         cd $TMP_DIR
         wget https://github.com/sharkdp/fd/releases/download/${FD_VERSION}/fd_${FD_VERSION##v}_amd64.deb

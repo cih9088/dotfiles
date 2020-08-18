@@ -27,9 +27,16 @@ setup_func_thefuck_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew install thefuck
+        brew list thefuck || brew install thefuck
+        if [ ${force} == 'true' ]; then
+            brew upgrade thefuck
+        fi
     elif [[ $platform == "LINUX" ]]; then
-        sudo pip3 install thefuck --upgrade --force-reinstall
+        if [ ${force} == 'true' ]; then
+            sudo pip3 install thefuck --upgrade --force-reinstall
+        else
+            sudo pip3 install thefuck
+        fi
     fi
 }
 

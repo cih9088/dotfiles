@@ -68,12 +68,9 @@ setup_func_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        if [ -x "$(command -v /usr/local/bin/ccls)" ]; then
-            if [ ${force} == 'true' ]; then
-                brew upgrade ccls
-            fi
-        else
-            brew install ccls
+        brew list ccls || brew install ccls
+        if [ ${force} == 'true' ]; then
+            brew upgrade ccls
         fi
     elif [[ $platform == "LINUX" ]]; then
         # install clang+LLVM with sudo

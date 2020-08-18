@@ -54,38 +54,38 @@
     " }}}
 
     " Plugins for Convenient coding {{{
-        Plug 'Shougo/context_filetype.vim' " provides functions to find fenced code blocks and their filetype
-        " Plug 'sirver/ultisnips' " snippet engin -> coc.nvim
-        Plug 'honza/vim-snippets' " snippet source
-        Plug 'justinmk/vim-dirvish' " faster filebrowser
-        " Plug 'tpope/vim-vinegar' " netrw filebrowser -> vim-dirvish
-        Plug 'liuchengxu/vista.vim' " alternative of tagbar
-        Plug 'machakann/vim-sandwich' " alternative of vim-surround
-        Plug 'scrooloose/nerdcommenter' " make comment easyier
-        Plug 'Yggdroot/indentLine' " indent indicator
-        Plug 'jiangmiao/auto-pairs' " insert and delete pairs automaticcaly
-        Plug 'christoomey/vim-tmux-navigator' " seamlessly move between vim splits and tmux panes
+        Plug 'Shougo/context_filetype.vim'                                   " provides functions to find fenced code blocks and their filetype
+        " Plug 'sirver/ultisnips'                                            " snippet engin -> coc.nvim
+        Plug 'honza/vim-snippets'                                            " snippet source
+        Plug 'justinmk/vim-dirvish'                                          " faster filebrowser
+        " Plug 'tpope/vim-vinegar'                                           " netrw filebrowser -> vim-dirvish
+        Plug 'liuchengxu/vista.vim'                                          " alternative of tagbar
+        Plug 'machakann/vim-sandwich'                                        " alternative of vim-surround
+        Plug 'scrooloose/nerdcommenter'                                      " make comment easyier
+        Plug 'Yggdroot/indentLine'                                           " indent indicator
+        Plug 'jiangmiao/auto-pairs'                                          " insert and delete pairs automaticcaly
+        Plug 'christoomey/vim-tmux-navigator'                                " seamlessly move between vim splits and tmux panes
         Plug 'tpope/vim-repeat'
-        Plug 'tpope/vim-fugitive' " git command in vim
+        Plug 'tpope/vim-fugitive'                                            " git command in vim
         Plug 'tpope/vim-unimpaired'
         Plug 'tpope/vim-obsession'
         Plug 'tpope/vim-eunuch'
         Plug 'tpope/vim-abolish'
         " Plug 'airblade/vim-gitgutter'
         Plug 'mhinz/vim-signify'
-        Plug 'kshenoy/vim-signature' " place, toggle and display marks
+        Plug 'kshenoy/vim-signature'                                         " place, toggle and display marks
         Plug 'junegunn/vim-easy-align'
         Plug 'kana/vim-textobj-user'
         Plug 'michaeljsmith/vim-indent-object'
         Plug 'idbrii/textobj-word-column.vim'
         Plug 'junegunn/gv.vim'
         Plug 'unblevable/quick-scope'
-        " Plug 'dhruvasagar/vim-table-mode' " easy table edit
-        " Plug 'RRethy/vim-illuminate' " highlight current cursor word -> coc.nvim
-        Plug 'junegunn/vim-peekaboo' " show register contents
-        " Plug 'AndrewRadev/splitjoin.vim' " switching between one-liner and multiliner
+        " Plug 'dhruvasagar/vim-table-mode'                                  " easy table edit
+        " Plug 'RRethy/vim-illuminate'                                       " highlight current cursor word -> coc.nvim
+        Plug 'junegunn/vim-peekaboo'                                         " show register contents
+        " Plug 'AndrewRadev/splitjoin.vim'                                   " switching between one-liner and multiliner
         Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] } " help for leader
-        Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' } " color
+        Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }            " color
         if has('nvim')
             set inccommand=nosplit
         else
@@ -97,7 +97,7 @@
         Plug 'itchyny/lightline.vim'                            " status line
         Plug 'mgee/lightline-bufferline'                        " status line += buffer
         Plug 'niklaas/lightline-gitdiff'                        " status line += git diff
-        Plug 'junegunn/fzf', { 'do': './install --all' }        " fuzzy finder
+        Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }     " fuzzy finder
         Plug 'junegunn/fzf.vim'                                 " fuzzy finder for vim
         " Plug 'junegunn/goyo.vim', { 'on': ['Goyo', 'Goyo!'] } " simplify
         Plug 'metakirby5/codi.vim', { 'on': ['Codi'] }

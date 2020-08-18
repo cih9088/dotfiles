@@ -101,11 +101,11 @@ setup_func_local() {
 
     if [ ${install} == 'true' ]; then
         if [[ $platform == "OSX" ]]; then
-            wget https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz
+            wget https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-macos.tar.gz
             tar -xvzf nvim-macos.tar.gz
             yes | \cp -rf nvim-osx64/* $HOME/.local/
         elif [[ $platform == "LINUX" ]]; then
-            wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+            wget https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim.appimage
             # https://github.com/neovim/neovim/issues/7620
             # https://github.com/neovim/neovim/issues/7537
             chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract
@@ -125,18 +125,15 @@ setup_func_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        if [ -x "$(command -v /usr/local/bin/nvim)" ]; then
-            if [ ${force} == 'true' ]; then
-                brew upgrade neovim
-            fi
-        else
-            brew install neovim
+        brew list neovim || brew install neovim
+        if [ ${force} == 'true' ]; then
+            brew upgrade neovim
         fi
     elif [[ $platform == "LINUX" ]]; then
-        sudo apt-get install software-properties-common
+        sudo apt-get -y install software-properties-common
         sudo add-apt-repository ppa:neovim-ppa/stable
-        sudo apt-get update
-        sudo apt-get install neovim
+        sudo apt-get -y update
+        sudo apt-get -y install neovim
     fi
     setup_func_python_support ${force}
 }

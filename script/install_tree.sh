@@ -50,8 +50,12 @@ setup_func_tree_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew install tree
+        brew list tree || brew install tree
+        if [ ${force} == 'true' ]; then
+            brew upgrade tree
+        fi
     elif [[ $platform == "LINUX" ]]; then
+        sudo apt-get -y remove tree
         sudo apt-get -y install tree
     fi
 }

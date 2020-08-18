@@ -15,8 +15,8 @@ backup_directory=${HOME}/dotfiles.$(date "+%y%m%d%H%M").$(random-string 6).bak
 mkdir -p ${backup_directory}
 
 [[ ${VERBOSE} == "true" ]] \
-    && echo "${marker_info} Updating dotfiles..." \
-    || start_spinner "Updating dotfiles..."
+    && echo "${marker_info} Updating ${Bold}${Underline}dotfiles${Color_Off}..." \
+    || start_spinner "Updating ${Bold}${Underline}dotfiles${Color_Off}..."
 (
 VIM_DIR=${PROJ_HOME}/vim
 NVIM_DIR=${PROJ_HOME}/nvim
@@ -136,8 +136,8 @@ fi
 
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
-    "dotfiles are updated [local]" \
-    "dotfiles udpate is failed [local]. use VERBOSE=true for error message"
+    "${Bold}${Underline}dotfiles${Color_Off} are updated [local]" \
+    "${Bold}${Underline}dotfiles${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"
 
 if [ -d ${backup_directory} ]; then
     echo "${marker_info} Your dotfiles have been backed up to ${backup_directory} "

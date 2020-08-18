@@ -25,12 +25,14 @@ setup_func_bash_snippets_system() {
     force=$1
     cd $TMP_DIR
 
-    git clone https://github.com/alexanderepstein/Bash-Snippets
-    cd Bash-Snippets
-
     if [[ $platform == "OSX" ]]; then
-        brew install bash-snippets
+        brew list bash-snippets || brew install bash-snippets
+        if [ ${force} == 'true' ]; then
+            brew upgrade bash-snippets
+        fi
     elif [[ $platform == "LINUX" ]]; then
+        git clone https://github.com/alexanderepstein/Bash-Snippets
+        cd Bash-Snippets
         ./install.sh transfer cheat
     fi
 }

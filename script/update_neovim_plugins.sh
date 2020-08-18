@@ -18,8 +18,8 @@ export PATH="${HOME}/.local/bin:$PATH"
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \
-    && echo "${marker_info} Updating neovim plugins..." \
-    || start_spinner "Updating neovim plugins..."
+    && echo "${marker_info} Updating ${Bold}${Underline}neovim plugins${Color_Off}..." \
+    || start_spinner "Updating ${Bold}${Underline}neovim plugins${Color_Off}..."
 (
 
 # plugin update
@@ -32,5 +32,5 @@ nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +CocUpdateSync +qall
 # ln -snf ${PROJ_HOME}/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
-    "neovim plugins are updated [local]" \
-    "neovim plugins udpate is failed [local]. use VERBOSE=true for error message"
+    "${Bold}${Underline}neovim plugins${Color_Off} are updated [local]" \
+    "${Bold}${Underline}neovim plugins${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"

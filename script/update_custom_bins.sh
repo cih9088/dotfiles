@@ -12,8 +12,8 @@ echo "${marker_title} Prepare to ${Bold}${Underline}update bin directory${Color_
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \
-    && echo "${marker_info} Updating custom bin files..." \
-    || start_spinner "Updating custom bin files..."
+    && echo "Updating ${marker_info} ${Bold}${Underline}custom bin files${Color_Off}..." \
+    || start_spinner "Updating ${marker_info} ${Bold}${Underline}custom bin files${Color_Off}..."
 (
 # https://github.com/ChristopherSchultz/fast-file-count
 cd $BIN_DIR; cc -Wall -pedantic -o dircnt dircnt.c;
@@ -29,8 +29,8 @@ elif [[ $platform == "LINUX" ]]; then
 fi
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
-    "custom bin files are updated [local]" \
-    "custom bin files update is failed [local]. use VERBOSE=true for error message"
+    "${Bold}${Underline}custom bin files${Color_Off} are updated [local]" \
+    "${Bold}${Underline}custom bin files${Color_Off} update is failed [local]. use VERBOSE=true for error message"
 
 # clean up
 if [[ $$ = $BASHPID ]]; then

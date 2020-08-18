@@ -147,7 +147,7 @@ main_script() {
     local version_func=$4
 
     # if version_func is given, process version checker
-    if [ ! -z ${version_func+x} ]; then
+    if [ ! -z ${version_func} ]; then
         if [ -x "$(command -v ${target})" ]; then
             echo "${marker_info} Following list is ${Bold}${Underline}${target}${Color_Off} installed on the machine"
             coms=($(which -a ${target} | uniq))

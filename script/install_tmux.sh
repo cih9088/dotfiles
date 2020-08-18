@@ -99,15 +99,24 @@ setup_func_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew install libevent ncurses
+        brew list libevent || brew install libevent
+        brew list ncurses || brew install ncurses
+        if [ ${force} == 'true' ]; then
+            brew upgrade libevent
+            brew upgrade ncurses
+        fi
     elif [[ $platform == "LINUX" ]]; then
         sudo apt-get -y remove libevent-dev libncurses-dev
         sudo apt-get -y install libevent-dev libncurses-dev
     fi
 
     if [[ $platform == "OSX" ]]; then
-        brew install reattach-to-user-namespace
-        brew install tmux
+        brew list reattach-to-user-namespace || brew install reattach-to-user-namespace
+        brew list tmux || brew install tmux
+        if [ ${force} == 'true' ]; then
+            brew upgrade reattach-to-user-namespace
+            brew upgrade tmux
+        fi
     elif [[ $platform == "LINUX" ]]; then
         sudo apt-get -y remove tmux
         sudo apt-get -y install tmux

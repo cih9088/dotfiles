@@ -80,7 +80,10 @@ setup_func_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew install zsh
+        brew list zsh || brew install zsh
+        if [ ${force} == 'true' ]; then
+            brew upgrade zsh
+        fi
     elif [[ $platform == "LINUX" ]]; then
         sudo apt-get -y install zsh
         # Adding installed zsh to /etc/shells

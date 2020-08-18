@@ -27,14 +27,17 @@ setup_func_tldr_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew install tldr
+        brew list tldr || brew install tldr
+        if [ ${force} == 'true' ]; then
+            brew upgrade tldr
+        fi
     elif [[ $platform == "LINUX" ]]; then
-        sudo pip install tldr --upgrade --force-reinstall
+        if [ ${force} == 'true' ]; then
+            sudo pip install tldr --upgrade --force-reinstall
+        else
+            sudo pip install tldr
+        fi
     fi
-}
-
-version_func_tldr() {
-    $1 --verbose | head -3 | grep tldr | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
 }
 
 main_script 'tldr' setup_func_tldr_local setup_func_tldr_system

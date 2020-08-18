@@ -22,6 +22,7 @@ setup_func_local() {
     install=no
     if [ -x "$(command -v ${PYENV_ROOT}bin/pyenv)" ]; then
         if [ ${force} == 'true' ]; then
+            rm -rf ${PYENV_ROOT} || true
             install='true'
         fi
     else
@@ -29,7 +30,6 @@ setup_func_local() {
     fi
 
     if [ ${install} == 'true' ]; then
-        rm -rf ${PYENV_ROOT} || true
         curl https://pyenv.run | bash
         git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${PYENV_ROOT}/plugins/pyenv-virtualenvwrapper
         git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
@@ -41,18 +41,17 @@ setup_func_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        if [ -x "$(command -v /usr/local/bin/pyenv)" ]; then
-            if [ ${force} == 'true' ]; then
-                brew upgrade pyenv
-                brew upgrade pyenv-virtualenv
-                brew upgrade pyenv-virtualenvwrapper
-                rm -rf ${PYENV_ROOT}/plugins/xxenv-latest || true
-                git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
-            fi
-        else
-            brew install pyenv
-            brew install pyenv-virtualenv
-            brew install pyenv-virtualenvwrapper
+        brew list pyenv || brew install pyenv
+        brew list pyenv-virtualenv || brew install pyenv-virtualenv
+        brew list pyenv-virtualenvwrapper || brew install pyenv-virtualenvwrapper
+        [ -d ${PYENV_ROOT}/plugins/xxenv-latest ] \
+            || git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
+
+        if [ ${force} == 'true' ]; then
+            brew upgrade pyenv
+            brew upgrade pyenv-virtualenv
+            brew upgrade pyenv-virtualenvwrapper
+            rm -rf ${PYENV_ROOT}/plugins/xxenv-latest || true
             git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
         fi
     else
@@ -93,7 +92,8 @@ python_version_func() {
 }
 
 main_script 'pyenv' setup_func_local setup_func_system version_func
-echo "${marker_info} Note that the latest release version of ${Bold}${Italic}python2${Color_Off} would be installed using pyenv"
+eval "$(pyenv init -)"
+echo "${marker_info} Note that the latest release ${Bold}${Italic}python2${Color_Off} ($(pyenv latest --print 2) would be installed using pyenv"
 main_script 'python2' python2_install python2_install python_version_func
-echo "${marker_info} Note that the latest release version of ${Bold}${Italic}python3${Color_Off} would be installed using pyenv"
+echo "${marker_info} Note that the latest release ${Bold}${Italic}python3${Color_Off} ($(pyenv latest --print 3) would be installed using pyenv"
 main_script 'python3' python3_install python3_install python_version_func

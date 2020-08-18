@@ -32,12 +32,9 @@ setup_func_node_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        if [ -x "$(command -v /usr/local/bin/node)" ]; then
-            if [ ${force} == 'true' ]; then
-                brew upgrade node
-            fi
-        else
-            brew install node
+        brew list node || brew install node
+        if [ ${force} == 'true' ]; then
+            brew upgrade node
         fi
     else
         setup_func_node_local ${force}
@@ -67,12 +64,9 @@ setup_func_yarn_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        if [ -x "$(command -v /usr/local/bin/yarn)" ]; then
-            if [ ${force} == 'true' ]; then
-                brew upgrade yarn
-            fi
-        else
-            brew install yarn
+        brew list yarn || brew install yarn
+        if [ ${force} == 'true' ]; then
+            brew upgrade yarn
         fi
     else
         setup_func_yarn_local ${force}

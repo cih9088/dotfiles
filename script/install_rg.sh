@@ -52,7 +52,10 @@ setup_func_rg_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew install ripgrep
+        brew list ripgrep || brew install ripgrep
+        if [ ${force} == 'true' ]; then
+            brew upgrade ripgrep
+        fi
     elif [[ $platform == "LINUX" ]]; then
         cd $TMP_DIR
         wget https://github.com/BurntSushi/ripgrep/releases/download/${RG_VERSION}/ripgrep_${RG_VERSION}_amd64.deb
