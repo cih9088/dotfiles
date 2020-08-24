@@ -57,7 +57,6 @@ $ make init                 # includes 'install', 'update'
                             # If you are new to my dotfiles, this is it. No further processes needed. 
                             # Recommended way for a newcomer.
 $ make install              # Install all commands
-$ make installDev           # Install all dev environments
 ```
 
 ### Update
@@ -92,7 +91,7 @@ $ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr bash
 
 # DEV ENVIRONMENT
 # You could choose what to install in following list
-# [installDevPython, installDevNodejs, installDevC, installDevGo]
+# [installDevPython, installDevNodejs, installDevC, installDevGo, installDevAsdf]
 # For instance,
 $ make installDevPython      # Install python dev environment
 $ make installDevGo          # Install golang dev environment
@@ -131,11 +130,12 @@ $ make initOSX
 ## Highligts
 
 ### List of Dev environment that would be installed
-- installDevPython: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper), [mpls](https://github.com/Microsoft/python-language-server)
+- installDevPython: [pyenv](https://github.com/pyenv/pyenv), [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv), [pyenv-virtualenvwrapper](https://github.com/pyenv/pyenv-virtualenvwrapper), python2, python3
 - installDevNodejs: [nodejs](https://nodejs.org/en/)
 - installDevShell: [shellchecker](https://www.shellcheck.net/), [bash-language-client](https://github.com/mads-hartmann/bash-language-server)
 - installDevC: [ccls](https://github.com/MaskRay/ccls)
-- installDevGo: [goenv](https://github.com/syndbg/goenv)
+- installDevGo: [goenv](https://github.com/syndbg/goenv), golang
+- installDevAsdf: [asdf](https://github.com/asdf-vm/asdf)
 
 ### [zsh](https://github.com/tmux/tmux)
 For more detailed information please refer [zshrc](https://github.com/cih9088/dotfiles/blob/master/zsh/zshrc)
@@ -156,9 +156,7 @@ For more detailed information please refer [zpreztorc](https://github.com/cih908
 , [git](https://github.com/sorin-ionescu/prezto/tree/master/modules/git)
 , [archive](https://github.com/sorin-ionescu/prezto/tree/master/modules/archive)
 , [rsync](https://github.com/sorin-ionescu/prezto/tree/master/modules/rsync)
-, [python](https://github.com/sorin-ionescu/prezto/tree/master/modules/python)
 , [ssh](https://github.com/sorin-ionescu/prezto/tree/master/modules/ssh)
-, [alias-tips](https://github.com/belak/prezto-contrib/tree/master/alias-tips)
 , [tmux-xpanes](https://github.com/belak/prezto-contrib/tree/master/tmux-xpanes)
 , [syntax-highlighting](https://github.com/sorin-ionescu/prezto/tree/master/modules/syntax-highlighting)
 , [history-substring-search](https://github.com/sorin-ionescu/prezto/tree/master/modules/history-substring-search)

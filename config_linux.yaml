@@ -7,10 +7,23 @@ zsh:
   local: true
   force: true
 
+#######################
+# installFish
+#######################
+
+fish:
+  install: false
+  local: true
+  force: true
+
+#######################
+# changeDefaultShell
+#######################
+
 changeDefaultShell:
   change: true
   local: true
-  force: true
+  shell: zsh
 
 #######################
 # installPrezto
@@ -109,7 +122,7 @@ shellcheck:
   local: true
   force: true
 
-bash-language-server:
+bash_language_server:
   install: true
   force: true
 
@@ -128,15 +141,24 @@ yarn:
   force: false
 
 #######################
-# installDevPython
+# installDevAsdf
 #######################
 
-pyenv:
+asdf:
   install: true
   local: true
   force: false
 
-# install pyenv python2 and python3
+#######################
+# installDevPython
+#######################
+
+pyenv:
+  install: false
+  local: true
+  force: false
+
+# install python2, python3
 python2:
   install: true
 
@@ -148,11 +170,11 @@ python3:
 #######################
 
 goenv:
-  install: true
+  install: false
   local: true
   force: false
 
-# install goenv golang
+# install golang
 go:
   install: true
 

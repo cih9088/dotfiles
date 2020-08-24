@@ -11,10 +11,13 @@ echo
 echo "${marker_title} Prepare to ${Bold}${Underline}update neovim plugin${Color_Off}"
 
 export PATH="${HOME}/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
 export PATH="${HOME}/.goenv/bin:$PATH"
-eval "$(goenv init -)"
 export PATH="${HOME}/.local/bin:$PATH"
+
+# if asdf is installed
+[ -f $HOME/.asdf/asdf.sh ] && . $HOME/.asdf/asdf.sh
+[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+[ -x "$(command -v goenv)" ] && eval "$(goenv init -)"
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \

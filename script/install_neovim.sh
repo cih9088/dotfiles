@@ -17,70 +17,39 @@ if [[ ${NVIM_VERSION} != 'nightly' ]] && [[ ${NVIM_VERSION} != "v"* ]]; then
 fi
 $(${PROJ_HOME}/script/check_release neovim/neovim ${NVIM_VERSION}) || exit $?
 
-# use sytem python
-export VIRTUALENVWRAPPER_PYTHON=$(which python)
-export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
-export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
-export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
-export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
-export PYENV_ROOT=${HOME}/.pyenv
+# # use sytem python
+# export VIRTUALENVWRAPPER_PYTHON=$(which python)
+# export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+# export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+# export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+# export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
+# export PYENV_ROOT=${HOME}/.pyenv
+# export PATH="${HOME}/.pyenv/bin:$PATH"
 
+# if asdf is installed
+[ -f $HOME/.asdf/asdf.sh ] && . $HOME/.asdf/asdf.sh
 export PATH="${HOME}/.pyenv/bin:$PATH"
+[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+
 export WORKON_HOME=${HOME}/.virtualenvs
+mkdir -p ${WORKON_HOME} || true
 
 neovim3_virenv='neovim3'
 neovim2_virenv='neovim2'
 ################################################################
 
 setup_func_python_support() {
-    if ! command -v pyenv > /dev/null; then
-        echo "${marker_err} pyenv is not found" >&2
-        echo "${marker_err} Please run 'make installDevPython' first, then 'make installNeovim'" >&2
-        exit 1
-    fi
-    eval "$(pyenv init -)"
+    pip install virtualenv
 
-    install=no
-    if [ $(find ${HOME}/.pyenv/versions -name ${neovim3_virenv} -depth 1 | wc -l) -ge 1 ]; then
-        if [ ${force} == 'true' ]; then
-            pyenv virtualenv-delete -f ${neovim3_virenv}
-            install=true
-        fi
-    else
-        install=true
-    fi
+    rm -rf ${WORKON_HOME}/${neovim2_virenv}
+    virtualenv --python=$(which python2) ${WORKON_HOME}/${neovim2_virenv}
+    source ${WORKON_HOME}/${neovim2_virenv}/bin/activate
+    pip install neovim
 
-    if [ ${install} == 'true' ]; then
-        pyenv_py3_version=$(pyenv versions --bare  | grep '^[0-9.]\+$'  | grep '^3.*' | sort -rV | head)
-        if [ -z ${pyenv_py3_version} ]; then
-            pyenv latest install -s 3
-            pyenv_py3_version=$(pyenv versions --bare  | grep '^[0-9.]\+$'  | grep '^3.*' | sort -rV | head)
-        fi
-        pyenv virtualenv ${pyenv_py3_version} ${neovim3_virenv}
-        pyenv shell ${neovim3_virenv}
-        pip install neovim
-    fi
-
-    install=no
-    if [ $(find ${HOME}/.pyenv/versions -name ${neovim2_virenv} -depth 1 | wc -l) -ge 1 ]; then
-        if [ ${force} == 'true' ]; then
-            pyenv virtualenv-delete -f ${neovim2_virenv}
-            install=true
-        fi
-    else
-        install=true
-    fi
-
-    if [ ${install} == 'true' ]; then
-        pyenv_py2_version=$(pyenv versions --bare  | grep '^[0-9.]\+$'  | grep '^2.*' | sort -rV | head)
-        if [ -z ${pyenv_py2_version} ]; then
-            pyenv latest install -s 2
-            pyenv_py2_version=$(pyenv versions --bare  | grep '^[0-9.]\+$'  | grep '^2.*' | sort -rV | head)
-        fi
-        pyenv virtualenv ${pyenv_py2_version} ${neovim2_virenv}
-        pyenv shell ${neovim2_virenv}
-        pip install neovim
-    fi
+    rm -rf ${WORKON_HOME}/${neovim3_virenv}
+    virtualenv --python=$(which python3) ${WORKON_HOME}/${neovim3_virenv}
+    source ${WORKON_HOME}/${neovim3_virenv}/bin/activate
+    pip install neovim
 }
 
 setup_func_local() {

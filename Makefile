@@ -18,6 +18,11 @@ ifeq (installZsh,$(firstword $(MAKECMDGOALS)))
     $(eval $(zsh_version):;@:)
 endif
 
+ifeq (installFish,$(firstword $(MAKECMDGOALS)))
+    fish_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+    $(eval $(fish_version):;@:)
+endif
+
 ifeq (installTree,$(firstword $(MAKECMDGOALS)))
     tree_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
     $(eval $(tree_version):;@:)
@@ -52,6 +57,9 @@ prerequisitesTest:
 
 installZsh: prepare
 	@( $(SCRIPTS_DIR)/install_zsh.sh $(zsh_version) )
+
+installFish: prepare
+	@( $(SCRIPTS_DIR)/install_fish.sh $(fish_version) )
 
 installPrezto: prepare
 	@( $(SCRIPTS_DIR)/install_prezto.sh )
@@ -98,11 +106,14 @@ installDevC:
 installDevGo:
 	@( $(SCRIPTS_DIR)/installDev_go.sh )
 
+installDevAsdf:
+	@ ( $(SCRIPTS_DIR)/installDev_asdf.sh )
+
 installPythonVirtualenv:
 	@( $(SCRIPTS_DIR)/virenv_setup.sh )
 
 changeDefaultShell:
-	@( $(SCRIPTS_DIR)/change_defualt_to_zsh.sh )
+	@( $(SCRIPTS_DIR)/change_defualt_shell.sh )
 
 updateCustomBins: prepare
 	@( $(SCRIPTS_DIR)/update_custom_bins.sh )
@@ -124,6 +135,7 @@ updateTmuxPlugins: updateTPM
 
 clean:
 	@( sed -i -e '/\/.local\/bin\/zsh ]]; then/,/fi/d' ${HOME}/.bashrc )
+	@( sed -i -e '/\/.local\/bin\/fish ]]; then/,/fi/d' ${HOME}/.bashrc )
 	@echo "[0;92m[*][0m Remove all configurations files"
 	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \
@@ -143,23 +155,20 @@ update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins u
 	@echo
 	@echo "[42m[30m[*] Update has Finished.[0m"
 
-install: prepare installZsh changeDefaultShell installPrezto \
+install: prepare installZsh changeDefaultShell installPrezto installDevAsdf \
 	installNeovim installTmux installBins
 	@echo
 	@echo "[42m[30m[*] Install has Finished.[0m"
-
-installDev: prepare installDevPython installDevC installDevNodejs installDevGo
-	@echo
-	@echo "[42m[30m[*] InstallDev has Finished.[0m"
 
 init: prepare install update
 	@echo
 	@echo "[42m[30m[*] Init has Finished.[0m"
 
 .PHONY: prepare prerequisites prerequisitesTest \
-	installZsh installPrezto installNeovim installTmux \
+	installZsh installFish installPrezto installNeovim installTmux \
 	installBins installPythonVirtualenv \
 	installDevShell installDevPython installDevNodejs installDevC installDevGo changeDefaultShell \
+	installDevAsdf \
 	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM updateCustomBins updatePrezto \
-	clean update install installDev init initOSX \
+	clean update install init initOSX \
 

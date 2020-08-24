@@ -9,6 +9,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 echo
 echo "${marker_title} Prepare to ${Bold}${Underline}install python environment${Color_Off}"
 
+# if asdf is installed
+[ -f $HOME/.asdf/asdf.sh ] && . $HOME/.asdf/asdf.sh
+
 # use sytem python
 export PYENV_ROOT=${HOME}/.pyenv
 
@@ -65,35 +68,51 @@ version_func() {
 }
 
 python2_install() {
-    if ! command -v pyenv > /dev/null; then
-        echo "${marker_err} pyenv is not found" >&2
-        echo "${marker_err} Please install pyenv first with 'make installDevPython' again" >&2
+    # prefer pyenv
+    if command -v pyenv > /dev/null; then
+        pyenv latest install -s 2
+    elif command -v asdf > /dev/null; then
+        asdf plugin-add python || true
+        asdf install python latest:2
+    else
+        echo "${marker_err} version managers are not found" >&2
+        echo "${marker_err} Please install it first with 'make installDevPython or make installAsdf' again" >&2
         exit 1
     fi
-    eval "$(pyenv init -)"
-
-    pyenv latest install -s 2
 }
 
 python3_install() {
-    if ! command -v pyenv > /dev/null; then
-        echo "${marker_err} pyenv is not found" >&2
-        echo "${marker_err} Please install pyenv first with 'make installDevPython' again" >&2
+    # prefer pyenv
+    if command -v pyenv > /dev/null; then
+        pyenv latest install -s 3
+    elif command -v asdf > /dev/null; then
+        asdf plugin-add python || true
+        asdf install python latest:3
+    else
+        echo "${marker_err} version managers are not found" >&2
+        echo "${marker_err} Please install it first with 'make installDevPython' or 'make installDevAsdf' again" >&2
         exit 1
     fi
-    eval "$(pyenv init -)"
-
-    pyenv latest install -s 3
 }
 
 python_version_func() {
-    eval "$(pyenv init -)"
     $1 --version 2>&1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
 }
 
+
+
 main_script 'pyenv' setup_func_local setup_func_system version_func
-eval "$(pyenv init -)"
-echo "${marker_info} Note that the latest release ${Bold}${Italic}python2${Color_Off} ($(pyenv latest --print 2) would be installed using pyenv"
-main_script 'python2' python2_install python2_install python_version_func
-echo "${marker_info} Note that the latest release ${Bold}${Italic}python3${Color_Off} ($(pyenv latest --print 3) would be installed using pyenv"
-main_script 'python3' python3_install python3_install python_version_func
+if [ -x "$(command -v pyenv)" ]; then
+    eval "$(pyenv init -)"
+    echo "${marker_info} Note that the latest release ${Bold}${Underline}python2${Color_Off} would be installed using ${Bold}${Underline}pyenv${Color_Off}"
+    main_script 'python2' python2_install python2_install python_version_func
+    echo "${marker_info} Note that the latest release ${Bold}${Underline}python3${Color_Off} would be installed using ${Bold}${Underline}pyenv${Color_Off}"
+    main_script 'python3' python3_install python3_install python_version_func
+    pyenv global $(pyenv latest --print 3) $(pyenv loatest --print 2)
+else
+    echo "${marker_info} Note that the latest release ${Bold}${Underline}python2${Color_Off} would be installed using ${Bold}${Underline}asdf${Color_Off}"
+    main_script 'python2' python2_install python2_install python_version_func
+    echo "${marker_info} Note that the latest release ${Bold}${Underline}python3${Color_Off} would be installed using ${Bold}${Underline}asdf${Color_Off}"
+    main_script 'python3' python3_install python3_install python_version_func
+    asdf global python $(asdf latest python 3) $(asdf latest python 2)
+fi

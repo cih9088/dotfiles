@@ -9,6 +9,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 echo
 echo "${marker_title} Prepare to ${Bold}${Underline}install golang environment${Color_Off}"
 
+# if asdf is installed
+[ -f $HOME/.asdf/asdf.sh ] && . $HOME/.asdf/asdf.sh
+
 # use sytem python
 export GOENV_ROOT=${HOME}/.goenv
 
@@ -62,23 +65,31 @@ version_func() {
 }
 
 golang_install() {
-    if ! command -v goenv > /dev/null; then
-        echo "${marker_err} goenv is not found" >&2
-        echo "${marker_err} Please install goenv first with 'make installDevGo' again" >&2
+    if command -v goenv > /dev/null; then
+        goenv latest install -s
+    elif command -v asdf > /dev/null; then
+        asdf plugin-add golang || true
+        asdf install golang latest
+    else
+        echo "${marker_err} version managers are not found" >&2
+        echo "${marker_err} Please install it first with 'make installDevGo' or 'make installDevAsdf' again" >&2
         exit 1
     fi
-    eval "$(goenv init -)"
-
-    goenv latest install -s
-    goenv global $(goenv versions --bare | grep '^[0-9.]\+$' | sort -rV | head)
 }
 
 golang_version_func() {
-    eval "$(goenv init -)"
     $1 version | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}'
 }
 
+
 main_script 'goenv' setup_func_local setup_func_system version_func
-eval "$(goenv init -)"
-echo "${marker_info} Note that the latest release ${Bold}${Italic}go${Color_Off} ($(goenv latest --print) would be installed using pyenv"
-main_script 'go' golang_install golang_install golang_version_func
+if [ -x "$(command -v goenv)" ]; then
+    eval "$(goenv init -)"
+    echo "${marker_info} Note that the latest release ${Bold}${Underline}go${Color_Off} would be installed using ${Bold}${Underline}goenv${Color_Off}"
+    main_script 'go' golang_install golang_install golang_version_func
+    goenv global $(goenv versions --bare | grep '^[0-9.]\+$' | sort -rV | head)
+else
+    echo "${marker_info} Note that the latest release ${Bold}${Underline}go${Color_Off} would be installed using ${Bold}${Underline}asdf${Color_Off}"
+    main_script 'go' golang_install golang_install golang_version_func
+    asdf global golang $(asdf latest golang)
+fi
