@@ -41,7 +41,7 @@ setup_func_thefuck_system() {
 }
 
 version_func_thefuck() {
-    $1 --version
+    $1 --version 2>&1
 }
 
 main_script 'thefuck' setup_func_thefuck_local setup_func_thefuck_system version_func_thefuck

@@ -1,0 +1,7 @@
+if [ ${platform} != "LINUX" ]; then
+    echo "${platform} is not supported" >&2
+    return 1
+fi
+
+pid="$1"
+sudo strace -e write=1,2 -p $pid 2>&1 | sed -un "/^ |/p" | sed -ue "s/^.\{9\}\(.\{50\}\).\+/\1/g" -e 's/ //g' | xxd -r -p

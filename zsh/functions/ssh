@@ -1,0 +1,34 @@
+if [ $# -eq 0 ]; then
+    has -v fzf
+    targets=$(cat ${HOME}/.ssh/config \
+        | awk '$1=="Host"{print $2}' \
+        | grep -v '*')
+    exit_code=$?
+    [ ${exit_code} != 0 ] && return ${exit_code}
+    targets=$(echo ${targets} \
+        | fzf --multi --height=40% --cycle --no-sort --layout=reverse \
+        --preview-window=down:2 \
+        --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;gsub(/^[ \t]+/,"", $0);print;getline; if ($0 ~ /HostName/) {;gsub(/^[ \t]+/,"", $0);print;}}'"'")
+    [ ! -z "${targets}" ] && (echo ${targets} | xpanes -t -s -c "ssh {}")
+else
+    if ps -p $$ -o ppid= \
+        | xargs -I{} ps -p {} -o comm= \
+        | grep -qw tmux; then
+    # Note: Options without parameter were hardcoded,
+    # in order to distinguish an option's parameter from the destination.
+    #
+    #                   s/[[:space:]]*\(\( | spaces before options
+    #     \(-[46AaCfGgKkMNnqsTtVvXxYy]\)\| | option without parameter
+    #                     \(-[^[:space:]]* | option
+    # \([[:space:]]\+[^[:space:]]*\)\?\)\) | parameter
+    #                      [[:space:]]*\)* | spaces between options
+    #                        [[:space:]]\+ | spaces before destination
+    #                \([^-][^[:space:]]*\) | destination
+    #                                   .* | command
+    #                                 /\6/ | replace with destination
+    # tmux set-option -p pane-border-format '#[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[default]'
+    tmux select-pane -T "$(echo "$@" \
+      | sed 's/[[:space:]]*\(\(\(-[46AaCfGgKkMNnqsTtVvXxYy]\)\|\(-[^[:space:]]*\([[:space:]]\+[^[:space:]]*\)\?\)\)[[:space:]]*\)*[[:space:]]\+\([^-][^[:space:]]*\).*/\6/')"
+    fi
+    command ssh "$@"
+fi

@@ -48,13 +48,14 @@ path=(
   $path
 )
 
-if [[ "$OSTYPE" == darwin* ]]; then
-    path=(
-        ${HOME}/Library/Python/3.7/bin
-        ${HOME}/Library/Python/2.7/bin
-        $path
-    )
-fi
+# do not use system python
+# if [[ "$OSTYPE" == darwin* ]]; then
+#     path=(
+#         ${HOME}/Library/Python/3.7/bin
+#         ${HOME}/Library/Python/2.7/bin
+#         $path
+#     )
+# fi
 
 #
 # Less

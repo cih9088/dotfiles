@@ -28,29 +28,18 @@ fi
     [[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && export PATH="$HOME/.local/bin:${PATH}"
 
 
-#   yarn to PATH
-#   --------------------------------------------------------------------------------------
-    [[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
-    [[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
-        export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
+# #   yarn to PATH
+# #   --------------------------------------------------------------------------------------
+#     [[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
+#     [[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
+#         export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
 
 
-#   goenv
-#   --------------------------------------------------------------------------------------
-    if [[ -s "${GOENV_ROOT:=$HOME/.goenv}/bin/goenv" ]]; then
-        [[ ":$PATH:" != *":${GOENV_ROOT}/bin:"* ]] && export PATH="${GOENV_ROOT}/bin:${PATH}"
-    fi
-    if [[ -x "$(command -v goenv)" ]]; then
-        eval "$(goenv init - --no-rehash zsh)"
-        [[ ":$PATH:" != *":$GOROOT/bin:"* ]] && export PATH="$GOROOT/bin:$PATH"
-        [[ ":$PATH:" != *":$GOPATH/bin:"* ]] && export PATH="$PATH:$GOPATH/bin"
-    fi
-
-#   virtualenvwrapper
+#   virtualenvwrapper (using system python)
 #   --------------------------------------------------------------------------------------
     export WORKON_HOME=$HOME/.virtualenvs
     export PROJECT_HOME=$HOME/workspace
-    # Inside tmux session, these environment variables are changed 
+    # Inside tmux session, these environment variables are changed
     # because of the change of PATH during zsh initialisation in non-tmux session
     # This prevents no module found error in virtualenvwrapper
     [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_PYTHON=$(which python)
@@ -61,24 +50,23 @@ fi
     # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
 
-#   pyenv-virtualenvwrapper to use pyenv by default
-#   --------------------------------------------------------------------------------------
-    # export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
+# #   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# #   --------------------------------------------------------------------------------------
+#     # prefer locally installed pyenv
+#     if [[ -s "${PYENV_ROOT:=$HOME/.pyenv}/bin/pyenv" ]]; then
+#         [[ ":$PATH:" != *":${PYENV_ROOT}/bin:"* ]] && export PATH="${PYENV_ROOT}/bin:${PATH}"
+#     fi
 
 
-#   pyenv -> DEPRECATED in favour of prezto python module
-#   --------------------------------------------------------------------------------------
-    # if [[ -s "${PYENV_ROOT:=$HOME/.pyenv}/bin/pyenv" ]]; then
-    #     [[ ":$PATH:" != *":${PYENV_ROOT}/bin:"* ]] && export PATH="${PYENV_ROOT}/bin:${PATH}"
-    # fi
-    # if [[ -x "$(command -v pyenv)" ]]; then
-    #     eval "$(pyenv init - --no-rehash zsh)"
-    #     eval "$(pyenv virtualenv-init - zsh)"
-    #     pyenv virtualenvwrapper_lazy
-    # fi
+# #   Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# #   --------------------------------------------------------------------------------------
+#     # prefer locally installed goenv
+#     if [[ -s "${GOENV_ROOT:=$HOME/.goenv}/bin/goenv" ]]; then
+#         [[ ":$PATH:" != *":${GOENV_ROOT}/bin:"* ]] && export PATH="${GOENV_ROOT}/bin:${PATH}"
+#     fi
 
 
-#   Set default blocksize for ls, df, du
+#   Setup default blocksize for ls, df, du
 #   from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
 #   --------------------------------------------------------------------------------------
     export BLOCKSIZE=1k
@@ -95,7 +83,7 @@ fi
 
 #   CUDA enviroment variables
 #   --------------------------------------------------------------------------------------
-    if [[ ${platform} == "LINUX" ]]; then
+    if [ ${platform} = "LINUX" ]; then
         export CUDA_DEVICE_ORDER=PCI_BUS_ID
         export CUDA_HOME=/usr/local/cuda
         [[ ":${PATH}:" != *":${CUDA_HOME}/bin:"* ]] && export PATH="${PATH}:${CUDA_HOME}/bin"
@@ -108,7 +96,7 @@ fi
     fi
 
 
-#   Set FZF
+#   Setup FZF
 #   --------------------------------------------------------------------------------------
     if [ -x "$(command -v fd)" ]; then
         export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
@@ -119,26 +107,27 @@ fi
     # export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
     export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
 
+    [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] \
+        && export PATH="${PATH:+${PATH}:}/${HOME}/.local/share/nvim/plugged/fzf/bin"
 
-#   Set xpanes
+
+#   Setup xpanes
 #   --------------------------------------------------------------------------------------
     export TMUX_XPANES_PANE_BORDER_FORMAT='#[bg=colour238] #[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[bg=colour238] #[default]'
 
 
-#   Clutter path
-#   --------------------------------------------------------------------------------------
-    if [ -n "$PATH" ]; then
-        old_PATH=$PATH:; PATH=
-        while [ -n "$old_PATH" ]; do
-            x=${old_PATH%%:*}       # the first remaining entry
-            case $PATH: in
-                *:"$x":*) ;;          # already there
-                *) PATH=$PATH:$x;;    # not there yet
-            esac
-            old_PATH=${old_PATH#*:}
-        done
-        PATH=${PATH#:}
-        unset old_PATH x
-    fi
-
-
+# #   Clutter path -> no need
+# #   --------------------------------------------------------------------------------------
+#     if [ -n "$PATH" ]; then
+#         old_PATH=$PATH:; PATH=
+#         while [ -n "$old_PATH" ]; do
+#             x=${old_PATH%%:*}       # the first remaining entry
+#             case $PATH: in
+#                 *:"$x":*) ;;          # already there
+#                 *) PATH=$PATH:$x;;    # not there yet
+#             esac
+#             old_PATH=${old_PATH#*:}
+#         done
+#         PATH=${PATH#:}
+#         unset old_PATH x
+#     fi

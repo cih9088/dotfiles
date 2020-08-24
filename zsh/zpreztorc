@@ -39,9 +39,7 @@ zstyle ':prezto:load' pmodule \
   'git' \
   'archive' \
   'rsync' \
-  'python' \
   'ssh' \
-  'alias-tips' \
   'tmux-xpanes' \
   'syntax-highlighting' \
   'history-substring-search' \
@@ -153,7 +151,7 @@ zstyle ':prezto:module:prompt' show-return-val 'yes'
 # zstyle ':prezto:module:python:virtualenv' auto-switch 'yes'
 
 # Automatically initialize virtualenvwrapper if pre-requisites are met.
-zstyle ':prezto:module:python:virtualenv' initialize 'yes'
+# zstyle ':prezto:module:python:virtualenv' initialize 'yes'
 
 #
 # Screen

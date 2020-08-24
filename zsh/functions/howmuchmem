@@ -1,0 +1,9 @@
+# https://www.commandlinefu.com/commands/view/4968/print-memory-utilization-percentage-for-a-specific-process-and-its-children#comment
+
+if [ ${platform} != "LINUX" ]; then
+    echo "${platform} is not supported" >&2
+    return 1
+fi
+
+PROCNAME="$@"
+echo RAM Used by $PROCNAME $(echo "scale=4; ($(ps axo rss,comm|grep $PROCNAME| awk '{ TOTAL += $1 } END { print TOTAL }')/$(free | head -n 2 | tail -n 1 | awk '{ print $2 }'))*100"|bc)%

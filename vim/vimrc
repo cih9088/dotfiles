@@ -31,25 +31,26 @@
         " Plug 'morhetz/gruvbox'
         " Plug 'w0ng/vim-hybrid'
         " Plug 'joshdick/onedark.vim'
-        Plug 'junegunn/seoul256.vim'
+        " Plug 'junegunn/seoul256.vim'
+        " Plug 'dracula/vim', { 'as': 'dracula' }
         Plug 'ryanoasis/vim-devicons'
         Plug 'sainnhe/edge'
-        Plug 'dracula/vim', { 'as': 'dracula' }
         " =========================================================
 
     " }}}
 
     " Plugins for Language specific (syntax, completion, etc.) {{{
-        Plug 'Vimjas/vim-python-pep8-indent'
-        Plug 'plasticboy/vim-markdown'
-        Plug 'chrisbra/csv.vim'
-        Plug 'lervag/vimtex'
-        Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+        Plug 'dag/vim-fish',                  { 'for': 'fish' }      " fish script
+        Plug 'Vimjas/vim-python-pep8-indent', { 'for': 'python' }
+        Plug 'plasticboy/vim-markdown',       { 'for': 'markdown' }
+        Plug 'chrisbra/csv.vim',              { 'for': 'csv' }
+        Plug 'lervag/vimtex',                 { 'for': 'tex' }
+        Plug 'fatih/vim-go',                  { 'do': ':GoUpdateBinaries', 'for': 'go' }
         Plug 'Shougo/neco-vim'                                       " vimrc completion source for coc
         Plug 'neoclide/coc-neco'                                     " vimrc completion source for coc
-        Plug 'neoclide/coc.nvim', {'branch': 'release'}
+        Plug 'neoclide/coc.nvim',             {'branch': 'release'}
         if has('nvim')
-            Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins' } " python color scheme
+            Plug 'numirias/semshi',           { 'do': ':UpdateRemotePlugins', 'for': 'python' } " python color scheme
         endif
     " }}}
 
@@ -71,14 +72,14 @@
         Plug 'tpope/vim-obsession'
         Plug 'tpope/vim-eunuch'
         Plug 'tpope/vim-abolish'
-        " Plug 'airblade/vim-gitgutter'
-        Plug 'mhinz/vim-signify'
+        Plug 'airblade/vim-gitgutter'
+        " Plug 'mhinz/vim-signify'
         Plug 'kshenoy/vim-signature'                                         " place, toggle and display marks
-        Plug 'junegunn/vim-easy-align'
+        Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
         Plug 'kana/vim-textobj-user'
         Plug 'michaeljsmith/vim-indent-object'
         Plug 'idbrii/textobj-word-column.vim'
-        Plug 'junegunn/gv.vim'
+        Plug 'junegunn/gv.vim', { 'on': ['GV', 'GV!'] }
         Plug 'unblevable/quick-scope'
         " Plug 'dhruvasagar/vim-table-mode'                                  " easy table edit
         " Plug 'RRethy/vim-illuminate'                                       " highlight current cursor word -> coc.nvim
@@ -319,8 +320,8 @@
 
     " neovim python support {{{
         if has('nvim')
-            let g:python_host_prog = system("echo -n ${HOME}/.pyenv/versions/neovim2/bin/python")
-            let g:python3_host_prog = system("echo -n ${HOME}/.pyenv/versions/neovim3/bin/python")
+            let g:python_host_prog = system("echo -n $HOME/.virtualenvs/neovim2/bin/python")
+            let g:python3_host_prog = system("echo -n $HOME/.virtualenvs/neovim3/bin/python")
         endif
     " }}}
 
@@ -1243,9 +1244,10 @@
             nnoremap <leader>S :Startify<CR>
             let g:startify_bookmarks = [
                         \ { 'a': $MYVIMRC },
-                        \ { 's': split(system('dirname $(dirname ' . $MYVIMRC. ')'))[-1] . '/zsh/zshrc' },
-                        \ { 'd': split(system('dirname $(dirname ' . $MYVIMRC. ')'))[-1] . '/zsh/zpreztorc' },
-                        \ { 'f': split(system('dirname $(dirname ' . $MYVIMRC. ')'))[-1] . '/tmux/tmux.conf' },
+                        \ { 's': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/tmux/tmux.conf' },
+                        \ { 'z': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/zsh/zshrc' },
+                        \ { 'x': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/zsh/zpreztorc' },
+                        \ { 'q': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/config/fish/config.fish' },
                         \]
             let g:startify_change_to_dir = 0
         endif

@@ -61,7 +61,7 @@ setup_func_tree_system() {
 }
 
 version_func_tree() {
-    $1 --version | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+    $1 --version | awk '{print $2}'
 }
 
 main_script 'tree' setup_func_tree_local setup_func_tree_system version_func_tree

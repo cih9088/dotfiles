@@ -1,33 +1,6 @@
 
-# Source Prezto.
-if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
-  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
-fi
-
-# Customize to your needs...
-
-#   --------------------------------------------------------------------------------------
-#
-#  Description:  This file holds all my BASH / ZSH configurations and aliases
-#
-#  Sections:
-#  1.   Environment Configuration
-#  2.   Make Terminal Better (remapping defaults and adding functionality)
-#  3.   File and Folder Management
-#  4.   Searching
-#  5.   Process Management
-#  6.   Networking
-#  7.   System Operations & Information
-#  8.   Web Development
-#  9.   Reminders & Notes
-#
-#   --------------------------------------------------------------------------------------
-
-
-
-
 #   ======================================================================================
-#   1.  ENVIRONMENT CONFIGURATION
+#   ENVIRONMENT CONFIGURATION
 #   ======================================================================================
 
 #   Identify platform
@@ -40,68 +13,60 @@ fi
         msys*)    platform="WINDOWS" ;;
         *)        platform="unknown: $OSTYPE" ;;
     esac
+    export platform
 
-#   Set thefuck
+
+#   Setup virtualenvwrapper (using system python)
+#   --------------------------------------------------------------------------------------
+    [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && pip install virtualenvwrapper
+    source $(which virtualenvwrapper_lazy.sh)
+
+
+# #   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# #   --------------------------------------------------------------------------------------
+#     if [ -x "$(command -v pyenv)" ]; then
+#         eval "$(pyenv init - --no-rehash zsh)"
+#         eval "$(pyenv virtualenv-init - zsh)"
+#         pyenv virtualenvwrapper_lazy
+#     fi
+
+
+# #   Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# #   --------------------------------------------------------------------------------------
+#     if [ -x "$(command -v goenv)" ]; then
+#         eval "$(goenv init - --no-rehash zsh)"
+#         [[ ":$PATH:" != *":$GOROOT/bin:"* ]] && export PATH="$GOROOT/bin:$PATH"
+#         [[ ":$PATH:" != *":$GOPATH/bin:"* ]] && export PATH="$PATH:$GOPATH/bin"
+#     fi
+
+
+#   Setup asdf
+#   --------------------------------------------------------------------------------------
+    [ -f $HOME/.asdf/asdf.sh ] && source $HOME/.asdf/asdf.sh
+    fpath=($fpath ${ASDF_DIR}/completions)
+
+
+#   Setup thefuck
 #   --------------------------------------------------------------------------------------
     [ -x "$(command -v thefuck)" ] && eval $(thefuck --alias)
 
-#   Set FZF
+
+#   Setup FZF
 #   --------------------------------------------------------------------------------------
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-
-
-
-#   ======================================================================================
-#   2.  MAKE TERMINAL BETTER
-#   ======================================================================================
-
-#   aliases
-#   --------------------------------------------------------------------------------------
-    # rsync with progressbar
-    alias rsync-copy-sum='rsync-copy --info=progress2,name0 '
-    alias rsync-move-sum='rsync-move --info=progress2,name0 '
-
-    if [[ ${platform} == "OSX" ]]; then
-        alias f='open -a Finder ./'                             # f:            Opens current directory in MacOS Finder
-        alias DT='tee ~/Desktop/terminalOut.txt'                # DT:           Pipe content to file on MacOS Desktop
-        function trash () { command mv "$@" ~/.Trash ; }        # trash:        Moves a file to the MacOS trash
-        function ql () { qlmanage -p "$*" >& /dev/null; }       # ql:           Opens any file in MacOS Quicklook Preview
-    elif [[ ${platform} == "LINUX" ]]; then
-        alias clear-swap="sudo sh -c 'swapoff -a && swapon -a'" # clear-swap:   clear swap memory
+    if [ -x "$(command -v fzf)" ]; then
+        # Auto-completion
+        [[ $- == *i* ]] && source "${HOME}/.local/share/nvim/plugged/fzf/shell/completion.zsh" 2> /dev/null
+        # Key bindings
+        source "${HOME}/.local/share/nvim/plugged/fzf/shell/key-bindings.zsh"
     fi
-    alias ~="cd ~"                                      # ~:            Go Home
-    alias c='clear'                                     # c:            Clear terminal display
-    alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
-    alias fix-stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
-    function mcd () { mkdir -p "$1" && cd "$1"; }       # mcd:          Makes new Dir and jumps inside
-    alias color256='curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash'
 
-    ########## commented in favour of zprezto ##########
-    # alias cp='cp -iv'                           # Preferred 'cp' implementation
-    # alias mv='mv -iv'                           # Preferred 'mv' implementation
-    # alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
-    # alias ls='ls --group-directories-first --color=auto'
-    # alias ll='ls -FGlhp'                        # Preferred 'ls' implementation
-    # alias la='ll -A'                            #
-    # alias lr='ll -R'
-    # alias lx='ll -XB'
-    # alias lk='ll -Sr'
-    # alias rm='nocorrect rm -iv'
-    # alias less='less -FSRXc'                    # Preferred 'less' implementation
-    # alias which='type -all'                     # which:        Find executables
-    # alias show_options='shopt'                  # Show_options: display bash options settings
-    # alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
 
-    # Full Recursive Directory Listing
-    # alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+#   Source Prezto
+#   --------------------------------------------------------------------------------------
+    [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
-    # Search manpage given in agument '1' for term given in argument '2' (case insensitive)
-    # displays paginated result with colored search terms and two lines surrounding each hit.
-    # Example: mans mplayer codec
-    # mans () { man $1 | grep -iC2 --color=always $2 | less }
 
-#   update environment in tmux just before every command
+#   Update environment in tmux just before every command
 #   --------------------------------------------------------------------------------------
     if [ -n "$TMUX" ]; then
         function refresh {
@@ -117,6 +82,7 @@ fi
         refresh
     }
 
+
 #   vi mode for zsh (DEPRECATED) -> use readline shortcut!!
 #   --------------------------------------------------------------------------------------
     # if [ -n "$ZSH_VERSION" ]; then
@@ -125,9 +91,11 @@ fi
     # fi
     #
 
+
 #   Behaviour like readline!
 #   --------------------------------------------------------------------------------------
     bindkey "^U" backward-kill-line
+
 
 #   Bring $EDITOR to amend your command through <C-x><C-e>
 #   --------------------------------------------------------------------------------------
@@ -138,24 +106,97 @@ fi
     fi
 
 
-#   Custom functions
+
+
+#   ======================================================================================
+#   ALIASES
+#   ======================================================================================
+
+
+#   Easy use
 #   --------------------------------------------------------------------------------------
+    alias ~="cd ~"                                      # ~:            Go Home
+    alias c='clear'                                     # c:            Clear terminal display
+    alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
+    alias fix-stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
+    alias make1mb='mkfile 1m ./1MB.dat'         # make1mb:      Creates a file of 1mb size (all zeros)
+    alias make5mb='mkfile 5m ./5MB.dat'         # make5mb:      Creates a file of 5mb size (all zeros)
+    alias make10mb='mkfile 10m ./10MB.dat'      # make10mb:     Creates a file of 10mb size (all zeros)
+    alias color256='curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash'
+    alias py='python'
+    alias py2='python2'
+    alias py3='python3'
 
-    if [[ ${platform} == "LINUX" ]]; then
-        gpu() { # set CUDA_VISIBLE_DEVICES variable automatically
-            local gpus=$1
-            shift;
-            if ! [[ ${gpus} =~ '^[0-9]+$' ]]; then
-            ¦   echo "Not a valid gpu index" >&2; return 1
-            fi
 
-            [ ${#gpus} -gt 1 ] && gpus=$(echo ${gpus} | fold -w1 | paste -sd',' -)
-            CUDA_VISIBLE_DEVICES=${gpus} command "$@"
-        }
+#   Rsync with progressbar
+#   --------------------------------------------------------------------------------------
+    alias rsync-copy-sum='rsync-copy --info=progress2,name0 '
+    alias rsync-move-sum='rsync-move --info=progress2,name0 '
+
+
+#   plarform specific
+#   --------------------------------------------------------------------------------------
+    if [[ ${platform} == "OSX" ]]; then
+        alias f='open -a Finder ./'                             # f:            Opens current directory in MacOS Finder
+        alias DT='tee ~/Desktop/terminalOut.txt'                # DT:           Pipe content to file on MacOS Desktop
+        alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
+        function trash () { command mv "$@" ~/.Trash ; }        # trash:        Moves a file to the MacOS trash
+        function ql () { qlmanage -p "$*" >& /dev/null; }       # ql:           Opens any file in MacOS Quicklook Preview
+    elif [[ ${platform} == "LINUX" ]]; then
+        alias clear-swap="sudo sh -c 'swapoff -a && swapon -a'" # clear-swap:   clear swap memory
     fi
 
+
+#   Networking
+#   --------------------------------------------------------------------------------------
+    alias myip='dig myip.opendns.com @resolver1.opendns.com +short' # myip:         Public facing IP Address
+    alias flushDNS='dscacheutil -flushcache'                        # flushDNS:     Flush out the DNS Cache
+    alias lsock='sudo lsof -i -P'                                   # lsock:        Display open sockets
+    alias lsockU='sudo lsof -nP | grep UDP'                         # lsockU:       Display only open UDP sockets
+    alias lsockT='sudo lsof -nP | grep TCP'                         # lsockT:       Display only open TCP sockets
+    alias ipInfo0='ipconfig getpacket en0'                          # ipInfo0:      Get info on connections for en0
+    alias ipInfo1='ipconfig getpacket en1'                          # ipInfo1:      Get info on connections for en1
+    alias openPorts='sudo lsof -i -P | grep -i "listen"'            # openPorts:    All listening connections
+    alias showBlocked='sudo ipfw list'                              # showBlocked:  All ipfw rules inc/ blocked IPs
+
+
+    ########## DEPRECATED in favour of prezto
+    # alias cp='cp -iv'                           # Preferred 'cp' implementation
+    # alias mv='mv -iv'                           # Preferred 'mv' implementation
+    # alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
+    # alias ls='ls --group-directories-first --color=auto'
+    # alias ll='ls -FGlhp'                        # Preferred 'ls' implementation
+    # alias la='ll -A'                            #
+    # alias lr='ll -R'
+    # alias lx='ll -XB'
+    # alias lk='ll -Sr'
+    # alias rm='nocorrect rm -iv'
+    # alias less='less -FSRXc'                    # Preferred 'less' implementation
+    # alias which='type -all'                     # which:        Find executables
+    # alias show_options='shopt'                  # Show_options: display bash options settings
+    # alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
+    # Full Recursive Directory Listing
+    # alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+
+
+
+
+#   ======================================================================================
+#   FUNCTIONS
+#   ======================================================================================
+
+
+#   Make new dir and jumps inside
+#   --------------------------------------------------------------------------------------
+    mcd () {
+        mkdir -p "$1" && cd "$1"
+    }
+
+
+#   List directory contentes after upon cd
+#   --------------------------------------------------------------------------------------
     unalias cd
-    cd() { # list directory contents based on file counts upon 'cd'
+    cd() {
         nocorrect builtin cd "$@" && (
         n_files=$(\timeout 0.01 ls -f | wc -l)
         if [ ${n_files} != 0 ]; then
@@ -167,188 +208,35 @@ fi
         )
     }
 
+
+#   Fix man page width for better readability
+#   --------------------------------------------------------------------------------------
     unalias man
-    man () { # fix man page width for better readability
+    man () {
         local width="${COLUMNS:-100}"
         (( width > 100 )) && width=100
         MANWIDTH="$width" nocorrect command man "$@"
     }
 
-    bak() { # make backup file followed by last modified date
-        if [[ ${platform} == "OSX" ]]; then
-            mv "$1" "$1".$(date -r $(stat -f '%m' "$1") "+%y%m%d%H%M").bak
-        elif [[ ${platform} == "LINUX" ]]; then
-            mv "$1" "$1".$(date -d @$(stat -c '%Y' "$1") "+%y%m%d%H%M").bak
-        else
-            echo "${platform} is not supported" >&2
-            return 1
+
+#   Utility function for custom function
+#   --------------------------------------------------------------------------------------
+    has() {
+        local verbose=0
+        if [[ $1 = '-v' ]]; then
+            verbose=1
+            shift
         fi
+        for c; do c="${c%% *}"
+            if ! command -v "$c" &> /dev/null; then
+                (( verbose > 0 )) && printf "\033[1;31m%s\033[0m not found.\n" "$c" >&2
+                return 1
+            fi
+        done
     }
 
-    if command -v fzf > /dev/null; then
-        if command -v fasd > /dev/null; then
-            z() { # fasd & fzf change directory - jump using `fasd` if given argument, filter output of `fasd` using `fzf` else
-                [ $# -gt 0 ] && fasd_cd -d "$*" && return
-                local dir
-                dir="$(fasd -Rdl "$1" | fzf -1 -0 --no-sort +m --height=30)" && cd "${dir}" || return 1
-            }
-        fi
 
-
-        if command -v tmux > /dev/null; then
-            tm() { # tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
-                # `tm` will allow you to select your tmux session via fzf.
-                # `tm irc` will attach to the irc session (if it exists), else it will create it.
-
-                if tmux ls > /dev/null 2>&1; then
-                    [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-                    if [ $1 ]; then
-                        tmux $change -t "$1" 2>/dev/null || (tmux new-session -d -s $1 && tmux $change -t "$1"); return
-                    fi
-                    session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --select-1 --exit-0) &&  tmux $change -t "$session" || echo "No sessions found."
-                else
-                    tmux
-                fi
-            }
-
-            ftpane() { # ftpane - switch pane (@george-b)
-                local panes current_window current_pane target target_window target_pane
-                panes=$(tmux list-panes -s -F '#I:#P - #{pane_current_path} #{pane_current_command}')
-                current_pane=$(tmux display-message -p '#I:#P')
-                current_window=$(tmux display-message -p '#I')
-
-                target=$(echo "$panes" | grep -v "$current_pane" | fzf +m --reverse) || return
-
-                target_window=$(echo $target | awk 'BEGIN{FS=":|-"} {print$1}')
-                target_pane=$(echo $target | awk 'BEGIN{FS=":|-"} {print$2}' | cut -c 1)
-
-                if [[ $current_window -eq $target_window ]]; then
-                    tmux select-pane -t ${target_window}.${target_pane}
-                else
-                    tmux select-pane -t ${target_window}.${target_pane} &&
-                        tmux select-window -t $target_window
-                fi
-            }
-        fi
-
-        if command -v xpanes > /dev/null; then
-            ssh() {
-                if [ $# -eq 0 ]; then
-                    targets=$(cat ${HOME}/.ssh/config \
-                        | awk '$1=="Host"{print $2}' \
-                        | grep -v '*')
-                    exit_code=$?
-                    [ ${exit_code} != 0 ] && return ${exit_code}
-                    targets=$(echo ${targets} \
-                        | fzf --multi --height=30% --cycle --no-sort --layout=reverse \
-                        --preview-window=down:2 \
-                        --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;gsub(/^[ \t]+/,"", $0);print;getline; if ($0 ~ /HostName/) {;gsub(/^[ \t]+/,"", $0);print;}}'"'")
-                    [ ! -z "${targets}" ] && (echo ${targets} | xpanes -t -s -c "ssh {}")
-                else
-                    if ps -p $$ -o ppid= \
-                        | xargs -I{} ps -p {} -o comm= \
-                        | grep -qw tmux; then
-                    # Note: Options without parameter were hardcoded,
-                    # in order to distinguish an option's parameter from the destination.
-                    #
-                    #                   s/[[:space:]]*\(\( | spaces before options
-                    #     \(-[46AaCfGgKkMNnqsTtVvXxYy]\)\| | option without parameter
-                    #                     \(-[^[:space:]]* | option
-                    # \([[:space:]]\+[^[:space:]]*\)\?\)\) | parameter
-                    #                      [[:space:]]*\)* | spaces between options
-                    #                        [[:space:]]\+ | spaces before destination
-                    #                \([^-][^[:space:]]*\) | destination
-                    #                                   .* | command
-                    #                                 /\6/ | replace with destination
-                    # tmux set-option -p pane-border-format '#[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[default]'
-                    tmux select-pane -T "$(echo "$@" \
-                      | sed 's/[[:space:]]*\(\(\(-[46AaCfGgKkMNnqsTtVvXxYy]\)\|\(-[^[:space:]]*\([[:space:]]\+[^[:space:]]*\)\?\)\)[[:space:]]*\)*[[:space:]]\+\([^-][^[:space:]]*\).*/\6/')"
-                    fi
-                    command ssh "$@"
-                fi
-            }
-        fi
-
-
-        # if ${(z)VISUAL:-${(z)EDITOR}} -s <( echo ':if exists('"'"':Codi'"'"') | exit | else | cquit | endif' ); then
-        # fi
-        codi() {
-            local syntax="${1:-python}"
-            [ $# -gt 0 ] && shift
-            ${(z)VISUAL:-${(z)EDITOR}} -c \
-                "let g:startify_disable_at_vimenter = 1 |\
-                hi ColorColumn ctermbg=NONE |\
-                hi VertSplit ctermbg=NONE |\
-                hi NonText ctermfg=0 |\
-                Codi $syntax" "$@"
-        }
-
-        if [[ ${platform} == "OSX" ]]; then
-            # Install (one or multiple) selected application(s)
-            # using "brew search" as source input
-            # mnemonic [B]rew [I]nstall [P]lugin
-            bip() {
-                local inst=$(brew search | fzf -m)
-
-                if [[ $inst ]]; then
-                    for prog in $(echo $inst);
-                    do; brew install $prog; done;
-                    fi
-            }
-            # Update (one or multiple) selected application(s)
-            # mnemonic [B]rew [U]pdate [P]lugin
-            bup() {
-                local upd=$(brew leaves | fzf -m)
-
-                if [[ $upd ]]; then
-                    for prog in $(echo $upd);
-                    do; brew upgrade $prog; done;
-                    fi
-            }
-            # Delete (one or multiple) selected application(s)
-            # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
-            bcp() {
-                local uninst=$(brew leaves | fzf -m)
-
-                if [[ $uninst ]]; then
-                    for prog in $(echo $uninst);
-                    do; brew uninstall $prog; done;
-                    fi
-            }
-        fi
-    fi
-
-
-
-#   ======================================================================================
-#   3.  FILE AND FOLDER MANAGEMENT
-#   ======================================================================================
-
-   # zipf () { zip -r "$1".zip "$1" ; }          # zipf:         To create a ZIP archive of a folder
-   # alias numFiles='echo $(ls -1 | wc -l)'      # numFiles:     Count of non-hidden files in current dir
-   # alias make1mb='mkfile 1m ./1MB.dat'         # make1mb:      Creates a file of 1mb size (all zeros)
-   # alias make5mb='mkfile 5m ./5MB.dat'         # make5mb:      Creates a file of 5mb size (all zeros)
-   # alias make10mb='mkfile 10m ./10MB.dat'      # make10mb:     Creates a file of 10mb size (all zeros)
-
-#   'Cd's to frontmost window of MacOS Finder
-#   --------------------------------------------------------------------------------------
-#    cdf () {
-#        currFolderPath=$( /usr/bin/osascript <<EOT
-#            tell application "Finder"
-#                try
-#            set currFolder to (folder of the front window as alias)
-#                on error
-#            set currFolder to (path to desktop folder as alias)
-#                end try
-#                POSIX path of currFolder
-#            end tell
-#EOT
-#        )
-#        echo "cd to \"$currFolderPath\""
-#        cd "$currFolderPath"
-#    }
-
-#   Extract most know archives with one command
+#   Extract most know archives with one command -> DEPRECATED in favour of prezto
 #   --------------------------------------------------------------------------------------
    # extract () {
    #     if [ -f $1 ] ; then
@@ -372,229 +260,22 @@ fi
    # }
 
 
-
-
-#   ======================================================================================
-#   4.  SEARCHING
-#   ======================================================================================
-
-   # alias qfind="find . -name "                 # qfind:    Quickly search for file
-   # ff () { /usr/bin/find . -name "$@" ; }      # ff:       Find file under the current directory
-   # ffs () { /usr/bin/find . -name "$@"'*' ; }  # ffs:      Find file whose name starts with a given string
-   # ffe () { /usr/bin/find . -name '*'"$@" ; }  # ffe:      Find file whose name ends with a given string
-
-#   Search for a file using MacOS Spotlight's metadata
+#   Load custom function lazily
 #   --------------------------------------------------------------------------------------
-   # spotlight () { mdfind "kMDItemDisplayName == '$@'wc"; }
+    custom_zsh_fpath="$(dirname $(realpath ${(%):-%N}))/functions"
+    fpath=($custom_zsh_fpath $fpath)
+    if [[ -d "$custom_zsh_fpath" ]]; then
+        for func in $custom_zsh_fpath/*; do
+            autoload -Uz ${func:t}
+        done
+    fi
+    unset custom_zsh_fpath
 
 
-
-
-#   ======================================================================================
-#   5.  PROCESS MANAGEMENT
-#   ======================================================================================
-
-    ps-cpu () {
-        if [[ ${platform} == "OSX" ]]; then
-            local cmd='ps -r -axo user,pid,ppid,pcpu,pmem,state,time,command'
-        elif [[ ${platform} == "LINUX" ]]; then
-            local cmd='ps --sort -pcpu -axo user,pid,ppid,pcpu,pmem,nlwp,state,time,command'
-        else
-            echo "${platform} is not supported" >&2
-            return 1
-        fi
-        eval ${cmd} | head -n 16 | cut -c -80
-    }
-
-    ps-mem () {
-        if [[ ${platform} == "OSX" ]]; then
-            local cmd='ps -m -axo user,pid,ppid,pcpu,pmem,state,time,command'
-        elif [[ ${platform} == "LINUX" ]]; then
-            local cmd='ps --sort -rss -axo user,pid,ppid,pcpu,pmem,nlwp,state,time,command'
-        else
-            echo "${platform} is not supported" >&2
-            return 1
-        fi
-        eval ${cmd} | head -n 16 | cut -c -80
-    }
-
-    full-cmd () {
-        cat /proc/"$1"/cmdline | tr '\000' ' '
-    }
-
-
-#   find out the pid of a specified process
+#   Find out the pid of a specified process
 #   --------------------------------------------------------------------------------------
 #       Note that the command name can be specified via a regex
 #       E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
 #       Without the 'sudo' it will only find processes of the current user
 #   --------------------------------------------------------------------------------------
     # findPid () { lsof -t -c "$@" ; }
-
-#   memHogsTop, memHogsPs:  Find memory hogs
-#   --------------------------------------------------------------------------------------
-    # alias memHogsTop='top -l 2 -o rsize | head -20'
-    # alias memHogsPs='ps wwaxm -o pid,stat,vsize,rss,time,command | head -10'
-
-#   cpuHogs:  Find CPU hogs
-#   --------------------------------------------------------------------------------------
-    # alias cpu_hogs='ps wwaxr -o pid,stat,%cpu,time,command | head -10'
-
-#   Continual 'top' listing (every 10 seconds)
-#   --------------------------------------------------------------------------------------
-    # alias topForever='top -l 9999999 -s 10 -o cpu'
-
-#   ttop:  Recommended 'top' invocation to minimize resources
-#   --------------------------------------------------------------------------------------
-#       Taken from this macosxhints article
-#       http://www.macosxhints.com/article.php?story=20060816123853639
-#   --------------------------------------------------------------------------------------
-    # alias ttop="top -R -F -s 10 -o rsize"
-
-#   my-ps: List processes owned by my user:
-#   --------------------------------------------------------------------------------------
-    my-ps() { ps $@ -u $USER -o pid,%cpu,%mem,start,time,bsdtime,command ; }
-
-#   fkill: kill process - list only the ones you can kill
-#   --------------------------------------------------------------------------------------
-    if command -v fzf > /dev/null; then
-        fkill() {
-            local pid
-            if [ "$UID" != "0" ]; then
-                pid=$(ps -f -u $UID | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
-            else
-                pid=$(ps -ef | sed 1d | fzf -m --cycle --preview 'echo {}' --preview-window down:5:wrap | awk '{print $2}')
-            fi
-
-            if [ "x$pid" != "x" ]; then
-                echo $pid | xargs kill -${1:-9}
-            fi
-        }
-    fi
-
-    if [[ ${platform} == "LINUX" ]]; then
-        # https://www.commandlinefu.com/commands/view/4968/print-memory-utilization-percentage-for-a-specific-process-and-its-children#comment
-        howmuchmem () {
-            PROCNAME="$@"
-            echo RAM Used by $PROCNAME $(echo "scale=4; ($(ps axo rss,comm|grep $PROCNAME| awk '{ TOTAL += $1 } END { print TOTAL }')/$(free | head -n 2 | tail -n 1 | awk '{ print $2 }'))*100"|bc)%
-        }
-
-        intercept() {
-            pid="$1"
-            sudo strace -e write=1,2 -p $pid 2>&1 | sed -un "/^ |/p" | sed -ue "s/^.\{9\}\(.\{50\}\).\+/\1/g" -e 's/ //g' | xxd -r -p
-        }
-    fi
-
-
-
-
-
-
-
-#   ======================================================================================
-#   6.  NETWORKING
-#   ======================================================================================
-
-    alias myip='dig myip.opendns.com @resolver1.opendns.com +short' # myip:         Public facing IP Address
-    alias flushDNS='dscacheutil -flushcache'                        # flushDNS:     Flush out the DNS Cache
-    alias lsock='sudo lsof -i -P'                                   # lsock:        Display open sockets
-    alias lsockU='sudo lsof -nP | grep UDP'                         # lsockU:       Display only open UDP sockets
-    alias lsockT='sudo lsof -nP | grep TCP'                         # lsockT:       Display only open TCP sockets
-    alias ipInfo0='ipconfig getpacket en0'                          # ipInfo0:      Get info on connections for en0
-    alias ipInfo1='ipconfig getpacket en1'                          # ipInfo1:      Get info on connections for en1
-    alias openPorts='sudo lsof -i -P | grep -i "listen"'            # openPorts:    All listening connections
-    alias showBlocked='sudo ipfw list'                              # showBlocked:  All ipfw rules inc/ blocked IPs
-
-#   display useful host related informaton
-#   --------------------------------------------------------------------------------------
-    ii() {
-        echo -e "\nYou are logged on ${RED}$HOST"
-        echo -e "\nAdditionnal information:$NC " ; uname -a
-        echo -e "\n${RED}Users logged on:$NC " ; w -h
-        echo -e "\n${RED}Current date :$NC " ; date
-        echo -e "\n${RED}Machine stats :$NC " ; uptime
-        echo -e "\n${RED}Current network location :$NC " ; scselect
-        echo -e "\n${RED}Public facing IP Address :$NC " ;myip
-        #echo -e "\n${RED}DNS Configuration:$NC " ; scutil --dns
-        echo
-    }
-
-
-#   ======================================================================================
-#   7.  SYSTEMS OPERATIONS & INFORMATION
-#   ======================================================================================
-
-
-    if [[ ${platform} == "OSX" ]]; then
-    # alias mountReadWrite='/sbin/mount -uw /'    # mountReadWrite:   For use when booted into single-user
-
-#       cleanupDS:  Recursively delete .DS_Store files
-#       --------------------------------------------------------------------------------------
-        alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
-
-#       finderShowHidden:   Show hidden files in Finder
-#       finderHideHidden:   Hide hidden files in Finder
-#       --------------------------------------------------------------------------------------
-        alias finderShowHidden='defaults write com.apple.finder ShowAllFiles TRUE'
-        alias finderHideHidden='defaults write com.apple.finder ShowAllFiles FALSE'
-
-#       cleanupLS:  Clean up LaunchServices to remove duplicates in the "Open With" menu
-#       --------------------------------------------------------------------------------------
-        alias cleanupLS="/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -kill -r -domain local -domain system -domain user && killall Finder"
-
-#       screensaverDesktop: Run a screensaver on the Desktop
-#       --------------------------------------------------------------------------------------
-        alias screensaverDesktop='/System/Library/Frameworks/ScreenSaver.framework/Resources/ScreenSaverEngine.app/Contents/MacOS/ScreenSaverEngine -background'
-    fi
-
-
-
-
-
-#   ======================================================================================
-#   8.  WEB DEVELOPMENT
-#   ======================================================================================
-
-    # alias apacheEdit='sudo edit /etc/httpd/httpd.conf'      # apacheEdit:       Edit httpd.conf
-    # alias apacheRestart='sudo apachectl graceful'           # apacheRestart:    Restart Apache
-    # alias editHosts='sudo edit /etc/hosts'                  # editHosts:        Edit /etc/hosts file
-    # alias herr='tail /var/log/httpd/error_log'              # herr:             Tails HTTP error logs
-    # alias apacheLogs="less +F /var/log/apache2/error_log"   # Apachelogs:   Shows apache error logs
-    # httpHeaders () { /usr/bin/curl -I -L $@ ; }             # httpHeaders:      Grabs headers from web page
-
-#   httpDebug:  Download a web page and show info on what took time
-#   --------------------------------------------------------------------------------------
-    # httpDebug () { /usr/bin/curl $@ -o /dev/null -w "dns: %{time_namelookup} connect: %{time_connect} pretransfer: %{time_pretransfer} starttransfer: %{time_starttransfer} total: %{time_total}\n" ; }
-
-
-
-
-#   ======================================================================================
-#   9.  REMINDERS & NOTES
-#   ======================================================================================
-
-#   remove_disk: spin down unneeded disk
-#   --------------------------------------------------------------------------------------
-#   diskutil eject /dev/disk1s3
-
-#   to change the password on an encrypted disk image:
-#   --------------------------------------------------------------------------------------
-#   hdiutil chpass /path/to/the/diskimage
-
-#   to mount a read-only disk image as read-write:
-#   --------------------------------------------------------------------------------------
-#   hdiutil attach example.dmg -shadow /tmp/example.shadow -noverify
-
-#   mounting a removable drive (of type msdos or hfs)
-#   --------------------------------------------------------------------------------------
-#   mkdir /Volumes/Foo
-#   ls /dev/disk*   to find out the device to use in the mount command)
-#   mount -t msdos /dev/disk1s1 /Volumes/Foo
-#   mount -t hfs /dev/disk1s1 /Volumes/Foo
-
-#   to create a file of a given size: /usr/sbin/mkfile or /usr/bin/hdiutil
-#   --------------------------------------------------------------------------------------
-#   e.g.: mkfile 10m 10MB.dat
-#   e.g.: hdiutil create -size 10m 10MB.dmg
-#   the above create files that are almost all zeros - if random bytes are desired
-#   then use: ~/Dev/Perl/randBytes 1048576 > 10MB.dat

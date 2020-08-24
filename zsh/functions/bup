@@ -1,0 +1,16 @@
+# Update (one or multiple) selected application(s)
+# mnemonic [B]rew [U]pdate [P]lugin
+
+if [ ${platform} != "OSX" ]; then
+    echo "${platform} is not supported" >&2
+    return 1
+fi
+
+has -v brew fzf
+
+local upd=$(brew leaves | fzf -m)
+
+if [[ $upd ]]; then
+    for prog in $(echo $upd);
+    do; brew upgrade $prog; done;
+fi
