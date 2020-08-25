@@ -66,21 +66,21 @@
     [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
-#   Update environment in tmux just before every command
-#   --------------------------------------------------------------------------------------
-    if [ -n "$TMUX" ]; then
-        function refresh {
-            eval $(tmux showenv -s DISPLAY)
-            eval $(tmux showenv -s SSH_AUTH_SOCK)
-        }
-    else
-        function refresh {
-            :
-        }
-    fi
-    function preexec() {
-        refresh
-    }
+# #   Update environment in tmux just before every command -> use tmux bind $
+# #   --------------------------------------------------------------------------------------
+#     if [ -n "$TMUX" ]; then
+#         function refresh {
+#             eval $(tmux showenv -s DISPLAY)
+#             eval $(tmux showenv -s SSH_AUTH_SOCK)
+#         }
+#     else
+#         function refresh {
+#             :
+#         }
+#     fi
+#     function preexec() {
+#         refresh
+#     }
 
 
 #   vi mode for zsh (DEPRECATED) -> use readline shortcut!!

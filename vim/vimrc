@@ -489,6 +489,23 @@
         noremap <leader>p "+p
     " }}}
 
+    " yanked text to osc52 {{{
+        " copy to attached terminal using the yank(1) script:
+        " https://github.com/sunaku/home/blob/master/bin/yank
+        function! Yank(text) abort
+            let escape = system('osc52', a:text)
+            if v:shell_error
+                echoerr escape
+            endif
+        endfunction
+
+        " automatically run yank(1) whenever yanking in Vim
+        function! CopyYank() abort
+            call Yank(join(v:event.regcontents, "\n"))
+        endfunction
+        autocmd TextYankPost * call CopyYank()
+    " }}}
+
     " Search in current visible window {{{
         command! -nargs=1 WinSearch exe '/\%>'.(line('w0')-1).'l'.<q-args>.'\%<'.(line('w$')+1).'l'
         nnoremap z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
