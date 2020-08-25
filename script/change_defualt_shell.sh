@@ -11,20 +11,47 @@ TARGET_SHELL=""
 
 local_change() {
     shell_full_path="${HOME}/.local/bin/$1"
-    # loginshell_rc=".${SHELL##*/}rc"
-    # assume default login shell is bash
-    loginshell_rc=".bashrc"
+
+    case "$SHELL" in
+        *bash) loginshell_rc="$HOME/.bashrc" ;;
+        *zsh)  loginshell_rc="$HOME/.zshrc" ;;
+        *fish) loginshell_rc="$HOME/.config/fish/config.fish" ;;
+        # *csh)  loginshell_rc="$HOME/.cshrc" ;;
+        # *tcsh) loginshell_rc="$HOME/.tcshrc" ;;
+        # *dash) loginshell_rc="$HOME/.profile" ;;
+        *)     echo "$SHELL is not supported" >&2; exit 1; ;;
+    esac
 
     # sed -i -e '/'$(echo $shell_full_path | sed 's/\//\\\//g')' ]]; then/,/fi/d' ${HOME}/${loginshell_rc}
-    sed -i -e '/# added from andys dotfiles/,/^fi$/d' ${HOME}/${loginshell_rc}
+    for f in ".bashrc" ".zshrc" ".cshrc" ".tcshrc" ".config/fish/config.fish" ".profile"; do
+        sed -i -e '/# added from andys dotfiles/,/^fi$/d' $HOME/$f
+    done
+
+    if [ ${SHELL##*/} = ${shell_full_path##*/} ]; then
+        echo "${marker_info} Your default shell is ${SHELL}. No need to change"
+        return 0
+    fi
+
+    shell=${SHELL##*/}
 
     if [[ -e ${shell_full_path} ]]; then
-        # echo -e "if [[ -e ${shell_full_path} ]]; then\n\texec ${shell_full_path} -l\nfi" >> ${HOME}/${loginshell_rc}
-        echo -e "# added from andys dotfiles" >> ${HOME}/${loginshell_rc}
-        echo -e "if [[ -e ${shell_full_path} ]]; then \n\texec env -i TERM="$TERM" HOME="$HOME" SHELL="${shell_full_path}" ${shell_full_path} -il\nfi" >> ${HOME}/${loginshell_rc}
+        echo -e "# added from andys dotfiles" >> ${loginshell_rc}
+        case $shell in
+            bash|zsh)
+                # echo -e "if [[ -e ${shell_full_path} ]]; then\n\texec ${shell_full_path} -l\nfi" >> ${loginshell_rc}
+                echo -e "if [ -e ${shell_full_path} ]; then\n\texec env -u PATH ${shell_full_path} -l\nfi" >> ${loginshell_rc}
+                ;;
+            fish)
+                echo -e "if test -e ${shell_full_path}\n\texec env -u PATH ${shell_full_path} -l\nend" >> ${loginshell_rc}
+                ;;
+            # csh|tcsh)
+            #     echo -e "if ( -e ${shell_full_path} ) then\n\texec env -u PATH ${shell_full_path} -l\nendif" >> ${loginshell_rc}
+            #     ;;
+            *) :; ;;
+        esac
     else
-        echo "${marker_err} ${shell_full_path} does not exist"
-        false
+        echo "${marker_err} ${shell_full_path} does not exist" >&2
+        return 1
     fi
 }
 

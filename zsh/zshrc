@@ -18,7 +18,9 @@
 
 #   Setup virtualenvwrapper (using system python)
 #   --------------------------------------------------------------------------------------
-    [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && pip install virtualenvwrapper
+    [ -z "${TMUX+x}" ] && \
+        [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && \
+        pip install virtualenv && pip install virtualenvwrapper
     source $(which virtualenvwrapper_lazy.sh)
 
 
@@ -42,13 +44,18 @@
 
 #   Setup asdf
 #   --------------------------------------------------------------------------------------
-    [ -f $HOME/.asdf/asdf.sh ] && source $HOME/.asdf/asdf.sh
-    fpath=($fpath ${ASDF_DIR}/completions)
+    [ -f $HOME/.asdf/asdf.sh ] \
+        && source $HOME/.asdf/asdf.sh && fpath=($fpath ${ASDF_DIR}/completions)
 
 
 #   Setup thefuck
 #   --------------------------------------------------------------------------------------
     [ -x "$(command -v thefuck)" ] && eval $(thefuck --alias)
+
+
+#   Source Prezto
+#   --------------------------------------------------------------------------------------
+    [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
 #   Setup FZF
@@ -59,11 +66,6 @@
         # Key bindings
         source "${HOME}/.local/share/nvim/plugged/fzf/shell/key-bindings.zsh"
     fi
-
-
-#   Source Prezto
-#   --------------------------------------------------------------------------------------
-    [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
 # #   Update environment in tmux just before every command -> use tmux bind $

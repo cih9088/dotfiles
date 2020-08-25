@@ -489,19 +489,23 @@
         noremap <leader>p "+p
     " }}}
 
-    " yanked text to osc52 {{{
+    " yanked text to osc52 and X11 {{{
         " copy to attached terminal using the yank(1) script:
         " https://github.com/sunaku/home/blob/master/bin/yank
         function! Yank(text) abort
             let escape = system('osc52', a:text)
+            call setreg('+', a:text)
             if v:shell_error
                 echoerr escape
             endif
         endfunction
 
-        " automatically run yank(1) whenever yanking in Vim
+        " automatically run yank(1) whenever yanking in Vim not deleting
         function! CopyYank() abort
-            call Yank(join(v:event.regcontents, "\n"))
+            let operator = v:event.operator
+            if operator == 'y'
+                call Yank(getreg('0'))
+            endif
         endfunction
         autocmd TextYankPost * call CopyYank()
     " }}}
@@ -598,6 +602,7 @@
                         \ }
 
             if has ('nvim')
+                let border_opts = extend({'is_frame': 1,}, border_opts)
                 let frame = s:create_float('Todo', border_opts)
                 call nvim_buf_set_lines(frame, 0, -1, v:true, border)
                 call s:create_float('Normal', opts)
@@ -609,12 +614,21 @@
             endif
         endf
         fun s:create_float(hl, opts) abort
+            if has_key(a:opts, 'is_frame')
+                unlet a:opts.is_frame
+                let is_frame = "true"
+            else
+                let is_frame = "false"
+            endif
+
             let buf = nvim_create_buf(v:false, v:true)
             let opts = extend({'relative': 'editor', 'style': 'minimal'}, a:opts)
             let win = nvim_open_win(buf, v:true, opts)
             call setwinvar(win, '&winhighlight', 'NormalFloat:'..a:hl)
-            " Close border window when terminal window close
-            exe 'autocmd TermClose * ++once :bd! | call nvim_win_close('..l:win..', v:true)'
+            if l:is_frame == "true"
+                " Close border window when terminal window close
+                exe 'autocmd TermClose * ++once :bd! | call nvim_win_close('..l:win..', v:true)'
+            endif
             return buf
         endfu
         fun s:create_popup_window(hl, opts) abort
@@ -1134,9 +1148,6 @@
                                 \ 'directory': '/tmp/ccls'
                                 \ }}})
             endif
-
-            " add user defined snippets
-            call coc#config('snippets.userSnippetsDirectory', split(system('dirname ' . $MYVIMRC))[-1] . '/snips')
 
             " Use <C-j> for jump to next placeholder, it's default of coc.nvim
             let g:coc_snippet_next = '<c-j>'

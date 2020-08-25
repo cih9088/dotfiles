@@ -108,7 +108,7 @@ fi
     export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
 
     [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] \
-        && export PATH="${PATH:+${PATH}:}/${HOME}/.local/share/nvim/plugged/fzf/bin"
+        && export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
 
 
 #   Setup xpanes

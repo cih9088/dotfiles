@@ -47,19 +47,17 @@ build_osc_52 () {
     # build up OSC 52 ANSI escape sequence
     esc="$1"
     esc="\033]52;c;$( printf %s "$esc" | head -c $maxlen | base64 | tr -d '\r\n' )\a"
-    test -n "$TMUX" -o -z "${TERM##screen*}" && esc="\033Ptmux;\033$esc\033\\"
+    test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" && esc="\033Ptmux;\033$esc\033\\"
     printf "$esc"
 }
 
 # resolve target terminal to send escape sequence
 # if we are on remote machine, send directly to SSH_TTY to transport escape sequence
 # to terminal on local machine, so data lands in clipboard on our local machine
-# pane_active_tty=$(tmux list-panes -F "#{pane_active} #{pane_tty}" | awk '$1=="1" { print $2 }')
-current_tty="/dev/tty"
+current_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
 target_tty="${SSH_TTY:-$current_tty}"
 
 # KiTTY always appends to the clipboard, so clear it first
 # https://sw.kovidgoyal.net/kitty/protocol-extensions.html#pasting-to-clipboard
 printf "$( build_osc_52 "\033]52;c;!\a" )" > "$target_tty"
-
 printf "$( build_osc_52 "$buf" )" > "$target_tty"

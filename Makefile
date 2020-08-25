@@ -137,19 +137,18 @@ updateTmuxPlugins: updateTPM
 	@( $(SCRIPTS_DIR)/update_tmux_plugins.sh )
 
 clean:
-	@( sed -i -e '/\/.local\/bin\/zsh ]]; then/,/fi/d' ${HOME}/.bashrc )
-	@( sed -i -e '/\/.local\/bin\/fish ]]; then/,/fi/d' ${HOME}/.bashrc )
-	@echo "[0;92m[*][0m Remove all configurations files"
-	@rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
+	@( sed -i -e '/# added from andys dotfiles/,/^fi$$/d' ${HOME}/.bashrc )
+	@( rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \
 		${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
 		${HOME}/.gitignore \
 		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
 		${HOME}/.vimrc ${HOME}/.vim \
 		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger \
-		${HOME}/.config/yabai ${HOME}/.config/skhd
-	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
+		${HOME}/.config/yabai ${HOME}/.config/skhd || true )
 	@rm -rf $(PROJ_HOME)
+	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
+	@echo "[0;92m[*][0m Remove all configurations files and custom functions"
 
 installBins: prepare installTree installFd installRg installRanger \
 	installThefuck installTldr installBashSnippets

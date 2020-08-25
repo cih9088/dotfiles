@@ -31,6 +31,7 @@
         "snips",
         "gosnippets/UltiSnips"
     ],
+    "snippets.loadFromExtensions": false,
 
     "python.jediEnabled": false,
     "python.trace.server": "off",

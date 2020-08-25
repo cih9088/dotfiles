@@ -10,6 +10,7 @@ is_app_installed() {
 }
 
 copy_backend_remote_tunnel_port=$(tmux show-option -gvq "@copy_backend_remote_tunnel_port")
+copy_backend=""
 
 # get data either form stdin or from file
 buf=$(cat "$@") 

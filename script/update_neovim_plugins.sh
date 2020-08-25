@@ -28,9 +28,16 @@ export PATH="${HOME}/.local/bin:$PATH"
 # plugin update
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugInstall +PlugUpgrade +PlugUpdate +UpdateRemotePlugins +qall
 
+
+## coc.nvim
 # install coc extensions
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-go coc-sh' +qall
+
+# update coc extensions
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +CocUpdateSync +qall
+
+rm -rf ${PROJ_HOME}/nvim/coc-settings.json || true
+cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
 
 # ln -snf ${PROJ_HOME}/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
 ) >&3 2>&4 || exit_code="$?" && true
