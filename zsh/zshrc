@@ -115,13 +115,14 @@
 
 #   Easy use
 #   --------------------------------------------------------------------------------------
-    alias ~="cd ~"                                      # ~:            Go Home
-    alias c='clear'                                     # c:            Clear terminal display
-    alias path='echo -e ${PATH//:/\\n}'                 # path:         Echo all executable Paths
-    alias fix-stty='stty sane'                          # fix_stty:     Restore terminal settings when screwed up
-    alias make1mb='mkfile 1m ./1MB.dat'         # make1mb:      Creates a file of 1mb size (all zeros)
-    alias make5mb='mkfile 5m ./5MB.dat'         # make5mb:      Creates a file of 5mb size (all zeros)
-    alias make10mb='mkfile 10m ./10MB.dat'      # make10mb:     Creates a file of 10mb size (all zeros)
+    alias ls="${aliases[ls]:-ls} -F"                         # append indicator
+    alias ~="cd ~"                                           # ~:            Go Home
+    alias c='clear'                                          # c:            Clear terminal display
+    alias path='echo -e ${PATH//:/\\n}'                      # path:         Echo all executable Paths
+    alias fix-stty='stty sane'                               # fix_stty:     Restore terminal settings when screwed up
+    alias make1mb='mkfile 1m ./1MB.dat'                      # make1mb:      Creates a file of 1mb size (all zeros)
+    alias make5mb='mkfile 5m ./5MB.dat'                      # make5mb:      Creates a file of 5mb size (all zeros)
+    alias make10mb='mkfile 10m ./10MB.dat'                   # make10mb:     Creates a file of 10mb size (all zeros)
     alias color256='curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash'
     alias py='python'
     alias py2='python2'
@@ -186,11 +187,11 @@
 #   ======================================================================================
 
 
-#   Make new dir and jumps inside
-#   --------------------------------------------------------------------------------------
-    mcd () {
-        mkdir -p "$1" && cd "$1"
-    }
+# #   Make new dir and jumps inside --> DEPRECATED in favour of prezto
+# #   --------------------------------------------------------------------------------------
+#     mcd () {
+#         mkdir -p "$1" && cd "$1"
+#     }
 
 
 #   List directory contentes after upon cd
