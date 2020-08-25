@@ -55,6 +55,9 @@ prerequisites:
 prerequisitesTest:
 	@( $(SCRIPTS_DIR)/prerequisites_test.sh )
 
+installTermInfo:
+	@( $(SCRIPTS_DIR)/install_terminfo.sh )
+
 installZsh: prepare
 	@( $(SCRIPTS_DIR)/install_zsh.sh $(zsh_version) )
 
@@ -155,7 +158,7 @@ update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins u
 	@echo
 	@echo "[42m[30m[*] Update has Finished.[0m"
 
-install: prepare installZsh changeDefaultShell installPrezto installDevAsdf \
+install: prepare installTermInfo installZsh changeDefaultShell installPrezto installDevAsdf \
 	installNeovim installTmux installBins
 	@echo
 	@echo "[42m[30m[*] Install has Finished.[0m"
