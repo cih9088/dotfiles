@@ -48,9 +48,9 @@
         && source $HOME/.asdf/asdf.sh && fpath=($fpath ${ASDF_DIR}/completions)
 
 
-#   Setup thefuck
+#   Setup thefuck -> to function
 #   --------------------------------------------------------------------------------------
-    [ -x "$(command -v thefuck)" ] && eval $(thefuck --alias)
+    # [ -x "$(command -v thefuck)" ] && eval $(thefuck --alias)
 
 
 #   Source Prezto

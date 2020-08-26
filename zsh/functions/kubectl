@@ -1,0 +1,10 @@
+#https://frederic-hemberger.de/notes/shell/speed-up-initial-zsh-startup-with-lazy-loading/
+
+# Remove this function, subsequent calls will execute 'kubectl' directly
+unfunction "$0"
+
+# Load auto-completion
+source <(kubectl completion zsh)
+
+# Execute 'kubectl' binary
+$0 "$@"

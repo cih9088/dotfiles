@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+python <(curl -sSL https://raw.githubusercontent.com/hyiltiz/vim-plugins-profile/master/vim-plugins-profile.py) nvim
