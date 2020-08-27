@@ -16,8 +16,8 @@ export PATH="${HOME}/.local/bin:$PATH"
 
 # if asdf is installed
 [ -f $HOME/.asdf/asdf.sh ] && . $HOME/.asdf/asdf.sh
-[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
-[ -x "$(command -v goenv)" ] && eval "$(goenv init -)"
+command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
+command -v goenv > /dev/null && eval "$(goenv init -)" || true
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \
@@ -28,10 +28,9 @@ export PATH="${HOME}/.local/bin:$PATH"
 # plugin update
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugInstall +PlugUpgrade +PlugUpdate +UpdateRemotePlugins +qall
 
-
 ## coc.nvim
 # install coc extensions
-nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-go coc-sh' +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-sh' +qall
 
 # update coc extensions
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +CocUpdateSync +qall

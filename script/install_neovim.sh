@@ -29,7 +29,7 @@ $(${PROJ_HOME}/script/check_release neovim/neovim ${NVIM_VERSION}) || exit $?
 # if asdf is installed
 [ -f $HOME/.asdf/asdf.sh ] && . $HOME/.asdf/asdf.sh
 export PATH="${HOME}/.pyenv/bin:$PATH"
-[ -x "$(command -v pyenv)" ] && eval "$(pyenv init -)"
+command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
 
 export WORKON_HOME=${HOME}/.virtualenvs
 mkdir -p ${WORKON_HOME} || true

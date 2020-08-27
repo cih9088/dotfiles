@@ -83,7 +83,7 @@ golang_version_func() {
 
 
 main_script 'goenv' setup_func_local setup_func_system version_func
-if [ -x "$(command -v goenv)" ]; then
+if command -v goenv > /dev/null; then
     eval "$(goenv init -)"
     echo "${marker_info} Note that the latest release ${Bold}${Underline}go${Color_Off} would be installed using ${Bold}${Underline}goenv${Color_Off}"
     main_script 'go' golang_install golang_install golang_version_func

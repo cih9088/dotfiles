@@ -41,7 +41,7 @@ echo
 # fi
 #
 # # Change arguments to extensions you need
-# yarn add coc-json coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-snippets coc-python coc-go coc-sh
+# yarn add coc-json coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-snippets coc-python coc-sh
 #
 # if [[ -f ${PROJ_HOME}/nvim/coc-settings.json ]]; then
 #     rm -rf ${PROJ_HOME}/nvim/coc-settings.json.bak || true
@@ -55,7 +55,7 @@ echo
 #     cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
 # fi
 #
-nvim +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-go coc-sh' +qall
+nvim +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-sh' +qall
 nvim +CocUpdateSync +qall
 
 ) >&3 2>&4 || exit_code="$?" && true

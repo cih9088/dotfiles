@@ -33,8 +33,9 @@
         " Plug 'joshdick/onedark.vim'
         " Plug 'junegunn/seoul256.vim'
         " Plug 'dracula/vim', { 'as': 'dracula' }
+        " Plug 'sainnhe/edge'
         Plug 'ryanoasis/vim-devicons'
-        Plug 'sainnhe/edge'
+        Plug 'franbach/miramare'
         " =========================================================
 
     " }}}
@@ -235,7 +236,8 @@
         set background=dark " lihgt / dark
 
         try
-            colorscheme edge
+            colorscheme miramare
+            " colorscheme edge
             " colorscheme seoul256
             " colorscheme base16-default-dark
             " colorscheme base17-eighties
@@ -772,8 +774,10 @@
                 " neovim v0.4.4 has no expandcmd()
                 let l:expands = []
                 for elem in a:000
-                    let l:expands += [expand(elem)]
+                    let l:expands += ['"' . expand(elem) . '"']
                 endfor
+                echo l:expands
+                echo join([&grepprg] + l:expands)
                 return system(join([&grepprg] + l:expands), ' ')
             endif
         endfunction
@@ -856,7 +860,7 @@
             let g:lightline#gitdiff#indicator_modified = "!"
             let g:lightline = {}
             let g:lightline = {
-                        \ 'colorscheme': 'edge',
+                        \ 'colorscheme': 'miramare_modified',
                         \ 'active': {
                         \     'left': [
                         \           [ 'mode', 'paste' ],
@@ -1118,7 +1122,6 @@
                         \ 'coc-yaml',
                         \ 'coc-vimtex',
                         \ 'coc-python',
-                        \ 'coc-go',
                         \ 'coc-sh'
                         \ ]
 
@@ -1148,6 +1151,16 @@
                                 \ 'directory': '/tmp/ccls'
                                 \ }}})
             endif
+
+            " add gopls languageserver
+            if executable('gopls')
+                call coc#config('languageserver.golang', {
+                            \ 'command': 'gopls',
+                            \ 'filetypes': ['go'],
+                            \ 'rootPatterns': ['go.mod', '.vim/', '.git/', '.hg/',],
+                                \ })
+            endif
+
 
             " Use <C-j> for jump to next placeholder, it's default of coc.nvim
             let g:coc_snippet_next = '<c-j>'
@@ -1505,6 +1518,11 @@
             let g:vimtex_quickfix_mode=0
             let g:tex_conceal='abdmg'
         endif
+    " }}}
+
+    " fatih/vim-go {{{
+        let g:go_def_mapping_enabled = 0
+        let g:go_doc_keywordprg_enabled = 0
     " }}}
 
     " iamcco/markdown-preview.nvim {{{

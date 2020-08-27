@@ -136,6 +136,9 @@ updateTPM:
 updateTmuxPlugins: updateTPM
 	@( $(SCRIPTS_DIR)/update_tmux_plugins.sh )
 
+updateDevEnv:
+	@( $(SCRIPTS_DIR)/update_dev_env.sh )
+
 clean:
 	@( sed -i -e '/# added from andys dotfiles/,/^fi$$/d' ${HOME}/.bashrc )
 	@( rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
@@ -153,7 +156,8 @@ clean:
 installBins: prepare installTree installFd installRg installRanger \
 	installThefuck installTldr installBashSnippets
 
-update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateCustomBins updatePrezto
+update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateCustomBins \
+	updatePrezto updateDevEnv
 	@echo
 	@echo "[42m[30m[*] Update has Finished.[0m"
 
@@ -170,7 +174,7 @@ init: prepare install update
 	installZsh installFish installPrezto installNeovim installTmux \
 	installBins installPythonVirtualenv \
 	installDevShell installDevPython installDevNodejs installDevC installDevGo changeDefaultShell \
-	installDevAsdf \
+	installDevAsdf updateDevEnv\
 	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM updateCustomBins updatePrezto \
 	clean update install init initOSX \
 
