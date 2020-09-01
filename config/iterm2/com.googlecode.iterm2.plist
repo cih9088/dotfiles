@@ -1134,7 +1134,7 @@
 	<key>NSFontPanelAttributes</key>
 	<string>1, 0</string>
 	<key>NSNavLastRootDirectory</key>
-	<string>~/Downloads</string>
+	<string>~/Downloads/Win10_20H1(19041.329)_x64_4in1_Remiz_20.06.13</string>
 	<key>NSNavLastUserSetHideExtensionButtonState</key>
 	<false/>
 	<key>NSNavPanelExpandedSizeForOpenMode</key>
@@ -1187,7 +1187,9 @@
 	<key>NSWindow Frame NSFontPanel</key>
 	<string>663 110 951 333 0 0 1680 1050 </string>
 	<key>NSWindow Frame NSNavPanelAutosaveName</key>
-	<string>578 457 799 448 0 0 1920 1057 </string>
+	<string>552 367 799 448 0 0 1680 1027 </string>
+	<key>NSWindow Frame ProfilesPanel</key>
+	<string>205 229 1098 626 0 0 1680 1027 </string>
 	<key>NSWindow Frame SUUpdateAlert</key>
 	<string>548 476 620 392 0 0 1680 1027 </string>
 	<key>NSWindow Frame SessionsPreferences</key>
@@ -1197,9 +1199,9 @@
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>155 473 592 584 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>56 20 1840 1018 0 0 1920 1057 </string>
+	<string>56 20 1600 988 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>56 679 490 329 0 0 1680 1027 </string>
+	<string>858 679 490 329 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>858 679 490 329 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -1547,7 +1549,9 @@
 			<key>Guid</key>
 			<string>32B2EC95-C3A0-4D63-92F3-3C35906A3EB8</string>
 			<key>Horizontal Spacing</key>
-			<real>0.80000000000000004</real>
+			<real>1</real>
+			<key>Icon</key>
+			<integer>0</integer>
 			<key>Idle Code</key>
 			<integer>0</integer>
 			<key>Jobs to Ignore</key>
@@ -1858,11 +1862,11 @@
 			<key>Name</key>
 			<string>Default</string>
 			<key>Non Ascii Font</key>
-			<string>SFMonoNerdFontC-Regular 10</string>
+			<string>SFMonoNerdFontComplete-Regular 10.5</string>
 			<key>Non-ASCII Anti Aliased</key>
 			<true/>
 			<key>Normal Font</key>
-			<string>SFMono-Regular 11</string>
+			<string>SFMono-Regular 10.5</string>
 			<key>Option Key Sends</key>
 			<integer>2</integer>
 			<key>Prompt Before Closing 2</key>
@@ -2263,16 +2267,16 @@
 	<key>NoSyncFrame_SharedPreferences</key>
 	<dict>
 		<key>screenFrame</key>
-		<string>{{0, 0}, {1920, 1080}}</string>
+		<string>{{0, 0}, {1680, 1050}}</string>
 		<key>topLeft</key>
-		<string>{698, 935}</string>
+		<string>{316, 893}</string>
 	</dict>
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
 	<string>F43D6399-9686-48E9-B797-C4315F359E37</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>339</integer>
+	<integer>346</integer>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
@@ -3063,7 +3067,7 @@
 	<key>OpenArrangementAtStartup</key>
 	<false/>
 	<key>OpenBookmark</key>
-	<true/>
+	<false/>
 	<key>OpenNoWindowsAtStartup</key>
 	<false/>
 	<key>OpenTmuxWindowsIn</key>
@@ -3116,7 +3120,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2020-08-26T00:18:54Z</date>
+	<date>2020-08-31T05:31:14Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateGroupIdentifier</key>

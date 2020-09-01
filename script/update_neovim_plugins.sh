@@ -30,7 +30,7 @@ nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugInstall +PlugUpgrade +P
 
 ## coc.nvim
 # install coc extensions
-nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-sh' +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-python coc-go coc-sh' +qall
 
 # update coc extensions
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +CocUpdateSync +qall

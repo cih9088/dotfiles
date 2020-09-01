@@ -1,12 +1,14 @@
 " -----------------------------------------------------------------------------
-" Name:         Miramare_modified
-" Description:  Comfortable & Pleasant Color Scheme for Vim
-" Author:       Francisco Bach <franciscobach@gmail.com>
-" Website:      https://github.com/franbach/miramare
-" License:      MIT
+" Name:            Miramare_modified
+" Description:     Comfortable & Pleasant Color Scheme for Vim
+" OriginalAuthor:  Francisco Bach <franciscobach@gmail.com>
+" Author:          Andy Cho <cih9088@gmail.com>
+" Website:         https://github.com/h9088/dotfiles
+" License:         MIT
 " -----------------------------------------------------------------------------
 
 " Initialization: {{{
+" date
 highlight clear
 if exists('syntax_on')
   syntax reset
@@ -36,7 +38,7 @@ let s:palette = {
       \ 'bg_red':     ['#392f32',   '52',   'DarkRed'],
       \ 'bg_green':   ['#333b2f',   '22',   'DarkGreen'],
       \ 'bg_blue':    ['#203a41',   '17',   'DarkBlue'],
-      \ 'fg':         ['#e6d6ac',   '223',  'White'],
+      \ 'fg':         ['#e3d6b6',   '223',  'White'],
       \ 'red':        ['#e68183',   '167',  'Red'],
       \ 'orange':     ['#e39b7b',   '208',  'Red'],
       \ 'yellow':     ['#d9bb80',   '214',  'Yellow'],
@@ -47,6 +49,8 @@ let s:palette = {
       \ 'grey':       ['#444444',   '245',  'LightGrey'],
       \ 'light_grey': ['#5b5b5b',   '245',  'LightGrey'],
       \ 'gold':       ['#d8caac',   '214',  'Yellow'],
+      \ 'pink':       ['#ffdfdf',   '224',  'Pink'],
+      \ 'bg_pink':    ['#875f5f',   '95',   'DarkPink'],
       \ 'none':       ['NONE',      'NONE', 'NONE']
       \ }
 " }}}
@@ -135,7 +139,7 @@ else
   call s:HL('EndOfBuffer', s:palette.bg0, s:palette.bg0)
   call s:HL('FoldColumn', s:palette.grey, s:palette.bg1)
   call s:HL('Folded', s:palette.grey, s:palette.bg1)
-  call s:HL('SignColumn', s:palette.fg, s:palette.bg1)
+  call s:HL('SignColumn', s:palette.fg, s:palette.bg0)
 endif
 call s:HL('ColorColumn', s:palette.none, s:palette.bg1)
 call s:HL('Conceal', s:palette.grey, s:palette.none)
@@ -176,11 +180,11 @@ call s:HL('IncSearch', s:palette.none, s:palette.none, 'reverse')
 call s:HL('Search', s:palette.bg0, s:palette.red)
 call s:HL('MatchParen', s:palette.none, s:palette.bg4)
 call s:HL('NonText', s:palette.grey, s:palette.none)
-call s:HL('Pmenu', s:palette.fg, s:palette.bg2)
+call s:HL('Pmenu', s:palette.fg, s:palette.bg_pink)
 call s:HL('PmenuSbar', s:palette.none, s:palette.bg2)
 call s:HL('PmenuThumb', s:palette.none, s:palette.grey)
-call s:HL('PmenuSel', s:palette.bg0, s:palette.fg)
-call s:HL('WildMenu', s:palette.bg0, s:palette.fg)
+call s:HL('PmenuSel', s:palette.bg0, s:palette.pink)
+call s:HL('WildMenu', s:palette.bg0, s:palette.pink)
 call s:HL('Question', s:palette.yellow, s:palette.none)
 call s:HL('SpellBad', s:palette.red, s:palette.none, 'undercurl', s:palette.red)
 call s:HL('SpellCap', s:palette.yellow, s:palette.none, 'undercurl', s:palette.yellow)
@@ -287,13 +291,13 @@ if s:configuration.transparent_background
   call s:HL('BlueSign', s:palette.blue, s:palette.none)
   call s:HL('PurpleSign', s:palette.purple, s:palette.none)
 else
-  call s:HL('RedSign', s:palette.red, s:palette.bg1)
-  call s:HL('OrangeSign', s:palette.orange, s:palette.bg1)
-  call s:HL('YellowSign', s:palette.yellow, s:palette.bg1)
-  call s:HL('GreenSign', s:palette.green, s:palette.bg1)
-  call s:HL('CyanSign', s:palette.cyan, s:palette.bg1)
-  call s:HL('BlueSign', s:palette.blue, s:palette.bg1)
-  call s:HL('PurpleSign', s:palette.purple, s:palette.bg1)
+  call s:HL('RedSign', s:palette.red, s:palette.bg0)
+  call s:HL('OrangeSign', s:palette.orange, s:palette.bg0)
+  call s:HL('YellowSign', s:palette.yellow, s:palette.bg0)
+  call s:HL('GreenSign', s:palette.green, s:palette.bg0)
+  call s:HL('CyanSign', s:palette.cyan, s:palette.bg0)
+  call s:HL('BlueSign', s:palette.blue, s:palette.bg0)
+  call s:HL('PurpleSign', s:palette.purple, s:palette.bg0)
 endif
 " }}}
 " }}}
@@ -1183,7 +1187,7 @@ highlight! link shVariable Blue
 highlight! link shVarAssign Orange
 highlight! link shCmdSubRegion Green
 highlight! link shCommandSub Orange
-highlight! link shFunctionOne Green
+highlight! link shFunctionOne shFunctionOne
 highlight! link shFunctionKey RedItalic
 " }}}
 " }}}

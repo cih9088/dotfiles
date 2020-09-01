@@ -125,6 +125,11 @@ brew cask install --appdir="/Applications" betterzip
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
 brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv qlimagesize webpquicklook suspicious-package quicklookase qlvideo
 
+# install SFMono patched with the nerd font
+# https://github.com/epk/SF-Mono-Nerd-Font
+brew tap epk/epk
+brew cask install font-sf-mono-nerd-font
+
 
 ## mas
 #brew install mas

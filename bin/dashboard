@@ -16,7 +16,7 @@ if command -v xpanes >/dev/null; then
     echo $(
     for i in ${!users[@]}; do
         echo "-p ${ports[${i}]} ${users[${i}]}@${machines[${i}]}"
-    done | xpanes -t -s -c "ssh {}"
+    done | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
 )
 else
     n=0

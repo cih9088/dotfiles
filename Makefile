@@ -145,7 +145,7 @@ clean:
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \
 		${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
 		${HOME}/.gitignore \
-		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.tmux ${HOME}/.tmux.conf \
+		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.flake8 ${HOME}/.tmux ${HOME}/.tmux.conf \
 		${HOME}/.vimrc ${HOME}/.vim \
 		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger \
 		${HOME}/.config/yabai ${HOME}/.config/skhd || true )

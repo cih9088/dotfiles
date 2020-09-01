@@ -23,6 +23,7 @@ NVIM_DIR=${PROJ_HOME}/nvim
 TMUX_DIR=${PROJ_HOME}/tmux
 ZSH_DIR=${PROJ_HOME}/zsh
 PYLINT_DIR=${PROJ_HOME}/pylint
+FLAKE8_DIR=${PROJ_HOME}/flake8
 CONFIG_DIR=${PROJ_HOME}/config
 GRIP_DIR=${PROJ_HOME}/grip
 GIT_DIR=${PROJ_HOME}/git
@@ -93,6 +94,12 @@ if [ -e $HOME/.pylintrc ]; then
     rm -rf $HOME/.pylintrc
 fi
 ln -s -f ${PYLINT_DIR}/pylintrc $HOME/.pylintrc
+
+if [ -e $HOME/.flake8 ]; then
+    cp -RfL $HOME/.flake8 ${backup_directory}
+    rm -rf $HOME/.flake8
+fi
+ln -s -f ${FLAKE8_DIR}/flake8 $HOME/.flake8
 
 if [ -e $HOME/.grip ]; then
     cp -RfL $HOME/.grip ${backup_directory}

@@ -20,11 +20,14 @@
     "list.nextKeymap": "<C-n>",
     "list.previousKeymap": "<C-p>",
 
-    "diagnostic.displayByAle": false,
+    "diagnostic.displayByAle": true,
     "diagnostic.checkCurrentLine": true,
     "diagnostic.virtualText": false,
     "diagnostic.virtualTextPrefix": "  ‣ ",
     "diagnostic.virtualTextLineSeparator": " \\ ",
+    "diagnostic.errorSign": "•",
+    "diagnostic.warningSign": "•",
+    "diagnostic.infoSign": "•",
 
     "snippets.ultisnips.directories": [
         "UltiSnips",

@@ -50,6 +50,7 @@
         Plug 'Shougo/neco-vim'                                       " vimrc completion source for coc
         Plug 'neoclide/coc-neco'                                     " vimrc completion source for coc
         Plug 'neoclide/coc.nvim',             {'branch': 'release'}
+        Plug 'dense-analysis/ale'
         if has('nvim')
             Plug 'numirias/semshi',           { 'do': ':UpdateRemotePlugins', 'for': 'python' } " python color scheme
         endif
@@ -99,6 +100,7 @@
         Plug 'itchyny/lightline.vim'                            " status line
         Plug 'mgee/lightline-bufferline'                        " status line += buffer
         Plug 'niklaas/lightline-gitdiff'                        " status line += git diff
+        Plug 'maximbaz/lightline-ale'                           " status line += ale
         Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }     " fuzzy finder
         Plug 'junegunn/fzf.vim'                                 " fuzzy finder for vim
         " Plug 'junegunn/goyo.vim', { 'on': ['Goyo', 'Goyo!'] } " simplify
@@ -222,10 +224,15 @@
         "     endif
         " endif
 
+        " Terminal.app does not support truecolor
         if (has("termguicolors"))
-            set t_8b="[48;2;%lu;%lu;%lum"
-            set t_8f="[38;2;%lu;%lu;%lum"
             set termguicolors
+        else
+            " set Vim-specific sequences for RGB colors
+            let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+            let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+            " set t_8b="[48;2;%lu;%lu;%lum"
+            " set t_8f="[38;2;%lu;%lu;%lum"
         endif
 
         syntax enable           " enable syntax processing
@@ -236,7 +243,7 @@
         set background=dark " lihgt / dark
 
         try
-            colorscheme miramare
+            colorscheme miramare_modified
             " colorscheme edge
             " colorscheme seoul256
             " colorscheme base16-default-dark
@@ -265,8 +272,8 @@
         " let g:terminal_color_13 = '#ffafaf'
         " let g:terminal_color_14 = '#87d7d7'
         " let g:terminal_color_15 = '#e4e4e4'
-        highlight Pmenu ctermfg=187 guifg=#d7d7af ctermbg=95 guibg=#875f5f
-        highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
+        " highlight Pmenu ctermfg=187 guifg=#d7d7af ctermbg=95 guibg=#875f5f
+        " highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
         " " highlight Pmenu ctermfg=252 guifg=#d9d9d9 ctermbg=238 guibg=#565656
         " " highlight PmenuSel ctermfg=236 guifg=#3f3f3f ctermbg=224 guibg=#ffdfdf
 
@@ -425,6 +432,7 @@
             let buf = bufnr()
             execute a:cmd
             while ( &buftype == 'terminal' 
+                        \ || &filetype == 'qf'
                         \ || &filetype == 'fugitive'
                         \ || &filetype == 'dirvish') 
                         \ && bufnr() != buf
@@ -485,37 +493,56 @@
         nmap <leader>cd :cd %:p:h<CR>
     " }}}
 
-    " <leader>{y,x,p} : {yank,cut,paste} wrt the system clipboard {{{
-        map <leader>y "+y
-        noremap <leader>x "+x
-        noremap <leader>p "+p
-    " }}}
-
-    " yanked text to osc52 and X11 {{{
+    " yanked text using osc52 and X11 {{{
         " copy to attached terminal using the yank(1) script:
         " https://github.com/sunaku/home/blob/master/bin/yank
         function! Yank(text) abort
-            let escape = system('osc52', a:text)
+            if executable('osc52')
+                let escape = system('osc52', a:text)
+                if v:shell_error
+                    echoerr escape
+                endif
+            endif
             call setreg('+', a:text)
-            if v:shell_error
-                echoerr escape
-            endif
         endfunction
 
-        " automatically run yank(1) whenever yanking in Vim not deleting
-        function! CopyYank() abort
-            let operator = v:event.operator
-            if operator == 'y'
-                call Yank(getreg('0'))
+        function! s:get_from_marker(m_start, m_end)
+            " Why is this not a built-in Vim script function?!
+            let [line_start, column_start] = getpos(a:m_start)[1:2]
+            let [line_end, column_end] = getpos(a:m_end)[1:2]
+            let lines = getline(line_start, line_end)
+            if len(lines) == 0
+                return ''
             endif
+            let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
+            let lines[0] = lines[0][column_start - 1:]
+            return join(lines, "\n")
         endfunction
-        autocmd TextYankPost * call CopyYank()
+
+        nmap <silent> <leader>y :set opfunc=YankWrapper<CR>g@
+        vmap <silent> <leader>y :<C-U>call YankWrapper(visualmode(), 1)<CR>
+        function! YankWrapper(type, ...)
+            let sel_save = &selection
+            let &selection = "inclusive"
+            let reg_save = @@
+
+            if a:0  " Invoked from Visual mode
+                call Yank(s:get_from_marker("'<", "'>'"))
+            elseif a:type == 'line'
+                call Yank(s:get_from_marker("'[", "']'"))
+            else
+                call Yank(s:get_from_marker("`[", "`]'"))
+            endif
+
+            let &selection = sel_save
+            let @@ = reg_save
+        endfunction
     " }}}
 
-    " Search in current visible window {{{
-        command! -nargs=1 WinSearch exe '/\%>'.(line('w0')-1).'l'.<q-args>.'\%<'.(line('w$')+1).'l'
-        nnoremap z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
-    " }}}
+    " " Search in current visible window {{{
+    "     command! -nargs=1 WinSearch exe '/\%>'.(line('w0')-1).'l'.<q-args>.'\%<'.(line('w$')+1).'l'
+    "     nnoremap z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
+    " " }}}
 
     " I am too lazy to take my hands from shift {{{
         command! WQ wq
@@ -768,18 +795,12 @@
     " Improve grep {{{
         " https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
         function! Grep(...)
-            if exists("*expandcmd")
-                return system(join([&grepprg] + [expandcmd(join(a:000, ' '))], ' '))
-            else
-                " neovim v0.4.4 has no expandcmd()
-                let l:expands = []
-                for elem in a:000
-                    let l:expands += ['"' . expand(elem) . '"']
-                endfor
-                echo l:expands
-                echo join([&grepprg] + l:expands)
-                return system(join([&grepprg] + l:expands), ' ')
-            endif
+            " neovim v0.4.4 has no expandcmd()
+            let l:expands = []
+            for elem in a:000
+                let l:expands += ['"' . expand(elem) . '"']
+            endfor
+            return system(join([&grepprg] + l:expands), ' ')
         endfunction
         command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
         command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
@@ -818,6 +839,45 @@
         command! CopyFilePath let @+ = expand(has('win32') ? '%:p:gs?/?\\?' : '%:p')
     " }}}
 
+    " Output the current syntax group
+        nnoremap <leader>hg :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+                    \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+                    \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<cr>
+    " }}}
+
+    " " Dim inactive windows using 'colorcolumn' setting {{{
+    "     " This tends to slow down redrawing, but is very useful.
+    "     " Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
+    "     " XXX: this will only work with lines containing text (i.e. not '~')
+    "     " from
+    "     if exists('+colorcolumn')
+    "         function! s:DimInactiveWindows()
+    "             for i in range(1, tabpagewinnr(tabpagenr(), '$'))
+    "                 let l:range = ""
+    "                 if i != winnr()
+    "                     if &wrap
+    "                         " HACK: when wrapping lines is enabled, we use the maximum number
+    "                         " of columns getting highlighted. This might get calculated by
+    "                         " looking for the longest visible line and using a multiple of
+    "                         " winwidth().
+    "                         let l:width=256 " max
+    "                     else
+    "                         let l:width=winwidth(i)
+    "                     endif
+    "                     let l:range = join(range(1, l:width), ',')
+    "                 endif
+    "                 call setwinvar(i, '&colorcolumn', l:range)
+    "             endfor
+    "         endfunction
+    "         augroup DimInactiveWindows
+    "             au!
+    "             au WinEnter * call s:DimInactiveWindows()
+    "             au WinEnter * set cursorline
+    "             au WinLeave * set nocursorline
+    "         augroup END
+    "     endif
+    " " }}}
+
 " }}}
 
 " PLUGIN SETTING {{{
@@ -854,10 +914,13 @@
             let g:lightline#bufferline#show_number = 0
             let g:lightline#bufferline#shorten_path = 1
             let g:lightline#bufferline#unicode_symbols = 2
+            let g:lightline#bufferline#smart_path = 0
             let g:lightline#bufferline#unnamed = '[No Name]'
             let g:lightline#gitdiff#indicator_added = "+"
             let g:lightline#gitdiff#indicator_deleted = "-"
-            let g:lightline#gitdiff#indicator_modified = "!"
+            let g:lightline#gitdiff#indicator_modified = "~"
+            let g:lightline#ale#indicator_warnings = "W:"
+            let g:lightline#ale#indicator_errors = "E:"
             let g:lightline = {}
             let g:lightline = {
                         \ 'colorscheme': 'miramare_modified',
@@ -865,7 +928,7 @@
                         \     'left': [
                         \           [ 'mode', 'paste' ],
                         \           [ 'cocstatus', 'currentfunction',
-                        \             'readonly', 'filename', 'coc_errors', 'coc_warnings' ],
+                        \             'filename', 'ale_errors', 'ale_warnings', 'ale_info' ],
                         \     ],
                         \     'right': [
                         \           [ 'lineinfo' ],
@@ -885,7 +948,6 @@
                         \     'vim_logo': "\ue7c5",
                         \ },
                         \ 'component_function': {
-                        \     'readonly': 'LightlineReadonly',
                         \     'gitbranch': 'LightlineFugitive',
                         \     'filename': 'LightlineFilename',
                         \     'fileformat': 'LightlineFileformat',
@@ -899,17 +961,19 @@
                         \ 'component_expand': {
                         \    'buffers': 'lightline#bufferline#buffers',
                         \    'gitdiff': 'lightline#gitdiff#get',
-                        \    'coc_errors': 'LightlineCocErrors',
-                        \    'coc_warnings': 'LightlineCocWarnings',
+                        \    'ale_errors': 'lightline#ale#errors',
+                        \    'ale_warnings': 'lightline#ale#warnings',
+                        \    'ale_infos': 'lightline#ale#infos',
                         \ },
                         \ 'component_type': {
                         \    'buffers': 'tabsel',
-                        \    'coc_errors': 'error',
-                        \    'coc_warnings': 'warning',
+                        \    'ale_errors': 'error',
+                        \    'ale_warnings': 'warning',
+                        \    'ale_infos': 'left',
                         \ },
                         \ }
 
-            autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
+            " autocmd User CocStatusChange,CocDiagnosticChange call lightline#update()
 
             function! CocCurrentFunction()
                 return winwidth(0) > 70 ? get(b:, 'coc_current_function', '') : ''
@@ -1122,6 +1186,7 @@
                         \ 'coc-yaml',
                         \ 'coc-vimtex',
                         \ 'coc-python',
+                        \ 'coc-go',
                         \ 'coc-sh'
                         \ ]
 
@@ -1151,16 +1216,6 @@
                                 \ 'directory': '/tmp/ccls'
                                 \ }}})
             endif
-
-            " add gopls languageserver
-            if executable('gopls')
-                call coc#config('languageserver.golang', {
-                            \ 'command': 'gopls',
-                            \ 'filetypes': ['go'],
-                            \ 'rootPatterns': ['go.mod', '.vim/', '.git/', '.hg/',],
-                                \ })
-            endif
-
 
             " Use <C-j> for jump to next placeholder, it's default of coc.nvim
             let g:coc_snippet_next = '<c-j>'
@@ -1198,10 +1253,10 @@
                 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
             endif
 
-            " Use `[d` and `]d` to navigate diagnostics
-            " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-            nmap <silent> [d <Plug>(coc-diagnostic-prev)
-            nmap <silent> ]d <Plug>(coc-diagnostic-next)
+            " " Use `[d` and `]d` to navigate diagnostics
+            " " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+            " nmap <silent> [d <Plug>(coc-diagnostic-prev)
+            " nmap <silent> ]d <Plug>(coc-diagnostic-next)
 
             " GoTo code navigation.
             nmap <silent> gd <Plug>(coc-definition)
@@ -1288,7 +1343,7 @@
                         \ { 's': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/tmux/tmux.conf' },
                         \ { 'z': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/zsh/zshrc' },
                         \ { 'x': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/zsh/zpreztorc' },
-                        \ { 'q': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/config/fish/config.fish' },
+                        \ { 'c': fnamemodify(fnamemodify($MYVIMRC, ':h'), ':h') . '/config/fish/config.fish' },
                         \]
             let g:startify_change_to_dir = 0
         endif
@@ -1351,7 +1406,7 @@
                 hi semshiLocal           ctermfg=209 guifg=#ff875f
                 hi semshiGlobal          ctermfg=214 guifg=#ffaf00
                 hi semshiImported        ctermfg=214 guifg=#ffaf00 cterm=bold gui=bold
-                hi semshiParameter       ctermfg=75  guifg=#5fafff
+                hi semshiParameter       ctermfg=109  guifg=#89beba
                 hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline gui=underline
                 hi semshiFree            ctermfg=218 guifg=#ffafd7
                 " hi semshiBuiltin         ctermfg=207 guifg=#ff5fff
@@ -1521,8 +1576,23 @@
     " }}}
 
     " fatih/vim-go {{{
-        let g:go_def_mapping_enabled = 0
-        let g:go_doc_keywordprg_enabled = 0
+        if has_key(g:plugs, 'vim-go')
+            " disable mapping
+            let g:go_def_mapping_enabled = 0
+            let g:go_doc_keywordprg_enabled = 0
+            " disable completion
+            let g:go_code_completion_enabled = 0
+            " syntax highlight
+            let g:go_highlight_fields = 1
+            let g:go_highlight_structs = 1 
+            let g:go_highlight_methods = 1
+            let g:go_highlight_functions = 1
+            let g:go_highlight_operators = 1
+            let g:go_highlight_build_constraints = 1
+            let g:go_highlight_function_parameters = 1
+            let g:go_highlight_function_calls = 1
+            let g:go_highlight_format_strings = 1
+        endif
     " }}}
 
     " iamcco/markdown-preview.nvim {{{
@@ -1565,6 +1635,18 @@
         if has_key(g:plugs, 'vim-hexokinase')
             let g:Hexokinase_highlighters = [ 'backgroundfull' ]
             let g:Hexokinase_ftEnabled = ['css', 'html', 'javascript', 'vim']
+        endif
+    " }}}
+
+    " dense-analysis/ale {{{
+        if has_key(g:plugs, 'ale')
+            let g:ale_disable_lsp = 1
+            let g:ale_sign_error = '•'
+            let g:ale_sign_warning = '•'
+
+            let g:ale_echo_msg_error_str = 'E'
+            let g:ale_echo_msg_warning_str = 'W'
+            let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
         endif
     " }}}
 
