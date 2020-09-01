@@ -1619,6 +1619,7 @@
                         \ 'python': 'coc',
                         \ 'yaml': 'coc',
                         \ 'tex': 'coc',
+                        \ 'go': 'coc',
                         \ }
 
             nmap <Leader>T :Vista!!<CR>

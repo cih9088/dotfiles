@@ -67,7 +67,8 @@ targets=$(cat ${config} \
 exit_code=$?
 [ ${exit_code} != 0 ] && exit ${exit_code}
 targets=$(echo ${targets} | tr ' ' '\n' \
-    | fzf --multi --height=30% --cycle --no-sort --layout=reverse \
+    | fzf --bind 'ctrl-a:select-all' --multi \
+    --height=40% --cycle --no-sort --layout=reverse \
     --preview-window=down:2 \
     --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;gsub(/^[ \t]+/,"", $0);print;getline; if ($0 ~ /HostName/) {;gsub(/^[ \t]+/,"", $0);print;}}'"'")
 
@@ -92,16 +93,20 @@ if [ "${use_sshpass}" == yes ]; then
     read -s pswd
     echo
 
-    while IFS= read -r target; do
+    # https://unix.stackexchange.com/a/107801
+    while IFS= read -u10 -r target; do
         echo "copying to ${target}..."
+        (
         SSHPASS=${pswd} sshpass -e ssh ${target} mkdir -p ./.ssh
         SSHPASS=${pswd} sshpass -e scp ${config} ${target}:./.ssh/config
-    done <<< "${targets}"
+        ) &
+    done 10<<< "${targets}"
+    wait
 else
-    while IFS= read -r target; do
+    while IFS= read -u10 -r target; do
         echo "create .ssh directory in ${target}..."
         ssh ${target} mkdir -p ./.ssh
         echo "copying to ${target}..."
         scp ${config} ${target}:./.ssh/config
-    done <<< "${targets}"
+    done 10<<< "${targets}"
 fi

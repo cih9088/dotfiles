@@ -6,7 +6,8 @@ if [ $# -eq 0 ]; then
     exit_code=$?
     [ ${exit_code} != 0 ] && return ${exit_code}
     targets=$(echo ${targets} \
-        | fzf --multi --height=40% --cycle --no-sort --layout=reverse \
+        | fzf --bind 'ctrl-a:select-all' --multi \
+        --height=40% --cycle --no-sort --layout=reverse \
         --preview-window=down:2 \
         --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;gsub(/^[ \t]+/,"", $0);print;getline; if ($0 ~ /HostName/) {;gsub(/^[ \t]+/,"", $0);print;}}'"'")
     [ ! -z "${targets}" ] && (echo ${targets} | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}")
