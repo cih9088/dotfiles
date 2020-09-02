@@ -148,7 +148,7 @@ clean:
 		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.flake8 ${HOME}/.tmux ${HOME}/.tmux.conf \
 		${HOME}/.vimrc ${HOME}/.vim \
 		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger \
-		${HOME}/.config/yabai ${HOME}/.config/skhd || true )
+		${HOME}/.config/yabai ${HOME}/.config/skhd ${HOME}/.config/tealdeer || true )
 	@rm -rf $(PROJ_HOME)
 	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
 	@echo "[0;92m[*][0m Remove all configurations files and custom functions"

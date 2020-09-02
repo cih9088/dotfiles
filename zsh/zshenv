@@ -116,6 +116,11 @@ fi
     export TMUX_XPANES_PANE_BORDER_FORMAT='#[bg=colour238] #[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[bg=colour238] #[default]'
 
 
+#   Setup tealdeer
+#   --------------------------------------------------------------------------------------
+    export TEALDEER_CONFIG_DIR="${HOME}/.config/tealdeer"
+
+
 # #   Clutter path -> no need
 # #   --------------------------------------------------------------------------------------
 #     if [ -n "$PATH" ]; then

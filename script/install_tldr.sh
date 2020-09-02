@@ -9,17 +9,34 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 echo
 echo "${marker_title} Prepare to ${Bold}${Underline}install tldr${Color_Off}"
+
+TEALDEER_LATEST_VERSION="$(${PROJ_HOME}/script/get_latest_release dbrgn/tealdeer)"
+TEALDEER_VERSION=${1:-${TEALDEER_LATEST_VERSION##v}}
+[[ ${TEALDEER_VERSION} != "v"* ]] && TEALDEER_VERSION="v${TEALDEER_VERSION}"
+$(${PROJ_HOME}/script/check_release dbrgn/tealdeer ${TEALDEER_VERSION}) || exit $?
 ################################################################
 
 setup_func_tldr_local() {
     force=$1
     cd $TMP_DIR
 
-    if [ ${force} == 'true' ]; then
-        pip install tldr --user --force-reinstall --upgrade
+    install=no
+    if [ -f ${HOME}/.local/bin/tldr ]; then
+        if [ ${force} == 'true' ]; then
+            rm -rf $HOME/.local/bin/tldr || true
+            install=true
+        fi
     else
-        pip install tldr --user
+        install=true
     fi
+
+    # uninstall slow tldr client
+    pip uninstall tldr || true
+
+    wget https://github.com/dbrgn/tealdeer/releases/download/${TEALDEER_VERSION}/tldr-linux-x86_64-musl
+    mv tldr-linux-x86_64-musl ${HOME}/.local/bin/tldr
+    chmod +x ${HOME}/.local/bin/tldr
+    ${HOME}/.local/bin/tldr --update
 }
 
 setup_func_tldr_system() {
@@ -27,16 +44,15 @@ setup_func_tldr_system() {
     cd $TMP_DIR
 
     if [[ $platform == "OSX" ]]; then
-        brew list tldr || brew install tldr
+        # uninstall slow tldr client
+        brew list tldr && brew uninstall tldr
+        brew list tealdeer || brew install tealdeer
         if [ ${force} == 'true' ]; then
-            brew upgrade tldr
+            brew upgrade tealdeer
         fi
+        /usr/local/bin/tldr --update
     elif [[ $platform == "LINUX" ]]; then
-        if [ ${force} == 'true' ]; then
-            sudo pip install tldr --upgrade --force-reinstall
-        else
-            sudo pip install tldr
-        fi
+        setup_func_tldr_local ${force}
     fi
 }
 

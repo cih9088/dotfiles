@@ -125,6 +125,12 @@ if [ -e $HOME/.config/skhd ]; then
 fi
 ln -s -f ${CONFIG_DIR}/skhd $HOME/.config/skhd
 
+if [ -e $HOME/.config/tealdeer ]; then
+    cp -RfL $HOME/.config/tealdeer ${backup_directory}/.config
+    rm -rf $HOME/.config/tealdeer
+fi
+ln -s -f ${CONFIG_DIR}/tealdeer $HOME/.config/tealdeer
+
 if [ -e $HOME/.gitignore ]; then
     cp -RfL $HOME/.gitignore ${backup_directory}/.gitignore
     rm -rf $HOME/.gitignore
