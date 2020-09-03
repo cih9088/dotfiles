@@ -125,6 +125,12 @@ if [ -e $HOME/.config/skhd ]; then
 fi
 ln -s -f ${CONFIG_DIR}/skhd $HOME/.config/skhd
 
+if [ -e $HOME/.config/spacebar ]; then
+    cp -RfL $HOME/.config/spacebar ${backup_directory}/.config
+    rm -rf $HOME/.config/spacebar
+fi
+ln -s -f ${CONFIG_DIR}/spacebar $HOME/.config/spacebar
+
 if [ -e $HOME/.config/tealdeer ]; then
     cp -RfL $HOME/.config/tealdeer ${backup_directory}/.config
     rm -rf $HOME/.config/tealdeer

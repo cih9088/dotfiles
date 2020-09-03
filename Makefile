@@ -44,6 +44,9 @@ prepare:
 	@mkdir -p ${HOME}/.local/shared
 	@mkdir -p ${HOME}/.local/man/man1
 	@mkdir -p ${HOME}/.config/alacritty
+	@mkdir -p ${HOME}/.config/yabai
+	@mkdir -p ${HOME}/.config/skhd
+	@mkdir -p ${HOME}/.config/spacebar
 
 initOSX:
 	@( $(SCRIPTS_DIR)/osx_prep.sh )
@@ -148,7 +151,7 @@ clean:
 		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.flake8 ${HOME}/.tmux ${HOME}/.tmux.conf \
 		${HOME}/.vimrc ${HOME}/.vim \
 		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger \
-		${HOME}/.config/yabai ${HOME}/.config/skhd ${HOME}/.config/tealdeer || true )
+		${HOME}/.config/yabai ${HOME}/.config/skhd ${HOME}/.config/spacebar ${HOME}/.config/tealdeer || true )
 	@rm -rf $(PROJ_HOME)
 	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
 	@echo "[0;92m[*][0m Remove all configurations files and custom functions"

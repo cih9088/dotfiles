@@ -1123,6 +1123,8 @@
 	</dict>
 	<key>Default Bookmark Guid</key>
 	<string>32B2EC95-C3A0-4D63-92F3-3C35906A3EB8</string>
+	<key>DisableWindowSizeSnap</key>
+	<false/>
 	<key>HapticFeedbackForEsc</key>
 	<false/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
@@ -1199,9 +1201,9 @@
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>155 473 592 584 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>56 20 1600 988 0 0 1680 1027 </string>
+	<string>51 30 1614 983 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
-	<string>858 679 490 329 0 0 1680 1027 </string>
+	<string>384 325 1072 652 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 2</key>
 	<string>858 679 490 329 0 0 1680 1027 </string>
 	<key>NSWindow Frame iTerm Window 3</key>
@@ -2271,14 +2273,14 @@
 		<key>screenFrame</key>
 		<string>{{0, 0}, {1680, 1050}}</string>
 		<key>topLeft</key>
-		<string>{316, 893}</string>
+		<string>{438, 719}</string>
 	</dict>
 	<key>NoSyncHaveWarnedAboutPasteConfirmationChange</key>
 	<true/>
 	<key>NoSyncInstallationId</key>
 	<string>F43D6399-9686-48E9-B797-C4315F359E37</string>
 	<key>NoSyncLaunchExperienceControllerRunCount</key>
-	<integer>352</integer>
+	<integer>355</integer>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
@@ -3122,7 +3124,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2020-09-02T05:31:16Z</date>
+	<date>2020-09-03T09:23:20Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>SUUpdateGroupIdentifier</key>

@@ -61,10 +61,11 @@ focus, resize, warp < t                     :  yabai -m window --toggle float;\
 focus, resize, warp < q                     :  yabai -m space --balance                   # equalize size of windows
 
 # change layout of desktop: m ,
-focus, resize, warp < m                     :  yabai -m space --layout bsp;\
+focus, resize, warp < m                     :  yabai -m space --layout \
+        $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end');\
                                                open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"
-focus, resize, warp < 0x2B                  :  yabai -m space --layout float;\
-                                               open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"
+# focus, resize, warp < 0x2B                  :  yabai -m space --layout float;\
+#                                                open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"
 
 # move window
 warp < h                                    :  yabai -m window --warp west
@@ -121,6 +122,15 @@ prefix < t : yabai -m window --toggle float;\
            skhd -k "ctrl - s"
 
 prefix < z : yabai -m window --toggle zoom-fullscreen; skhd -k "ctrl - s"
+
+# change layout of desktop with m
+prefix < m                                  :  yabai -m space --layout \
+                                                   $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end');\
+                                               open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"; skhd -k "ctrl - s"
+# equalize size of windows with =
+prefix < 0x18                               :  yabai -m space --balance; skhd -k "ctrl - s"
+# toggle window split type with s
+prefix < s                                  :  yabai -m window --toggle split; skhd -k "ctrl - s"
 
 
 ########## global operation

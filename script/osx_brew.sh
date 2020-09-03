@@ -130,6 +130,23 @@ brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch 
 brew tap epk/epk
 brew cask install font-sf-mono-nerd-font
 
+# install yabai
+brew install koekeishiya/formulae/yabai
+# reinstall the scripting addition
+sudo yabai --uninstall-sa || true
+sudo yabai --install-sa || true
+brew services start yabai
+# load the scripting addition
+killall Dock || true
+
+# install skhd
+brew install koekeishiya/formulae/skhd
+brew services start skhd
+
+# install spacebar
+brew install cmacrae/formulae/spacebar
+brew services start spacebar
+
 
 ## mas
 #brew install mas
