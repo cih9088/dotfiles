@@ -101,13 +101,16 @@ ${BIPurple}GENERAL COMMAND (PREZTO UTILITY MODULE and .rc)${Color_Off}
     ${BIRed}easy-useradd${Color_Off}    Add user account with easy
     ${BIRed}easy-pssh${Color_Off}       Pssh with easy
     ${BIRed}list-users${Color_Off}      List users
+    ${BIRed}ssh ${BIGreen}arg${Color_Off}         Interactive ssh if ${BIGreen}arg${Color_Off} is not specified (fzf based)
     ${BIRed}sshget${Color_Off}          Get something through ssh (fzf based)
+    ${BIRed}sync-sshconfig${Color_Off}  Sync local ssh config file to remotes (fzf based)
     ${BIRed}path${Color_Off}            Show all executable path
     ${BIRed}fix-stty${Color_Off}        Restore terminal settings
     ${BIRed}clear-swap${Color_Off}      Clear swap memory
     ${BIRed}intercept ${BIGreen}pid${Color_Off}   Intercept stdout/stderr of ${BIGreen}pid${Color_Off}
     ${BIRed}tm${Color_Off}              Create tmux session or attach or switch to exsiting one
-    ${BIRed}bak${Color_Off}             Make bakup file followed by last modified date
+    ${BIRed}bak${Color_Off} ${BIGreen}file${Color_Off}        Make bakup file with cp followed by current date
+    ${BIRed}gpu ${BIGreen}index ${BIGreen}cmd${Color_Off}   Run ${BIGreen}cmd${Color_Off} with gpu ${BIGreen}index${Color_Off}
 
 
 ${BIPurple}PROCESS MANAGEMENT${Color_Off}

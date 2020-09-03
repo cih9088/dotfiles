@@ -34,8 +34,8 @@
         " Plug 'junegunn/seoul256.vim'
         " Plug 'dracula/vim', { 'as': 'dracula' }
         " Plug 'sainnhe/edge'
+        " Plug 'franbach/miramare'
         Plug 'ryanoasis/vim-devicons'
-        Plug 'franbach/miramare'
         " =========================================================
 
     " }}}

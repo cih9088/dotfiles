@@ -1,0 +1,31 @@
+bak_cmd='mv'
+bak_target=
+
+# make backup file followed by last modified date
+if [ $# -eq 0 ]; then
+    echo "No file or directory is given" >&2; return 1
+elif [ $# -eq 1 ]; then
+    bak_target="$1"
+elif [ $# -eq 2 ]; then
+    if [ "$1" = "mv"  ]; then
+        bak_cmd="mv"
+    elif [ "$1" = "cp" ]; then
+        bak_cmd="cp -r"
+    else
+        echo "Not a valid command $1. [mv/cp]" >&2; return 1
+    fi
+    bak_target="$2"
+else
+    echo "Not a proper usage of command" >&2; return 1
+fi
+
+if [ ${platform} = "OSX" ]; then
+    # eval $bak_cmd "$bak_target" "$bak_target".$(date -r $(stat -f '%m' "$bak_target") "+%y%m%d%H%M").bak
+    eval $bak_cmd "$bak_target" "$bak_target".$(date "+%y%m%d%H%M").bak
+elif [ ${platform} = "LINUX" ]; then
+    # eval $bak_cmd "$bak_target" "$bak_target".$(date -d @$(stat -c '%Y' "$bak_target") "+%y%m%d%H%M").bak
+    eval $bak_cmd "$bak_target" "$bak_target".$(date "+%y%m%d%H%M").bak
+else
+    echo "${platform} is not supported" >&2
+    return 1
+fi
