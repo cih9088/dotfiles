@@ -1,16 +1,51 @@
-if [ $# -eq 0 ]; then
-    has -v fzf
-    targets=$(cat ${HOME}/.ssh/config \
-        | awk '$1=="Host"{print $2}' \
-        | grep -v '*')
+if [[ $# -eq 0 ]] || [[ $# -eq 1 && $1 =~ "@$" ]]; then
+    has -v fzf awk || exit 1
+
+    _config=$HOME/.ssh/config
+    targets=$(awk '
+    BEGIN { current = ""; hosts[0] = "" }
+    {
+        if ($1 == "Host") {
+            if ( current != $2 ) {
+                current = $2
+                hosts[length(hosts)+1] = $2
+            }
+    }
+        if ( $1 == "HostName" && $2 ~ /[a-zA-Z]+/ ) {
+            hosts[length(hosts)] = hosts[length(hosts)] " -> " $2
+        }
+    }
+    END { for (key in hosts) { print hosts[key] } }
+    ' $_config | grep -v '*' | column -t)
+
     exit_code=$?
     [ ${exit_code} != 0 ] && return ${exit_code}
     targets=$(echo ${targets} \
         | fzf --bind 'ctrl-a:select-all' --multi \
         --height=40% --cycle --no-sort --layout=reverse \
-        --preview-window=down:2 \
-        --preview='cat ${HOME}/.ssh/config | grep Host | awk -v host={} '"'"'$0~host{getline;gsub(/^[ \t]+/,"", $0);print;getline; if ($0 ~ /HostName/) {;gsub(/^[ \t]+/,"", $0);print;}}'"'")
-    [ ! -z "${targets}" ] && (echo ${targets} | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}")
+        --preview-window=up:2 \
+        --preview='cat '"$_config"' | grep Host | \
+        awk -v host={} '"'"'{
+            split(host, fld, /->/)
+            gsub(/[ \t]+$/, "", fld[1])
+            if ($0~fld[1]) {
+                getline
+                gsub(/^[ \t]+/,"", $0)
+                print
+                getline
+                if ($0 ~ /HostName/) {
+                    gsub(/^[ \t]+/,"", $0)
+                    print
+                }
+            }
+        }'"'" | awk '{print $1}')
+    if [ -n "${targets}" ]; then
+        if [ -n "$1" ]; then
+            echo ${targets} | sed "s/^/$1/" | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
+        else
+            echo ${targets} | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
+        fi
+    fi
 else
     if ps -p $$ -o ppid= \
         | xargs -I{} ps -p {} -o comm= \
