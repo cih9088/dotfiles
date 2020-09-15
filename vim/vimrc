@@ -46,6 +46,7 @@
         Plug 'plasticboy/vim-markdown',       { 'for': 'markdown' }
         Plug 'chrisbra/csv.vim',              { 'for': 'csv' }
         Plug 'lervag/vimtex',                 { 'for': 'tex' }
+        Plug 'pearofducks/ansible-vim'
         Plug 'fatih/vim-go',                  { 'do': ':GoUpdateBinaries', 'for': 'go' }
         Plug 'Shougo/neco-vim'                                       " vimrc completion source for coc
         Plug 'neoclide/coc-neco'                                     " vimrc completion source for coc
@@ -500,10 +501,13 @@
             if executable('osc52')
                 let escape = system('osc52', a:text)
                 if v:shell_error
-                    echoerr escape
+                    echo escape
+                    echo 'Copying using X11'
+                    call setreg('+', a:text)
                 endif
+            else
+                call setreg('+', a:text)
             endif
-            call setreg('+', a:text)
         endfunction
 
         function! s:get_from_marker(m_start, m_end)
