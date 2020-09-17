@@ -84,7 +84,7 @@ brew install gzip
 # brew install imagemagick --with-webp
 # brew install lua
 # brew install lynx
-# brew install p7zip
+brew install p7zip
 # brew install pigz
 brew install pv
 # brew install rename
@@ -97,6 +97,8 @@ brew install ssh-copy-id
 # brew install pkg-config libffi
 brew install pandoc
 brew install mosh
+brew install htop
+brew install awscli
 
 # Lxml and Libxslt
 # brew install libxml2
@@ -119,11 +121,13 @@ brew cask install --appdir="/Applications" inkscape
 brew cask install --appdir="/Applications" mactex
 brew cask install --appdir="/Applications" docker
 brew cask install --appdir="/Applications" betterzip
+brew cask install --appdir="/Applications" notion
+brew cask install --appdir="/Applications" transmission
 # brew cask install --appdir="/Applications" 1password
 # brew cask install --appdir="/Applications" gimp
 
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
-brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv qlimagesize webpquicklook suspicious-package quicklookase qlvideo
+brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzip qlimagesize webpquicklook suspicious-package quicklookase qlvideo
 
 # install SFMono patched with the nerd font
 # https://github.com/epk/SF-Mono-Nerd-Font
@@ -148,29 +152,37 @@ brew install cmacrae/formulae/spacebar
 brew services start spacebar
 
 
-## mas
-#brew install mas
-#
-#while true; do
-#    mas account >/dev/null 2>&1
-#    [[ $? == 0 ]] && break
-#    echo -n "Please signin Appstore manually and press any keys."
-#    read anykey
-#done
-#
+# mas
+brew install mas
+
+while true; do
+   mas account >/dev/null 2>&1
+   [[ $? == 0 ]] && break
+   echo -n "Please signin Appstore manually and press any keys."
+   read anykey
+done
+
 ## free stuff
-#mas install 1278508951  # Trello
-#mas install 1018899653  # HeliumLift
+mas install 1018899653  # HeliumLift
 #mas install 937984704   # Amphetamine
-#mas install 409183694   # Keynote
-#mas install 409201541   # Pages
-#mas install 409203825   # Numbers
-#mas install 1295203466  # Microsoft Remote Desktop
-#
+mas install 409183694   # Keynote
+mas install 409201541   # Pages
+mas install 409203825   # Numbers
+mas install 1295203466  # Microsoft Remote Desktop
+mas install 1114196460  # Rocket Fuel
+mas install 414855915   # WinArchiver Lite
+mas install 869223134   # KakaoTalk
+
 ## not free
-#mas install 445189367   # PopClip
-#mas install 441258766   # Magnet
-#mas install 461788075   # Movist
+mas install 445189367   # PopClip
+# mas install 441258766   # Magnet
+mas install 461788075   # Movist
+mas install 1475628500  # Unicorn HTTPS
+mas install 1231935892  # Unicorn Blocker:Adblock
+mas install 1445910651  # Dynamo
+mas install 1462114288  # Grammarly for Safari
+mas install 1480933944  # Vimari
+mas install 922765270   # LiquidText
 
 
 # Remove outdated versions from the cellar.
