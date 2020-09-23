@@ -15,6 +15,9 @@ copy_backend=""
 # get data either form stdin or from file
 buf=$(cat "$@") 
 
+# update environment variable
+eval "$(tmux show-env -s)"
+
 # try osc52 first
 if is_app_installed osc52; then
     printf "%s" "$buf" | osc52

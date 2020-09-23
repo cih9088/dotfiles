@@ -498,11 +498,17 @@
         " copy to attached terminal using the yank(1) script:
         " https://github.com/sunaku/home/blob/master/bin/yank
         function! Yank(text) abort
+            " if in tmux, update environment variable to yank properly
+            if !empty($TMUX)
+                let $SSH_TTY = split(trim(system('tmux show-env SSH_TTY')), '=')[1]
+                let $DISPLAY = split(trim(system('tmux show-env DISPLAY')), '=')[1]
+            endif
+            " try osc52 first
             if executable('osc52')
                 let escape = system('osc52', a:text)
                 if v:shell_error
-                    echo escape
-                    echo 'Copying using X11'
+                    echoerr escape
+                    echo 'Using X11 to copy'
                     call setreg('+', a:text)
                 endif
             else
