@@ -20,7 +20,7 @@
 #   --------------------------------------------------------------------------------------
     [ -z "${TMUX+x}" ] && \
         [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && \
-        pip install virtualenv && pip install virtualenvwrapper
+        pip install --user --upgrade --force-reinstall virtualenv virtualenvwrapper
     source $(which virtualenvwrapper_lazy.sh)
 
 
