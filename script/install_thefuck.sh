@@ -9,6 +9,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 echo
 echo "${marker_title} Prepare to ${Bold}${Underline}install thefuck${Color_Off}"
+
+# if asdf is installed
+[ -f $HOME/.asdf/asdf.sh ] && . $HOME/.asdf/asdf.sh
+export PATH="${HOME}/.pyenv/bin:$PATH"
+command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
+
 ################################################################
 
 setup_func_thefuck_local() {
@@ -16,9 +22,9 @@ setup_func_thefuck_local() {
     cd $TMP_DIR
 
     if [ ${force} == 'true' ]; then
-        pip3 install thefuck --user --force-reinstall --upgrade
+        pip install thefuck --user --force-reinstall --upgrade
     else
-        pip3 install thefuck --user
+        pip install thefuck --user
     fi
 }
 
@@ -33,9 +39,9 @@ setup_func_thefuck_system() {
         fi
     elif [[ $platform == "LINUX" ]]; then
         if [ ${force} == 'true' ]; then
-            sudo pip3 install thefuck --upgrade --force-reinstall
+            sudo pip install thefuck --upgrade --force-reinstall
         else
-            sudo pip3 install thefuck
+            sudo pip install thefuck
         fi
     fi
 }
