@@ -21,7 +21,7 @@
     [ -z "${TMUX+x}" ] && \
         [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && \
         pip install --user --upgrade --force-reinstall virtualenv virtualenvwrapper
-    source $(which virtualenvwrapper_lazy.sh)
+    command -v virtualenvwrapper_lazy.sh >/dev/null 2>&1 && source $(which virtualenvwrapper_lazy.sh)
 
 
 # #   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)

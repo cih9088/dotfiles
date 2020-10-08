@@ -103,6 +103,8 @@ python_version_func() {
 
 main_script 'pyenv' setup_func_local setup_func_system version_func
 if command -v pyenv > /dev/null; then
+    # install latest plugin if not installed
+    [ ! -d ${PYENV_ROOT}/plugins/xxenv-latest ] && git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
     eval "$(pyenv init -)"
     echo "${marker_info} Note that the latest release ${Bold}${Underline}python2${Color_Off} would be installed using ${Bold}${Underline}pyenv${Color_Off}"
     main_script 'python2' python2_install python2_install python_version_func
