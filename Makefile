@@ -97,6 +97,9 @@ installTldr: prepare
 installBashSnippets: prepare
 	@( $(SCRIPTS_DIR)/install_bash_snippets.sh )
 
+installBpytop: prepare
+	@( $(SCRIPTS_DIR)/install_bpytop.sh )
+
 installDevShell:
 	@( $(SCRIPTS_DIR)/installDev_shell.sh )
 
@@ -157,7 +160,7 @@ clean:
 	@echo "[0;92m[*][0m Remove all configurations files and custom functions"
 
 installBins: prepare installTree installFd installRg installRanger \
-	installThefuck installTldr installBashSnippets
+	installThefuck installTldr installBashSnippets installBpytop
 
 update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateCustomBins \
 	updatePrezto updateDevEnv

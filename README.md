@@ -87,7 +87,7 @@ $ make installNeovim nightly  # even nightly is available (neovim only)
 # which means thoes dependencies are automatically installed. See below dev environments
 # NOTE: version specification is only available for limited target
 # [installZsh, installNeovim, installTmux, installTree, installFd, installRg, installTldr]
-$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr bash_snippets at once
+$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr, bash_snippets, bpytop at once
 
 # DEV ENVIRONMENT
 # You could choose what to install in following list

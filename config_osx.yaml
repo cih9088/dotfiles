@@ -121,6 +121,15 @@ bash_snippets:
   force: true
 
 #######################
+#  installBpytop
+#######################
+
+bpytop:
+  install: true
+  local: false
+  force: true
+
+#######################
 # installDevshell
 #######################
 
