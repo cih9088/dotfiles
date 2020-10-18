@@ -1,5 +1,13 @@
 # Configuration for Alacritty, the GPU enhanced terminal emulator.
 
+# Import additional configuration files
+#
+# These configuration files will be loaded in order, replacing values in files
+# loaded earlier with those loaded later in the chain. The file itself will
+# always be loaded last.
+#import:
+#  - /path/to/alacritty.yml
+
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
@@ -15,8 +23,9 @@
 window:
   # Window dimensions (changes require restart)
   #
-  # Specified in number of columns/lines, not pixels.
-  # If both are `0`, this setting is ignored.
+  # Number of lines/columns (not pixels) in the terminal. The number of columns
+  # must be at least `2`, while using a value of `0` for columns and lines will
+  # fall back to the window manager's recommended size.
   dimensions:
     columns: 0
     lines: 0
@@ -34,8 +43,8 @@ window:
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
   padding:
-    x: 2
-    y: 2
+    x: 5
+    y: 5
 
   # Spread additional padding evenly around the terminal content.
   dynamic_padding: false
@@ -49,7 +58,7 @@ window:
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background, but no title bar buttons
-  decorations: full
+  decorations: none
 
   # Startup Mode (changes require restart)
   #
@@ -75,7 +84,7 @@ window:
     # General application class
     general: Alacritty
 
-  # GTK theme variant (Linux only)
+  # GTK theme variant (Linux/BSD only)
   #
   # Override the variant of the GTK theme. Commonly supported values are `dark` and `light`.
   # Set this to `None` to use the default theme variant.
@@ -127,7 +136,7 @@ font:
 
 
   # Point size
-  size: 11.0
+  size: 10.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -261,30 +270,61 @@ colors:
   #
   #command: None
 
-
 # Background opacity
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
 background_opacity: 1.0
 
-# Mouse bindings
+selection:
+  # This string contains all characters that are used as separators for "semantic words" in Alacritty.
+  semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
+
+  # When set to `true`, selected text will be copied to the primary clipboard.
+  save_to_clipboard: false
+
+cursor:
+  # Cursor style
+  #
+  # Values for `style`:
+  #   - ▇ Block
+  #   - _ Underline
+  #   - | Beam
+  style: Block
+
+  # Vi mode cursor style
+  #
+  # If the vi mode cursor style is `None` or not specified, it will fall back to
+  # the style of the active value of the normal cursor.
+  #
+  # See `cursor.style` for available options.
+  vi_mode_style: None
+
+  # If this is `true`, the cursor will be rendered as a hollow box when the
+  # window is not focused.
+  unfocused_hollow: true
+
+  # Thickness of the cursor relative to the cell width as floating point number
+  # from `0.0` to `1.0`.
+  #thickness: 0.15
+
+# Live config reload (changes require restart)
+live_config_reload: true
+
+# Shell
 #
-# Available fields:
-#   - mouse
-#   - action
-#   - mods (optional)
+# You can set `shell.program` to the path of your favorite shell, e.g. `/bin/fish`.
+# Entries in `shell.args` are passed unmodified as arguments to the shell.
 #
-# Values for `mouse`:
-#   - Middle
-#   - Left
-#   - Right
-#   - Numeric identifier such as `5`
-#
-# All available `mods` and `action` values are documented in the key binding
-# section.
-mouse_bindings:
-  - { mouse: Middle, action: PasteSelection }
+# Default:
+#   - (macOS) /bin/bash --login
+#   - (Linux/BSD) user login shell
+#   - (Windows) powershell
+#shell:
+#  program: /bin/bash
+#  args:
+#    - --login
+
 
 mouse:
   # Click settings
@@ -320,40 +360,30 @@ mouse:
     # on them. The available modifiers are documented in the key binding section.
     #modifiers: None
 
-selection:
-  semantic_escape_chars: ",│`|:\"' ()[]{}<>"
-
-  # When set to `true`, selected text will be copied to the primary clipboard.
-  save_to_clipboard: false
-
-cursor:
-  # Cursor style
-  #
-  # Values for 'style':
-  #   - ▇ Block
-  #   - _ Underline
-  #   - | Beam
-  style: Block
-
-  # If this is `true`, the cursor will be rendered as a hollow box when the
-  # window is not focused.
-  unfocused_hollow: true
-
-# Live config reload (changes require restart)
-live_config_reload: true
-
-# Shell
+# Mouse bindings
 #
-# You can set `shell.program` to the path of your favorite shell, e.g. `/bin/fish`.
-# Entries in `shell.args` are passed unmodified as arguments to the shell.
+# Mouse bindings are specified as a list of objects, much like the key
+# bindings further below.
 #
-# Default:
-#   - (Linux/macOS) /bin/bash --login
-#   - (Windows) powershell
-#shell:
-#  program: /bin/bash
-#  args:
-#    - --login
+# To trigger mouse bindings when an application running within Alacritty captures the mouse, the
+# `Shift` modifier is automatically added as a requirement.
+#
+# Each mouse binding will specify a:
+#
+# - `mouse`:
+#
+#   - Middle
+#   - Left
+#   - Right
+#   - Numeric identifier such as `5`
+#
+# - `action` (see key bindings)
+#
+# And optionally:
+#
+# - `mods` (see key bindings)
+mouse_bindings:
+  - { mouse: Middle, action: PasteSelection }
 
 # Key bindings
 #

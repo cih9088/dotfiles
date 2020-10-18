@@ -27,11 +27,11 @@
     " Plugins for pretty vim {{{
         "  scheme ============================================
         " Plug 'flazz/vim-colorschemes'
-        " Plug 'chriskempson/base16-vim'
+        Plug 'chriskempson/base16-vim'
         " Plug 'morhetz/gruvbox'
         " Plug 'w0ng/vim-hybrid'
         " Plug 'joshdick/onedark.vim'
-        " Plug 'junegunn/seoul256.vim'
+        Plug 'junegunn/seoul256.vim'
         " Plug 'dracula/vim', { 'as': 'dracula' }
         " Plug 'sainnhe/edge'
         " Plug 'franbach/miramare'
