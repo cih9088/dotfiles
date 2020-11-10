@@ -1,9 +1,10 @@
 # set CUDA_VISIBLE_DEVICES variable automatically
-local gpus=$1
+gpus=$1
 shift;
-if ! [[ ${gpus} =~ '^[0-9]+$' ]]; then
+if ! [[ ${gpus} =~ ^[0-9-]+$ ]]; then
     echo "Not a valid gpu index" >&2; return 1
 fi
 
-[ ${#gpus} -gt 1 ] && gpus=$(echo ${gpus} | fold -w1 | paste -sd',' -)
+[ "${#gpus}" -gt 1 ] && gpus=$(echo "${gpus}" | fold -w1 | paste -sd',' -)
+[ "${gpus}" = '-' ] && gpus=''
 CUDA_VISIBLE_DEVICES=${gpus} command "$@"

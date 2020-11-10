@@ -19,12 +19,12 @@ else
     echo "Not a proper usage of command" >&2; return 1
 fi
 
-if [ ${platform} = "OSX" ]; then
+if [ "${platform}" = "OSX" ]; then
     # eval $bak_cmd "$bak_target" "$bak_target".$(date -r $(stat -f '%m' "$bak_target") "+%y%m%d%H%M").bak
-    eval $bak_cmd "$bak_target" "$bak_target".$(date "+%y%m%d%H%M").bak
-elif [ ${platform} = "LINUX" ]; then
+    eval "$bak_cmd" "$bak_target" "$bak_target.$(date "+%y%m%d%H%M").bak"
+elif [ "${platform}" = "LINUX" ]; then
     # eval $bak_cmd "$bak_target" "$bak_target".$(date -d @$(stat -c '%Y' "$bak_target") "+%y%m%d%H%M").bak
-    eval $bak_cmd "$bak_target" "$bak_target".$(date "+%y%m%d%H%M").bak
+    eval "$bak_cmd" "$bak_target" "$bak_target.$(date "+%y%m%d%H%M").bak"
 else
     echo "${platform} is not supported" >&2
     return 1

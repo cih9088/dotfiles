@@ -134,6 +134,11 @@ brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch 
 brew tap epk/epk
 brew cask install font-sf-mono-nerd-font
 
+# vagrant and virtualbox
+brew cask install virtualbox
+brew cask install vagrant
+brew cask install vagrant-manager
+
 # install yabai
 brew install koekeishiya/formulae/yabai
 # reinstall the scripting addition
