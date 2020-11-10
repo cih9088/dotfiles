@@ -16,11 +16,12 @@
     "coc.preferences.hoverTarget": "float",
     "coc.preferences.colorSupport": false,
     "coc.preferences.enableFloatHighlight": true,
+    "coc.preferences.useQuickfixForLocations": true,
     "coc.source.file.ignoreHidden": false,
     "list.nextKeymap": "<C-n>",
     "list.previousKeymap": "<C-p>",
 
-    "diagnostic.displayByAle": true,
+    "diagnostic.displayByAle": false,
     "diagnostic.checkCurrentLine": true,
     "diagnostic.virtualText": false,
     "diagnostic.virtualTextPrefix": "  ‣ ",
@@ -28,6 +29,7 @@
     "diagnostic.errorSign": "•",
     "diagnostic.warningSign": "•",
     "diagnostic.infoSign": "•",
+    "diagnostic.hintSign": "•",
 
     "snippets.ultisnips.directories": [
         "UltiSnips",
@@ -39,8 +41,8 @@
     "python.jediEnabled": false,
     "python.trace.server": "off",
     "python.venvFolders": ["envs", ".pyenv", ".direnv", ".virtualenvs"],
-    "python.venvPath": "",
     "python.autoUpdateLanguageServer": true,
+    "python.venvPath": "",
     "python.pythonPath": "python",
 
     "yaml.schemas": {

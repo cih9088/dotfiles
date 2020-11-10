@@ -20,6 +20,7 @@ let s:insert = [ '#d75f5f', 167 ]
 
 let s:errorbg = [ '#ec7279', '203' ]
 let s:warningbg = [ '#deb974', '179' ]
+let s:hintbg = [ '#a7c080', 142 ]
 
 let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
 
@@ -51,5 +52,6 @@ let s:p.tabline.middle = [ [ s:fg, s:bg0] ]
 
 let s:p.normal.error = [ [ s:dark, s:errorbg ] ]
 let s:p.normal.warning = [ [ s:dark, s:warningbg ] ]
+let s:p.normal.hint = [ [ s:dark, s:hintbg ] ]
 
 let g:lightline#colorscheme#miramare_modified#palette = lightline#colorscheme#flatten(s:p)
