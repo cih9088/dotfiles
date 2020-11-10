@@ -34,8 +34,10 @@ setup_func_local() {
 
     if [ ${install} == 'true' ]; then
         curl https://pyenv.run | bash
-        git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git ${PYENV_ROOT}/plugins/pyenv-virtualenvwrapper
-        git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
+        git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git \
+            ${PYENV_ROOT}/plugins/pyenv-virtualenvwrapper
+        git clone https://github.com/momo-lab/xxenv-latest.git \
+            ${PYENV_ROOT}/plugins/xxenv-latest
     fi
 }
 
@@ -48,14 +50,16 @@ setup_func_system() {
         brew list pyenv-virtualenv || brew install pyenv-virtualenv
         brew list pyenv-virtualenvwrapper || brew install pyenv-virtualenvwrapper
         [ -d ${PYENV_ROOT}/plugins/xxenv-latest ] \
-            || git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
+            || git clone https://github.com/momo-lab/xxenv-latest.git \
+            ${PYENV_ROOT}/plugins/xxenv-latest
 
         if [ ${force} == 'true' ]; then
             brew upgrade pyenv
             brew upgrade pyenv-virtualenv
             brew upgrade pyenv-virtualenvwrapper
             rm -rf ${PYENV_ROOT}/plugins/xxenv-latest || true
-            git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
+            git clone https://github.com/momo-lab/xxenv-latest.git \
+                ${PYENV_ROOT}/plugins/xxenv-latest
         fi
     else
         setup_func_local ${force}
@@ -68,12 +72,32 @@ version_func() {
 }
 
 python2_install() {
+    version="$2"
+
     # prefer pyenv
     if command -v pyenv > /dev/null; then
-        pyenv latest install -s 2
+        if [ -z ${version} ]; then
+            echo "${marker_info} List of version"
+            pyenv install --list | grep '^2' | grep -v 'dev'
+            version=$(question "Choose python2 version to install", "latest")
+        fi
+        if [ ${version} == "latest" ]; then
+            pyenv latest install -s 2
+        else
+            pyenv install ${version}
+        fi
     elif command -v asdf > /dev/null; then
         asdf plugin-add python || true
-        asdf install python latest:2
+        if [ -z ${version} ]; then
+            echo "${marker_info} List of version"
+            asdf list all python 2 | grep -v 'dev'
+            version=$(question "Choose python2 version to install", "latest")
+        fi
+        if [ ${version} == "latest" ]; then
+            asdf install python latest:2
+        else
+            asdf install python ${version}
+        fi
     else
         echo "${marker_err} version managers are not found" >&2
         echo "${marker_err} Please install it first with 'make installDevPython or make installAsdf' again" >&2
@@ -82,12 +106,32 @@ python2_install() {
 }
 
 python3_install() {
+    version="$2"
+
     # prefer pyenv
     if command -v pyenv > /dev/null; then
-        pyenv latest install -s 3
+        if [ -z ${version} ]; then
+            echo "${marker_info} List of version"
+            pyenv install --list | grep '^3' | grep -v 'dev'
+            version=$(question "Choose python3 version to install", "latest")
+        fi
+        if [ ${version} == "latest" ]; then
+            pyenv latest install -s 3
+        else
+            pyenv install ${version}
+        fi
     elif command -v asdf > /dev/null; then
         asdf plugin-add python || true
-        asdf install python latest:3
+        if [ -z ${version} ]; then
+            echo "${marker_info} List of version"
+            asdf list all python 3 | grep -v 'dev'
+            version=$(question "Choose python3 version to install", "latest")
+        fi
+        if [ ${version} == "latest" ]; then
+            asdf install python latest:3
+        else
+            asdf install python ${version}
+        fi
     else
         echo "${marker_err} version managers are not found" >&2
         echo "${marker_err} Please install it first with 'make installDevPython' or 'make installDevAsdf' again" >&2
@@ -104,17 +148,22 @@ python_version_func() {
 main_script 'pyenv' setup_func_local setup_func_system version_func
 if command -v pyenv > /dev/null; then
     # install latest plugin if not installed
-    [ ! -d ${PYENV_ROOT}/plugins/xxenv-latest ] && git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
+    [ ! -d ${PYENV_ROOT}/plugins/xxenv-latest ] && \
+        git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
     eval "$(pyenv init -)"
     echo "${marker_info} Note that the latest release ${Bold}${Underline}python2${Color_Off} would be installed using ${Bold}${Underline}pyenv${Color_Off}"
     main_script 'python2' python2_install python2_install python_version_func
     echo "${marker_info} Note that the latest release ${Bold}${Underline}python3${Color_Off} would be installed using ${Bold}${Underline}pyenv${Color_Off}"
     main_script 'python3' python3_install python3_install python_version_func
-    pyenv global $(pyenv latest --print 3) $(pyenv loatest --print 2)
+    pyenv global | grep '[0-9.]' -q || pyenv global \
+        $(pyenv versions | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1) \
+        $(pyenv versions | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)
 else
     echo "${marker_info} Note that the latest release ${Bold}${Underline}python2${Color_Off} would be installed using ${Bold}${Underline}asdf${Color_Off}"
     main_script 'python2' python2_install python2_install python_version_func
     echo "${marker_info} Note that the latest release ${Bold}${Underline}python3${Color_Off} would be installed using ${Bold}${Underline}asdf${Color_Off}"
     main_script 'python3' python3_install python3_install python_version_func
-    asdf global python $(asdf latest python 3) $(asdf latest python 2)
+    asdf current python || asdf global python \
+        $(asdf list python | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1) \
+        $(asdf list python | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)
 fi

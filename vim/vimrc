@@ -54,7 +54,8 @@
         " Plug 'dense-analysis/ale'
         if has("nvim-0.5")
             Plug 'nvim-treesitter/nvim-treesitter'
-        elseif has('nvim')
+        endif
+        if has('nvim')
             Plug 'numirias/semshi',           { 'do': ':UpdateRemotePlugins', 'for': 'python' } " python color scheme
         endif
     " }}}
@@ -1191,19 +1192,19 @@
 
     " neoclide/coc.nvim {{{
         if has_key(g:plugs, 'coc.nvim')
-            let g:coc_global_extensions = [
-                        \ 'coc-json',
-                        \ 'coc-snippets',
-                        \ 'coc-tsserver',
-                        \ 'coc-html',
-                        \ 'coc-css',
-                        \ 'coc-emoji',
-                        \ 'coc-yaml',
-                        \ 'coc-vimtex',
-                        \ 'coc-pyright',
-                        \ 'coc-go',
-                        \ 'coc-sh'
-                        \ ]
+            " let g:coc_global_extensions = [
+            "             \ 'coc-json',
+            "             \ 'coc-snippets',
+            "             \ 'coc-tsserver',
+            "             \ 'coc-html',
+            "             \ 'coc-css',
+            "             \ 'coc-emoji',
+            "             \ 'coc-yaml',
+            "             \ 'coc-vimtex',
+            "             \ 'coc-pyright',
+            "             \ 'coc-go',
+            "             \ 'coc-sh'
+            "             \ ]
 
             " automatically change python interpreter path
             " autocmd FileType python !~/.config/nvim/update_coc_settings.sh
@@ -1418,20 +1419,34 @@
     " numirias/semshi {{{
         if has_key(g:plugs, 'semshi')
             function! CustomSemshiHighlights()
-                hi semshiLocal           ctermfg=209 guifg=#ff875f
-                hi semshiGlobal          ctermfg=214 guifg=#ffaf00
-                hi semshiImported        ctermfg=214 guifg=#ffaf00 cterm=bold gui=bold
-                hi semshiParameter       ctermfg=109  guifg=#89beba
-                hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline gui=underline
-                hi semshiFree            ctermfg=218 guifg=#ffafd7
-                " hi semshiBuiltin         ctermfg=207 guifg=#ff5fff
-                " hi semshiAttribute       ctermfg=49  guifg=#00ffaf
-                hi semshiAttribute       ctermfg=49  guifg=#02c085
-                hi semshiSelf            ctermfg=249 guifg=#b2b2b2
-                hi semshiUnresolved      ctermfg=226 guifg=#ffff00 cterm=underline gui=underline
-                hi semshiSelected        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
 
-                hi! def link  semshiBuiltin  Structure
+                if has_key(g:plugs, 'nvim-treesitter')
+                    hi semshiGlobal          ctermfg=214 guifg=#ffaf00
+                    hi semshiImported        ctermfg=214 guifg=#ffaf00 cterm=bold gui=bold
+                    hi semshiLocal           NONE
+                    hi semshiParameter       NONE
+                    hi semshiParameterUnused NONE
+                    hi semshiFree            NONE
+                    hi semshiBuiltin         NONE
+                    hi semshiAttribute       NONE
+                    hi semshiSelf            NONE
+                    hi semshiUnresolved      NONE
+                    hi semshiSelected        NONE
+                else
+                    hi semshiLocal           ctermfg=209 guifg=#ff875f
+                    hi semshiGlobal          ctermfg=214 guifg=#ffaf00
+                    hi semshiImported        ctermfg=214 guifg=#ffaf00 cterm=bold gui=bold
+                    hi semshiParameterUnused ctermfg=117 guifg=#87d7ff cterm=underline gui=underline
+                    hi semshiFree            ctermfg=218 guifg=#ffafd7
+                    " hi semshiAttribute       ctermfg=49  guifg=#00ffaf
+                    hi semshiAttribute       ctermfg=49  guifg=#02c085
+                    hi semshiSelf            ctermfg=249 guifg=#b2b2b2
+                    hi semshiUnresolved      ctermfg=226 guifg=#ffff00 cterm=underline gui=underline
+                    hi semshiSelected        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
+                    " hi semshiBuiltin         ctermfg=207 guifg=#ff5fff
+                    hi! def link  semshiBuiltin  Structure
+                endif
+
             endfunction
             autocmd FileType python call CustomSemshiHighlights()
             let g:semshi#error_sign = 0
@@ -1676,6 +1691,7 @@ require'nvim-treesitter.configs'.setup {
     highlight = {
         enable = true,
         use_languagetree = false,
+        disable = { "bash", },
     },
     indent = {
       enable = true

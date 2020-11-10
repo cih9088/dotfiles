@@ -24,22 +24,22 @@
     command -v virtualenvwrapper_lazy.sh >/dev/null 2>&1 && source $(which virtualenvwrapper_lazy.sh)
 
 
-# #   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
-# #   --------------------------------------------------------------------------------------
-#     if command -v pyenv >/dev/null; then
-#         eval "$(pyenv init - --no-rehash zsh)"
-#         eval "$(pyenv virtualenv-init - zsh)"
-#         pyenv virtualenvwrapper_lazy
-#     fi
+#   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+#   --------------------------------------------------------------------------------------
+    if command -v pyenv >/dev/null; then
+        eval "$(pyenv init - --no-rehash zsh)"
+        eval "$(pyenv virtualenv-init - zsh)"
+        pyenv virtualenvwrapper_lazy 2>/dev/null || true
+    fi
 
 
-# #   Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
-# #   --------------------------------------------------------------------------------------
-#     if command -v goenv >/dev/null; then
-#         eval "$(goenv init - --no-rehash zsh)"
-#         [[ ":$PATH:" != *":$GOROOT/bin:"* ]] && export PATH="$GOROOT/bin:$PATH"
-#         [[ ":$PATH:" != *":$GOPATH/bin:"* ]] && export PATH="$PATH:$GOPATH/bin"
-#     fi
+#   Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+#   --------------------------------------------------------------------------------------
+    if command -v goenv >/dev/null; then
+        eval "$(goenv init - --no-rehash zsh)"
+        [[ ":$PATH:" != *":$GOROOT/bin:"* ]] && export PATH="$GOROOT/bin:$PATH"
+        [[ ":$PATH:" != *":$GOPATH/bin:"* ]] && export PATH="$PATH:$GOPATH/bin"
+    fi
 
 
 #   Setup asdf

@@ -24,7 +24,7 @@ local_change() {
 
     # sed -i -e '/'$(echo $shell_full_path | sed 's/\//\\\//g')' ]]; then/,/fi/d' ${HOME}/${loginshell_rc}
     for f in ".bashrc" ".zshrc" ".cshrc" ".tcshrc" ".config/fish/config.fish" ".profile"; do
-        sed -i -e '/# added from andys dotfiles/,/^fi$/d' $HOME/$f || true
+        sed -i -e '/# added from andys dotfiles/,/^fi$/d' $HOME/$f 2>/dev/null || true
     done
 
     if [ ${SHELL##*/} = ${shell_full_path##*/} ]; then

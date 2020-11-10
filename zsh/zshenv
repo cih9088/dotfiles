@@ -50,20 +50,20 @@ fi
     # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
 
 
-# #   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
-# #   --------------------------------------------------------------------------------------
-#     # prefer locally installed pyenv
-#     if [[ -s "${PYENV_ROOT:=$HOME/.pyenv}/bin/pyenv" ]]; then
-#         [[ ":$PATH:" != *":${PYENV_ROOT}/bin:"* ]] && export PATH="${PYENV_ROOT}/bin:${PATH}"
-#     fi
+#   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+#   --------------------------------------------------------------------------------------
+    # prefer locally installed pyenv
+    if [[ -s "${PYENV_ROOT:=$HOME/.pyenv}/bin/pyenv" ]]; then
+        [[ ":$PATH:" != *":${PYENV_ROOT}/bin:"* ]] && export PATH="${PYENV_ROOT}/bin:${PATH}"
+    fi
 
 
-# #   Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
-# #   --------------------------------------------------------------------------------------
-#     # prefer locally installed goenv
-#     if [[ -s "${GOENV_ROOT:=$HOME/.goenv}/bin/goenv" ]]; then
-#         [[ ":$PATH:" != *":${GOENV_ROOT}/bin:"* ]] && export PATH="${GOENV_ROOT}/bin:${PATH}"
-#     fi
+#   Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+#   --------------------------------------------------------------------------------------
+    # prefer locally installed goenv
+    if [[ -s "${GOENV_ROOT:=$HOME/.goenv}/bin/goenv" ]]; then
+        [[ ":$PATH:" != *":${GOENV_ROOT}/bin:"* ]] && export PATH="${GOENV_ROOT}/bin:${PATH}"
+    fi
 
 
 #   Setup default blocksize for ls, df, du

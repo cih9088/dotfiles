@@ -177,9 +177,11 @@ pyenv:
 # install python2, python3
 python2:
   install: true
+  version: 2.7.18
 
 python3:
   install: true
+  version: 3.8.5
 
 #######################
 # installDevGo
@@ -193,6 +195,7 @@ goenv:
 # install golang
 go:
   install: true
+  version: 1.15
 
 #######################
 # installDevC

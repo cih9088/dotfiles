@@ -137,6 +137,41 @@ fi
 # [[ "${BASH_SOURCE[0]}" != "${0}" ]] && echo "script ${BASH_SOURCE[0]} is being sourced ..."
 # [[ "${BASH_SUBSHELL}" != 0 ]] && echo "It is in subshll" || echo "It is not subshell"
 
+question() {
+    # usage
+    # value=$(question "blah blah:")
+
+    local question=$1
+    local default=${2:-}
+    local answer
+
+    while true; do
+        echo >&2
+        if [[ ${default} == "" ]]; then
+            read -p "${marker_que} ${question} : " answer
+        else
+            read -p "${marker_que} ${question} (default: ${default}): " answer
+        fi
+        if [[ ${answer} == "" ]]; then
+            if [[ ${default} == "" ]]; then
+                echo "${marker_info} You typed '${answer}'" >&2
+            else
+                echo "${marker_info} You left empty. The default value '${default}' is used." >&2
+            fi
+        else
+            echo "${marker_info} You typed '${answer}'" >&2
+        fi
+        read -p "${marker_que} Is it correct? [y/n] " yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) continue;;
+            * ) echo "${marker_err} Please answer yes or no." >&2 ; continue;;
+        esac
+    done
+
+    [[ ${answer} == "" ]] && echo ${default} || echo ${answer}
+}
+
 
 main_script() {
     TMP_DIR=${TMP_DIR:-$(mktemp -d -t dotfiles.andy.XXXXX)}
@@ -167,9 +202,11 @@ main_script() {
         target_install="CONFIG_${target}_install"
         target_local="CONFIG_${target}_local"
         target_force="CONFIG_${target}_force"
+        target_version="CONFIG_${target}_version"
         target_install=${!target_install:-false}
         target_local=${!target_local:-true}
         target_force=${!target_force:-false}
+        target_version=${!target_version:-}
 
         if [[ ${target_install} == "true" ]]; then
             [[ ${VERBOSE} == "true" ]] \
@@ -179,11 +216,11 @@ main_script() {
             # if local install and system install are not identical
             if [[ ${setup_func_local} != ${setup_func_system} ]]; then
                 [[ ${target_local} == "true" ]] \
-                    && ${setup_func_local} ${target_force} \
-                    || ${setup_func_system} ${target_force}
+                    && ${setup_func_local} ${target_force} ${target_version} \
+                    || ${setup_func_system} ${target_force} ${target_version}
             # if local install and system install are identical
             else
-                    ${setup_func_local} ${target_force}
+                    ${setup_func_local} ${target_force} ${target_version}
             fi
             ) >&3 2>&4 || exit_code="$?" && true
             stop_spinner "${exit_code}" \
