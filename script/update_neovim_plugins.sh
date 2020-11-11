@@ -26,14 +26,18 @@ command -v goenv > /dev/null && eval "$(goenv init -)" || true
 (
 
 # plugin update
-nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugInstall +PlugUpgrade +PlugUpdate +UpdateRemotePlugins +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugInstall +PlugUpgrade +PlugUpdate +qall
 
 ## coc.nvim
 # install coc extensions
-nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-pyright coc-go coc-sh' +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocInstall -sync coc-vimlsp coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-pyright coc-go coc-sh' +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'CocUninstall -sync coc-python' +qall
 
 # update coc extensions
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +CocUpdateSync +qall
+
+# update remote plugins
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +UpdateRemotePlugins +qall
 
 rm -rf ${PROJ_HOME}/nvim/coc-settings.json || true
 cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
