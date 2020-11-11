@@ -134,18 +134,21 @@ if [ "${use_sshpass}" == yes ]; then
 
     # https://unix.stackexchange.com/a/107801
     while IFS= read -u10 -r target; do
-        echo "copying to ${target}..."
+        export SSHPASS=${pswd}
         (
-        SSHPASS=${pswd} sshpass -e ssh ${target} mkdir -p ./.ssh
-        SSHPASS=${pswd} sshpass -e scp ${_config} ${target}:./.ssh/config
+        echo "copying to ${target}..."
+        sshpass -e ssh -o ConnectTimeout=2 ${target} mkdir -p ./.ssh
+        sshpass -e scp -o ConnectTimeout=2 ${_config} ${target}:~/.ssh/config
+        [ $? -eq 0 ] && echo "${target} done" || echo "${target} faild" >&2
         ) &
     done 10<<< "${targets}"
     wait
 else
     while IFS= read -u10 -r target; do
         echo "create .ssh directory in ${target}..."
-        ssh ${target} mkdir -p ./.ssh
+        ssh -o ConnectTimeout=2 ${target} mkdir -p ./.ssh
         echo "copying to ${target}..."
-        scp ${_config} ${target}:./.ssh/config
+        scp -o ConnectTimeout=2 ${_config} ${target}:~/.ssh/config
+        [ $? -eq 0 ] && echo "${target} done" || echo "${target} faild" >&2
     done 10<<< "${targets}"
 fi

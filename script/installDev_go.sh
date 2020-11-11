@@ -115,6 +115,6 @@ if command -v goenv > /dev/null; then
 else
     echo "${marker_info} Note that the latest release ${Bold}${Underline}go${Color_Off} would be installed using ${Bold}${Underline}asdf${Color_Off}"
     main_script 'go' golang_install golang_install golang_version_func
-    asdf current golang || asdf global golang \
+    asdf current golang >/dev/null 2>&1 || asdf global golang \
         $(asdf list golang | sed 's/[[:space:]]//g' | sort -V -r | head -n 1)
 fi

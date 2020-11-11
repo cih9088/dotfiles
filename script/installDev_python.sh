@@ -163,7 +163,7 @@ else
     main_script 'python2' python2_install python2_install python_version_func
     echo "${marker_info} Note that the latest release ${Bold}${Underline}python3${Color_Off} would be installed using ${Bold}${Underline}asdf${Color_Off}"
     main_script 'python3' python3_install python3_install python_version_func
-    asdf current python || asdf global python \
+    asdf current python >/dev/null 2>&1 || asdf global python \
         $(asdf list python | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1) \
         $(asdf list python | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)
 fi
