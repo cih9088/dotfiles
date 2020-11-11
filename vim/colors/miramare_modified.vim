@@ -30,28 +30,29 @@ let s:configuration.current_word = get(g:, 'miramare_current_word', get(g:, 'mir
 " }}}
 " Palette: {{{
 let s:palette = {
-      \ 'bg0':        ['#2A2426',   '235',  'Black'],
-      \ 'bg1':        ['#242021',   '236',  'DarkGrey'],
-      \ 'bg2':        ['#242021',   '237',  'DarkGrey'],
-      \ 'bg3':        ['#242021',   '238',  'DarkGrey'],
-      \ 'bg4':        ['#242021',   '239',  'Grey'],
-      \ 'bg_red':     ['#392f32',   '52',   'DarkRed'],
-      \ 'bg_green':   ['#333b2f',   '22',   'DarkGreen'],
-      \ 'bg_blue':    ['#203a41',   '17',   'DarkBlue'],
-      \ 'fg':         ['#e3d6b6',   '223',  'White'],
-      \ 'red':        ['#e68183',   '167',  'Red'],
-      \ 'orange':     ['#e39b7b',   '208',  'Red'],
-      \ 'yellow':     ['#d9bb80',   '214',  'Yellow'],
-      \ 'green':      ['#87af87',   '108',  'Green'],
-      \ 'cyan':       ['#87c095',   '108',  'Cyan'],
-      \ 'blue':       ['#89beba',   '109',  'Blue'],
-      \ 'purple':     ['#d3a0bc',   '175',  'Magenta'],
-      \ 'grey':       ['#444444',   '245',  'LightGrey'],
-      \ 'light_grey': ['#5b5b5b',   '245',  'LightGrey'],
-      \ 'gold':       ['#d8caac',   '214',  'Yellow'],
-      \ 'pink':       ['#ffdfdf',   '224',  'Pink'],
-      \ 'bg_pink':    ['#875f5f',   '95',   'DarkPink'],
-      \ 'none':       ['NONE',      'NONE', 'NONE']
+      \ 'bg0':          ['#2A2426',   '235',  'Black'],
+      \ 'bg1':          ['#242021',   '236',  'DarkGrey'],
+      \ 'bg2':          ['#242021',   '237',  'DarkGrey'],
+      \ 'bg3':          ['#242021',   '238',  'DarkGrey'],
+      \ 'bg4':          ['#242021',   '239',  'Grey'],
+      \ 'bg_red':       ['#392f32',   '52',   'DarkRed'],
+      \ 'bg_green':     ['#333b2f',   '22',   'DarkGreen'],
+      \ 'bg_blue':      ['#203a41',   '17',   'DarkBlue'],
+      \ 'fg':           ['#e3d6b6',   '223',  'White'],
+      \ 'red':          ['#e68183',   '167',  'Red'],
+      \ 'orange':       ['#e39b7b',   '208',  'Red'],
+      \ 'yellow':       ['#d9bb80',   '214',  'Yellow'],
+      \ 'green':        ['#87af87',   '108',  'Green'],
+      \ 'cyan':         ['#87c095',   '108',  'Cyan'],
+      \ 'blue':         ['#89beba',   '109',  'Blue'],
+      \ 'purple':       ['#d3a0bc',   '175',  'Magenta'],
+      \ 'dark_purple':  ['#a68094',   '138',  'Magenta'],
+      \ 'grey':         ['#444444',   '240',  'LightGrey'],
+      \ 'light_grey':   ['#5b5b5b',   '245',  'LightGrey'],
+      \ 'gold':         ['#d8caac',   '187',  'Yellow'],
+      \ 'pink':         ['#ffdfdf',   '224',  'Pink'],
+      \ 'bg_pink':      ['#875f5f',   '95',   'DarkPink'],
+      \ 'none':         ['NONE',      'NONE', 'NONE']
       \ }
 " }}}
 " Function: {{{
@@ -244,8 +245,8 @@ call s:HL('Special', s:palette.yellow, s:palette.none)
 call s:HL('SpecialChar', s:palette.yellow, s:palette.none)
 call s:HL('Type', s:palette.yellow, s:palette.none, 'bold')
 call s:HL('Function', s:palette.green, s:palette.none, 'bold')
-call s:HL('String', s:palette.green, s:palette.none)
-call s:HL('Character', s:palette.green, s:palette.none)
+call s:HL('String', s:palette.dark_purple, s:palette.none)
+call s:HL('Character', s:palette.dark_purple, s:palette.none)
 call s:HL('Constant', s:palette.cyan, s:palette.none, 'bold')
 call s:HL('Macro', s:palette.cyan, s:palette.none)
 call s:HL('Identifier', s:palette.blue, s:palette.none)
@@ -1434,6 +1435,11 @@ highlight! link CocErrorVirtualText Grey
 highlight! link CocInfoVirtualText Grey
 highlight! link CocHintVirtualText Grey
 highlight! link CocCodeLens Grey
+call s:HL('CocFloating', s:palette.fg, s:palette.bg_pink)
+call s:HL('CocErrorFloat', s:palette.red, s:palette.bg_pink)
+call s:HL('CocWarningFloat', s:palette.yellow, s:palette.bg_pink)
+call s:HL('CocHintFloat', s:palette.cyan, s:palette.bg_pink)
+call s:HL('CocInfoFloat', s:palette.blue, s:palette.bg_pink)
 highlight! link HighlightedyankRegion Visual
 highlight! link CocGitAddedSign GreenSign
 highlight! link CocGitChangeRemovedSign PurpleSign

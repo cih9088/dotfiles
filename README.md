@@ -320,5 +320,8 @@ $ make initOSX
 4. virtualenvwrapper is not installed propely.
     > `pip install virtualenv` first
 
+5. `make updateTPM` shows an error like `unknown variable: TMUX_PLUGIN_MANAGER_PATH`
+    > Completely quit tmux and try again ([pull](https://github.com/tmux-plugins/tpm/pull/186))
+
 
 ## TODO
