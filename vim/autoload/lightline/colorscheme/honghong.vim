@@ -1,6 +1,5 @@
 " =============================================================================
-" Filename: autoload/lightline/colorscheme/miramare_modified.vim
-" OriginalAuthor: chen-siyuan
+" Filename: autoload/lightline/colorscheme/honghong.vim
 " Author: Andy Cho
 " License: MIT License
 " Last Change: 2020/06/08 11:34:11.
@@ -54,4 +53,4 @@ let s:p.normal.error = [ [ s:dark, s:errorbg ] ]
 let s:p.normal.warning = [ [ s:dark, s:warningbg ] ]
 let s:p.normal.hint = [ [ s:dark, s:hintbg ] ]
 
-let g:lightline#colorscheme#miramare_modified#palette = lightline#colorscheme#flatten(s:p)
+let g:lightline#colorscheme#honghong#palette = lightline#colorscheme#flatten(s:p)

@@ -43,10 +43,9 @@ let s:palette = {
       \ 'orange':       ['#e39b7b',   '208',  'Red'],
       \ 'yellow':       ['#d9bb80',   '214',  'Yellow'],
       \ 'green':        ['#87af87',   '108',  'Green'],
-      \ 'cyan':         ['#87c095',   '108',  'Cyan'],
-      \ 'blue':         ['#89beba',   '109',  'Blue'],
+      \ 'cyan':         ['#89beba',   '109',  'Cyan'],
+      \ 'blue':         ['#86ad9e',   '109',  'Blue'],
       \ 'purple':       ['#d3a0bc',   '175',  'Magenta'],
-      \ 'dark_purple':  ['#a68094',   '138',  'Magenta'],
       \ 'grey':         ['#444444',   '240',  'LightGrey'],
       \ 'light_grey':   ['#5b5b5b',   '245',  'LightGrey'],
       \ 'gold':         ['#d8caac',   '187',  'Yellow'],
@@ -245,12 +244,12 @@ call s:HL('Special', s:palette.yellow, s:palette.none)
 call s:HL('SpecialChar', s:palette.yellow, s:palette.none)
 call s:HL('Type', s:palette.yellow, s:palette.none, 'bold')
 call s:HL('Function', s:palette.green, s:palette.none, 'bold')
-call s:HL('String', s:palette.dark_purple, s:palette.none)
-call s:HL('Character', s:palette.dark_purple, s:palette.none)
-call s:HL('Constant', s:palette.cyan, s:palette.none, 'bold')
-call s:HL('Macro', s:palette.cyan, s:palette.none)
-call s:HL('Identifier', s:palette.blue, s:palette.none)
-call s:HL('SpecialKey', s:palette.blue, s:palette.none)
+call s:HL('String', s:palette.green, s:palette.none)
+call s:HL('Character', s:palette.green, s:palette.none)
+call s:HL('Constant', s:palette.blue, s:palette.none, 'bold')
+call s:HL('Macro', s:palette.blue, s:palette.none)
+call s:HL('Identifier', s:palette.cyan, s:palette.none)
+call s:HL('SpecialKey', s:palette.cyan, s:palette.none)
 if s:configuration.disable_italic_comment
   call s:HL('Comment', s:palette.light_grey, s:palette.none)
   call s:HL('SpecialComment', s:palette.light_grey, s:palette.none)
