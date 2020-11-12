@@ -22,6 +22,10 @@
     "coc.preferences.useQuickfixForLocations": true,
 
     "coc.source.file.ignoreHidden": false,
+    "coc.source.emoji.filetypes": [
+        "markdown",
+        "gitcommit"
+    ],
 
     "list.nextKeymap": "<C-n>",
     "list.previousKeymap": "<C-p>",
