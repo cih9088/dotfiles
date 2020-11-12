@@ -26,7 +26,7 @@ PYLINT_DIR=${PROJ_HOME}/pylint
 FLAKE8_DIR=${PROJ_HOME}/flake8
 CONFIG_DIR=${PROJ_HOME}/config
 GRIP_DIR=${PROJ_HOME}/grip
-GIT_DIR=${PROJ_HOME}/git
+GIT_DIR=${CONFIG_DIR}/git
 
 # backup old files and replace it with mine
 if [ -e $HOME/.vimrc ]; then
@@ -136,6 +136,12 @@ if [ -e $HOME/.config/tealdeer ]; then
     rm -rf $HOME/.config/tealdeer
 fi
 ln -s -f ${CONFIG_DIR}/tealdeer $HOME/.config/tealdeer
+
+if [ -e $HOME/.config/git ]; then
+    cp -RfL $HOME/.config/git ${backup_directory}/.config
+    rm -rf $HOME/.config/git
+fi
+ln -s -f ${CONFIG_DIR}/git $HOME/.config/git
 
 if [ -e $HOME/.gitignore ]; then
     cp -RfL $HOME/.gitignore ${backup_directory}/.gitignore
