@@ -89,7 +89,7 @@
         Plug 'junegunn/vim-peekaboo'                                         " show register contents
         " Plug 'AndrewRadev/splitjoin.vim'                                   " switching between one-liner and multiliner
         Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] } " help for leader
-        Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }            " color
+        " Plug 'RRethy/vim-hexokinase', { 'do': 'make hexokinase' }            " color
         if has('nvim')
             set inccommand=nosplit
         else
@@ -1190,18 +1190,19 @@
     " neoclide/coc.nvim {{{
         if has_key(g:plugs, 'coc.nvim')
             let g:coc_global_extensions = [
-                        \ 'coc-vimlsp',
-                        \ 'coc-json',
+                        \ 'coc-emoji',
                         \ 'coc-snippets',
+                        \ 'coc-highlight',
+                        \ 'coc-json',
                         \ 'coc-tsserver',
                         \ 'coc-html',
                         \ 'coc-css',
-                        \ 'coc-emoji',
                         \ 'coc-yaml',
                         \ 'coc-vimtex',
                         \ 'coc-pyright',
                         \ 'coc-go',
-                        \ 'coc-sh'
+                        \ 'coc-sh',
+                        \ 'coc-vimlsp',
                         \ ]
 
             " automatically change python interpreter path
@@ -1340,6 +1341,8 @@
 
             " Add `:OR` command for organize imports of the current buffer.
             command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+            hi CocHighlightText        ctermfg=231 guifg=#ffffff ctermbg=161 guibg=#d7005f
 
             " Add (Neo)Vim's native statusline support.
             " NOTE: Please see `:h coc-status` for integrations with external plugins that

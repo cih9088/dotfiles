@@ -17,11 +17,13 @@
 
     "coc.preferences.extensionUpdateCheck": "weekly",
     "coc.preferences.hoverTarget": "float",
-    "coc.preferences.colorSupport": false,
+    "coc.preferences.colorSupport": true,
     "coc.preferences.enableFloatHighlight": true,
     "coc.preferences.useQuickfixForLocations": true,
 
     "coc.source.file.ignoreHidden": false,
+
+    "highlight.colors.enable": false,
     "coc.source.emoji.filetypes": [
         "markdown",
         "gitcommit"
