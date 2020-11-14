@@ -35,8 +35,22 @@ setup_func_local() {
     fi
 }
 
+setup_func_system() {
+    force=$1
+    cd $TMP_DIR
+
+    if [[ $platform == "OSX" ]]; then
+        brew list asdf || brew install asdf
+        if [ ${force} == 'true' ]; then
+            brew upgrade asdf
+        fi
+    else
+        setup_func_local ${force}
+    fi
+}
+
 version_func() {
     $1 version
 }
 
-main_script 'asdf' setup_func_local setup_func_local version_func
+main_script 'asdf' setup_func_local setup_func_system version_func

@@ -22,7 +22,7 @@ if [[ $platform == "OSX" ]]; then
     [[ ${VERBOSE} == "true" ]] || start_spinner "Installing brew..."
     (
         if [[ ! "$(command -v brew)" ]]; then
-            /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" </dev/null
+            /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
         fi
     ) >&3 2>&4 || exit_code="$?" && true
     stop_spinner "${exit_code}" \
@@ -38,9 +38,18 @@ echo
         brew tap homebrew/bundle
         brew tap homebrew/core
         brew tap homebrew/cask
+
         brew install bash
-        brew install python2
+
+        # brew install python@2 -> python2 is not supported anymore
         brew install python
+        # create symlink manually
+        # https://github.com/Homebrew/homebrew-core/issues/16212
+        ln -s /usr/local/bin/python3 /usr/local/bin/python
+        ln -s /usr/local/bin/pip3 /usr/local/bin/pip
+
+        brew install readline xz #pyenv
+
         brew install wget
         brew install curl
         brew install pssh
@@ -49,8 +58,9 @@ echo
         brew install git
         brew install reattach-to-user-namespace
         brew install cmake
+
         brew cask install xquartz
-        brew install readline xz #pyenv
+
     elif [[ $platform == "LINUX" ]]; then
         sudo apt-get -y install python-dev python-pip python3-dev python3-pip highlight \
             xclip wget git cmake bsdmainutils curl
@@ -65,8 +75,3 @@ echo
 stop_spinner "${exit_code}" \
     "prerequisites are installed" \
     "prerequisites install is failed. use VERBOSE=true for error message"
-
-# do not udpate pip causing import error!
-# sudo pip install --upgrade pip || true
-# sudo pip2 intall --upgrade pip || true
-# sudo pip3 install --upgrade pip || true

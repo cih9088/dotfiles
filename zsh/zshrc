@@ -20,8 +20,8 @@
 #   --------------------------------------------------------------------------------------
     [ -z "${TMUX+x}" ] && \
         [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && \
-        pip install --user --upgrade --force-reinstall virtualenv virtualenvwrapper
-    command -v virtualenvwrapper_lazy.sh >/dev/null 2>&1 && source $(which virtualenvwrapper_lazy.sh)
+        pip install --user virtualenv virtualenvwrapper
+    command -v virtualenvwrapper_lazy.sh >/dev/null  && source $(which virtualenvwrapper_lazy.sh)
 
 
 #   Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
@@ -29,7 +29,7 @@
     if command -v pyenv >/dev/null; then
         eval "$(pyenv init - --no-rehash zsh)"
         eval "$(pyenv virtualenv-init - zsh)"
-        pyenv virtualenvwrapper_lazy 2>/dev/null || true
+        pyenv virtualenvwrapper_lazy >/dev/null || true
     fi
 
 
@@ -44,8 +44,15 @@
 
 #   Setup asdf
 #   --------------------------------------------------------------------------------------
-    [ -f $HOME/.asdf/asdf.sh ] \
-        && source $HOME/.asdf/asdf.sh && fpath=($fpath ${ASDF_DIR}/completions)
+    # prefer locally installed asdf
+    if [ -f $HOME/.asdf/asdf.sh ]; then
+        source $HOME/.asdf/asdf.sh
+        fpath=($fpath ${ASDF_DIR}/completions)
+    # brew --prefix asdf is way slow. hard code the path
+    elif [ -f /usr/local/opt/asdf/asdf.sh ]; then
+        source /usr/local/opt/asdf/asdf.sh
+        # completion is installed with brew
+    fi
 
 
 #   Setup thefuck -> to function
@@ -55,14 +62,16 @@
 
 #   Source Prezto
 #   --------------------------------------------------------------------------------------
-    [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+    [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] \
+        && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
 #   Setup FZF
 #   --------------------------------------------------------------------------------------
     if [ -x "$(command -v fzf)" ]; then
         # Auto-completion
-        [[ $- == *i* ]] && source "${HOME}/.local/share/nvim/plugged/fzf/shell/completion.zsh" 2> /dev/null
+        [[ $- == *i* ]] \
+            && source "${HOME}/.local/share/nvim/plugged/fzf/shell/completion.zsh" 2>/dev/null
         # Key bindings
         source "${HOME}/.local/share/nvim/plugged/fzf/shell/key-bindings.zsh"
     fi

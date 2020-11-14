@@ -51,6 +51,7 @@ prepare:
 initOSX:
 	@( $(SCRIPTS_DIR)/osx_prep.sh )
 	@( $(SCRIPTS_DIR)/osx_brew.sh )
+	@( $(SCRIPTS_DIR)/osx_init.sh )
 
 prerequisites:
 	@( $(SCRIPTS_DIR)/prerequisites.sh )
@@ -182,5 +183,4 @@ init: prepare install update
 	installDevShell installDevPython installDevNodejs installDevC installDevGo changeDefaultShell \
 	installDevAsdf updateDevEnv\
 	updateDotfiles updateNeovimPlugins updateTmuxPlugins updateTPM updateCustomBins updatePrezto \
-	clean update install init initOSX \
-
+	clean update install init initOSX

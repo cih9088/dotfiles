@@ -63,6 +63,14 @@ system_change() {
         shell_full_path="/usr/bin/${shell_full_path}"
     fi
 
+    if [[ ! -s ${shell_full_path} ]]; then
+        echo "${shell_full_path} is not a proper shell" >&2
+        exit 1
+    fi
+
+    grep -q ${shell_full_path} /etc/shells || \
+        echo ${shell_full_path} | sudo tee -a /etc/shells >/dev/null
+
     chsh -s "${shell_full_path}"
 }
 
@@ -75,7 +83,7 @@ main() {
                 local_change ${CONFIG_changeDefaultShell_shell} \
                 && echo "${marker_ok} Changed default shell to local zsh" \
                 || echo "${marker_err} Change default shell to local zsh is failed"
-            elif [[ ${CONFIG_changeDefaultShell_local} == "no" ]]; then
+            elif [[ ${CONFIG_changeDefaultShell_local} == "false" ]]; then
                 system_change ${CONFIG_changeDefaultShell_shell} \
                 && echo "${marker_ok} Changed default shell to systemwide zsh" \
                 || echo "${marker_err} Change default shell to system zsh is failed"

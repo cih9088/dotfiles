@@ -14,14 +14,24 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 # Install if we don't have it
 if test ! $(which brew); then
   echo "Installing homebrew..."
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
+
+
+# mas
+brew install mas
+while true; do
+   mas account >/dev/null 2>&1
+   [[ $? == 0 ]] && break
+   echo -n "Please signin Appstore manually and press any keys."
+   read anykey
+done
 
 # Make sure we’re using the latest Homebrew.
 brew update
 
 # Upgrade any already-installed formulae.
-brew upgrade --all
+brew upgrade
 
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
@@ -34,21 +44,21 @@ brew install moreutils
 brew install findutils
 # Install GNU `sed`, overwriting the built-in `sed`.
 brew install gnu-sed
-# brew install gawk
+brew install gawk
 # brew install gnu-indent --with-default-names
 # brew install gnu-tar --with-default-names
 # brew install gnu-which --with-default-names
 # brew install gnutls
 
-# Install Bash 4.
+# Install Bash 5
 brew install bash
 # brew install bash-completion2
 # We installed the new shell, now we have to activate it
 # echo "Adding the newly installed shell to the list of allowed shells"
 # Prompts for password
-sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
+# sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
 # Change to the new shell, prompts for password
-chsh -s /usr/local/bin/bash
+# chsh -s /usr/local/bin/bash
 
 # Install `wget` with IRI support.
 # brew install wget --with-iri
@@ -64,8 +74,7 @@ brew install wget
 # brew install vim --override-system-vi
 brew install grep
 brew install openssh
-brew tap esolitos/ipa
-brew install sshpass
+brew install esolitos/ipa/sshpass
 # brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 # brew install homebrew/dupes/screen
 # brew install homebrew/php/php55 --with-gmp
@@ -99,6 +108,7 @@ brew install pandoc
 brew install mosh
 brew install htop
 brew install awscli
+brew install jq
 
 # Lxml and Libxslt
 # brew install libxml2
@@ -107,27 +117,37 @@ brew install awscli
 # brew link libxslt --force
 
 # Core casks
-# brew cask install --appdir="/Applications" alfred
-brew cask install --appdir="~/Applications" iterm2
-brew cask install --appdir="/Applications" alacritty
-brew cask install --appdir="/Applications" xquartz
+# brew cask install alfred
+brew cask install iterm2
+brew cask install alacritty
+brew cask install xquartz # -> requires password
 
 # Misc casks
-brew cask install --appdir="/Applications" google-chrome
-brew cask install --appdir="/Applications" skype
-brew cask install --appdir="/Applications" slack
-brew cask install --appdir="/Applications" dropbox
-brew cask install --appdir="/Applications" inkscape
-brew cask install --appdir="/Applications" mactex
-brew cask install --appdir="/Applications" docker
-brew cask install --appdir="/Applications" betterzip
-brew cask install --appdir="/Applications" notion
-brew cask install --appdir="/Applications" transmission
-# brew cask install --appdir="/Applications" 1password
-# brew cask install --appdir="/Applications" gimp
+brew cask install google-chrome
+brew cask install skype
+brew cask install slack
+brew cask install dropbox
+brew cask install inkscape
+brew cask install mactex # -> requires password
+brew cask install docker
+# brew cask install betterzip
+brew cask install keka
+brew cask install kekadefaultapp
+brew cask install mathpix-snipping-tool
+brew cask install notion
+brew cask install transmission
+brew cask install mos
+brew cask install stats
+brew cask install teamviewer # -> requires password
+brew cask install vmware-fusion
+brew cask install alt-tab
+# brew cask install microsoft-office
+# brew cask install 1password
+# brew cask install gimp
 
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
-brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzip qlimagesize webpquicklook suspicious-package quicklookase qlvideo
+brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv qlimagesize webpquicklook suspicious-package quicklookase qlvideo
+xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 # install SFMono patched with the nerd font
 # https://github.com/epk/SF-Mono-Nerd-Font
@@ -141,6 +161,8 @@ brew cask install vagrant-manager
 
 # install yabai
 brew install koekeishiya/formulae/yabai
+echo "$(whoami) ALL = (root) NOPASSWD: /usr/local/bin/yabai --load-sa" |\
+    sudo tee -a /private/etc/sudoers.d/yabai >/dev/null
 # reinstall the scripting addition
 sudo yabai --uninstall-sa || true
 sudo yabai --install-sa || true
@@ -156,17 +178,6 @@ brew services start skhd
 brew install cmacrae/formulae/spacebar
 brew services start spacebar
 
-
-# mas
-brew install mas
-
-while true; do
-   mas account >/dev/null 2>&1
-   [[ $? == 0 ]] && break
-   echo -n "Please signin Appstore manually and press any keys."
-   read anykey
-done
-
 ## free stuff
 mas install 1018899653  # HeliumLift
 #mas install 937984704   # Amphetamine
@@ -175,18 +186,20 @@ mas install 409201541   # Pages
 mas install 409203825   # Numbers
 mas install 1295203466  # Microsoft Remote Desktop
 mas install 1114196460  # Rocket Fuel
-mas install 414855915   # WinArchiver Lite
+# mas install 414855915   # WinArchiver Lite
 mas install 869223134   # KakaoTalk
-
-## not free
-mas install 445189367   # PopClip
-# mas install 441258766   # Magnet
-mas install 461788075   # Movist
-mas install 1475628500  # Unicorn HTTPS
-mas install 1231935892  # Unicorn Blocker:Adblock
 mas install 1445910651  # Dynamo
 mas install 1462114288  # Grammarly for Safari
 mas install 1480933944  # Vimari
+mas install 975937182   # Fantastical
+
+
+## not free
+mas install 445189367   # PopClip
+mas install 441258766   # Magnet
+mas install 461788075   # Movist
+mas install 1475628500  # Unicorn HTTPS
+mas install 1231935892  # Unicorn Blocker:Adblock
 mas install 922765270   # LiquidText
 
 

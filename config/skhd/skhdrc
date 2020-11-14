@@ -131,13 +131,17 @@ prefix < m                                  :  yabai -m space --layout \
 prefix < 0x18                               :  yabai -m space --balance; skhd -k "ctrl - s"
 # toggle window split type with s
 prefix < s                                  :  yabai -m window --toggle split; skhd -k "ctrl - s"
+# create new spaace
+prefix < c                                  :  yabai -m space --create; skhd -k "ctrl - s"
+# destroy space
+prefix < x                                  :  yabai -m space --destroy; skhd -k "ctrl - s"
 
 
 ########## global operation
 
 # open terminal
-cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
-# cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
+# cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
+cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
 
 # make floating window fill screen (toggle)
 ctrl + alt - return : yabai -m window --grid 1:1:0:0:1:1

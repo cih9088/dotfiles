@@ -124,13 +124,13 @@ font:
 
   # Bold font face
   bold:
-    family: SF Mono
+    family: SFMono Nerd Font
     # The `style` can be specified to pick a specific face.
     #style: Semibold
 
   # Italic font face
   italic:
-    family: SF Mono
+    family: SFMono Nerd Font
     # The `style` can be specified to pick a specific face.
     #style: Regular Italic
 

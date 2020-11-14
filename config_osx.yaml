@@ -162,7 +162,7 @@ yarn:
 
 asdf:
   install: true
-  local: true
+  local: false
   force: false
 
 #######################

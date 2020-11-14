@@ -18,4 +18,10 @@ sudo softwareupdate -ia --verbose
 echo "------------------------------"
 echo "Installing Xcode Command Line Tools."
 # Install Xcode command line tools
+sudo rm -rf /Library/Developer/CommandLineTools
 xcode-select --install
+sleep 10
+# https://stackoverflow.com/a/41613532
+# wait until install is finished
+pid=$(ps aux | grep -i 'command line' | grep -v grep | awk '{print $2}')
+lsof -p $pid +r 1 &>/dev/null
