@@ -894,6 +894,18 @@
     "     endif
     " " }}}
 
+    " Custom location for quickfix and loclist {{{
+        function! CustomiseLocation()
+            " if loclist, put it below the current window
+            if getwininfo(win_getid())[0]['loclist'] == 1
+            " if quickfix, put it bellow the whole window
+            elseif getwininfo(win_getid())[0]['quickfix'] == 1
+                wincmd J
+            endif
+        endfunction
+        autocmd FileType qf call customiseLocation()
+    " }}}
+
 " }}}
 
 " PLUGIN SETTING {{{
