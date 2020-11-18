@@ -120,6 +120,11 @@ brew install jq
 # brew cask install alfred
 brew cask install iterm2
 brew cask install alacritty
+# download big sur icon for alacritty
+[ -e /Applications/Alacritty.app ] && (
+wget 'https://www.dropbox.com/s/0i4ez0el7paksg3/Alacritty.icns' -O /Applications/Alacritty.app/Contents/Resources/alacritty.icns
+touch /Applications/Alacritty.app
+)
 brew cask install xquartz # -> requires password
 
 # Misc casks
