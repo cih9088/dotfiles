@@ -1691,7 +1691,7 @@ require'nvim-treesitter.configs'.setup {
         disable = { "bash", },
     },
     indent = {
-      enable = true
+      enable = false
     },
 }
 EOF
