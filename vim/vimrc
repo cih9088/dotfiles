@@ -1690,9 +1690,6 @@ require'nvim-treesitter.configs'.setup {
         use_languagetree = false,
         disable = { "bash", },
     },
-    indent = {
-      enable = false
-    },
 }
 EOF
         endif
