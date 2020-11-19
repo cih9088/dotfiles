@@ -1,22 +1,47 @@
+# expected .ssh/config
+#
+# Host foo
+# #alias bar sample_group
+#   HostName foo.example.com
+#   HostName 192.168.1.1
+
+
 if [[ $# -eq 0 ]] || [[ $# -eq 1 && $1 =~ "@$" ]]; then
     has -v fzf awk || exit 1
 
     _config=$HOME/.ssh/config
     targets=$(awk '
-    BEGIN { current = ""; hosts[0] = "" }
+    BEGIN { current = ""; hosts[0] = ""; hostnames[0] = ""; ips[0] = ""; aliases[0] = "" }
     {
         if ($1 == "Host") {
             if ( current != $2 ) {
                 current = $2
-                hosts[length(hosts)+1] = $2
+                hosts[current] = $2
             }
-    }
-        if ( $1 == "HostName" && $2 ~ /[a-zA-Z]+/ ) {
-            hosts[length(hosts)] = hosts[length(hosts)] " -> " $2
+        }
+        else if ( $1 == "HostName") {
+            if ( $2 ~ /[a-zA-Z]+/ ) {
+                hostnames[current] = hostnames[current] $2
+            } else if ( $2 ~ /[0-9.]+/ ) {
+                ips[current] = ips[current] "( " $2 " )"
+            }
+        }
+        else if ( $1 == "#alias" ) {
+            aliases[current] = "["
+            for(i=2;i<=NF;i++) {
+                aliases[current] = aliases[current] " " $i
+            }
+            aliases[current] = aliases[current] " ]"
         }
     }
-    END { for (key in hosts) { print hosts[key] } }
-    ' $_config | grep -v '*' | column -t)
+    END {
+        for (key in hosts) {
+            if ( key != 0 ) {
+                print hosts[key], "|->", hostnames[key], "|", ips[key], "|" aliases[key]
+            }
+        }
+    }
+    ' $_config | grep -v '*' | column -t -s '|')
 
     exit_code=$?
     [ ${exit_code} != 0 ] && return ${exit_code}
