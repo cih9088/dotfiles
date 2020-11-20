@@ -903,7 +903,7 @@
                 wincmd J
             endif
         endfunction
-        autocmd FileType qf call customiseLocation()
+        autocmd FileType qf call CustomiseLocation()
     " }}}
 
 " }}}
