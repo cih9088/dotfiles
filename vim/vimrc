@@ -501,11 +501,11 @@
             " if in tmux, update environment variable to yank properly
             if !empty($TMUX)
                 " if SSH_TTY is set
-                if !system('tmux show-env SSH_TTY') =~# '^-'
+                if system('tmux show-env SSH_TTY') !~# '^-.*'
                     let $SSH_TTY = split(trim(system('tmux show-env SSH_TTY')), '=')[1]
                 endif
                 " if DISPLAY is set
-                if !system('tmux show-env DISPLAY') =~# '^-'
+                if system('tmux show-env DISPLAY') !~# '^-.*'
                     let $DISPLAY = split(trim(system('tmux show-env DISPLAY')), '=')[1]
                 endif
             endif
