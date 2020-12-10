@@ -124,7 +124,7 @@
 
 #   CUDA enviroment variables
 #   --------------------------------------------------------------------------------------
-    if [[ $OSTYPE == "linux*" ]]; then
+    if [[ $OSTYPE == "linux"* ]]; then
         export CUDA_DEVICE_ORDER=PCI_BUS_ID
         export CUDA_HOME=/usr/local/cuda
         [[ ":${PATH}:" != *":${CUDA_HOME}/bin:"* ]] && export PATH="${PATH}:${CUDA_HOME}/bin"
