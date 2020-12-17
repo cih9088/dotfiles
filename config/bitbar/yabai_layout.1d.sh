@@ -83,7 +83,7 @@ yabai -m query --spaces > /dev/null 2>&1
 state=$?
 
 if [ $state != 0 ] ; then
-  echo "⚠ | size=30"
+  echo "⚠ | size=20"
 else
   mode=$(yabai -m query --spaces --space | grep -o -E "float|bsp")
   case $mode in

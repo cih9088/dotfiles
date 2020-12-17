@@ -117,52 +117,59 @@ brew install jq
 # brew link libxslt --force
 
 # Core casks
-# brew cask install alfred
-brew cask install iterm2
-brew cask install alacritty
+brew install --cask iterm2
+brew install --cask alacritty
 # download big sur icon for alacritty
 [ -e /Applications/Alacritty.app ] && (
 wget 'https://www.dropbox.com/s/0i4ez0el7paksg3/Alacritty.icns' -O /Applications/Alacritty.app/Contents/Resources/alacritty.icns
 touch /Applications/Alacritty.app
 )
-brew cask install xquartz # -> requires password
-
-# Misc casks
-brew cask install google-chrome
-brew cask install skype
-brew cask install slack
-brew cask install dropbox
-brew cask install inkscape
-brew cask install mactex # -> requires password
-brew cask install docker
-# brew cask install betterzip
-brew cask install keka
-brew cask install kekadefaultapp
-brew cask install mathpix-snipping-tool
-brew cask install notion
-brew cask install transmission
-brew cask install mos
-brew cask install stats
-brew cask install teamviewer # -> requires password
-brew cask install vmware-fusion
-brew cask install alt-tab
-# brew cask install microsoft-office
-# brew cask install 1password
-# brew cask install gimp
+brew install --cask xquartz # -> requires password
 
 # Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
-brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv qlimagesize webpquicklook suspicious-package quicklookase qlvideo
+brew install --cask qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv qlimagesize webpquicklook suspicious-package quicklookase qlvideo
 xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 # install SFMono patched with the nerd font
 # https://github.com/epk/SF-Mono-Nerd-Font
 brew tap epk/epk
-brew cask install font-sf-mono-nerd-font
+brew install --cask font-sf-mono-nerd-font
+
+# Misc casks
+brew install --cask google-chrome
+brew install --cask skype
+brew install --cask mos
+# brew install --cask betterzip
+brew install --cask keka
+brew install --cask kekadefaultapp
+# brew install --cask stats
+brew install --cask eul
+brew install --cask teamviewer # -> requires password
+brew install --cask vmware-fusion
+brew install --cask alt-tab
+brew install --cask alfred
+brew install --cask bartender
+brew install --cask mounty
+brew install --cask hazel
+brew install --cask microsoft-office
+
+brew install --cask dropbox
+brew install --cask slack
+brew install --cask inkscape
+brew install --cask mactex # -> requires password
+brew install --cask docker
+brew install --cask mathpix-snipping-tool
+brew install --cask notion
+brew install --cask transmission
+brew install --cask bitbar
+# brew install --cask fantastical
+# brew install --cask 1password
+# brew install --cask gimp
 
 # vagrant and virtualbox
-brew cask install virtualbox
-brew cask install vagrant
-brew cask install vagrant-manager
+brew install --cask virtualbox
+brew install --cask vagrant
+brew install --cask vagrant-manager
 
 # install yabai
 brew install koekeishiya/formulae/yabai
@@ -196,8 +203,6 @@ mas install 869223134   # KakaoTalk
 mas install 1445910651  # Dynamo
 mas install 1462114288  # Grammarly for Safari
 mas install 1480933944  # Vimari
-mas install 975937182   # Fantastical
-
 
 ## not free
 mas install 445189367   # PopClip
@@ -206,6 +211,7 @@ mas install 461788075   # Movist
 mas install 1475628500  # Unicorn HTTPS
 mas install 1231935892  # Unicorn Blocker:Adblock
 mas install 922765270   # LiquidText
+mas install 577085396   # Unclutter
 
 
 # Remove outdated versions from the cellar.
