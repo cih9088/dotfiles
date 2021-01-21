@@ -26,12 +26,23 @@
 
 #   Set default the list of directories that Zsh searches for programs.
 #   --------------------------------------------------------------------------------------
+    # systemwide bin directory
     path=(
-        # user's local bin directory
-        ${HOME}/.local/bin
         /usr/local/{bin,sbin}
         /usr/{bin,sbin}
         /{bin,sbin}
+        $path
+    )
+    # apple silicon homebrew path
+    if [[ "$OSTYPE" == darwin* && "$(uname -m)" == "arm64" && $(command -v brew) ]]; then
+        path=(
+            /opt/homebrew/{bin,sbin}
+            $path
+        )
+    fi
+    # user's local bin directory
+    path=(
+        ${HOME}/.local/bin
         $path
     )
 
