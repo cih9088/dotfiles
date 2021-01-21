@@ -36,7 +36,7 @@ brew upgrade
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
 brew install coreutils
-sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
+# sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
 
 # Install some other useful utilities like `sponge`.
 brew install moreutils
@@ -64,6 +64,16 @@ brew install bash
 # brew install wget --with-iri
 brew install wget
 
+brew install python
+# create symlink manually
+# https://github.com/Homebrew/homebrew-core/issues/16212
+ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
+ln -snf $(brew --prefix)/bin/python3-config $(brew --prefix)/bin/python-config
+ln -snf $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
+ln -snf $(brew --prefix)/bin/wheel3 $(brew --prefix)/bin/wheel
+ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
+ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
+
 # Install ruby-build and rbenv
 # brew install ruby-build
 # brew install rbenv
@@ -75,6 +85,7 @@ brew install wget
 brew install grep
 brew install openssh
 brew install esolitos/ipa/sshpass
+brew install pssh
 # brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
 # brew install homebrew/dupes/screen
 # brew install homebrew/php/php55 --with-gmp
@@ -141,7 +152,7 @@ brew install --cask skype
 brew install --cask mos
 # brew install --cask betterzip
 brew install --cask keka
-brew install --cask kekadefaultapp
+brew install --cask kekaexternalhelper
 # brew install --cask stats
 brew install --cask eul
 brew install --cask teamviewer # -> requires password
@@ -153,6 +164,8 @@ brew install --cask mounty
 brew install --cask hazel
 brew install --cask microsoft-office
 
+brew install --cask
+brew install --cask refined-github-safari
 brew install --cask dropbox
 brew install --cask slack
 brew install --cask inkscape
@@ -161,7 +174,11 @@ brew install --cask docker
 brew install --cask mathpix-snipping-tool
 brew install --cask notion
 brew install --cask transmission
-brew install --cask bitbar
+# brew install --cask bitbar
+brew tap melonamin/formulae
+brew install swiftbar
+brew tap homebrew/cask-versions
+brew install safari-technology-preview
 # brew install --cask fantastical
 # brew install --cask 1password
 # brew install --cask gimp

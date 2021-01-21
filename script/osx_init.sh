@@ -258,30 +258,35 @@ defaults write com.runningwithcrayons.Alfred-Preferences syncfolder -string "~/L
 # defaults write com.caldis.Mos
 
 
-# # stats
-# defaults write eu.exelban.Stats runAtLoginInitialized -int    1
-# defaults write eu.exelban.Stats CPU_state             -int    1
-# defaults write eu.exelban.Stats CPU_updateInterval    -int    30
-# defaults write eu.exelban.Stats CPU_processes         -int    8
-# defaults write eu.exelban.Stats CPU_widget            -string "line_chart"
-# defaults write eu.exelban.Stats CPU_line_chart_box    -int    1
-# defaults write eu.exelban.Stats CPU_line_chart_frame  -int    0
-# defaults write eu.exelban.Stats CPU_line_chart_value  -int    0
-# defaults write eu.exelban.Stats GPU_state             -int    0
-# defaults write eu.exelban.Stats GPU_updateInterval    -int    30
-# defaults write eu.exelban.Stats GPU_widget            -string "line_chart"
-# defaults write eu.exelban.Stats GPU_line_chart_box    -int    1
-# defaults write eu.exelban.Stats GPU_line_chart_frame  -int    0
-# defaults write eu.exelban.Stats GPU_line_chart_value  -int    0
-# defaults write eu.exelban.Stats Disk_state            -int    1
-# defaults write eu.exelban.Stats Disk_widget           -string "bar_chart"
-# defaults write eu.exelban.Stats Disk_updateInterval   -int    30
-# defaults write eu.exelban.Stats RAM_state             -int    1
-# defaults write eu.exelban.Stats RAM_widget            -string "bar_chart"
-# defaults write eu.exelban.Stats RAM_updateInterval    -int    30
-# defaults write eu.exelban.Stats Network_speed_base    -string "byte"
-# defaults write eu.exelban.Stats Network_speed_icon    -string "dots"
-# defaults write eu.exelban.Stats Battery_state         -int    0
+# stats
+defaults write eu.exelban.Stats runAtLoginInitialized -int    1
+defaults write eu.exelban.Stats CPU_bar_chart_color   -string "Pink"
+defaults write eu.exelban.Stats CPU_state             -int    1
+defaults write eu.exelban.Stats CPU_updateInterval    -int    30
+defaults write eu.exelban.Stats CPU_processes         -int    8
+defaults write eu.exelban.Stats CPU_widget            -string "bar_chart"
+defaults write eu.exelban.Stats CPU_widget            -string "line_chart"
+defaults write eu.exelban.Stats CPU_line_chart_box    -int    1
+defaults write eu.exelban.Stats CPU_line_chart_frame  -int    0
+defaults write eu.exelban.Stats CPU_line_chart_value  -int    0
+defaults write eu.exelban.Stats GPU_state             -int    0
+defaults write eu.exelban.Stats GPU_updateInterval    -int    30
+defaults write eu.exelban.Stats GPU_widget            -string "line_chart"
+defaults write eu.exelban.Stats GPU_line_chart_box    -int    1
+defaults write eu.exelban.Stats GPU_line_chart_frame  -int    0
+defaults write eu.exelban.Stats GPU_line_chart_value  -int    0
+defaults write eu.exelban.Stats Disk_state            -int    1
+defaults write eu.exelban.Stats Disk_widget           -string "bar_chart"
+defaults write eu.exelban.Stats Disk_updateInterval   -int    30
+defaults write eu.exelban.Stats SSD_bar_chart_box     -int    1
+defaults write eu.exelban.Stats SSD_bar_chart_color   -string "Pink"
+defaults write eu.exelban.Stats RAM_state             -int    1
+defaults write eu.exelban.Stats RAM_widget            -string "bar_chart"
+defaults write eu.exelban.Stats RAM_bar_chart_color   -string "Pink"
+defaults write eu.exelban.Stats RAM_updateInterval    -int    30
+defaults write eu.exelban.Stats Network_speed_base    -string "byte"
+defaults write eu.exelban.Stats Network_speed_icon    -string "dots"
+defaults write eu.exelban.Stats Battery_state         -int    0
 
 # eul
 

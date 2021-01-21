@@ -49,8 +49,8 @@
         source $HOME/.asdf/asdf.sh
         fpath=($fpath ${ASDF_DIR}/completions)
     # brew --prefix asdf is way slow. hard code the path
-    elif [ -f /usr/local/opt/asdf/asdf.sh ]; then
-        source /usr/local/opt/asdf/asdf.sh
+    elif command -v brew >/dev/null && [ -f $(brew --prefix)/opt/asdf/asdf.sh ]; then
+        source $(brew --prefix)/opt/asdf/asdf.sh
         # completion is installed with brew
     fi
 
