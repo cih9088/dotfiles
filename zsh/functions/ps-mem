@@ -6,4 +6,9 @@ else
     echo "${platform} is not supported" >&2
     return 1
 fi
-eval ${cmd} | head -n 16 | cut -c -80
+
+if [ "$1" = "-l" ]; then
+    eval ${cmd} | head -n 16
+else
+    eval ${cmd} | head -n 16 | cut -c -80
+fi
