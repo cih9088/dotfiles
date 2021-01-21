@@ -1,22 +1,22 @@
 # the default mode
 :: default : echo "" > $TMPDIR/current_skhd_mode;\
-             open -g "bitbar://refreshPlugin?name=skhd_mode.*?.sh"
+             open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 
 # a mode for focus operations
 :: focus @ : echo "focus" > $TMPDIR/current_skhd_mode;\
-             open -g "bitbar://refreshPlugin?name=skhd_mode.*?.sh"
+             open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 
 # a mode for warp operations
 :: warp @ : echo "warp" > $TMPDIR/current_skhd_mode;\
-            open -g "bitbar://refreshPlugin?name=skhd_mode.*?.sh"
+            open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 
 # a mode for resizing operations
 :: resize @ : echo "resize" > $TMPDIR/current_skhd_mode;\
-              open -g "bitbar://refreshPlugin?name=skhd_mode.*?.sh"
+              open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 
 # a mode for instance command
 :: prefix @ : echo "prefix" > $TMPDIR/current_skhd_mode;\
-              open -g "bitbar://refreshPlugin?name=skhd_mode.*?.sh"
+              open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 
 # enter and exit modes
 default                      < ctrl - s         ; prefix
@@ -63,9 +63,9 @@ focus, resize, warp < q                     :  yabai -m space --balance         
 # change layout of desktop: m ,
 focus, resize, warp < m                     :  yabai -m space --layout \
         $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end');\
-                                               open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"
+                                               open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 # focus, resize, warp < 0x2B                  :  yabai -m space --layout float;\
-#                                                open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"
+#                                                open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 
 # move window
 warp < h                                    :  yabai -m window --warp west
@@ -75,18 +75,18 @@ warp < l                                    :  yabai -m window --warp east
 warp < return                               :  yabai -m window --warp largest
 
 # send window to desktop
-warp < tab                                  :  yabai -m window --space next
-warp < shift - tab                          :  yabai -m window --space prev
-warp < 1                                    :  yabai -m window --space 1
-warp < 2                                    :  yabai -m window --space 2
-warp < 3                                    :  yabai -m window --space 3
-warp < 4                                    :  yabai -m window --space 4
-warp < 5                                    :  yabai -m window --space 5
-warp < 6                                    :  yabai -m window --space 6
-warp < 7                                    :  yabai -m window --space 7 
-warp < 8                                    :  yabai -m window --space 8 
-warp < 9                                    :  yabai -m window --space 9 
-warp < 0                                    :  yabai -m window --space 10
+warp < tab                                  :  yabai -m window --space next; yabai -m space --focus next
+warp < shift - tab                          :  yabai -m window --space prev; yabai -m space --focus prev
+warp < 1                                    :  yabai -m window --space 1; yabai -m space --focus 1
+warp < 2                                    :  yabai -m window --space 2; yabai -m space --focus 2
+warp < 3                                    :  yabai -m window --space 3; yabai -m space --focus 3
+warp < 4                                    :  yabai -m window --space 4; yabai -m space --focus 4
+warp < 5                                    :  yabai -m window --space 5; yabai -m space --focus 5
+warp < 6                                    :  yabai -m window --space 6; yabai -m space --focus 6
+warp < 7                                    :  yabai -m window --space 7; yabai -m space --focus 7
+warp < 8                                    :  yabai -m window --space 8; yabai -m space --focus 8
+warp < 9                                    :  yabai -m window --space 9; yabai -m space --focus 9
+warp < 0                                    :  yabai -m window --space 10; yabai -m space --focus 10
 
 # increase region size
 resize < h                                  :  yabai -m window --resize left:-30:0
@@ -126,7 +126,7 @@ prefix < z : yabai -m window --toggle zoom-fullscreen; skhd -k "ctrl - s"
 # change layout of desktop with m
 prefix < m                                  :  yabai -m space --layout \
                                                    $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end');\
-                                               open -g "bitbar://refreshPlugin?name=yabai_layout.*?.sh"; skhd -k "ctrl - s"
+                                               open -g "swiftbar://refreshPlugin?name=yabai_skhd"; skhd -k "ctrl - s"
 # equalize size of windows with =
 prefix < 0x18                               :  yabai -m space --balance; skhd -k "ctrl - s"
 # toggle window split type with s
@@ -140,8 +140,8 @@ prefix < x                                  :  yabai -m space --destroy; skhd -k
 ########## global operation
 
 # open terminal
-# cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
-cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
+cmd - return : /Applications/iTerm.app/Contents/MacOS/iTerm2
+# cmd - return : /Applications/Alacritty.app/Contents/MacOS/alacritty
 
 # make floating window fill screen (toggle)
 ctrl + alt - return : yabai -m window --grid 1:1:0:0:1:1
