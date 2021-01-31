@@ -5,20 +5,19 @@ bold = false
 [style.command_name]
 foreground = "cyan"
 underline = false
-bold = false
+bold = true
 
 [style.example_text]
-foreground = "green"
+foreground = "yellow"
 underline = false
 bold = false
 
 [style.example_code]
-foreground = "red"
+foreground = "green"
 underline = false
 bold = false
 
 [style.example_variable]
-foreground = "white"
 underline = true
 bold = false
 
