@@ -1,69 +1,75 @@
 {
-    "suggest.maxPreviewWidth": 80,
-    "suggest.enablePreview": true,
-    "suggest.detailMaxLength": 100,
-    "suggest.autoTrigger": "always",
-    "suggest.snippetIndicator": "~",
-    "suggest.preferCompleteThanJumpPlaceholder": false,
-    "suggest.timeout": 2000,
-    "suggest.echodocSupport": false,
+  "coc.preferences.jumpCommand": "CocSplitIfNotOpen",
+  "coc.preferences.formatOnType": true,
+  "coc.preferences.enableFloatHighlight": true,
+  "coc.preferences.extensionUpdateCheck": "weekly",
+  "coc.preferences.useQuickfixForLocations": true,
+  "coc.preferences.currentFunctionSymbolAutoUpdate": true,
 
-    "signature.enable": true,
-    "signature.target": "float",
-    "signature.preferShownAbove": false,
-    "signature.hideOnTextChange": false,
+  "coc.source.file.ignoreHidden": false,
+  "coc.source.tmuxcomplete.shortcut": "T",
 
-    "codeLens.enable": true,
+  "coc.source.emoji.filetypes": [
+    "markdown",
+    "gitcommit"
+  ],
 
-    "coc.preferences.extensionUpdateCheck": "weekly",
-    "coc.preferences.hoverTarget": "float",
-    "coc.preferences.colorSupport": true,
-    "coc.preferences.enableFloatHighlight": true,
-    "coc.preferences.useQuickfixForLocations": true,
+  "suggest.completionItemKindLabels": {
+    "function": "f \uf794",
+    "method": "f \uf6a6",
+    "variable": "v \uf71b",
+    "constant": "v \uf8ff",
+    "struct": "S \ufb44",
+    "class": "C \uf0e8",
+    "interface": "I \ufa52",
+    "text": "v \ue612",
+    "enum": "E \uf435",
+    "enumMember": "m \uf02b",
+    "module": "M \uf668",
+    "color": "v \ue22b",
+    "property": "m \ufab6",
+    "field": "m \uf93d",
+    "unit": "U \uf475",
+    "file": "F \uf471",
+    "value": "v \uf8a3",
+    "event": "E \ufacd",
+    "folder": "F \uf115",
+    "keyword": "k \uf893",
+    "snippet": "S \uf64d",
+    "operator": "O \uf915",
+    "reference": "r \uf87a",
+    "typeParameter": "T \uf278",
+    "default": "d \uf29c"
+  },
 
-    "coc.source.file.ignoreHidden": false,
+  "list.nextKeymap": "<C-n>",
+  "list.previousKeymap": "<C-p>",
 
-    "highlight.colors.enable": false,
-    "coc.source.emoji.filetypes": [
-        "markdown",
-        "gitcommit"
-    ],
+  "diagnostic.errorSign": "•",
+  "diagnostic.warningSign": "•",
+  "diagnostic.infoSign": "•",
+  "diagnostic.hintSign": "•",
 
-    "list.nextKeymap": "<C-n>",
-    "list.previousKeymap": "<C-p>",
+  "signature.preferShownAbove": false,
 
-    "diagnostic.displayByAle": false,
-    "diagnostic.checkCurrentLine": true,
-    "diagnostic.virtualText": false,
-    "diagnostic.virtualTextPrefix": "  ‣ ",
-    "diagnostic.virtualTextLineSeparator": " \\ ",
-    "diagnostic.errorSign": "•",
-    "diagnostic.warningSign": "•",
-    "diagnostic.infoSign": "•",
-    "diagnostic.hintSign": "•",
+  "codeLens.enable": true,
 
-    "snippets.ultisnips.directories": [
-        "UltiSnips",
-        "snips",
-        "gosnippets/UltiSnips"
-    ],
-    "snippets.loadFromExtensions": false,
+  "snippets.ultisnips.directories": [
+    "UltiSnips",
+    "snips",
+    "gosnippets/UltiSnips"
+  ],
+  "snippets.loadFromExtensions": false,
 
-    "python.jediEnabled": false,
-    "python.trace.server": "off",
-    "python.venvFolders": ["envs", ".pyenv", ".direnv", ".virtualenvs"],
-    "python.autoUpdateLanguageServer": true,
-    "python.venvPath": "",
-    "python.pythonPath": "python",
+  "python.formatting.provider": "black",
 
-    "yaml.format.enable": true,
-    "yaml.schemas": {
-        "kubernetes": ["/*"],
-        "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": ["/docker-compose.yaml", "/docker-compose.yml"]
-    },
+  "yaml.format.enable": true,
+  "yaml.schemas": {
+    "kubernetes": ["/*"],
+    "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": [
+      "/docker-compose.y*ml"]
+  },
 
-    "sh.enable": true,
-
-    "languageserver": {
-    }
-}
+  "languageserver": {
+  }
+ }
