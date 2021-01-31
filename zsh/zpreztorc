@@ -3,6 +3,7 @@
 #
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Andy Cho <cih9088@gmail.com>
 #
 
 #
@@ -17,6 +18,9 @@ zstyle ':prezto:*:*' color 'yes'
 
 # Add additional directories to load prezto modules from
 # zstyle ':prezto:load' pmodule-dirs $HOME/.zprezto-contrib
+
+# Allow module overrides when pmodule-dirs causes module name collisions
+# zstyle ':prezto:load' pmodule-allow-overrides 'yes'
 
 # Set the Zsh modules to load (man zshmodules).
 # zstyle ':prezto:load' zmodule 'attr' 'stat'
@@ -82,7 +86,10 @@ zstyle ':prezto:module:editor' ps-context 'yes'
 # zstyle ':prezto:module:git:status:ignore' submodules 'all'
 
 # git-log
-zstyle ':prezto:module:git:log:oneline' format '%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(auto)%d%C(reset)'
+zstyle ':prezto:module:git:log:oneline' format \
+  '%C(bold blue)%h%C(reset) -' \
+  '%C(bold green)(%ar)%C(reset) %s %C(dim)- %an%C(reset)'\
+  '%C(auto)%d%C(reset)'
 
 #
 # GNU Utility
@@ -137,13 +144,6 @@ zstyle ':prezto:module:prompt' theme 'pure'
 zstyle ':prezto:module:prompt' show-return-val 'yes'
 
 #
-# Ruby
-#
-
-# Auto switch the Ruby version on directory change.
-# zstyle ':prezto:module:ruby:chruby' auto-switch 'yes'
-
-#
 # Python
 #
 
@@ -152,6 +152,13 @@ zstyle ':prezto:module:prompt' show-return-val 'yes'
 
 # Automatically initialize virtualenvwrapper if pre-requisites are met.
 # zstyle ':prezto:module:python:virtualenv' initialize 'yes'
+
+#
+# Ruby
+#
+
+# Auto switch the Ruby version on directory change.
+# zstyle ':prezto:module:ruby:chruby' auto-switch 'yes'
 
 #
 # Screen
@@ -181,22 +188,14 @@ zstyle ':prezto:module:syntax-highlighting' highlighters \
   'brackets' \
   'pattern' \
   'line' \
+  'cursor' \
   'root'
 
 # Set syntax highlighting styles.
-# zstyle ':prezto:module:syntax-highlighting' styles \
-#   'builtin' 'bg=blue' \
-#   'command' 'bg=blue' \
-#   'function' 'bg=blue'
 zstyle ':prezto:module:syntax-highlighting' styles \
   'builtin' 'fg=green' \
   'alias' 'fg=cyan' \
   'command' 'fg=cyan' \
-  'path' 'fg=white' \
-  'globbing' 'fg=white,bold,underline' \
-  'single-quoted-argument' 'fg=magenta' \
-  'double-quoted-argument' 'fg=cyan' \
-  'assign' 'fg=magenta' \
   'function' 'fg=yellow'
 
 # Set syntax pattern styles.
