@@ -45,8 +45,12 @@ echo
         brew install python
         # create symlink manually
         # https://github.com/Homebrew/homebrew-core/issues/16212
-        ln -s /usr/local/bin/python3 /usr/local/bin/python
-        ln -s /usr/local/bin/pip3 /usr/local/bin/pip
+        ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
+        ln -snf $(brew --prefix)/bin/python3-config $(brew --prefix)/bin/python-config
+        ln -snf $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
+        ln -snf $(brew --prefix)/bin/wheel3 $(brew --prefix)/bin/wheel
+        ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
+        ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
 
         brew install readline xz #pyenv
 
@@ -59,7 +63,7 @@ echo
         brew install reattach-to-user-namespace
         brew install cmake
 
-        brew cask install xquartz
+        brew install --cask xquartz
 
     elif [[ $platform == "LINUX" ]]; then
         sudo apt-get -y install python-dev python-pip python3-dev python3-pip highlight \

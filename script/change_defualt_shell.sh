@@ -58,7 +58,7 @@ local_change() {
 system_change() {
     shell_full_path=$1
     if [[ $platform == "OSX" ]]; then
-        shell_full_path="/usr/local/bin/${shell_full_path}"
+        shell_full_path="$(brew --prefix)/bin/${shell_full_path}"
     elif [[ $platform == "LINUX" ]]; then
         shell_full_path="/usr/bin/${shell_full_path}"
     fi
