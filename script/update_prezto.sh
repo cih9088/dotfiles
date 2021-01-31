@@ -22,7 +22,7 @@ git submodule update --init --recursive
 
 # update pure prompt
 cd ${HOME}/.zprezto/modules/prompt/external/pure
-git checkout master
+git checkout main
 git pull
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
