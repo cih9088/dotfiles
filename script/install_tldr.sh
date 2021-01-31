@@ -50,7 +50,7 @@ setup_func_tldr_system() {
         if [ ${force} == 'true' ]; then
             brew upgrade tealdeer
         fi
-        /usr/local/bin/tldr --update
+        $(brew --prefix)/bin/tldr --update
     elif [[ $platform == "LINUX" ]]; then
         setup_func_tldr_local ${force}
     fi

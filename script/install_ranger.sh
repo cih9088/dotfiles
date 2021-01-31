@@ -28,7 +28,6 @@ setup_func_ranger_local() {
 
     if [ ${install} == 'true' ]; then
         git clone https://github.com/ranger/ranger.git $HOME/.local/src/ranger
-        # git clone https://github.com/cih9088/ranger $HOME/.local/src/ranger
         $HOME/.local/src/ranger/ranger.py --copy-config=all
         ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
     fi
