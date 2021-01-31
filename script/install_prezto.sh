@@ -33,7 +33,7 @@ setup_func() {
 
     # pure prompt update
     cd ${HOME}/.zprezto/modules/prompt/external/pure
-    git checkout master
+    git checkout main
     git pull
 
     ## Clone garrett prompt repository
