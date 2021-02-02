@@ -9,6 +9,7 @@
 #     "ESC ] Ps;Pt ST"
 
 parent_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
+target_tty="${SSH_TTY:-$parent_tty}"
 
 # What to query?
 # 11: text background
@@ -18,7 +19,7 @@ stty -icanon -echo min 0 time 1
 seq="\033]$Ps;?\a"
 test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" &&
   seq="\033Ptmux;\033$seq\033\\"
-printf $seq > $parent_tty
+printf $seq > $target_tty
 read -r answer
 result=${answer#*;}
 # Remove escape at the end.
