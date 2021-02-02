@@ -152,7 +152,6 @@ brew install --cask skype
 brew install --cask mos
 # brew install --cask betterzip
 brew install --cask keka
-brew install --cask kekaexternalhelper
 # brew install --cask stats
 brew install --cask eul
 brew install --cask teamviewer # -> requires password
