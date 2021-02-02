@@ -131,15 +131,15 @@
 
 # Easy use
 # ---------------------------------------------------------------------------------------
-  alias ls="${aliases[ls]:-ls} -F"        # append indicator
-  alias ~="cd ~"                          # ~:        Go Home
-  alias c='clear'                         # c:        Clear terminal display
-  alias path='echo -e ${PATH//:/\\n}'     # path:     Echo all executable Paths
-  alias fix-stty='stty sane'              # fix_stty: Restore terminal settings when screwed up
-  alias make1mb='mkfile 1m ./1MB.dat'     # make1mb:  Creates a file of 1mb size (all zeros)
-  alias make5mb='mkfile 5m ./5MB.dat'     # make5mb:  Creates a file of 5mb size (all zeros)
-  alias make10mb='mkfile 10m ./10MB.dat'  # make10mb: Creates a file of 10mb size (all zeros)
-  alias color256='curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash'
+  alias ls="${aliases[ls]:-ls} -F"        # Append indicator
+  alias ~="cd ~"                          # Go Home
+  alias c='clear'                         # Clear terminal display
+  alias path='echo -e ${PATH//:/\\n}'     # Echo all executable Paths
+  alias fix-stty='stty sane'              # Restore terminal settings when screwed up
+  alias make1mb='mkfile 1m ./1MB.dat'     # Creates a file of 1mb size (all zeros)
+  alias make5mb='mkfile 5m ./5MB.dat'     # Creates a file of 5mb size (all zeros)
+  alias make10mb='mkfile 10m ./10MB.dat'  # Creates a file of 10mb size (all zeros)
+  alias colour256='curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash'
   alias py='python'
   alias py2='python2'
   alias py3='python3'
@@ -251,6 +251,19 @@
         return 1
       fi
     done
+  }
+
+
+# Renew certain environment variables
+# ---------------------------------------------------------------------------------------
+  so() {
+    export BG_LUMINANCE=$( $DOTS/bin/bg_luminance )
+
+    [ -f $DOTS/zsh/fzf.$BG_LUMINANCE ] &&
+      export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/zsh/fzf.$BG_LUMINANCE)"
+
+    [ -f $DOTS/zsh/ls_colors.$BG_LUMINANCE ] &&
+      export LS_COLORS=$(cat $DOTS/zsh/ls_colors.$BG_LUMINANCE)
   }
 
 
