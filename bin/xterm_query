@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Reference:
+#   https://gist.github.com/blueyed/c8470c2aad3381c33ea3
+#
+# Query a property from the terminal, e.g. background color.
+#
+# XTerm Operating System Commands
+#     "ESC ] Ps;Pt ST"
+
+parent_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
+
+# What to query?
+# 11: text background
+Ps=${1:-11}
+
+stty -icanon -echo min 0 time 1
+seq="\033]$Ps;?\a"
+test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" &&
+  seq="\033Ptmux;\033$seq\033\\"
+printf $seq > $parent_tty
+read -r answer
+result=${answer#*;}
+# Remove escape at the end.
+echo $result

@@ -15,7 +15,8 @@ setup_func_terminfo_local() {
     force=$1
     cd $TMP_DIR
 
-    curl -LO https://invisible-island.net/datafiles/current/terminfo.src.gz && gunzip terminfo.src.gz
+    curl -LO https://invisible-island.net/datafiles/current/terminfo.src.gz &&
+      gunzip terminfo.src.gz
     tic -xe alacritty-direct,tmux-256color terminfo.src
 }
 

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
+$DIR/xterm_query | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | awk '
+function parsehex(V,OUT) {
+  if(V ~ /^0x/)  V=substr(V,3);
+
+  for(N=1; N<=length(V); N++) {
+    OUT=(OUT*16) + H[substr(V, N, 1)]
+  }
+
+  return(OUT)
+}
+
+BEGIN {
+  for(N=0; N<16; N++) {
+    H[sprintf("%x",N)]=N; H[sprintf("%X",N)]=N
+  }
+}
+
+{
+  split($0,a,"/")
+  a[1] = "0x" a[1]
+  a[2] = "0x" a[2]
+  a[3] = "0x" a[3]
+
+  r = rshift(parsehex(a[1]), 8)
+  g = rshift(parsehex(a[2]), 8)
+  b = rshift(parsehex(a[3]), 8)
+
+  luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 256.
+  if (luminance >= 0.5)
+    print "light"
+  else
+    print "dark"
+}'

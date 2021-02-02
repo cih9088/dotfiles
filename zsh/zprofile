@@ -119,6 +119,17 @@
 # =======================================================================================
 
 
+# export dotfile path for easy access
+# --------------------------------------------------------------------------------------
+  export DOTS=$(dirname $(dirname $(realpath ${(%):-%N})))
+
+
+# get background luminance from xterm control sequence
+# https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+# --------------------------------------------------------------------------------------
+  export BG_LUMINANCE=$( $DOTS/bin/bg_luminance )
+
+
 # virtualenvwrapper (using system python)
 # ---------------------------------------------------------------------------------------
   export WORKON_HOME=$HOME/.virtualenvs
@@ -165,20 +176,12 @@
     export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
   # show full command below
   export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
-
-  [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] \
-    && export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
-
-  if [[ $ITERM_PROFILE == Light ]]; then
-    zsh_path=$(dirname $(realpath ${(%):-%N}))
-    [ -f $zsh_path/fzf.light ] &&
-      FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $zsh_path/fzf.light)"
-  else
-    zsh_path=$(dirname $(realpath ${(%):-%N}))
-    [ -f $zsh_path/fzf.dark ] &&
-      FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $zsh_path/fzf.dark)"
-  fi
-  export FZF_DEFAULT_OPTS
+  # change fzf color
+  [ -f $DOTS/zsh/fzf.$BG_LUMINANCE ] &&
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/zsh/fzf.$BG_LUMINANCE)"
+  # add path
+  [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
+    export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
 
 
 
@@ -203,17 +206,9 @@
   # export CLICOLORS=1
   # export LSCOLORS=exfxcxdxbxGxDxabagacad
   # [ -x "$(command -v dircolors)" ] &&
-  #   eval "$(dircolors --sh $(dirname $(realpath ${(%):-%N}))/LS_COLORS)"
-  if [[ $ITERM_PROFILE == Light ]]; then
-    zsh_path=$(dirname $(realpath ${(%):-%N}))
-    [ -f $zsh_path/ls_colors.light ] &&
-      LS_COLORS=$(cat $zsh_path/ls_colors.light)
-  else
-    zsh_path=$(dirname $(realpath ${(%):-%N}))
-    [ -f $zsh_path/ls_colors.dark ] &&
-      LS_COLORS=$(cat $zsh_path/ls_colors.dark)
-  fi
-  export LS_COLORS
+  #   eval "$(dircolors --sh $DOTS/zsh/LS_COLORS)"
+  [ -f $DOTS/zsh/ls_colors.$BG_LUMINANCE ] &&
+    export LS_COLORS=$(cat $DOTS/zsh/ls_colors.$BG_LUMINANCE)
 
 
 

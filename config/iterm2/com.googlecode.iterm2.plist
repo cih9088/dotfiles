@@ -1923,7 +1923,7 @@
 		</dict>
 	</dict>
 	<key>Default Bookmark Guid</key>
-	<string>2B87A742-9DDD-4E48-B8E9-2BF536BABE90</string>
+	<string>32B2EC95-C3A0-4D63-92F3-3C35906A3EB8</string>
 	<key>DisableWindowSizeSnap</key>
 	<false/>
 	<key>EnableAPIServer</key>
@@ -3310,7 +3310,7 @@
 				<real>0.37892699241638184</real>
 			</dict>
 			<key>Guid</key>
-			<string>2B87A742-9DDD-4E48-B8E9-2BF536BABE90</string>
+			<string>F11118B3-0301-48C9-B4F0-63E05DA42530</string>
 			<key>Horizontal Spacing</key>
 			<real>1</real>
 			<key>Icon</key>
@@ -3625,7 +3625,7 @@
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
-			<string>Light</string>
+			<string>light</string>
 			<key>Non Ascii Font</key>
 			<string>SFMonoNerdFontComplete-Regular 10.5</string>
 			<key>Non-ASCII Anti Aliased</key>
@@ -4343,7 +4343,7 @@
 				<real>0.85098057985305786</real>
 			</dict>
 			<key>Guid</key>
-			<string>DEF3E97C-F9E8-4004-BE16-0E3BC27E0F4B</string>
+			<string>6EF29C83-30E6-48E7-92F9-A424061BF3F7</string>
 			<key>Horizontal Spacing</key>
 			<real>1</real>
 			<key>Icon</key>
@@ -4653,10 +4653,12 @@
 				<key>Red Component</key>
 				<real>0.0</real>
 			</dict>
+			<key>Minimum Contrast</key>
+			<real>0.0</real>
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
-			<string>Dark</string>
+			<string>dark</string>
 			<key>Non Ascii Font</key>
 			<string>SFMonoNerdFontComplete-Regular 10.5</string>
 			<key>Non-ASCII Anti Aliased</key>

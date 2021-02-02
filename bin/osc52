@@ -23,10 +23,9 @@
 #
 # Written in 2014 by Suraj N. Kurapati <https://github.com/sunaku>
 # Also documented at https://sunaku.github.io/tmux-yank-osc52.html
+#
 # Modified by Andy Cho <cih9088@gmail.com>
 
-
-# https://sunaku.github.io/tmux-yank-osc52.html
 # The maximum length of an OSC 52 escape sequence is 100_000 bytes, of which
 # 7 bytes are occupied by a "\033]52;c;" header, 1 byte by a "\a" footer, and
 # 99_992 bytes by the base64-encoded result of 74_994 bytes of copyable text
@@ -40,22 +39,23 @@ buflen=$( printf %s "$buf" | wc -c )
 
 # warn if exceeds maxlen
 if [ "$buflen" -gt "$maxlen" ]; then
-    printf "input is %d bytes too long" "$(( buflen - maxlen ))" >&2
+  printf "input is %d bytes too long" "$(( buflen - maxlen ))" >&2
 fi
 
 build_osc_52 () {
-    # build up OSC 52 ANSI escape sequence
-    esc="$1"
-    esc="\033]52;c;$( printf %s "$esc" | head -c $maxlen | base64 | tr -d '\r\n' )\a"
-    test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" && esc="\033Ptmux;\033$esc\033\\"
-    printf "$esc"
+  # build up OSC 52 ANSI escape sequence
+  esc="$1"
+  esc="\033]52;c;$( printf %s "$esc" | head -c $maxlen | base64 | tr -d '\r\n' )\a"
+  test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" &&
+    esc="\033Ptmux;\033$esc\033\\"
+  printf "$esc"
 }
 
 # resolve target terminal to send escape sequence
 # if we are on remote machine, send directly to SSH_TTY to transport escape sequence
 # to terminal on local machine, so data lands in clipboard on our local machine
-current_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
-target_tty="${SSH_TTY:-$current_tty}"
+parent_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
+target_tty="${SSH_TTY:-$parent_tty}"
 
 # KiTTY always appends to the clipboard, so clear it first
 # https://sw.kovidgoyal.net/kitty/protocol-extensions.html#pasting-to-clipboard

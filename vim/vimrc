@@ -206,8 +206,7 @@
   set t_Co=256            " enable 256 color terminal
 
   try
-    " https://github.com/mhinz/dotfiles/blob/master/.vim/vimrc
-    if !exists('$ITERM_PROFILE') || $ITERM_PROFILE == 'Light'
+    if exists('$BG_LUMINANCE') && $BG_LUMINANCE == 'light'
       set background=light
       colorscheme seoul256-light
     else
