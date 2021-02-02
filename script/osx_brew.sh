@@ -240,4 +240,8 @@ if [[ -e /Applications/iTerm.app ]]; then
     defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/dotfiles/config/iterm2"
     # Tell iTerm2 to use the custom preferences in the directory
     defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+
+    # copy script
+    DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+    cp -r $DIR/../config/iterm2/AutoLaunch ~/Library/Application\ Support/iterm2/Scripts
 fi
