@@ -22,9 +22,9 @@ setup_func_bpytop_local() {
     cd $TMP_DIR
 
     if [ ${force} == 'true' ]; then
-        pip install bpytop --user --force-reinstall --upgrade
+        pip3 install bpytop --user --force-reinstall --upgrade
     else
-        pip install bpytop --user
+        pip3 install bpytop --user
     fi
 }
 
@@ -34,15 +34,15 @@ setup_func_bpytop_system() {
 
     if [[ $platform == "OSX" ]]; then
         if [ ${force} == 'true' ]; then
-            pip install bpytop --upgrade --force-reinstall
+            pip3 install bpytop --upgrade --force-reinstall
         else
-            pip install bpytop
+            pip3 install bpytop
         fi
     elif [[ $platform == "LINUX" ]]; then
         if [ ${force} == 'true' ]; then
-            sudo pip install bpytop --upgrade --force-reinstall
+            sudo pip3 install bpytop --upgrade --force-reinstall
         else
-            sudo pip install bpytop
+            sudo pip3 install bpytop
         fi
     fi
 }
