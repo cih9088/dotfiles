@@ -8,43 +8,43 @@ profiles=(
 )
 
 while getopts 'm:d' option; do
-    case "$option" in
-        m) msg="${OPTARG}"
-            ;;
-        d) DELETE=true
-            ;;
-        :) printf "missing argument for -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-    esac
+  case "$option" in
+    m) msg="${OPTARG}"
+      ;;
+    d) DELETE=true
+      ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+    \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
 
 if [ "$EUID" -ne 0 ];then
-    echo "Please run this script as root"
-    exit 1
+  echo "Please run this script as root"
+  exit 1
 fi
 
 case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
+  solaris*) platform="SOLARIS" ;;
+  darwin*)  platform="OSX" ;;
+  linux*)   platform="LINUX" ;;
+  bsd*)     platform="BSD" ;;
+  msys*)    platform="WINDOWS" ;;
+  *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $platform != LINUX ]]; then
-    echo "This script dose not support $platform." >&2
-    exit 1
+  echo "This script dose not support $platform." >&2
+  exit 1
 fi
 
 lines=$(echo -e "${msg}" | wc -l)
@@ -52,41 +52,41 @@ logged_users_file=/tmp/announcement_users
 
 
 for profile in ${profiles[@]}; do
-    if [ -f ${profile} ]; then
-        if [ ${DELETE} == true ]; then
-            rm -rf ${logged_users_file} || true
-            head -1 ${profile} | grep -q '^#'
-            if [ $? != 0 ]; then
-                sed -i -e '/^#/,$!d' ${profile}
-            else
-                :
-            fi
-        else
-            head -1 ${profile} | grep -q '^#'
-            if [ $? == 0 ]; then
-                if command -v whiptail > /dev/null; then
-                    rm -rf ${logged_users_file}
-                    [[ ! -f ${logged_users_file} ]] && touch ${logged_users_file}
-                    chmod 777 ${logged_users_file}
-                    # rm -rf ${logged_users_file}
-                    # [[ ! -f ${logged_users_file} ]] && touch logged_users_file
-                    # sed -i -e "1i whiptail --title 'Announcement' --msgbox '${msg}' "'${height} ${width}' ${profile}
-                    sed -i -e '1i fi' ${profile}
-                    sed -i -e '1i [[ " ${logged_users[@]} " =~ " ${me} " ]] && (whiptail --title  "Announcement" --msgbox "'"${msg}"'" ${height} ${width}; echo ${logged_users[@]/$me} > ${logged_users_file} ) || true' ${profile}
-                    sed -i -e '1i me=$(whoami)' ${profile}
-                    sed -i -e '1i logged_users=( $(<${logged_users_file}) )' ${profile}
-                    sed -i -e '1i if [[ -f ${logged_users_file} ]]; then' ${profile}
-                    sed -i -e '1i [ ${COLUMNS} -lt 100 ] && width=$(( ${COLUMNS} - 10 )) || width=100' ${profile}
-                    sed -i -e '1i [ ${LINES} -lt 10 ] && height=$(( ${LINES} - 5 )) || height='"$(( 10 + ${lines} ))" ${profile}
-                    sed -i -e '1i eval `resize`' ${profile}
-                    sed -i -e '1i [[ $- == *i* && -z $TMUX ]] && echo $(whoami) >> ${logged_users_file} || true' ${profile}
-                    sed -i -e "1i logged_users_file=/tmp/announcement_users" ${profile}
-                fi
-                sed -i -e "1i echo ''" -e "1i echo ''" -e "1i echo -e '\\\033[0;93mAnnouncement ($(date +%c)):\\\033[0;0m'" -e "1i echo -e \"\\\033[0;93m${msg}\\\033[0;0m\"" ${profile}
-            else
-                echo 'announce exists' >&2
-            fi
+  if [ -f ${profile} ]; then
+    if [ ${DELETE} == true ]; then
+      rm -rf ${logged_users_file} || true
+      head -1 ${profile} | grep -q '^#'
+      if [ $? != 0 ]; then
+        sed -i -e '/^#/,$!d' ${profile}
+      else
+        :
+      fi
+    else
+      head -1 ${profile} | grep -q '^#'
+      if [ $? == 0 ]; then
+        if command -v whiptail > /dev/null; then
+          rm -rf ${logged_users_file}
+          [[ ! -f ${logged_users_file} ]] && touch ${logged_users_file}
+          chmod 777 ${logged_users_file}
+          # rm -rf ${logged_users_file}
+          # [[ ! -f ${logged_users_file} ]] && touch logged_users_file
+          # sed -i -e "1i whiptail --title 'Announcement' --msgbox '${msg}' "'${height} ${width}' ${profile}
+          sed -i -e '1i fi' ${profile}
+          sed -i -e '1i [[ " ${logged_users[@]} " =~ " ${me} " ]] && (whiptail --title  "Announcement" --msgbox "'"${msg}"'" ${height} ${width}; echo ${logged_users[@]/$me} > ${logged_users_file} ) || true' ${profile}
+          sed -i -e '1i me=$(whoami)' ${profile}
+          sed -i -e '1i logged_users=( $(<${logged_users_file}) )' ${profile}
+          sed -i -e '1i if [[ -f ${logged_users_file} ]]; then' ${profile}
+          sed -i -e '1i [ ${COLUMNS} -lt 100 ] && width=$(( ${COLUMNS} - 10 )) || width=100' ${profile}
+          sed -i -e '1i [ ${LINES} -lt 10 ] && height=$(( ${LINES} - 5 )) || height='"$(( 10 + ${lines} ))" ${profile}
+          sed -i -e '1i eval `resize`' ${profile}
+          sed -i -e '1i [[ $- == *i* && -z $TMUX ]] && echo $(whoami) >> ${logged_users_file} || true' ${profile}
+          sed -i -e "1i logged_users_file=/tmp/announcement_users" ${profile}
         fi
+        sed -i -e "1i echo ''" -e "1i echo ''" -e "1i echo -e '\\\033[0;93mAnnouncement ($(date +%c)):\\\033[0;0m'" -e "1i echo -e \"\\\033[0;93m${msg}\\\033[0;0m\"" ${profile}
+      else
+        echo 'announce exists' >&2
+      fi
     fi
+  fi
 done
 

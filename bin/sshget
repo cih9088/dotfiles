@@ -46,8 +46,8 @@ BIYellow='[1;93m'     # Yellow
 # bash version check
 bash_version=$(printf "%d.%d.%d" ${BASH_VERSINFO[@]:0:3})
 if ! [ $(printf "%s\n%s" "4" "${bash_version}" | sort -V | head -n1) = "4" ]; then
-    echo "This script requires bash version >= 4. Current bash version: ${bash_version}" >&2
-    exit 1
+  echo "This script requires bash version >= 4. Current bash version: ${bash_version}" >&2
+  exit 1
 fi
 
 
@@ -64,15 +64,15 @@ declare -a files=()
 ssh_port=22
 
 err() {
-  printf "${c_red}%s${c_reset}\n" "$*" >&2
+ printf "${c_red}%s${c_reset}\n" "$*" >&2
 }
 
 die() {
-  exit 1
+ exit 1
 }
 
 usage() {
-  LESS=-FEXR less <<HELP
+ LESS=-FEXR less <<HELP
 
 ${BRed}SYNOPSIS${Color_Off}
     ${BRed}$(basename "$0")${Color_Off} [${BRed}-p${Color_Off} ${BGreen}port_number${Color_Off}] ${BGreen}user@host1:/path/to/search${Color_Off}
@@ -91,102 +91,102 @@ HELP
 }
 
 has() {
-  local verbose=0
-  if [[ $1 = '-v' ]]; then
-    verbose=1
-    shift
+ local verbose=0
+ if [[ $1 = '-v' ]]; then
+  verbose=1
+  shift
+ fi
+ for c; do c="${c%% *}"
+  if ! command -v "$c" &> /dev/null; then
+   (( verbose > 0 )) && err "$c not found"
+   return 1
   fi
-  for c; do c="${c%% *}"
-    if ! command -v "$c" &> /dev/null; then
-      (( verbose > 0 )) && err "$c not found"
-      return 1
-    fi
-  done
+ done
 }
 
 has -v fzf rsync || die
 
 cleanup() {
-  [[ -e "$fifo" ]] && rm "$fifo"
+ [[ -e "$fifo" ]] && rm "$fifo"
 }
 
 # argument parsing
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
-    # make it also '=' separated arguments
-    [[ $1 == --*=* ]] && set -- "${1%%=*}" "${1#*=}" "${@:2}"
-    key="$1"
+  # make it also '=' separated arguments
+  [[ $1 == --*=* ]] && set -- "${1%%=*}" "${1#*=}" "${@:2}"
+  key="$1"
 
-    case $key in
-        -h) usage
-            exit; ;;
-        -p)
-            ssh_port="${2:?$1 needs argument(Usages: $1 argument)}"
-            shift 2 ;;
-        *)
-            POSITIONAL+=("$1")
-            shift ;;
-    esac
+  case $key in
+    -h) usage
+      exit; ;;
+    -p)
+      ssh_port="${2:?$1 needs argument(Usages: $1 argument)}"
+      shift 2 ;;
+    *)
+      POSITIONAL+=("$1")
+      shift ;;
+  esac
 done
 if [ -n "${POSITIONAL:-}" ]; then
-    set -- "${POSITIONAL[@]}"
+  set -- "${POSITIONAL[@]}"
 fi
 ! [[ $ssh_port =~ ^[0-9]+$ && $ssh_port -ge 0 && $ssh_port -le 65535 ]] \
-    && err "$ssh_port is not a valid port" && exit 1
+  && err "$ssh_port is not a valid port" && exit 1
 [[ ${ssh_port} -eq 22 ]] && ssh_cmd="ssh" || ssh_cmd="ssh -p ${ssh_port}"
 
 mkfifo "$fifo"
 
 if (( $# < 1 )); then
-    usage
-    cleanup
-    die
+  usage
+  cleanup
+  die
 fi
 
 for a; do
-    host="${a%:*}"
-    path="${a##*:}"
-    domains+=( ["$a"]="$host" )
-    paths+=( ["$a"]="$path" )
-    shift
+  host="${a%:*}"
+  path="${a##*:}"
+  domains+=( ["$a"]="$host" )
+  paths+=( ["$a"]="$path" )
+  shift
 done
 pswd=
 
 for s in "${!domains[@]}"; do
-    ssh -o PasswordAuthentication=no -o BatchMode=yes "${domains[$s]}" exit &>/dev/null
-    if [[ $? -ne 0 ]]; then
-        if command -v sshpass >/dev/null; then
-            echo -n "Enter the passwd for ${domains[$s]}: "
-            read -s pswd
-            echo
-        else
-            echo "This script requires ssh keypair or sshpass command" >&2
-            echo "Note that sshpass would expose your password in your command line so that it is not recommended in multi-user environment" >&2
-            cleanup
-            exit 1
-        fi
-        SSHPASS=${pswd} sshpass -e ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+  ssh -o PasswordAuthentication=no -o BatchMode=yes "${domains[$s]}" exit &>/dev/null
+  if [[ $? -ne 0 ]]; then
+    if command -v sshpass >/dev/null; then
+      echo -n "Enter the passwd for ${domains[$s]}: "
+      read -s pswd
+      echo
     else
-        ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+      echo "This script requires ssh keypair or sshpass command" >&2
+      echo "Note that sshpass would expose your password in your command line so that it is not recommended in multi-user environment" >&2
+      cleanup
+      exit 1
     fi
+    SSHPASS=${pswd} sshpass -e ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+  else
+    ${ssh_cmd} -o StrictHostKeyChecking=no "${domains[$s]}" "find ${paths[$s]}" | sed "s|^|${domains[$s]}:|" >> "$fifo" &
+  fi
 done
 
 mapfile -t files < <(fzf -e --inline-info --no-sort --multi --bind='Ctrl-A:toggle-all,`:jump' < "$fifo")
 
 if (( ${#files[@]} )); then
-    # https://unix.stackexchange.com/a/222215
-    for idx in ${!files[@]}; do
-        files[idx]="$(echo "${files[idx]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"
-        # rsync per file becase of compatability with old version
-        # https://stackoverflow.com/a/15818000
-        if [ -z ${pswd} ]; then
-            rsync -auvzP -e "${ssh_cmd}" "${files[idx]}" .
-        else
-            SSHPASS=${pswd} rsync -auvzP --rsh="$(which sshpass) -e ${ssh_cmd}" ${files[idx]} .
-        fi
-    done
-    # echo rsync -auvzP --dry-run -e "${ssh_cmd}" "${files[@]}" .
-    # echo rsync -auvzP -e "${ssh_cmd}" \'"$(echo "${files[@]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"\' .
+  # https://unix.stackexchange.com/a/222215
+  for idx in ${!files[@]}; do
+    files[idx]="$(echo "${files[idx]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"
+    # rsync per file becase of compatability with old version
+    # https://stackoverflow.com/a/15818000
+    if [ -z ${pswd} ]; then
+      rsync -auvzP -e "${ssh_cmd}" "${files[idx]}" .
+    else
+      SSHPASS=${pswd} rsync -auvzP --rsh="$(which sshpass) -e ${ssh_cmd}" ${files[idx]} .
+    fi
+  done
+  # echo rsync -auvzP --dry-run -e "${ssh_cmd}" "${files[@]}" .
+  # echo rsync -auvzP -e "${ssh_cmd}" \'"$(echo "${files[@]// /\\ }" | sed -e "s/:/:\"/" -e "s/$/\"/")"\' .
 fi
 
 cleanup

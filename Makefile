@@ -4,38 +4,38 @@ export BIN_DIR := $(PROJ_HOME)/bin
 export SCRIPTS_DIR := $(PROJ_HOME)/script
 
 ifeq (installNeovim,$(firstword $(MAKECMDGOALS)))
-    nvim_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    $(eval $(nvim_version):;@:)
+	nvim_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+	$(eval $(nvim_version):;@:)
 endif
 
 ifeq (installTmux,$(firstword $(MAKECMDGOALS)))
-    tmux_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    $(eval $(tmux_version):;@:)
+	tmux_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+	$(eval $(tmux_version):;@:)
 endif
 
 ifeq (installZsh,$(firstword $(MAKECMDGOALS)))
-    zsh_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    $(eval $(zsh_version):;@:)
+	zsh_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+	$(eval $(zsh_version):;@:)
 endif
 
 ifeq (installFish,$(firstword $(MAKECMDGOALS)))
-    fish_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    $(eval $(fish_version):;@:)
+	fish_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+	$(eval $(fish_version):;@:)
 endif
 
 ifeq (installTree,$(firstword $(MAKECMDGOALS)))
-    tree_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    $(eval $(tree_version):;@:)
+	tree_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+	$(eval $(tree_version):;@:)
 endif
 
 ifeq (installFd,$(firstword $(MAKECMDGOALS)))
-    fd_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    $(eval $(fd_version):;@:)
+	fd_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+	$(eval $(fd_version):;@:)
 endif
 
 ifeq (installRg,$(firstword $(MAKECMDGOALS)))
-    rg_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    $(eval $(rg_version):;@:)
+	rg_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+	$(eval $(rg_version):;@:)
 endif
 
 prepare:

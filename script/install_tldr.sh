@@ -17,43 +17,43 @@ $(${PROJ_HOME}/script/check_release dbrgn/tealdeer ${TEALDEER_VERSION}) || exit 
 ################################################################
 
 setup_func_tldr_local() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    install=no
-    if [ -f ${HOME}/.local/bin/tldr ]; then
-        if [ ${force} == 'true' ]; then
-            rm -rf $HOME/.local/bin/tldr || true
-            install=true
-        fi
-    else
-        install=true
+  install=no
+  if [ -f ${HOME}/.local/bin/tldr ]; then
+    if [ ${force} == 'true' ]; then
+      rm -rf $HOME/.local/bin/tldr || true
+      install=true
     fi
+  else
+    install=true
+  fi
 
-    # uninstall slow tldr client
-    pip uninstall tldr || true
+  # uninstall slow tldr client
+  pip uninstall tldr || true
 
-    wget https://github.com/dbrgn/tealdeer/releases/download/${TEALDEER_VERSION}/tldr-linux-x86_64-musl
-    mv tldr-linux-x86_64-musl ${HOME}/.local/bin/tldr
-    chmod +x ${HOME}/.local/bin/tldr
-    ${HOME}/.local/bin/tldr --update
+  wget https://github.com/dbrgn/tealdeer/releases/download/${TEALDEER_VERSION}/tldr-linux-x86_64-musl
+  mv tldr-linux-x86_64-musl ${HOME}/.local/bin/tldr
+  chmod +x ${HOME}/.local/bin/tldr
+  ${HOME}/.local/bin/tldr --update
 }
 
 setup_func_tldr_system() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [[ $platform == "OSX" ]]; then
-        # uninstall slow tldr client
-        brew list tldr && brew uninstall tldr
-        brew list tealdeer || brew install tealdeer
-        if [ ${force} == 'true' ]; then
-            brew upgrade tealdeer
-        fi
-        $(brew --prefix)/bin/tldr --update
-    elif [[ $platform == "LINUX" ]]; then
-        setup_func_tldr_local ${force}
+  if [[ $platform == "OSX" ]]; then
+    # uninstall slow tldr client
+    brew list tldr && brew uninstall tldr
+    brew list tealdeer || brew install tealdeer
+    if [ ${force} == 'true' ]; then
+      brew upgrade tealdeer
     fi
+    $(brew --prefix)/bin/tldr --update
+  elif [[ $platform == "LINUX" ]]; then
+    setup_func_tldr_local ${force}
+  fi
 }
 
 main_script 'tldr' setup_func_tldr_local setup_func_tldr_system

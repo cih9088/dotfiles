@@ -21,10 +21,10 @@ fi
 # mas
 brew install mas
 while true; do
-   mas account >/dev/null 2>&1
-   [[ $? == 0 ]] && break
-   echo -n "Please signin Appstore manually and press any keys."
-   read anykey
+  mas account >/dev/null 2>&1
+  [[ $? == 0 ]] && break
+  echo -n "Please signin Appstore manually and press any keys."
+  read anykey
 done
 
 # Make sure we’re using the latest Homebrew.
@@ -236,12 +236,12 @@ brew cleanup
 
 # iterm2 config
 if [[ -e /Applications/iTerm.app ]]; then
-    # Specify the preferences directory
-    defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/dotfiles/config/iterm2"
-    # Tell iTerm2 to use the custom preferences in the directory
-    defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+  # Specify the preferences directory
+  defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/dotfiles/config/iterm2"
+  # Tell iTerm2 to use the custom preferences in the directory
+  defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
 
-    # copy script
-    DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-    cp -r $DIR/../config/iterm2/AutoLaunch ~/Library/Application\ Support/iterm2/Scripts
+  # copy script
+  DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+  cp -r $DIR/../config/iterm2/AutoLaunch ~/Library/Application\ Support/iterm2/Scripts
 fi

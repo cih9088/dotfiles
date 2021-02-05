@@ -18,36 +18,36 @@ command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
 ################################################################
 
 setup_func_thefuck_local() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [ ${force} == 'true' ]; then
-        pip install thefuck --user --force-reinstall --upgrade
-    else
-        pip install thefuck --user
-    fi
+  if [ ${force} == 'true' ]; then
+    pip install thefuck --user --force-reinstall --upgrade
+  else
+    pip install thefuck --user
+  fi
 }
 
 setup_func_thefuck_system() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [[ $platform == "OSX" ]]; then
-        brew list thefuck || brew install thefuck
-        if [ ${force} == 'true' ]; then
-            brew upgrade thefuck
-        fi
-    elif [[ $platform == "LINUX" ]]; then
-        if [ ${force} == 'true' ]; then
-            sudo pip install thefuck --upgrade --force-reinstall
-        else
-            sudo pip install thefuck
-        fi
+  if [[ $platform == "OSX" ]]; then
+    brew list thefuck || brew install thefuck
+    if [ ${force} == 'true' ]; then
+      brew upgrade thefuck
     fi
+  elif [[ $platform == "LINUX" ]]; then
+    if [ ${force} == 'true' ]; then
+      sudo pip install thefuck --upgrade --force-reinstall
+    else
+      sudo pip install thefuck
+    fi
+  fi
 }
 
 version_func_thefuck() {
-    $1 --version 2>&1
+  $1 --version 2>&1
 }
 
 main_script 'thefuck' setup_func_thefuck_local setup_func_thefuck_system version_func_thefuck

@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 
 curl -s --head https://github.com/${1}/releases/tag/${2} | \
-    head -n 1 | grep 'HTTP/\(1.\?[01]\?\|2\) [23]..' > /dev/null
+  head -n 1 | grep 'HTTP/\(1.\?[01]\?\|2\) [23]..' > /dev/null
 
 exit_code="${?}"
 
 if [[ ${exit_code} != 0 ]]; then
-    # printf "\033[2K\033[${ctr}D[0;91m[!][0m" >&2
-    # printf " ${2} is not a valid version\n" >&2
-    # printf "\033[2K\033[${ctr}D[0;91m[!][0m" >&2
-    # printf " please visit https://github.com/${1}/releases for valid versions\n" >&2
-    # printf "\033[2K\033[${ctr}D[0;91m[!][0m" >&2
-    # printf " Note that extact tag (version) has to be passed\n" >&2
-    printf "\n"
-    printf "[0;91m[!][0m '${2}' is not a valid version\n" >&2
-    printf "[0;91m[!][0m Please visit https://github.com/${1}/releases for valid versions\n" >&2
-    exit ${exit_code}
+  # printf "\033[2K\033[${ctr}D[0;91m[!][0m" >&2
+  # printf " ${2} is not a valid version\n" >&2
+  # printf "\033[2K\033[${ctr}D[0;91m[!][0m" >&2
+  # printf " please visit https://github.com/${1}/releases for valid versions\n" >&2
+  # printf "\033[2K\033[${ctr}D[0;91m[!][0m" >&2
+  # printf " Note that extact tag (version) has to be passed\n" >&2
+  printf "\n"
+  printf "[0;91m[!][0m '${2}' is not a valid version\n" >&2
+  printf "[0;91m[!][0m Please visit https://github.com/${1}/releases for valid versions\n" >&2
+  exit ${exit_code}
 fi

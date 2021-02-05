@@ -26,17 +26,17 @@ pip install --no-cache-dir ipdb
 # pip install paramiko
 
 while true; do
-    echo
-    read -p "[?] Do you wish to install gpu supporting tensorflow? " yn
-    case $yn in
-        [Yy]* )
-            echo "[*] installing tensorflow with gpu support..."
-            pip install --upgrade tensorflow-gpu
-            break;;
-        [Nn]* )
-            echo "[!] installing tensorflow with gpu support ...";
-            pip install --upgrade tensorflow
-            break;;
-        * ) echo "Please answer yes or no.";;
-    esac
+  echo
+  read -p "[?] Do you wish to install gpu supporting tensorflow? " yn
+  case $yn in
+    [Yy]* )
+      echo "[*] installing tensorflow with gpu support..."
+      pip install --upgrade tensorflow-gpu
+      break;;
+    [Nn]* )
+      echo "[!] installing tensorflow with gpu support ...";
+      pip install --upgrade tensorflow
+      break;;
+    * ) echo "Please answer yes or no.";;
+  esac
 done

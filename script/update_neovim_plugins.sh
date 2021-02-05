@@ -21,8 +21,8 @@ command -v goenv > /dev/null && eval "$(goenv init -)" || true
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \
-    && echo "${marker_info} Updating ${Bold}${Underline}neovim plugins${Color_Off}..." \
-    || start_spinner "Updating ${Bold}${Underline}neovim plugins${Color_Off}..."
+  && echo "${marker_info} Updating ${Bold}${Underline}neovim plugins${Color_Off}..." \
+  || start_spinner "Updating ${Bold}${Underline}neovim plugins${Color_Off}..."
 (
 
 # plugin update
@@ -45,5 +45,5 @@ cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
 # ln -snf ${PROJ_HOME}/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
-    "${Bold}${Underline}neovim plugins${Color_Off} are updated [local]" \
-    "${Bold}${Underline}neovim plugins${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"
+  "${Bold}${Underline}neovim plugins${Color_Off} are updated [local]" \
+  "${Bold}${Underline}neovim plugins${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"

@@ -15,16 +15,16 @@ ASKPASS=''
 
 
 case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
+  solaris*) platform="SOLARIS" ;;
+  darwin*)  platform="OSX" ;;
+  linux*)   platform="LINUX" ;;
+  bsd*)     platform="BSD" ;;
+  msys*)    platform="WINDOWS" ;;
+  *)        platform="unknown: $OSTYPE" ;;
 esac
 
 usage() {
-    LESS=-FEXR less <<HELP
+  LESS=-FEXR less <<HELP
 
 ${BRed}SYNOPSIS${Color_Off}
     ${BRed}$(basename "$0")${Color_Off} [${BRed}-iAh${Color_Off}] ${BGreen}hosts_file${Color_Off} ${BGreen}command...${Color_Off}
@@ -53,78 +53,78 @@ HELP
 }
 
 while getopts 'hiA' option; do
-    case "$option" in
-        h) usage
-            exit
-            ;;
-        A) ASKPASS='-A'
-            ;;
-        i) INLINE=true
-            ;;
-        :) printf "missing argument for -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-    esac
+  case "$option" in
+    h) usage
+      exit
+      ;;
+    A) ASKPASS='-A'
+      ;;
+    i) INLINE=true
+      ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+    \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
 
 err() {
-  printf "${BRed}%s${Color_Off}\n" "$*" >&2
+ printf "${BRed}%s${Color_Off}\n" "$*" >&2
 }
 
 has() {
-    local verbose=0
-    if [[ $1 = '-v' ]]; then
-        verbose=1
-        shift
+  local verbose=0
+  if [[ $1 = '-v' ]]; then
+    verbose=1
+    shift
+  fi
+  for c; do c="${c%% *}"
+    if ! command -v "$c" &> /dev/null; then
+      (( verbose > 0 )) && err "$c not found"
+      return 1
     fi
-    for c; do c="${c%% *}"
-        if ! command -v "$c" &> /dev/null; then
-            (( verbose > 0 )) && err "$c not found"
-            return 1
-        fi
-    done
+  done
 }
 
 easy-pssh() { # Easy pssh command
-    local hosts_file="$1"; shift
-    local cmd="$@"
-    local n_host=$(wc -l < ${hosts_file})
+  local hosts_file="$1"; shift
+  local cmd="$@"
+  local n_host=$(wc -l < ${hosts_file})
 
-    if [ ${INLINE} == false ]; then
-        local tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
-    fi
+  if [ ${INLINE} == false ]; then
+    local tmpdir=$(mktemp -d 2>/dev/null || mktemp -d -t 'mytmpdir')
+  fi
 
-    sudo=$(echo $cmd | awk '{print $1}')
+  sudo=$(echo $cmd | awk '{print $1}')
 
-    if [[ $sudo == 'sudo' ]]; then
-        echo "Enter the sudo passwd for the remote user: "
-        read -s pswd
+  if [[ $sudo == 'sudo' ]]; then
+    echo "Enter the sudo passwd for the remote user: "
+    read -s pswd
 
-        if [[ ${INLINE} == true ]]; then
-            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} ${ASKPASS} -i -I "sudo -S -- sh -c '$cmd'"
-        else
-            echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
-            echo
-            echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} ${ASKPASS} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
-        fi
+    if [[ ${INLINE} == true ]]; then
+      echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} ${ASKPASS} -i -I "sudo -S -- sh -c '$cmd'"
     else
-        if [[ ${INLINE} == true ]]; then
-            pssh -p ${n_host} -h ${hosts_file} ${ASKPASS} -t 0 -i "$cmd"
-        else
-            echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
-            echo
-            pssh -p ${n_host} -h ${hosts_file} -t 0 ${ASKPASS} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir "$cmd"
-        fi
+      echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
+      echo
+      echo "$pswd" | pssh -p ${n_host} -t 0 -h ${hosts_file} ${ASKPASS} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir -I "sudo -S -- sh -c '$cmd'"
     fi
+  else
+    if [[ ${INLINE} == true ]]; then
+      pssh -p ${n_host} -h ${hosts_file} ${ASKPASS} -t 0 -i "$cmd"
+    else
+      echo "${Yellow}[${BIYellow}logdir${Yellow}]${Color_Off} ${tmpdir}"
+      echo
+      pssh -p ${n_host} -h ${hosts_file} -t 0 ${ASKPASS} -o ${tmpdir}/pssh_outdir -e ${tmpdir}/pssh_errdir "$cmd"
+    fi
+  fi
 }
 
 has -v pssh || exit 1

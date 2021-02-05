@@ -18,37 +18,37 @@ command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
 ################################################################
 
 setup_func_bpytop_local() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [ ${force} == 'true' ]; then
-        pip3 install bpytop --user --force-reinstall --upgrade
-    else
-        pip3 install bpytop --user
-    fi
+  if [ ${force} == 'true' ]; then
+    pip3 install bpytop --user --force-reinstall --upgrade
+  else
+    pip3 install bpytop --user
+  fi
 }
 
 setup_func_bpytop_system() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [[ $platform == "OSX" ]]; then
-        if [ ${force} == 'true' ]; then
-            pip3 install bpytop --upgrade --force-reinstall
-        else
-            pip3 install bpytop
-        fi
-    elif [[ $platform == "LINUX" ]]; then
-        if [ ${force} == 'true' ]; then
-            sudo pip3 install bpytop --upgrade --force-reinstall
-        else
-            sudo pip3 install bpytop
-        fi
+  if [[ $platform == "OSX" ]]; then
+    if [ ${force} == 'true' ]; then
+      pip3 install bpytop --upgrade --force-reinstall
+    else
+      pip3 install bpytop
     fi
+  elif [[ $platform == "LINUX" ]]; then
+    if [ ${force} == 'true' ]; then
+      sudo pip3 install bpytop --upgrade --force-reinstall
+    else
+      sudo pip3 install bpytop
+    fi
+  fi
 }
 
 version_func_bpytop() {
-    $1 --version 2>&1
+  $1 --version 2>&1
 }
 
 main_script 'bpytop' setup_func_bpytop_local setup_func_bpytop_system version_func_bpytop

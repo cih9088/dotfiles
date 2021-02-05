@@ -2,17 +2,17 @@
 # copied from https://stackoverflow.com/a/10586020
 
 case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
+  solaris*) platform="SOLARIS" ;;
+  darwin*)  platform="OSX" ;;
+  linux*)   platform="LINUX" ;;
+  bsd*)     platform="BSD" ;;
+  msys*)    platform="WINDOWS" ;;
+  *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $platform != LINUX ]]; then
-    echo "This script dose not support $platform." >&2
-    exit 1
+  echo "This script dose not support $platform." >&2
+  exit 1
 fi
 
 free | grep Mem | awk '{printf "%.2f", $3/$2 * 100.0}'

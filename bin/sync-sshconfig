@@ -24,38 +24,38 @@ HELP
 }
 
 while getopts 'h' option; do
-    case "$option" in
-        h) usage
-            exit
-            ;;
-        :) printf "missing argument for -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-    esac
+  case "$option" in
+    h) usage
+      exit
+      ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+    \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
 
 has() {
-  local verbose=0
-  if [[ $1 = '-v' ]]; then
-    verbose=1
-    shift
+ local verbose=0
+ if [[ $1 = '-v' ]]; then
+  verbose=1
+  shift
+ fi
+ for c; do c="${c%% *}"
+  if ! command -v "$c" &> /dev/null; then
+   (( verbose > 0 )) && err "$c not found"
+   return 1
   fi
-  for c; do c="${c%% *}"
-    if ! command -v "$c" &> /dev/null; then
-      (( verbose > 0 )) && err "$c not found"
-      return 1
-    fi
-  done
-  return 0
+ done
+ return 0
 }
 
 has -v awk fzf || exit 1
@@ -76,96 +76,96 @@ _config=$HOME/.ssh/config
 targets=$(awk '
 BEGIN { current = ""; hosts[0] = ""; hostnames[0] = ""; ips[0] = ""; aliases[0] = "" }
 {
-    if ($1 == "Host") {
-        if ( current != $2 ) {
-            current = $2
-            hosts[current] = $2
-        }
+  if ($1 == "Host") {
+    if ( current != $2 ) {
+      current = $2
+      hosts[current] = $2
     }
-    else if ( $1 == "HostName") {
-        if ( $2 ~ /[a-zA-Z]+/ ) {
-            hostnames[current] = hostnames[current] $2
-        } else if ( $2 ~ /[0-9.]+/ ) {
-            ips[current] = ips[current] "( " $2 " )"
-        }
+  }
+  else if ( $1 == "HostName") {
+    if ( $2 ~ /[a-zA-Z]+/ ) {
+      hostnames[current] = hostnames[current] $2
+    } else if ( $2 ~ /[0-9.]+/ ) {
+      ips[current] = ips[current] "( " $2 " )"
     }
-    else if ( $1 == "#alias" ) {
-        aliases[current] = "["
-        for(i=2;i<=NF;i++) {
-            aliases[current] = aliases[current] " " $i
-        }
-        aliases[current] = aliases[current] " ]"
+  }
+  else if ( $1 == "#alias" ) {
+    aliases[current] = "["
+    for(i=2;i<=NF;i++) {
+      aliases[current] = aliases[current] " " $i
     }
+    aliases[current] = aliases[current] " ]"
+  }
 }
 END {
-    for (key in hosts) {
-        if ( key != 0 ) {
-            print hosts[key], "|->", hostnames[key], "|", ips[key], "|" aliases[key]
-        }
+  for (key in hosts) {
+    if ( key != 0 ) {
+      print hosts[key], "|->", hostnames[key], "|", ips[key], "|" aliases[key]
     }
+  }
 }
 ' $_config | grep -v '*' | column -t -s '|')
 
 exit_code=$?
 [ ${exit_code} != 0 ] && return ${exit_code}
 targets=$(echo "${targets}" \
-    | fzf --bind 'ctrl-a:select-all' --multi \
-    --height=40% --cycle --no-sort --layout=reverse \
-    --preview-window=up:2 \
-    --preview='cat '"$_config"' | grep Host | \
-    awk -v host={} '"'"'{
-        split(host, fld, /->/)
-        gsub(/[ \t]+$/, "", fld[1])
-        if ($0~fld[1]) {
-            getline
-            gsub(/^[ \t]+/,"", $0)
-            print
-            getline
-            if ($0 ~ /HostName/) {
-                gsub(/^[ \t]+/,"", $0)
-                print
-            }
-        }
-    }'"'" | awk '{print $1}')
+  | fzf --bind 'ctrl-a:select-all' --multi \
+  --height=40% --cycle --no-sort --layout=reverse \
+  --preview-window=up:2 \
+  --preview='cat '"$_config"' | grep Host | \
+  awk -v host={} '"'"'{
+    split(host, fld, /->/)
+    gsub(/[ \t]+$/, "", fld[1])
+    if ($0~fld[1]) {
+      getline
+      gsub(/^[ \t]+/,"", $0)
+      print
+      getline
+      if ($0 ~ /HostName/) {
+        gsub(/^[ \t]+/,"", $0)
+        print
+      }
+    }
+  }'"'" | awk '{print $1}')
 
 if [ -z "${targets}" ]; then
-    exit 0
+  exit 0
 fi
 
 use_sshpass=no
 has sshget && \
-    while true; do
-        read -p "Do you want to use sshpass for copying? " yn
-        case $yn in
-            [Yy]* ) use_sshpass=yes; break;;
-            [Nn]* ) :; break;;
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
+  while true; do
+    read -p "Do you want to use sshpass for copying? " yn
+    case $yn in
+      [Yy]* ) use_sshpass=yes; break;;
+      [Nn]* ) :; break;;
+      * ) echo "Please answer yes or no.";;
+    esac
+  done
 
 
 if [ "${use_sshpass}" == yes ]; then
-    echo -n "Enter the passwd for them: "
-    read -s pswd
-    echo
+  echo -n "Enter the passwd for them: "
+  read -s pswd
+  echo
 
-    # https://unix.stackexchange.com/a/107801
-    while IFS= read -u10 -r target; do
-        export SSHPASS=${pswd}
-        (
-        echo "copying to ${target}..."
-        sshpass -e ssh -o ConnectTimeout=2 ${target} mkdir -p ./.ssh
-        sshpass -e scp -o ConnectTimeout=2 ${_config} ${target}:~/.ssh/config
-        [ $? -eq 0 ] && echo "${target} done" || echo "${target} faild" >&2
-        ) &
-    done 10<<< "${targets}"
-    wait
+  # https://unix.stackexchange.com/a/107801
+  while IFS= read -u10 -r target; do
+    export SSHPASS=${pswd}
+    (
+    echo "copying to ${target}..."
+    sshpass -e ssh -o ConnectTimeout=2 ${target} mkdir -p ./.ssh
+    sshpass -e scp -o ConnectTimeout=2 ${_config} ${target}:~/.ssh/config
+    [ $? -eq 0 ] && echo "${target} done" || echo "${target} faild" >&2
+    ) &
+  done 10<<< "${targets}"
+  wait
 else
-    while IFS= read -u10 -r target; do
-        echo "create .ssh directory in ${target}..."
-        ssh -o ConnectTimeout=2 ${target} mkdir -p ./.ssh
-        echo "copying to ${target}..."
-        scp -o ConnectTimeout=2 ${_config} ${target}:~/.ssh/config
-        [ $? -eq 0 ] && echo "${target} done" || echo "${target} faild" >&2
-    done 10<<< "${targets}"
+  while IFS= read -u10 -r target; do
+    echo "create .ssh directory in ${target}..."
+    ssh -o ConnectTimeout=2 ${target} mkdir -p ./.ssh
+    echo "copying to ${target}..."
+    scp -o ConnectTimeout=2 ${_config} ${target}:~/.ssh/config
+    [ $? -eq 0 ] && echo "${target} done" || echo "${target} faild" >&2
+  done 10<<< "${targets}"
 fi

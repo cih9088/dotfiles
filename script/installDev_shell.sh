@@ -11,49 +11,49 @@ echo "${marker_title} Prepare to ${Bold}${Underline}install shell environment${C
 ################################################################
 
 setup_func_shellcheck_local() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [[ $platform == "OSX" ]]; then
-        echo "${marker_err} Not available on OSX"
-        exit 1
-    elif [[ $platform == "LINUX" ]]; then
+  if [[ $platform == "OSX" ]]; then
+    echo "${marker_err} Not available on OSX"
+    exit 1
+  elif [[ $platform == "LINUX" ]]; then
 
-        install=no
-        if [ -f ${HOME}/.local/bin/shellcheck ]; then
-            if [ ${force} == 'true' ]; then
-                rm -rf $HOME/.local/bin/shellcheck || true
-                install='true'
-            fi
-        else
-            install='true'
-        fi
-
-        if [ ${install} == 'true' ]; then
-            wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz
-            tar -xvJf shellcheck-stable.linux.x86_64.tar.xz
-            cd shellcheck-stable
-            yes | \cp -rf shellcheck $HOME/.local/bin
-        fi
+    install=no
+    if [ -f ${HOME}/.local/bin/shellcheck ]; then
+      if [ ${force} == 'true' ]; then
+        rm -rf $HOME/.local/bin/shellcheck || true
+        install='true'
+      fi
+    else
+      install='true'
     fi
+
+    if [ ${install} == 'true' ]; then
+      wget https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz
+      tar -xvJf shellcheck-stable.linux.x86_64.tar.xz
+      cd shellcheck-stable
+      yes | \cp -rf shellcheck $HOME/.local/bin
+    fi
+  fi
 }
 
 setup_func_shellcheck_system() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [[ $platform == "OSX" ]]; then
-        brew list shellcheck || brew install shellcheck
-        if [ ${force} == 'true' ]; then
-            brew upgrade shellcheck
-        fi
-    elif [[ $platform == "LINUX" ]]; then
-        sudo apt-get -y install shellcheck
+  if [[ $platform == "OSX" ]]; then
+    brew list shellcheck || brew install shellcheck
+    if [ ${force} == 'true' ]; then
+      brew upgrade shellcheck
     fi
+  elif [[ $platform == "LINUX" ]]; then
+    sudo apt-get -y install shellcheck
+  fi
 }
 
 version_func_shellcheck() {
-    $1 --version | head -2 | tail -1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+  $1 --version | head -2 | tail -1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
 }
 
 # coc-sh

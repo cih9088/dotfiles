@@ -13,7 +13,7 @@ OPTIND=1
 _DELAY=0.005
 
 usage() {
-    LESS=-FEXR less <<HELP
+  LESS=-FEXR less <<HELP
 
 ${BRed}SYNOPSIS${Color_Off}
     ${BRed}$(basename "$0")${Color_Off} [${BRed}-d${Color_Off} ${BGreen}delay${Color_Off}] ${BGreen}hostname or ip address${Color_Off}
@@ -33,23 +33,23 @@ HELP
 }
 
 while getopts 'hd:' option; do
-    case "$option" in
-        h) usage
-            exit
-            ;;
-        d) _DELAY=${OPTARG}
-            ;;
-        :) printf "missing argument for -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-    esac
+  case "$option" in
+    h) usage
+      exit
+      ;;
+    d) _DELAY=${OPTARG}
+      ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+    \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
@@ -60,7 +60,7 @@ ip=${1?You have to specify hostname or ip address}
 printf '\nOpened TCP ports: \n'
 printf '\t'
 for i in {1..65535}; do
-    timeout ${_DELAY} bash -c "echo < /dev/tcp/$ip/$i" &>/dev/null && printf "%d, " "$i"
+  timeout ${_DELAY} bash -c "echo < /dev/tcp/$ip/$i" &>/dev/null && printf "%d, " "$i"
 done
 
 # printf '\nOpened UDP ports: \n'

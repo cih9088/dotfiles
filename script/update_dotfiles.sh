@@ -15,8 +15,8 @@ backup_directory=${HOME}/dotfiles.$(date "+%y%m%d%H%M").$(random-string 6).bak
 mkdir -p ${backup_directory}
 
 [[ ${VERBOSE} == "true" ]] \
-    && echo "${marker_info} Updating ${Bold}${Underline}dotfiles${Color_Off}..." \
-    || start_spinner "Updating ${Bold}${Underline}dotfiles${Color_Off}..."
+  && echo "${marker_info} Updating ${Bold}${Underline}dotfiles${Color_Off}..." \
+  || start_spinner "Updating ${Bold}${Underline}dotfiles${Color_Off}..."
 (
 VIM_DIR=${PROJ_HOME}/vim
 NVIM_DIR=${PROJ_HOME}/nvim
@@ -30,140 +30,140 @@ GIT_DIR=${CONFIG_DIR}/git
 
 # backup old files and replace it with mine
 if [ -e $HOME/.vimrc ]; then
-    cp -RfL $HOME/.vimrc ${backup_directory}
-    rm -rf $HOME/.vimrc
+  cp -RfL $HOME/.vimrc ${backup_directory}
+  rm -rf $HOME/.vimrc
 fi
 ln -s -f ${VIM_DIR}/vimrc $HOME/.vimrc
 
 if [ -e $HOME/.vim ]; then
-    cp -RfL $HOME/.vim ${backup_directory}
-    rm -rf $HOME/.vim
+  cp -RfL $HOME/.vim ${backup_directory}
+  rm -rf $HOME/.vim
 fi
 ln -s -f ${VIM_DIR} $HOME/.vim
 
 if [ -e $HOME/.config/nvim ]; then
-    cp -RfL $HOME/.config/nvim ${backup_directory}/.config
-    rm -rf $HOME/.config/nvim
+  cp -RfL $HOME/.config/nvim ${backup_directory}/.config
+  rm -rf $HOME/.config/nvim
 fi
 ln -s -f ${NVIM_DIR} $HOME/.config/nvim
 
 if [ -e $HOME/.tmux ]; then
-    cp -RfH $HOME/.tmux ${backup_directory}
-    rm -rf $HOME/.tmux
+  cp -RfH $HOME/.tmux ${backup_directory}
+  rm -rf $HOME/.tmux
 fi
 ln -s -f ${TMUX_DIR} $HOME/.tmux
 
 if [ -e $HOME/.tmux.conf ]; then
-    cp -RfL $HOME/.tmux.conf ${backup_directory}
-    rm -rf $HOME/.tmux.conf
+  cp -RfL $HOME/.tmux.conf ${backup_directory}
+  rm -rf $HOME/.tmux.conf
 fi
 ln -s -f ${TMUX_DIR}/tmux.conf $HOME/.tmux.conf
 
 if [ -e $HOME/.zshrc ]; then
-    cp -RfL $HOME/.zshrc ${backup_directory}
-    rm -rf $HOME/.zshrc
+  cp -RfL $HOME/.zshrc ${backup_directory}
+  rm -rf $HOME/.zshrc
 fi
 ln -s -f ${ZSH_DIR}/zshrc $HOME/.zshrc
 
 if [ -e $HOME/.zpreztorc ]; then
-    cp -RfL $HOME/.zpreztorc ${backup_directory}
-    rm -rf $HOME/.zpreztorc
+  cp -RfL $HOME/.zpreztorc ${backup_directory}
+  rm -rf $HOME/.zpreztorc
 fi
 ln -s -f ${ZSH_DIR}/zpreztorc $HOME/.zpreztorc
 
 if [ -e $HOME/.zshenv ]; then
-    cp -RfL $HOME/.zshenv ${backup_directory}
-    rm -rf $HOME/.zshenv
+  cp -RfL $HOME/.zshenv ${backup_directory}
+  rm -rf $HOME/.zshenv
 fi
 ln -s -f ${ZSH_DIR}/zshenv $HOME/.zshenv
 
 if [ -e $HOME/.zprofile ]; then
-    cp -RfL $HOME/.zprofile ${backup_directory}
-    rm -rf $HOME/.zprofile
+  cp -RfL $HOME/.zprofile ${backup_directory}
+  rm -rf $HOME/.zprofile
 fi
 ln -s -f ${ZSH_DIR}/zprofile $HOME/.zprofile
 
 if [ -e $HOME/.zlogout ]; then
-    cp -RfL $HOME/.zlogout ${backup_directory}
-    rm -rf $HOME/.zlogout
+  cp -RfL $HOME/.zlogout ${backup_directory}
+  rm -rf $HOME/.zlogout
 fi
 ln -s -f ${ZSH_DIR}/zlogout $HOME/.zlogout
 
 if [ -e $HOME/.pylintrc ]; then
-    cp -RfL $HOME/.pylintrc ${backup_directory}
-    rm -rf $HOME/.pylintrc
+  cp -RfL $HOME/.pylintrc ${backup_directory}
+  rm -rf $HOME/.pylintrc
 fi
 ln -s -f ${PYLINT_DIR}/pylintrc $HOME/.pylintrc
 
 if [ -e $HOME/.flake8 ]; then
-    cp -RfL $HOME/.flake8 ${backup_directory}
-    rm -rf $HOME/.flake8
+  cp -RfL $HOME/.flake8 ${backup_directory}
+  rm -rf $HOME/.flake8
 fi
 ln -s -f ${FLAKE8_DIR}/flake8 $HOME/.flake8
 
 if [ -e $HOME/.grip ]; then
-    cp -RfL $HOME/.grip ${backup_directory}
-    rm -rf $HOME/.grip
+  cp -RfL $HOME/.grip ${backup_directory}
+  rm -rf $HOME/.grip
 fi
 ln -s -f ${GRIP_DIR} $HOME/.grip
 
 if [ -e $HOME/.config/alacritty ]; then
-    cp -RfL $HOME/.config/alacritty ${backup_directory}/.config
-    rm -rf $HOME/.config/alacritty
+  cp -RfL $HOME/.config/alacritty ${backup_directory}/.config
+  rm -rf $HOME/.config/alacritty
 fi
 ln -s -f ${CONFIG_DIR}/alacritty $HOME/.config/alacritty
 
 if [ -e $HOME/.config/yabai ]; then
-    cp -RfL $HOME/.config/yabai ${backup_directory}/.config
-    rm -rf $HOME/.config/yabai
+  cp -RfL $HOME/.config/yabai ${backup_directory}/.config
+  rm -rf $HOME/.config/yabai
 fi
 ln -s -f ${CONFIG_DIR}/yabai $HOME/.config/yabai
 
 if [ -e $HOME/.config/skhd ]; then
-    cp -RfL $HOME/.config/skhd ${backup_directory}/.config
-    rm -rf $HOME/.config/skhd
+  cp -RfL $HOME/.config/skhd ${backup_directory}/.config
+  rm -rf $HOME/.config/skhd
 fi
 ln -s -f ${CONFIG_DIR}/skhd $HOME/.config/skhd
 
 if [ -e $HOME/.config/spacebar ]; then
-    cp -RfL $HOME/.config/spacebar ${backup_directory}/.config
-    rm -rf $HOME/.config/spacebar
+  cp -RfL $HOME/.config/spacebar ${backup_directory}/.config
+  rm -rf $HOME/.config/spacebar
 fi
 ln -s -f ${CONFIG_DIR}/spacebar $HOME/.config/spacebar
 
 if [ -e $HOME/.config/tealdeer ]; then
-    cp -RfL $HOME/.config/tealdeer ${backup_directory}/.config
-    rm -rf $HOME/.config/tealdeer
+  cp -RfL $HOME/.config/tealdeer ${backup_directory}/.config
+  rm -rf $HOME/.config/tealdeer
 fi
 ln -s -f ${CONFIG_DIR}/tealdeer $HOME/.config/tealdeer
 
 if [ -e $HOME/.config/git ]; then
-    cp -RfL $HOME/.config/git ${backup_directory}/.config
-    rm -rf $HOME/.config/git
+  cp -RfL $HOME/.config/git ${backup_directory}/.config
+  rm -rf $HOME/.config/git
 fi
 ln -s -f ${CONFIG_DIR}/git $HOME/.config/git
 
 if [ -e $HOME/.gitignore ]; then
-    cp -RfL $HOME/.gitignore ${backup_directory}/.gitignore
-    rm -rf $HOME/.gitignore
+  cp -RfL $HOME/.gitignore ${backup_directory}/.gitignore
+  rm -rf $HOME/.gitignore
 fi
 ln -s -f ${GIT_DIR}/gitignore $HOME/.gitignore
 
 # clean up dotfiles old if there is nothing backuped
 if [ -z "$(ls -A ${backup_directory})" ]; then
-    rm -rf ${backup_directory}
+  rm -rf ${backup_directory}
 fi
 
 # clean up
 if [[ $$ = $BASHPID ]]; then
-    rm -rf $TMP_DIR
+  rm -rf $TMP_DIR
 fi
 
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
-    "${Bold}${Underline}dotfiles${Color_Off} are updated [local]" \
-    "${Bold}${Underline}dotfiles${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"
+  "${Bold}${Underline}dotfiles${Color_Off} are updated [local]" \
+  "${Bold}${Underline}dotfiles${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"
 
 if [ -d ${backup_directory} ]; then
-    echo "${marker_info} Your dotfiles have been backed up to ${backup_directory} "
+  echo "${marker_info} Your dotfiles have been backed up to ${backup_directory} "
 fi

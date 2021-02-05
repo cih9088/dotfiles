@@ -12,29 +12,29 @@ echo "${marker_title} Prepare to ${Bold}${Underline}install bash_snippets${Color
 ################################################################
 
 setup_func_bash_snippets_local() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    git clone https://github.com/alexanderepstein/Bash-Snippets
-    cd Bash-Snippets
+  git clone https://github.com/alexanderepstein/Bash-Snippets
+  cd Bash-Snippets
 
-    ./install.sh --prefix=$HOME/.local transfer cheat
+  ./install.sh --prefix=$HOME/.local transfer cheat
 }
 
 setup_func_bash_snippets_system() {
-    force=$1
-    cd $TMP_DIR
+  force=$1
+  cd $TMP_DIR
 
-    if [[ $platform == "OSX" ]]; then
-        brew list bash-snippets || brew install bash-snippets
-        if [ ${force} == 'true' ]; then
-            brew upgrade bash-snippets
-        fi
-    elif [[ $platform == "LINUX" ]]; then
-        git clone https://github.com/alexanderepstein/Bash-Snippets
-        cd Bash-Snippets
-        ./install.sh transfer cheat
+  if [[ $platform == "OSX" ]]; then
+    brew list bash-snippets || brew install bash-snippets
+    if [ ${force} == 'true' ]; then
+      brew upgrade bash-snippets
     fi
+  elif [[ $platform == "LINUX" ]]; then
+    git clone https://github.com/alexanderepstein/Bash-Snippets
+    cd Bash-Snippets
+    ./install.sh transfer cheat
+  fi
 }
 
 main_script 'bash_snippets' setup_func_bash_snippets_local setup_func_bash_snippets_system

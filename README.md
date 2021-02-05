@@ -310,7 +310,7 @@ $ make initOSX
     > [nerd font](https://github.com/ryanoasis/nerd-fonts) patched font is needed or change `g:lightline#bufferline#enable_devcons` to 0 in `.vimrc`
 
 3. vim colorscheme is somewhat weird
-    > run `truecolor-test` script if your terminal or terminal inside of tmux support truecolor. This should show smooth color transition if supported. [related issue](https://github.com/tmux/tmux/issues/1246)
+    > run `truecolour-test` script if your terminal or terminal inside of tmux support truecolor. This should show smooth color transition if supported. [related issue](https://github.com/tmux/tmux/issues/1246)
 
     - true color supported \
     ![truecolor supported](https://imgur.com/Fnx9P2Y.png)

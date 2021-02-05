@@ -19,21 +19,21 @@ GROUP_LIST=()
 
 
 case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
+  solaris*) platform="SOLARIS" ;;
+  darwin*)  platform="OSX" ;;
+  linux*)   platform="LINUX" ;;
+  bsd*)     platform="BSD" ;;
+  msys*)    platform="WINDOWS" ;;
+  *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $platform != LINUX ]]; then
-    echo "This script dose not support $platform." >&2
-    exit 1
+  echo "This script dose not support $platform." >&2
+  exit 1
 fi
 
 usage() {
-    LESS=-FEXR less <<HELP
+  LESS=-FEXR less <<HELP
 
 ${BRed}SYNOPSIS${Color_Off}
     ${BRed}$(basename "$0")${Color_Off} [${BRed}-hsl${Color_Off}]
@@ -60,31 +60,31 @@ HELP
 }
 
 while getopts 'g:hsl' option; do
-    case "$option" in
-        h) usage
-            exit
-            ;;
-        s) SYSTEM_USERS=true
-            ;;
-        l) LOCKED_USERS=true
-            if ! [ "$EUID" -eq 0 ]; then
-                echo 'Need privilege to list locked users' >&2
-                exit 1
-            fi
-            ;;
-        g) GROUP_LIST=(${OPTARG//,/ })
-            ;;
-        :) printf "missing argument for -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-    esac
+  case "$option" in
+    h) usage
+      exit
+      ;;
+    s) SYSTEM_USERS=true
+      ;;
+    l) LOCKED_USERS=true
+      if ! [ "$EUID" -eq 0 ]; then
+        echo 'Need privilege to list locked users' >&2
+        exit 1
+      fi
+      ;;
+    g) GROUP_LIST=(${OPTARG//,/ })
+      ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+    \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
@@ -107,31 +107,31 @@ echo "----------[ Sudo Group Accounts ]---------------"
 grep '^sudo:.*$' /etc/group | cut -d: -f4 | tr ',' ' '
 
 if [[ ${#GROUP_LIST[@]} -ne 0 ]]; then
-    for gr in ${GROUP_LIST[@]}; do
-        echo ""
-        echo "----------[ $gr Group Accounts ]---------------"
-        if grep '^'$gr':.*$' /etc/group > /dev/null 2>&1; then
-            grep '^'$gr':.*$' /etc/group | cut -d: -f4 | tr ',' ' '
-        fi
-    done
+  for gr in ${GROUP_LIST[@]}; do
+    echo ""
+    echo "----------[ $gr Group Accounts ]---------------"
+    if grep '^'$gr':.*$' /etc/group > /dev/null 2>&1; then
+      grep '^'$gr':.*$' /etc/group | cut -d: -f4 | tr ',' ' '
+    fi
+  done
 fi
 
 if [ ${LOCKED_USERS} == true ]; then
-    echo ""
-    echo "---------[ Locked User Accounts ]--------------"
-    shadow="/etc/shadow"
-    if cat $shadow | grep '!' > /dev/null 2>&1; then
-        cat $shadow | grep ! | awk -F ':' '{printf "%s ", $1} END { printf "\n" }'
-    fi
+  echo ""
+  echo "---------[ Locked User Accounts ]--------------"
+  shadow="/etc/shadow"
+  if cat $shadow | grep '!' > /dev/null 2>&1; then
+    cat $shadow | grep ! | awk -F ':' '{printf "%s ", $1} END { printf "\n" }'
+  fi
 
-    echo ""
-    echo "---------[ Expired User Accounts ]-------------"
-    cat $shadow | awk -F ':' -v now=$(date +%s) '{if ( length($8) > 0 && ($8 < (now / 60 / 60 / 24)) ) printf "%s ", $1} END { printf "\n"; }'
+  echo ""
+  echo "---------[ Expired User Accounts ]-------------"
+  cat $shadow | awk -F ':' -v now=$(date +%s) '{if ( length($8) > 0 && ($8 < (now / 60 / 60 / 24)) ) printf "%s ", $1} END { printf "\n"; }'
 fi
 
 if [ ${SYSTEM_USERS} == true ]; then
-    echo ""
-    echo "---------[ System User Accounts ]--------------"
-    awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( !($3 >= min && $3 <= max  && $7 != "/sbin/nologin")) print $0 }' "$_p" | column -s ':' -tn
+  echo ""
+  echo "---------[ System User Accounts ]--------------"
+  awk -F':' -v "min=${l##UID_MIN}" -v "max=${l1##UID_MAX}" '{ if ( !($3 >= min && $3 <= max  && $7 != "/sbin/nologin")) print $0 }' "$_p" | column -s ':' -tn
 fi
 

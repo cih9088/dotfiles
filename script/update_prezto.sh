@@ -12,8 +12,8 @@ echo "${marker_title} Prepare to ${Bold}${Underline}update prezto${Color_Off}"
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \
-    && echo "${marker_info} Updating ${Bold}${Underline}prezto${Color_Off}..." \
-    || start_spinner "Updating ${Bold}${Underline}prezto${Color_Off}..."
+  && echo "${marker_info} Updating ${Bold}${Underline}prezto${Color_Off}..." \
+  || start_spinner "Updating ${Bold}${Underline}prezto${Color_Off}..."
 (
 # update prezto
 cd ~/.zprezto
@@ -26,5 +26,5 @@ git checkout main
 git pull
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
-    "${Bold}${Underline}prezto${Color_Off} is updated [local]" \
-    "${Bold}${Underline}prezto${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"
+  "${Bold}${Underline}prezto${Color_Off} is updated [local]" \
+  "${Bold}${Underline}prezto${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"

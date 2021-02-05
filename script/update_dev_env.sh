@@ -21,8 +21,8 @@ command -v goenv > /dev/null && eval "$(goenv init -)" || true
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] \
-    && echo "${marker_info} Updating ${Bold}${Underline}dev env${Color_Off}..." \
-    || start_spinner "Updating ${Bold}${Underline}dev env${Color_Off}..."
+  && echo "${marker_info} Updating ${Bold}${Underline}dev env${Color_Off}..." \
+  || start_spinner "Updating ${Bold}${Underline}dev env${Color_Off}..."
 (
 
 command -v asdf > /dev/null && for plugin in $(asdf plugin list); do asdf reshim $plugin; done || true
@@ -31,5 +31,5 @@ command -v goenv > /dev/null && goenv reshim || true
 
 ) >&3 2>&4 || exit_code="$?" && true
 stop_spinner "${exit_code}" \
-    "${Bold}${Underline}dev env${Color_Off} are updated [local]" \
-    "${Bold}${Underline}dev env${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"
+  "${Bold}${Underline}dev env${Color_Off} are updated [local]" \
+  "${Bold}${Underline}dev env${Color_Off} udpate is failed [local]. use VERBOSE=true for error message"

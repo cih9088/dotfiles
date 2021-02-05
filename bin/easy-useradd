@@ -16,21 +16,21 @@ DEFAULT_GROUP="$(groups | awk '{print $1}')"
 
 
 case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
+  solaris*) platform="SOLARIS" ;;
+  darwin*)  platform="OSX" ;;
+  linux*)   platform="LINUX" ;;
+  bsd*)     platform="BSD" ;;
+  msys*)    platform="WINDOWS" ;;
+  *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $platform != LINUX ]]; then
-    echo "This script dose not support $platform." >&2
-    exit 1
+  echo "This script dose not support $platform." >&2
+  exit 1
 fi
 
 usage() {
-    LESS=-FEXR less <<HELP
+  LESS=-FEXR less <<HELP
 
 ${BRed}SYNOPSIS${Color_Off}
     ${BRed}$(basename "$0")${Color_Off} [${BRed}-hs${Color_Off}] [${BRed}-g${Color_Off} ${BGreen}default_group${Color_Off}] [${BRed}-p${Color_Off} ${BGreen}default_passwd${Color_Off}] ${BGreen}username${Color_Off}
@@ -65,52 +65,52 @@ HELP
 }
 
 while getopts 'p:g:hs' option; do
-    case "$option" in
-        h) usage
-            exit
-            ;;
-        s) SUDOUSER=true
-            ;;
-        g) DEFAULT_GROUP=${OPTARG}
-            ;;
-        p) DEFAULT_PASSWD=${OPTARG}
-            ;;
-        :) printf "missing argument for -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-        \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
-            echo "" >&2
-            usage >&2
-            exit 1
-            ;;
-    esac
+  case "$option" in
+    h) usage
+      exit
+      ;;
+    s) SUDOUSER=true
+      ;;
+    g) DEFAULT_GROUP=${OPTARG}
+      ;;
+    p) DEFAULT_PASSWD=${OPTARG}
+      ;;
+    :) printf "missing argument for -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+    \?) printf "ilegal option: -%s\n" "$OPTARG" >&2
+      echo "" >&2
+      usage >&2
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND -1))
 [ "${1:-}" = "--" ] && shift
 
 if [ "$EUID" -ne 0 ];then
-    echo "Please run this script as root"
-    exit 1
+  echo "Please run this script as root"
+  exit 1
 fi
 
 if [ "${1:?you have to specify user name}" == "guest" ]; then
-    useradd guest -m -s /bin/bash
-    echo "$1:$DEFAULT_PASSWD" | chpasswd
-    chown root.${DEFAULT_GROUP} /home/guest
-    chmod 755 /home/guest
+  useradd guest -m -s /bin/bash
+  echo "$1:$DEFAULT_PASSWD" | chpasswd
+  chown root.${DEFAULT_GROUP} /home/guest
+  chmod 755 /home/guest
 else
-    # create user
-    useradd "$1" -m -g ${DEFAULT_GROUP} -s /bin/bash
-    echo "$1:$DEFAULT_PASSWD" | chpasswd
-    passwd --expire "$1"
+  # create user
+  useradd "$1" -m -g ${DEFAULT_GROUP} -s /bin/bash
+  echo "$1:$DEFAULT_PASSWD" | chpasswd
+  passwd --expire "$1"
 
-    # add user to sudo group
-    if [ "$SUDOUSER" == true ]; then
-        usermod -a -G sudo "$1"
-    fi
+  # add user to sudo group
+  if [ "$SUDOUSER" == true ]; then
+    usermod -a -G sudo "$1"
+  fi
 
-    # change the authority
-    chmod 700 /home/"$1"
+  # change the authority
+  chmod 700 /home/"$1"
 fi

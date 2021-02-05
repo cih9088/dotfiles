@@ -315,9 +315,10 @@
     let pos = ' %-12(%l : %c%V%) '
     let pct = ' %P'
     let coc_status = '%{CocStatus()}'
-    " let coc_diag = '%#CocWarningSign#%{CocWarn()}' . '%#CocErrorSign#%{CocErr()}' . '%*'
-    let coc_diag = '%{CocDiagnostics("warning", "W")}' . '%{CocDiagnostics("error", "E")}'
-    return '[%n] %f '.coc_status.'  '.coc_diag.' %<'.mod.ro.fug.sep.ft.pos.'%*'.pct
+    let coc_warn = '%#WarningMsg#%{CocDiagnostics("warning", "•")}' . '%*'
+    let coc_err = '%#WarningMsg#%{CocDiagnostics("error", "•")}' . '%*'
+    let diag = coc_warn . coc_err
+    return '[%n] %f '.ft.mod.ro.coc_status.diag.' %<'.sep.fug.pos.'%*'.pct
   endfunction
   let &statusline = s:statusline_expr()
 
@@ -976,16 +977,16 @@
 
 " unblevable/quick-scope
 " ---------------------------------------------------------------------------------------
-if has_key(g:plugs, 'quick-scope')
-  let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-  augroup qs_colors
-    autocmd!
-    autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
-    autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
-  augroup END
-  " need to set colorscheme after autocmd is defined
-  execute 'colorscheme ' .  get(g:, 'colors_name', 'default')
-endif
+  if has_key(g:plugs, 'quick-scope')
+    let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+    augroup qs_colors
+      autocmd!
+      autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+      autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+    augroup END
+    " need to set colorscheme after autocmd is defined
+    execute 'colorscheme ' .  get(g:, 'colors_name', 'default')
+  endif
 
 
 " tpope/vim-unimpaired
@@ -1210,64 +1211,16 @@ endif
 " nvim-treesitter/nvim-treesitter
 " ---------------------------------------------------------------------------------------
   if has_key(g:plugs, 'nvim-treesitter')
-      lua <<EOF
+    lua <<EOF
 require'nvim-treesitter.configs'.setup {
-    ensure_installed = "maintained",
-    highlight = {
-        enable = true,
-        use_languagetree = false,
-        disable = { "bash", },
-    },
+  ensure_installed = "maintained",
+  highlight = {
+    enable = true,
+    use_languagetree = false,
+    disable = { "bash", },
+  },
 }
 EOF
   endif
-
-  function! s:run_this_script(output)
-    let head   = getline(1)
-    let pos    = stridx(head, '#!')
-    let file   = expand('%:p')
-    let ofile  = tempname()
-    let rdr    = " 2>&1 | tee ".ofile
-    let win    = winnr()
-    let prefix = a:output ? 'silent !' : '!'
-    " Shebang found
-    if pos != -1
-      execute prefix.strpart(head, pos + 2).' '.file.rdr
-      " Shebang not found but executable
-    elseif executable(file)
-      execute prefix.file.rdr
-    elseif &filetype == 'python'
-      execute prefix.'/usr/bin/env python '.file.rdr
-    elseif &filetype == 'tex'
-      execute prefix.'latex '.file. '; [ $? -eq 0 ] && xdvi '. expand('%:r').rdr
-    elseif &filetype == 'dot'
-      let svg = expand('%:r') . '.svg'
-      let png = expand('%:r') . '.png'
-      " librsvg >> imagemagick + ghostscript
-      execute 'silent !dot -Tsvg '.file.' -o '.svg.' && '
-            \ 'rsvg-convert -z 2 '.svg.' > '.png.' && open '.png.rdr
-    else
-      return
-    end
-    redraw!
-    if !a:output | return | endif
-
-    " Scratch buffer
-    if exists('s:vim_exec_buf') && bufexists(s:vim_exec_buf)
-      execute bufwinnr(s:vim_exec_buf).'wincmd w'
-      %d
-    else
-      silent!  bdelete [vim-exec-output]
-      silent!  vertical botright split new
-      silent!  file [vim-exec-output]
-      setlocal buftype=nofile bufhidden=wipe noswapfile
-      let      s:vim_exec_buf = winnr()
-    endif
-    execute 'silent! read' ofile
-    normal! gg"_dd
-    execute win.'wincmd w'
-  endfunction
-  nnoremap <silent> <F5> :call <SID>run_this_script(0)<cr>
-  nnoremap <silent> <F6> :call <SID>run_this_script(1)<cr>
 
 " }}}

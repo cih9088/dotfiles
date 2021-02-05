@@ -11,17 +11,17 @@ BIWhite='[1;97m'      # White
 ##################################################
 
 case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
+  solaris*) platform="SOLARIS" ;;
+  darwin*)  platform="OSX" ;;
+  linux*)   platform="LINUX" ;;
+  bsd*)     platform="BSD" ;;
+  msys*)    platform="WINDOWS" ;;
+  *)        platform="unknown: $OSTYPE" ;;
 esac
 
 if [[ $platform != LINUX ]]; then
-    echo "This script dose not support $platform." >&2
-    exit 1
+  echo "This script dose not support $platform." >&2
+  exit 1
 fi
 
 coproc gpudetailfd { ${DIR}/gpustat --no-header -c | sed 's/^/        /'; }
