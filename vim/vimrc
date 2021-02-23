@@ -71,6 +71,7 @@
   " Plug 'preservim/nerdtree'
   Plug 'tpope/vim-vinegar'
   Plug 'liuchengxu/vista.vim'
+  Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 
 
 " Language Specific
@@ -1206,6 +1207,17 @@
 " ---------------------------------------------------------------------------------------
   " https://github.com/tpope/vim-vinegar/issues/13#issuecomment-489440040
   let g:netrw_fastbrowse = 0
+
+
+" kkoomen/vim-doge
+" ---------------------------------------------------------------------------------------
+  let g:doge_mapping = '<Leader>D'
+  let g:doge_doc_standard_python = 'google'
+
+
+" AndrewRadev/splitjoin.vim
+" ---------------------------------------------------------------------------------------
+  let g:splitjoin_python_brackets_on_separate_lines = 1
 
 
 " nvim-treesitter/nvim-treesitter
