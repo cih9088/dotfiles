@@ -159,7 +159,6 @@ brew install --cask vmware-fusion
 brew install --cask alt-tab
 brew install --cask alfred
 brew install --cask bartender
-brew install --cask mounty
 brew install --cask hazel
 brew install --cask microsoft-office
 
