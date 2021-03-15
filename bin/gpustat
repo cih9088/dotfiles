@@ -32,6 +32,7 @@ vercomp () {
 
 # Reset
 Reset='[0m'       # Text Reset
+Bold='[1m'       # Text Reset
 
 # Regular Colors
 Black='[0;30m'        # Black
@@ -107,7 +108,7 @@ usage() {
   LESS=-FEXR less <<HELP
 
 ${BRed}SYNOPSIS${Reset}
-    ${BRed}$(basename "$0")${Reset} [${BRed}-u${Reset}] [${BRed}-p${Reset}] [${BRed}-w${Reset}] [${BRed}-c${Reset}] [${BRed}-h${Reset}] [${BRed}-i${Reset} ${BGreen}interval${Reset}] [${BRed}--no-header${Reset}]
+    ${BRed}$(basename "$0")${Reset} [${BRed}-u${Reset}] [${BRed}-p${Reset}] [${BRed}-w${Reset}] [${BRed}-c${Reset}] [${BRed}-h${Reset}] [${BRed}-f${Reset}] [${BRed}-i${Reset} ${BGreen}interval${Reset}] [${BRed}--no-header${Reset}]
 
 
 ${BRed}DESCRIPTION${Reset}
@@ -133,7 +134,10 @@ ${BRed}OPTIONS${Reset}
         Display GPU power usage
 
     ${BRed}-c, --show-cmd${Reset}
-        Display COMM of the process
+        Display command of the process
+
+    ${BRed}-f, --show-fan${Reset}
+        Display GPu fan speed
 
     ${BRed}-h, --help${Reset}
         show this help message
@@ -152,6 +156,7 @@ SHOW_HEADER=1
 SHOW_PID=0
 SHOW_POWER=0
 SHOW_CMD=0
+SHOW_FAN=0
 SHOW_USER=2
 INTERVAL=0
 for pass in 1 2; do
@@ -164,7 +169,8 @@ for pass in 1 2; do
         -w|--show-power)    SHOW_POWER=1; ;;
         -c|--show-cmd)      SHOW_CMD=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
         -u|--show-user)     SHOW_USER=1;;
-        -i|--interval)      INTERVAL=${2}; shift;;
+        -f|--show-fan)      SHOW_FAN=1;;
+        -i|--interval)      INTERVAL=${2:-1}; [ ! -z ${2:-} ] && shift;;
         -h|--help)          usage; exit 0;;
         --*)                error $1;;
         -*)                 if [ $pass -eq 1 ]; then ARGS="$ARGS $1";
@@ -204,6 +210,7 @@ command -v awk >/dev/null || ( echo "awk command not found" >&2; exit 1 )
 command -v paste >/dev/null || ( echo "paste command not found" >&2; exit 1 )
 command -v hostname >/dev/null || ( echo "paste command not found" >&2; exit 1 )
 command -v date >/dev/null || ( echo "paste command not found" >&2; exit 1 )
+command -v strings >/dev/null || ( echo "strings command not found" >&2; exit 1 )
 
 bash_version=$(printf ${BASH_VERSINFO[@]:0:3} | tr '[:space:]' '.')
 result=$(vercomp "${bash_version}" "4" )
@@ -230,7 +237,7 @@ while true; do
   # exec 4>&${perfd[0]}
   # basic_info=$(cat <&3)
   # per_info=$(cat <&4)
-  basic_info=$(nvidia-smi --query-gpu=gpu_uuid,name,temperature.gpu,utilization.gpu,power.draw,power.limit,memory.used,memory.total --format=csv,noheader,nounits)
+  basic_info=$(nvidia-smi --query-gpu=gpu_uuid,name,temperature.gpu,utilization.gpu,fan.speed,power.draw,power.limit,memory.used,memory.total, --format=csv,noheader,nounits)
   per_info=$(nvidia-smi --query-compute-apps=gpu_uuid,pid,used_memory --format=csv,noheader,nounits)
 
   ctr=0
@@ -242,15 +249,25 @@ while true; do
     ctr=$(( ${ctr} + 1 ))
   done <<< "${basic_info}"
 
+  re_parse=false
   if [ ! -z "${per_info}" ]; then
     while IFS= read -r line; do
       uuid=$(cut -d ',' -f 1 <(echo ${line}) | tr -d '[:space:]')
       pid=$(cut -d ',' -f 2 <(echo ${line}) | tr -d '[:space:]')
       memory=$(cut -d ',' -f 3 <(echo ${line}) | tr -d '[:space:]')
-      user=$(stat -c "%U" /proc/${pid})
-      comm=$(cat /proc/${pid}/comm)
+      user=$(stat -c "%U" /proc/${pid} 2>/dev/null || echo "Anonymous")
+      comm=$(strings /proc/${pid}/cmdline || echo "Unkonwn")
+      comm=$(basename "/Unkonwn$(echo $comm | awk '{print $1}')")
+      if [ $user == "Anonymous" ] || [ $comm == "Unkonwn" ]; then
+        re_parse=true
+        break
+      fi
       gpus[${uuid}]="${gpus[${uuid}]}, ${user}, ${comm}, ${pid}, ${memory}"
     done <<< "${per_info}"
+  fi
+
+  if [ ${re_parse} == "true" ]; then
+    continue
   fi
 
   if [ ${INTERVAL} -gt 0 ]; then
@@ -258,11 +275,11 @@ while true; do
   fi
 
   if [ ${SHOW_HEADER} -eq 1 ]; then
-    printf "${BIWhite}%s${Reset}    %s ${IBlack}%s${Reset}\n" $(hostname) $(date) $(nvidia-smi -i 0 --query-gpu=driver_version --format=csv,noheader)
+    printf "${Bold}%s${Reset}    %s ${IBlack}%s${Reset}\n" $(hostname) $(date) $(nvidia-smi -i 0 --query-gpu=driver_version --format=csv,noheader)
   fi
 
   for uuid in "${gpus_order[@]}"; do
-    awk -F ', ' -v SHOW_PID="${SHOW_PID}" -v SHOW_POWER="${SHOW_POWER}" -v SHOW_CMD="${SHOW_CMD}" -v SHOW_USER="${SHOW_USER}" '
+    awk -F ', ' -v SHOW_PID="${SHOW_PID}" -v SHOW_POWER="${SHOW_POWER}" -v SHOW_CMD="${SHOW_CMD}" -v SHOW_USER="${SHOW_USER}" -v SHOW_FAN=${SHOW_FAN} '
   function bold() {
     printf "\033[1m";
   }
@@ -332,40 +349,64 @@ while true; do
   }
 
   {
+    # index
     cyan()
     printf "[%s] ", $1
     reset()
 
+    # gpu name
     blue()
     printf "%-'${max_length}'s", $2
     reset()
 
     printf " | "
 
-    bold()
+    # temperature
+    if ( $3 >= 60 ) {
+      bold()
+    }
     red()
     printf "%dC", $3
     reset()
 
+    # fan
+    if ( SHOW_FAN == 1) {
+      printf ", "
+
+      if ( $5 >= 70) {
+        bold()
+      }
+      cyanI()
+      printf "%3d %", $5
+      reset()
+
+    }
+
     printf ", "
 
-    bold()
+    # utilisation
+    if ( $4 >= 70) {
+      bold()
+    }
     green()
     printf "%3d %", $4
     reset()
 
+    # power
     if ( SHOW_POWER == 1 ) {
       printf ", "
 
-      bold()
+      if ( $6 / $7 >= 0.7 ) {
+        bold()
+      }
       purple()
-      printf "%3d", $5
+      printf "%3d", $6
       reset()
 
       printf " / "
 
       purple()
-      printf "%3d W", $6
+      printf "%3d W", $7
       reset()
     }
 
@@ -373,22 +414,21 @@ while true; do
 
     bold()
     yellow()
-    printf "%5d", $7
+    printf "%5d", $8
     reset()
 
     printf " / "
 
     yellow()
-    printf "%5d", $8
+    printf "%5d", $9
     reset()
 
     printf " MB |"
 
-    for (i=9; i < NF; ) {
+    for (i=10; i < NF; ) {
       printf " "
       if ( SHOW_USER > 0 ) {
         bold()
-        blackI()
         printf "%s", $i
         reset()
       }
@@ -410,7 +450,7 @@ while true; do
           printf "/"
         }
 
-        white()
+        reset()
         printf "%s", $i
         reset()
       }
