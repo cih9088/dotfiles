@@ -50,6 +50,13 @@ zstyle ':prezto:load' pmodule \
   'autosuggestions' \
   'prompt'
 
+
+#
+# Environment
+#
+
+zstyle ':prezto:environment:termcap' color 'no'
+
 #
 # Autosuggestions
 #
