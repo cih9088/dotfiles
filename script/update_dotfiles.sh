@@ -19,14 +19,10 @@ mkdir -p ${backup_directory}
   || start_spinner "Updating ${Bold}${Underline}dotfiles${Color_Off}..."
 (
 VIM_DIR=${PROJ_HOME}/vim
-NVIM_DIR=${PROJ_HOME}/nvim
 TMUX_DIR=${PROJ_HOME}/tmux
 ZSH_DIR=${PROJ_HOME}/zsh
 PYLINT_DIR=${PROJ_HOME}/pylint
-FLAKE8_DIR=${PROJ_HOME}/flake8
 CONFIG_DIR=${PROJ_HOME}/config
-GRIP_DIR=${PROJ_HOME}/grip
-GIT_DIR=${CONFIG_DIR}/git
 
 # backup old files and replace it with mine
 if [ -e $HOME/.vimrc ]; then
@@ -40,12 +36,6 @@ if [ -e $HOME/.vim ]; then
   rm -rf $HOME/.vim
 fi
 ln -s -f ${VIM_DIR} $HOME/.vim
-
-if [ -e $HOME/.config/nvim ]; then
-  cp -RfL $HOME/.config/nvim ${backup_directory}/.config
-  rm -rf $HOME/.config/nvim
-fi
-ln -s -f ${NVIM_DIR} $HOME/.config/nvim
 
 if [ -e $HOME/.tmux ]; then
   cp -RfH $HOME/.tmux ${backup_directory}
@@ -89,23 +79,11 @@ if [ -e $HOME/.zlogout ]; then
 fi
 ln -s -f ${ZSH_DIR}/zlogout $HOME/.zlogout
 
-if [ -e $HOME/.pylintrc ]; then
-  cp -RfL $HOME/.pylintrc ${backup_directory}
-  rm -rf $HOME/.pylintrc
+if [ -e $HOME/.config/nvim ]; then
+  cp -RfL $HOME/.config/nvim ${backup_directory}/.config
+  rm -rf $HOME/.config/nvim
 fi
-ln -s -f ${PYLINT_DIR}/pylintrc $HOME/.pylintrc
-
-if [ -e $HOME/.flake8 ]; then
-  cp -RfL $HOME/.flake8 ${backup_directory}
-  rm -rf $HOME/.flake8
-fi
-ln -s -f ${FLAKE8_DIR}/flake8 $HOME/.flake8
-
-if [ -e $HOME/.grip ]; then
-  cp -RfL $HOME/.grip ${backup_directory}
-  rm -rf $HOME/.grip
-fi
-ln -s -f ${GRIP_DIR} $HOME/.grip
+ln -s -f ${CONFIG_DIR}/nvim $HOME/.config/nvim
 
 if [ -e $HOME/.config/alacritty ]; then
   cp -RfL $HOME/.config/alacritty ${backup_directory}/.config
@@ -131,23 +109,60 @@ if [ -e $HOME/.config/spacebar ]; then
 fi
 ln -s -f ${CONFIG_DIR}/spacebar $HOME/.config/spacebar
 
-if [ -e $HOME/.config/tealdeer ]; then
-  cp -RfL $HOME/.config/tealdeer ${backup_directory}/.config
-  rm -rf $HOME/.config/tealdeer
-fi
-ln -s -f ${CONFIG_DIR}/tealdeer $HOME/.config/tealdeer
-
 if [ -e $HOME/.config/git ]; then
   cp -RfL $HOME/.config/git ${backup_directory}/.config
   rm -rf $HOME/.config/git
 fi
 ln -s -f ${CONFIG_DIR}/git $HOME/.config/git
 
+if [ -e $HOME/.config/flake8 ]; then
+  cp -RfL $HOME/.config/flake8 ${backup_directory}/.config
+  rm -rf $HOME/.config/flake8
+fi
+ln -s -f ${CONFIG_DIR}/flake8 $HOME/.config/flake8
+
+if [ -e $HOME/.config/pylintrc ]; then
+  cp -RfL $HOME/.config/pylintrc ${backup_directory}/.config
+  rm -rf $HOME/.config/pylintrc
+fi
+ln -s -f ${CONFIG_DIR}/pylintrc $HOME/.config/pylintrc
+
+if [ -e $HOME/.config/fish ]; then
+  cp -RfL $HOME/.config/fish ${backup_directory}/.config
+  rm -rf $HOME/.config/fish
+fi
+ln -s -f ${CONFIG_DIR}/fish $HOME/.config/fish
+
+if [ -e $HOME/.config/tealdeer ]; then
+  cp -RfL $HOME/.config/tealdeer ${backup_directory}/.config
+  rm -rf $HOME/.config/tealdeer
+fi
+ln -s -f ${CONFIG_DIR}/tealdeer $HOME/.config/tealdeer
+
+if [ -e $HOME/.config/vivid ]; then
+  cp -RfL $HOME/.config/vivid ${backup_directory}/.config
+  rm -rf $HOME/.config/vivid
+fi
+ln -s -f ${CONFIG_DIR}/vivid $HOME/.config/vivid
+
+
+# legacy configurations
+if [ -e $HOME/.flake8 ]; then
+  cp -RfL $HOME/.flake8 ${backup_directory}/.flake8
+  rm -rf $HOME/.flake8
+fi
+if [ -e $HOME/.pylintrc ]; then
+  cp -RfL $HOME/.pylintrc ${backup_directory}/.pylintrc
+  rm -rf $HOME/.pylintrc
+fi
 if [ -e $HOME/.gitignore ]; then
   cp -RfL $HOME/.gitignore ${backup_directory}/.gitignore
   rm -rf $HOME/.gitignore
 fi
-ln -s -f ${GIT_DIR}/gitignore $HOME/.gitignore
+if [ -e $HOME/.grip ]; then
+  cp -RfL $HOME/.grip ${backup_directory}/.grip
+  rm -rf $HOME/.grip
+fi
 
 # clean up dotfiles old if there is nothing backuped
 if [ -z "$(ls -A ${backup_directory})" ]; then

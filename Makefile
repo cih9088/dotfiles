@@ -161,14 +161,17 @@ updateDevEnv:
 
 clean:
 	@( sed -i -e '/# added from andys dotfiles/,/^fi$$/d' ${HOME}/.bashrc )
-	@( rm -rf ${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
+	@( rm -rf \
+		${HOME}/.vimrc ${HOME}/.vim \
+		${HOME}/.tmux ${HOME}/.tmux.conf \
+		${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
 		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \
 		${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
-		${HOME}/.gitignore \
-		${HOME}/.grip ${HOME}/.pylintrc ${HOME}/.flake8 ${HOME}/.tmux ${HOME}/.tmux.conf \
-		${HOME}/.vimrc ${HOME}/.vim \
-		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/coc ${HOME}/.config/ranger \
-		${HOME}/.config/yabai ${HOME}/.config/skhd ${HOME}/.config/spacebar ${HOME}/.config/tealdeer || true )
+		${HOME}/.config/nvim ${HOME}/.config/alacritty \
+		${HOME}/.config/yabai ${HOME}/.config/skhd ${HOME}/.config/spacebar \
+		${HOME}/.config/git ${HOME}/.config/flake8 ${HOME}/.config/pylintrc \
+		${HOME}/.config/fish ${HOME}/.config/tealdeer ${HOME}/.config/vivid \
+		|| true )
 	@rm -rf $(PROJ_HOME)
 	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
 	@echo "[0;92m[*][0m Remove all configurations files and custom functions"
