@@ -300,5 +300,10 @@ main_script() {
 random-string() {
   local length=${1:-32}
   export LC_CTYPE=C
-  echo $(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${length} | head -n 1)
+  export LANG=C
+  if [ "$platform" == "OSX" ]; then
+    cat /dev/urandom | tr -dc 'a-zA-Z0-9\$\?' | fold -w ${length} | head -n 1
+  else
+    cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w ${length} | head -n 1
+  fi
 }
