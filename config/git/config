@@ -1,6 +1,6 @@
 # This is Git's per-user configuration file.
-[commit]
-	template = ~/.config/git/gitmessage
 [user]
 	email = cih9088@gmail.com
-	name = Andy
+	name = Inhyeok Andy Cho
+[commit]
+	template = ~/.config/git/gitmessage
