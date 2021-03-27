@@ -24,6 +24,14 @@ ZSH_DIR=${PROJ_HOME}/zsh
 PYLINT_DIR=${PROJ_HOME}/pylint
 CONFIG_DIR=${PROJ_HOME}/config
 
+
+# legacy configurations to remove broken configs
+[ ! -e $HOME/.flake8 ] && rm -rf $HOME/.flake8
+[ ! -e $HOME/.pylintrc ] && rm -rf $HOME/.pylintrc
+[ ! -e $HOME/.gitignore ] && rm -rf $HOME/.gitignore
+[ ! -e $HOME/.grip ] && rm -rf $HOME/.grip
+
+
 # backup old files and replace it with mine
 if [ -e $HOME/.vimrc ]; then
   cp -RfL $HOME/.vimrc ${backup_directory}
@@ -145,24 +153,6 @@ if [ -e $HOME/.config/vivid ]; then
 fi
 ln -s -f ${CONFIG_DIR}/vivid $HOME/.config/vivid
 
-
-# legacy configurations
-if [ -e $HOME/.flake8 ]; then
-  cp -RfL $HOME/.flake8 ${backup_directory}/.flake8
-  rm -rf $HOME/.flake8
-fi
-if [ -e $HOME/.pylintrc ]; then
-  cp -RfL $HOME/.pylintrc ${backup_directory}/.pylintrc
-  rm -rf $HOME/.pylintrc
-fi
-if [ -e $HOME/.gitignore ]; then
-  cp -RfL $HOME/.gitignore ${backup_directory}/.gitignore
-  rm -rf $HOME/.gitignore
-fi
-if [ -e $HOME/.grip ]; then
-  cp -RfL $HOME/.grip ${backup_directory}/.grip
-  rm -rf $HOME/.grip
-fi
 
 # clean up dotfiles old if there is nothing backuped
 if [ -z "$(ls -A ${backup_directory})" ]; then
