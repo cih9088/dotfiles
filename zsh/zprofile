@@ -137,7 +137,7 @@
   # Inside tmux session, these environment variables are changed
   # because of the change of PATH during zsh initialisation in non-tmux session
   # This prevents no module found error in virtualenvwrapper
-  [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_PYTHON=$(which python)
+  [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_PYTHON=$(which python3)
   [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
   [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
   [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)

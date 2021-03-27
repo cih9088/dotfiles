@@ -25,10 +25,14 @@
 
 # Setup virtualenvwrapper (using system python)
 # ---------------------------------------------------------------------------------------
-  [ -z "${TMUX+x}" ] &&
+  if [ -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
     [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] &&
-    pip install --user virtualenv virtualenvwrapper
-
+    pip3 install --user virtualenv virtualenvwrapper
+    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+    export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+    export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+    export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+  fi
   command -v virtualenvwrapper_lazy.sh >/dev/null  &&
     source $(which virtualenvwrapper_lazy.sh)
 
@@ -62,6 +66,20 @@
     source $(brew --prefix)/opt/asdf/asdf.sh
     # completion is installed with brew
   fi
+
+
+# Setup virtualenvwrapper (using asdf/pyenv python)
+# ---------------------------------------------------------------------------------------
+  if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
+    [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] &&
+    pip3 install --user virtualenv virtualenvwrapper
+    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+    export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+    export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+    export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+  fi
+  command -v virtualenvwrapper_lazy.sh >/dev/null  &&
+    source $(which virtualenvwrapper_lazy.sh)
 
 
 # Source Prezto
