@@ -1,6 +1,7 @@
 # This is Git's per-user configuration file.
-[user]
-	email = cih9088@gmail.com
-	name = Inhyeok Andy Cho
+
+[include]
+	path = ~/.config/git/config.local
+
 [commit]
 	template = ~/.config/git/gitmessage

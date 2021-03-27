@@ -1,4 +1,5 @@
 temp
 config/nvim/coc-settings.json
+config/git/config.local
 **/.netrwhist
 **/.netrwbook
