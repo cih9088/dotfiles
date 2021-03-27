@@ -38,6 +38,11 @@ ifeq (installRg,$(firstword $(MAKECMDGOALS)))
   $(eval $(rg_version):;@:)
 endif
 
+ifeq (installUp,$(firstword $(MAKECMDGOALS)))
+  rg_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(rg_version):;@:)
+endif
+
 prepare:
 	@mkdir -p ${HOME}/.local/bin
 	@mkdir -p ${HOME}/.local/src
@@ -101,6 +106,9 @@ installBashSnippets: prepare
 installBpytop: prepare
 	@( $(SCRIPTS_DIR)/install_bpytop.sh )
 
+installUp: prepare
+	@( $(SCRIPTS_DIR)/install_up.sh )
+
 installDevShell:
 	@( $(SCRIPTS_DIR)/installDev_shell.sh )
 
@@ -161,7 +169,7 @@ clean:
 	@echo "[0;92m[*][0m Remove all configurations files and custom functions"
 
 installBins: prepare installTree installFd installRg installRanger \
-	installThefuck installTldr installBashSnippets installBpytop
+	installThefuck installTldr installBashSnippets installBpytop installUp
 
 update: prepare updateDotfiles updateNeovimPlugins updateTPM updateTmuxPlugins updateCustomBins \
 	updatePrezto updateDevEnv

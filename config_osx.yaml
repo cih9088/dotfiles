@@ -130,6 +130,15 @@ bpytop:
   force: true
 
 #######################
+#  installUp
+#######################
+
+up:
+  install: true
+  local: false
+  force: true
+
+#######################
 # installDevshell
 #######################
 
