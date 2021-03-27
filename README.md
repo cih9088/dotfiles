@@ -77,8 +77,9 @@ $ cd ~/dotfiles
 
 # COMMANDS
 # You could choose what to install in following list
-# [installZsh, installPrezto, installNeovim, installTmux,
-#  installTree, installFd installRg installRanger, installThefuck installTldr installBashSnippets]
+# [installZsh, installPrezto, installNeovim, installTmux, installTree, installFd,
+#  installRg, installRanger, installThefuck, installTldr, installBashSnippets,
+#  installBpytop, installUp]
 # For instance,
 $ make installNeovim          # Install neovim only with latest stable version
 $ make installNeovim 0.2.0    # Specify version if intended to install locally
@@ -86,8 +87,9 @@ $ make installNeovim nightly  # even nightly is available (neovim only)
 # NOTE: 'make installNeovim' depdends on 'installDevPython', 'installDevNodejs', 'installDevGo'
 # which means thoes dependencies are automatically installed. See below dev environments
 # NOTE: version specification is only available for limited target
-# [installZsh, installNeovim, installTmux, installTree, installFd, installRg, installTldr]
-$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr, bash_snippets, bpytop at once
+# [installZsh, installNeovim, installTmux, installTree, installFd, installRg,
+#  installTldr, installUp]
+$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr, bash_snippets, bpytop, up at once
 
 # DEV ENVIRONMENT
 # You could choose what to install in following list

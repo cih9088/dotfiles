@@ -38,6 +38,11 @@ ifeq (installRg,$(firstword $(MAKECMDGOALS)))
   $(eval $(rg_version):;@:)
 endif
 
+ifeq (installTldr,$(firstword $(MAKECMDGOALS)))
+  rg_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  $(eval $(rg_version):;@:)
+endif
+
 ifeq (installUp,$(firstword $(MAKECMDGOALS)))
   rg_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(rg_version):;@:)
