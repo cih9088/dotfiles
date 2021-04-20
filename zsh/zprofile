@@ -32,6 +32,7 @@
     /usr/local/{bin,sbin}
     /usr/{bin,sbin}
     /{bin,sbin}
+    /snap/bin
     $path
   )
   # apple silicon homebrew path
