@@ -218,6 +218,8 @@ mas install 869223134   # KakaoTalk
 mas install 1445910651  # Dynamo
 mas install 1462114288  # Grammarly for Safari
 mas install 1480933944  # Vimari
+mas install 1559269364  # Notion Web Clipper
+
 
 ## not free
 mas install 445189367   # PopClip
