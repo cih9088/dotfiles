@@ -39,8 +39,8 @@ nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +CocUpdateSync +qall
 # update remote plugins
 nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +UpdateRemotePlugins +qall
 
-rm -rf ${PROJ_HOME}/nvim/coc-settings.json || true
-cp ${PROJ_HOME}/nvim/coc-settings-base.json ${PROJ_HOME}/nvim/coc-settings.json
+rm -rf ${PROJ_HOME}/config/nvim/coc-settings.json || true
+cp ${PROJ_HOME}/config/nvim/coc-settings-base.json ${PROJ_HOME}/config/nvim/coc-settings.json
 
 # ln -snf ${PROJ_HOME}/vim/andy_lightline.vim ${HOME}/.local/share/nvim/plugged/lightline.vim/autoload/lightline/colorscheme
 ) >&3 2>&4 || exit_code="$?" && true
