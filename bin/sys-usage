@@ -24,7 +24,13 @@ if [[ $platform != LINUX ]]; then
   exit 1
 fi
 
-coproc gpudetailfd { ${DIR}/gpustat --no-header -c | sed 's/^/        /'; }
+if [ ${#@} == 0 ]; then
+  args="-c"
+else
+  args="$@"
+fi
+
+coproc gpudetailfd { ${DIR}/gpustat --no-header $@ | sed 's/^/        /'; }
 exec 3>&${gpudetailfd[0]}
 hostname="$(hostname)"
 now="$(date)"
