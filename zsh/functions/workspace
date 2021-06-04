@@ -1,0 +1,21 @@
+[ -z ${TMUX+x} ] && echo "Not in tmux session" >&1 && return 1
+
+split=${1:-s}
+
+[ $split = "s" ] && (
+  tmux split-window -v -p 25
+  tmux select-pane -t 1
+)
+
+[ $split = "d" ] && (
+  tmux split-window -v -p 25
+  tmux split-window -hb -p 50
+  tmux select-pane -t 1
+)
+
+[ $split = "t" ] && (
+  tmux split-window -v -p 25
+  tmux split-window -hb -p 66
+  tmux split-window -hb -p 50
+  tmux select-pane -t 1
+)
