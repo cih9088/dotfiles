@@ -12,8 +12,8 @@ echo "${marker_title} Prepare to ${Bold}${Underline}update bin directory${Color_
 ################################################################
 
 [[ ${VERBOSE} == "true" ]] &&
-  echo "Updating ${marker_info} ${Bold}${Underline}custom bin files${Color_Off}..." ||
-  start_spinner "Updating ${marker_info} ${Bold}${Underline}custom bin files${Color_Off}..."
+  echo "${marker_info} Updating ${Bold}${Underline}custom bin files${Color_Off}..." ||
+  start_spinner "Updating ${Bold}${Underline}custom bin files${Color_Off}..."
 (
 # https://github.com/ChristopherSchultz/fast-file-count
 cd $BIN_DIR; cc -Wall -pedantic -o dircnt dircnt.c;
