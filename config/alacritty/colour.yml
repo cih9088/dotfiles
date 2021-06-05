@@ -18,14 +18,14 @@ schemes:
 
     # Bright colors
     bright:
-      black:   '#3a3a3a'
-      red:     '#870100'
-      green:   '#005f00'
-      yellow:  '#d8865f'
-      blue:    '#0087af'
-      magenta: '#87025f'
-      cyan:    '#008787'
-      white:   '#eeeeee'
+      black:   '#626262'
+      red:     '#d75f87'
+      green:   '#87af87'
+      yellow:  '#ffd787'
+      blue:    '#add4fb'
+      magenta: '#ffafaf'
+      cyan:    '#87d7d7'
+      white:   '#e4e4e4'
 
   seoul256_light: &seoul256_light
     # Default colors
