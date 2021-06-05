@@ -208,17 +208,7 @@
 
 
   " ChangeBackground changes theme and background
-  function! ChangeBackground(theme="")
-    if a:theme != ""
-      execute 'colorscheme ' . a:theme
-    else
-      try
-        execute 'colorscheme ' . system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
-      catch
-        colorscheme miramare
-      endtry
-    endif
-
+  function! ChangeBackground(...)
     if !empty($TMUX)
       if system('tmux show-env BG_LUMINANCE') !~# '^-.*'
         if split(trim(system('tmux show-env BG_LUMINANCE')), '=')[1] == "light"
@@ -234,6 +224,16 @@
         set background=dark
       endif
     endif
+
+    try
+      if a:0 > 0
+        execute 'colorscheme ' . a:1
+      else
+          execute 'colorscheme ' . system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
+      endif
+    catch
+      colorscheme miramare
+    endtry
   endfunction
 
   call ChangeBackground()
@@ -868,7 +868,7 @@
 " tpope/vim-fugitive
 " ---------------------------------------------------------------------------------------
   if has_key(g:plugs, 'vim-fugitive')
-    nnoremap <leader>gs :Gstatus<CR>
+    nnoremap <leader>gs :Git<CR>
     nnoremap <leader>gd :Gdiff<CR>
   endif
 
