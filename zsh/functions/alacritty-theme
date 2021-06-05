@@ -1,0 +1,9 @@
+
+_CONFIG_PATH="$(realpath ~/.config/alacritty/colour.yml)"
+
+_THEME=${1:-gruvbox_dark}
+
+[ ! -f $_CONFIG_PATH ] && \
+  echo "file $_CONFIG_PATH doesn't exist" >&1 && return 1
+
+sed -i "" -e "s#^colors: \*.*#colors: *$_THEME#g" $_CONFIG_PATH
