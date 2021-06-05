@@ -808,6 +808,24 @@
   command! CopyFilePath let @+ = expand(has('win32') ? '%:p:gs?/?\\?' : '%:p')
 
 
+" copy the directory where current file is in.
+" ---------------------------------------------------------------------------------------
+  command! CopyFileDir let @+ = expand(has('win32') ? '%:p:h:gs?/?\\?' : '%:p:h')
+
+
+" go to current file directory
+" ---------------------------------------------------------------------------------------
+  function! Cd()
+    if !empty($TMUX)
+      call system("tmux new-window -c " . expand('%:p:h'))
+    else
+      echo "You are not in tmux session. Copy directory into clipboard instead."
+      execute 'CopyFileDir'
+    endif
+  endfunction
+  command! Cd call Cd()
+
+
 " Custom location for quickfix and loclist
 " ---------------------------------------------------------------------------------------
   function! CustomiseLocation()
