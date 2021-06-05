@@ -1,5 +1,11 @@
 temp
+
 config/nvim/coc-settings.json
+
 config/git/config.local
+
+config/alacritty/colour.yml
+config/alacritty/colour.yml-e
+
 **/.netrwhist
 **/.netrwbook
