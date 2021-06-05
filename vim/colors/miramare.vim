@@ -31,29 +31,30 @@ let s:configuration.cursor = get(g:, 'miramare_cursor', 'auto')
 let s:configuration.current_word = get(g:, 'miramare_current_word', get(g:, 'miramare_transparent_background', 0) == 0 ? 'grey background' : 'bold')
 " }}}
 " Palette: {{{
+" \ 'fg':           ['#e3d6b6',   '223',  'White'],
 let s:palette = {
-      \ 'bg0':          ['#2A2426',   '235',  'Black'],
-      \ 'bg1':          ['#242021',   '236',  'DarkGrey'],
-      \ 'bg2':          ['#242021',   '237',  'DarkGrey'],
-      \ 'bg3':          ['#242021',   '238',  'DarkGrey'],
-      \ 'bg4':          ['#242021',   '239',  'Grey'],
-      \ 'bg_red':       ['#392f32',   '52',   'DarkRed'],
-      \ 'bg_green':     ['#333b2f',   '22',   'DarkGreen'],
-      \ 'bg_blue':      ['#203a41',   '17',   'DarkBlue'],
-      \ 'fg':           ['#e3d6b6',   '223',  'White'],
-      \ 'red':          ['#e68183',   '167',  'Red'],
-      \ 'orange':       ['#e39b7b',   '208',  'Red'],
-      \ 'yellow':       ['#d9bb80',   '214',  'Yellow'],
-      \ 'green':        ['#87af87',   '108',  'Green'],
-      \ 'cyan':         ['#89beba',   '109',  'Cyan'],
-      \ 'blue':         ['#86ad9e',   '109',  'Blue'],
-      \ 'purple':       ['#d3a0bc',   '175',  'Magenta'],
-      \ 'grey':         ['#444444',   '240',  'LightGrey'],
-      \ 'light_grey':   ['#5b5b5b',   '245',  'LightGrey'],
-      \ 'gold':         ['#d8caac',   '187',  'Yellow'],
-      \ 'pink':         ['#ffdfdf',   '224',  'Pink'],
-      \ 'bg_pink':      ['#875f5f',   '95',   'DarkPink'],
-      \ 'none':         ['NONE',      'NONE', 'NONE']
+      \ 'bg0':        ['#2A2426',   '235',  'Black'],
+      \ 'bg1':        ['#242021',   '236',  'DarkGrey'],
+      \ 'bg2':        ['#242021',   '237',  'DarkGrey'],
+      \ 'bg3':        ['#242021',   '238',  'DarkGrey'],
+      \ 'bg4':        ['#242021',   '239',  'Grey'],
+      \ 'bg_red':     ['#392f32',   '52',   'DarkRed'],
+      \ 'bg_green':   ['#333b2f',   '22',   'DarkGreen'],
+      \ 'bg_blue':    ['#203a41',   '17',   'DarkBlue'],
+      \ 'fg':         ['#e6d6ac',   '223',  'White'],
+      \ 'red':        ['#e68183',   '167',  'Red'],
+      \ 'orange':     ['#e39b7b',   '208',  'Red'],
+      \ 'yellow':     ['#d9bb80',   '214',  'Yellow'],
+      \ 'green':      ['#87af87',   '108',  'Green'],
+      \ 'cyan':       ['#89beba',   '109',  'Cyan'],
+      \ 'blue':       ['#86ad9e',   '109',  'Blue'],
+      \ 'purple':     ['#d3a0bc',   '175',  'Magenta'],
+      \ 'grey':       ['#444444',   '240',  'LightGrey'],
+      \ 'light_grey': ['#5b5b5b',   '245',  'LightGrey'],
+      \ 'gold':       ['#d8caac',   '187',  'Yellow'],
+      \ 'pink':       ['#ffdfdf',   '224',  'Pink'],
+      \ 'bg_pink':    ['#875f5f',   '95',   'DarkPink'],
+      \ 'none':       ['NONE',      'NONE', 'NONE']
       \ }
 " }}}
 " Function: {{{
@@ -180,7 +181,7 @@ call s:HL('ModeMsg', s:palette.fg, s:palette.none, 'bold')
 call s:HL('MoreMsg', s:palette.blue, s:palette.none, 'bold')
 call s:HL('IncSearch', s:palette.none, s:palette.none, 'reverse')
 call s:HL('Search', s:palette.bg0, s:palette.red)
-call s:HL('MatchParen', s:palette.none, s:palette.bg4)
+call s:HL('MatchParen', s:palette.none, s:palette.bg_pink)
 call s:HL('NonText', s:palette.grey, s:palette.none)
 call s:HL('Pmenu', s:palette.fg, s:palette.bg_pink)
 call s:HL('PmenuSbar', s:palette.none, s:palette.bg2)
