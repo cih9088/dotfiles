@@ -128,7 +128,7 @@
 # get background luminance from xterm control sequence
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
-  [ -z "${TMUX+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg_luminance )
+  [ -z "${TMUX+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
 
 # virtualenvwrapper (using system python)

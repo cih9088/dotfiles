@@ -2,7 +2,7 @@
 if [ ! -z "${1+x}" ]; then
   alacritty-theme "${1}"
 else
-  theme=$(grep -i $( $DOTS/bin/bg_color ) ~/.config/alacritty/colour.yml -B 5 |
+  theme=$(grep -i $( $DOTS/bin/bg-color ) ~/.config/alacritty/colour.yml -B 5 |
     grep \& | sed 's/.*: *&\(.*\)/\1/')
   alacritty-theme "$theme"
 fi
@@ -10,7 +10,7 @@ fi
 sleep 0.3
 
 # renew environment variable
-export BG_LUMINANCE=$( $DOTS/bin/bg_luminance )
+export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
 # renew fzf color
 [ -f $DOTS/zsh/fzf.$BG_LUMINANCE ] &&
