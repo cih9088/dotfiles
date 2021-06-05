@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 [ -z ${TMUX+x} ] && echo "Not in tmux session" >&1 && return 1
 
 split=${1:-s}
