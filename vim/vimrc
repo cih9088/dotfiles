@@ -1224,7 +1224,7 @@
       if has('mac')
         silent exe 'silent !open -na "Google Chrome" --args --incognito --new-window ' . a:url
       else
-        call Yank(a:url)
+        call s:yank(a:url)
         echo 'url copied to clipboard'
       endif
     endfunction
