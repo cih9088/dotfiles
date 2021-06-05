@@ -27,7 +27,7 @@ schemes:
       cyan:    '#87d7d7'
       white:   '#e4e4e4'
 
-  seoul256_light: &seoul256_light
+  seoul256_light: &seoul256-light
     # Default colors
     primary:
       background: '#E1E1E1'
