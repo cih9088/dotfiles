@@ -163,6 +163,12 @@
   alias py3='python3'
 
 
+# Custom functions
+# ---------------------------------------------------------------------------------------
+  alias ws="workspace"
+  alias cb="change-background"
+
+
 # Rsync with progressbar
 # ---------------------------------------------------------------------------------------
   alias rsync-copy-sum='rsync-copy --info=progress2,name0 '
@@ -269,19 +275,6 @@
         return 1
       fi
     done
-  }
-
-
-# Renew certain environment variables
-# ---------------------------------------------------------------------------------------
-  so() {
-    export BG_LUMINANCE=$( $DOTS/bin/bg_luminance )
-
-    [ -f $DOTS/zsh/fzf.$BG_LUMINANCE ] &&
-      export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/zsh/fzf.$BG_LUMINANCE)"
-
-    [ -f $DOTS/zsh/ls_colors.$BG_LUMINANCE ] &&
-      export LS_COLORS=$(cat $DOTS/zsh/ls_colors.$BG_LUMINANCE)
   }
 
 

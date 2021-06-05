@@ -206,17 +206,37 @@
 
   set t_Co=256            " enable 256 color terminal
 
-  try
-    if exists('$BG_LUMINANCE') && $BG_LUMINANCE == 'light'
-      set background=light
-      colorscheme seoul256-light
+
+  " ChangeBackground changes theme and background
+  function! ChangeBackground(theme="")
+    if a:theme != ""
+      execute 'colorscheme ' . a:theme
     else
-      set background=dark
-      colorscheme seoul256
+      try
+        execute 'colorscheme ' . system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
+      catch
+        colorscheme seoul256
+      endtry
     endif
-  catch
-    colorscheme default
-  endtry
+
+    if !empty($TMUX)
+      if system('tmux show-env BG_LUMINANCE') !~# '^-.*'
+        if split(trim(system('tmux show-env BG_LUMINANCE')), '=')[1] == "light"
+          set background=light
+        else
+          set background=dark
+        endif
+      endif
+    else
+      if exists('$BG_LUMINANCE') && $BG_LUMINANCE == 'light'
+        set background=light
+      else
+        set background=dark
+      endif
+    endif
+  endfunction
+
+  call ChangeBackground()
 
   if has('nvim')
     let g:terminal_color_0  = '#4e4e4e'
@@ -837,7 +857,6 @@
     endif
   endfunction
   autocmd FileType qf call CustomiseLocation()
-
 
 
 " }}}
