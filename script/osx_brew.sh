@@ -119,6 +119,7 @@ brew install pandoc
 brew install mosh
 brew install htop
 brew install awscli
+brew install azure-cli
 brew install jq
 
 # Lxml and Libxslt
