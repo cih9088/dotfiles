@@ -209,6 +209,21 @@
 
   " ChangeBackground changes theme and background
   function! ChangeBackground(...)
+    " Change colorscheme
+    try
+      if a:0 > 0
+        execute 'colorscheme ' . a:1
+      else
+        let l:scheme = system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
+        let l:color =  matchstr(l:scheme, '[-_]\?\(light\|dark\)[-_]\?')
+        let l:scheme_clenaed = substitute(l:scheme, l:color, "", "")
+        execute 'colorscheme ' . l:scheme_clenaed
+      endif
+    catch
+      colorscheme miramare
+    endtry
+
+    " Change background
     if !empty($TMUX)
       if system('tmux show-env BG_LUMINANCE') !~# '^-.*'
         if split(trim(system('tmux show-env BG_LUMINANCE')), '=')[1] == "light"
@@ -224,16 +239,6 @@
         set background=dark
       endif
     endif
-
-    try
-      if a:0 > 0
-        execute 'colorscheme ' . a:1
-      else
-          execute 'colorscheme ' . system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
-      endif
-    catch
-      colorscheme miramare
-    endtry
   endfunction
 
   call ChangeBackground()
