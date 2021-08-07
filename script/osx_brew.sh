@@ -164,7 +164,7 @@ brew install --cask hazel
 brew install --cask microsoft-office
 
 brew install --cask
-brew install --cask refined-github-safari
+# brew install --cask refined-github-safari -> moved to app store
 brew install --cask dropbox
 brew install --cask slack
 brew install --cask inkscape
@@ -220,6 +220,7 @@ mas install 1445910651  # Dynamo
 mas install 1462114288  # Grammarly for Safari
 mas install 1480933944  # Vimari
 mas install 1559269364  # Notion Web Clipper
+mas install 1519867270  # Refined GitHub
 
 
 ## not free
