@@ -104,6 +104,18 @@ if [[ $platform != OSX && $platform != LINUX ]]; then
   echo "${marker_err} $platform is not supported." >&2; exit 1
 fi
 
+if [[ $platform == LINUX ]]; then
+  source <(grep ID /etc/os-release)
+  FAMILY=""
+  if [[ " rhel centos fedora rocky " =~ " ${ID} " ]]; then
+    FAMILY="RHEL"
+  elif [[ " ubuntu debian " =~ " ${ID} " ]]; then
+    FAMILY="DEBIAN"
+  else
+    echo "${ID} is not supported." >&2; exit 1
+  fi
+fi
+
 
 # if [[ $$ = $BASHPID ]]; then
 # fi

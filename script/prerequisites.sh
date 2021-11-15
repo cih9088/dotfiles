@@ -52,7 +52,8 @@ echo
     ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
     ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
 
-    brew install readline xz #pyenv
+    # pyenv
+    brew install openssl readline sqlite3 xz zlib
 
     brew install wget
     brew install curl
@@ -66,12 +67,31 @@ echo
     brew install --cask xquartz
 
   elif [[ $platform == "LINUX" ]]; then
-    sudo apt-get -y install python-dev python-pip python3-dev python3-pip highlight \
-      xclip wget git cmake bsdmainutils curl
-    sudo apt-get -y install make build-essential libssl-dev zlib1g-dev libbz2-dev \
-      libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
-      xz-utils tk-dev libffi-dev liblzma-dev python-openssl # pyenv
+    if [[ $FAMILY == "DEBIAN" ]]; then
+      # basic
+      sudo apt-get -y install python-dev python-pip python3-dev python3-pip highlight \
+        xclip wget git cmake bsdmainutils curl
+      # zsh, tmux
+      sudo apt-get -y install libncurses5-dev libncursesw5-dev
+      # pyenv
+      sudo apt-get -y install make build-essential libssl-dev zlib1g-dev libbz2-dev \
+        libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
+        xz-utils tk-dev libffi-dev liblzma-dev python-openssl
+    elif [[ $FAMILY == "RHEL" ]]; then
+      # basic
+      sudo dnf install -y python3 python2 highlight \
+        xclip wget git cmake curl
+      # zsh, tmux
+      sudo dnf install -y ncurses-devel
+      # pyenv
+      sudo dnf install -y gcc zlib-devel bzip2 bzip2-devel \
+        readline-devel sqlite sqlite-devel openssl-devel tk-devel libffi-devel xz-devel
+      # treesitter
+      sudo dnf install -y gcc-c++ libstdc++-devel
 
+      sudo alternatives --set python /usr/bin/python3
+      sudo alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+    fi
   else
     echo 'not defined'; exit 1
   fi
