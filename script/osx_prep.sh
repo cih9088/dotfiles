@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# copied from https://github.com/donnemartin/dev-setup/blob/master/osxprep.sh
+
+# https://github.com/donnemartin/dev-setup/blob/master/osxprep.sh
 
 # Ask for the administrator password upfront
 sudo -v

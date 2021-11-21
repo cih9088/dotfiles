@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# copied from https://github.com/donnemartin/dev-setup/blob/master/brew.sh
+# https://github.com/donnemartin/dev-setup/blob/master/brew.sh
 
 # Install command-line tools using Homebrew.
 
@@ -18,7 +18,7 @@ if test ! $(which brew); then
 fi
 
 
-# mas
+# Install mas
 brew install mas
 while true; do
   mas account >/dev/null 2>&1
@@ -64,6 +64,7 @@ brew install bash
 # brew install wget --with-iri
 brew install wget
 
+# Install python
 brew install python
 # create symlink manually
 # https://github.com/Homebrew/homebrew-core/issues/16212
@@ -121,6 +122,7 @@ brew install htop
 brew install awscli
 brew install azure-cli
 brew install jq
+brew install dockutil
 
 # Lxml and Libxslt
 # brew install libxml2
@@ -128,7 +130,7 @@ brew install jq
 # brew link libxml2 --force
 # brew link libxslt --force
 
-# Core casks
+# Install terminals
 brew install --cask iterm2
 brew install --cask alacritty
 # download big sur icon for alacritty
@@ -138,8 +140,10 @@ touch /Applications/Alacritty.app
 )
 brew install --cask xquartz # -> requires password
 
-# Install developer friendly quick look plugins; see https://github.com/sindresorhus/quick-look-plugins
-brew install --cask qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv qlimagesize webpquicklook suspicious-package quicklookase qlvideo
+# Install developer friendly quick look plugins
+# https://github.com/sindresorhus/quick-look-plugins
+brew install --cask qlcolorcode qlstephen qlmarkdown syntax-highlight \
+  quicklook-json qlimagesize suspicious-package apparency quicklookase qlvideo
 xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 # install SFMono patched with the nerd font
@@ -147,24 +151,25 @@ xattr -d -r com.apple.quarantine ~/Library/QuickLook
 brew tap epk/epk
 brew install --cask font-sf-mono-nerd-font
 
-# Misc casks
+# Install vpns
+brew install --cask openvpn-connect
+
+# Install general utilities
 brew install --cask google-chrome
 brew install --cask skype
 brew install --cask mos
 # brew install --cask betterzip
 brew install --cask keka
-# brew install --cask stats
-brew install --cask eul
+brew install --cask stats
+# brew install --cask eul
 brew install --cask teamviewer # -> requires password
 brew install --cask vmware-fusion
-brew install --cask alt-tab
+# brew install --cask alt-tab
 brew install --cask alfred
 brew install --cask bartender
 brew install --cask hazel
 brew install --cask microsoft-office
 
-brew install --cask
-# brew install --cask refined-github-safari -> moved to app store
 brew install --cask dropbox
 brew install --cask slack
 brew install --cask inkscape
@@ -173,23 +178,19 @@ brew install --cask docker
 brew install --cask mathpix-snipping-tool
 brew install --cask notion
 brew install --cask transmission
-# brew install --cask bitbar
-brew tap melonamin/formulae
-brew install swiftbar
+brew install --cask swiftbar
 brew tap homebrew/cask-versions
-brew install safari-technology-preview
-# brew install --cask fantastical
-# brew install --cask 1password
-# brew install --cask gimp
-
-# vagrant and virtualbox
+brew install --cask safari-technology-preview
 brew install --cask virtualbox
 brew install --cask vagrant
 brew install --cask vagrant-manager
+brew tap homebrew/cask-drivers
+brew install --cask synology-drive
+
 
 # install yabai
 brew install koekeishiya/formulae/yabai
-echo "$(whoami) ALL = (root) NOPASSWD: /usr/local/bin/yabai --load-sa" |\
+echo "$(whoami) ALL = (root) NOPASSWD: /usr/local/bin/yabai --load-sa" | \
     sudo tee -a /private/etc/sudoers.d/yabai >/dev/null
 # reinstall the scripting addition
 sudo yabai --uninstall-sa || true
@@ -202,13 +203,9 @@ killall Dock || true
 brew install koekeishiya/formulae/skhd
 brew services start skhd
 
-# install spacebar
-brew install cmacrae/formulae/spacebar
-brew services start spacebar
-
 ## free stuff
-mas install 1018899653  # HeliumLift
-#mas install 937984704   # Amphetamine
+# mas install 1018899653  # HeliumLift -> Download it manually
+# mas install 937984704   # Amphetamine
 mas install 409183694   # Keynote
 mas install 409201541   # Pages
 mas install 409203825   # Numbers
@@ -235,16 +232,3 @@ mas install 577085396   # Unclutter
 
 # Remove outdated versions from the cellar.
 brew cleanup
-
-
-# iterm2 config
-if [[ -e /Applications/iTerm.app ]]; then
-  # Specify the preferences directory
-  defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/dotfiles/config/iterm2"
-  # Tell iTerm2 to use the custom preferences in the directory
-  defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
-
-  # copy script
-  DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-  cp -r $DIR/../config/iterm2/AutoLaunch ~/Library/Application\ Support/iterm2/Scripts
-fi
