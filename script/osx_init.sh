@@ -116,6 +116,31 @@ defaults write NSGlobalDomain KeyRepeat -int 2
 # Enable function key as is
 defaults write NSGlobalDomain com.apple.keyboard.fnState -bool true
 
+# Mapping modifier key for embedded keyboard
+vendor_id=$(printf "%d" $(hidutil list | grep -i 'AppleEmbeddedKeyboard' | awk '{print $1}'))
+product_id=$(printf "%d" $(hidutil list | grep -i 'AppleEmbeddedKeyboard' | awk '{print $2}'))
+# vendor_id=$(printf "%d" $(system_profiler SPUSBDataType | grep 'Internal' -A 5 | awk '/Vendor ID/{print $3}'))
+# product_id=$(printf "%d" $(system_profiler SPUSBDataType | grep 'Internal' -A 5 | awk '/Product ID/{print $3}'))
+# None — –1
+# Caps Lock — 0
+# Shift (Left) — 1
+# Control (Left) — 2
+# Option (Left) — 3
+# Command (Left) — 4
+# Keypad 0 — 5
+# Help — 6
+# Shift (Right) — 9
+# Control (Right) — 10
+# Option (Right) — 11
+# Command (Right) — 12
+if [[ ${vendor_id} != "" && ${product_id} != "" ]]; then
+  defaults -currentHost remove -g com.apple.keyboard.modifiermapping.${vendor_id}-${product_id}-0
+  defaults -currentHost write -g com.apple.keyboard.modifiermapping.${vendor_id}-${product_id}-0 \
+    -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>2</integer><key>HIDKeyboardModifierMappingSrc</key><integer>0</integer></dict>'
+  defaults -currentHost write -g com.apple.keyboard.modifiermapping.${vendor_id}-${product_id}-0 \
+    -array-add '<dict><key>HIDKeyboardModifierMappingDst</key><integer>0</integer><key>HIDKeyboardModifierMappingSrc</key><integer>2</integer></dict>'
+fi
+
 
 
 ###############################################################################
@@ -545,19 +570,13 @@ fi
 
 
 
-cat <<EOF
-# TODO
-1. Change modifier key
-2. Enable safari extensions
-3. Adjust resolution
-4. Reboot
-EOF
-
-for app in "cfprefsd" \
-	"Dock" \
-	"Finder" \
-	"Safari" \
-	"SystemUIServer" \
-	"Transmission"; do
-	killall "${app}" &> /dev/null
+for app in \
+  "cfprefsd" \
+  "Dock" \
+  "Finder" \
+  "Safari" \
+  "SystemUIServer" \
+  "Transmission" \
+do
+  killall "${app}" &> /dev/null
 done
