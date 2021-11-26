@@ -15,6 +15,17 @@ echo "Updating OSX.  If this requires a restart, run the script again."
 sudo softwareupdate -ia --verbose
 # Install only recommended available updates
 #sudo softwareupdate -ir --verbose
+# Install rosetta2
+is_apple_silicon=false
+arch="$(uname -m)"
+if [[ "$arch" = x86_64* ]]; then
+  if [[ "$(uname -a)" = *ARM64* ]]; then
+    is_apple_silicon=true
+  fi
+elif [[ "$arch" = arm* ]]; then
+  is_apple_silicon=true
+fi
+[ $is_apple_silicon == true ] && softwareupdate --install-rosetta --agree-to-license
 
 echo "------------------------------"
 echo "Installing Xcode Command Line Tools."
