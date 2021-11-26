@@ -160,7 +160,8 @@ brew install --cask skype
 brew install --cask mos
 # brew install --cask betterzip
 brew install --cask keka
-brew install --cask stats
+brew install --cask istat-menus
+# brew install --cask stats
 # brew install --cask eul
 brew install --cask teamviewer # -> requires password
 brew install --cask vmware-fusion
