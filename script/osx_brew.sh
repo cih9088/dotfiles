@@ -21,7 +21,7 @@ fi
 # Install mas
 brew install mas
 while true; do
-  mas account >/dev/null 2>&1
+  mas account
   [[ $? == 0 ]] && break
   echo -n "Please signin Appstore manually and press any keys."
   read anykey
@@ -72,7 +72,6 @@ ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
 ln -snf $(brew --prefix)/bin/python3-config $(brew --prefix)/bin/python-config
 ln -snf $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
 ln -snf $(brew --prefix)/bin/wheel3 $(brew --prefix)/bin/wheel
-ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
 ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
 
 # Install ruby-build and rbenv
@@ -142,7 +141,8 @@ brew install --cask xquartz # -> requires password
 
 # Install developer friendly quick look plugins
 # https://github.com/sindresorhus/quick-look-plugins
-brew install --cask qlcolorcode qlstephen qlmarkdown syntax-highlight \
+# https://github.com/haokaiyang/Mac-QuickLook
+brew install --cask qlstephen qlmarkdown syntax-highlight \
   quicklook-json qlimagesize suspicious-package apparency quicklookase qlvideo
 xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
@@ -191,7 +191,7 @@ brew install --cask synology-drive
 
 # install yabai
 brew install koekeishiya/formulae/yabai
-echo "$(whoami) ALL = (root) NOPASSWD: /usr/local/bin/yabai --load-sa" | \
+echo "$(whoami) ALL = (root) NOPASSWD: $(brew --prefix)/bin/yabai --load-sa" | \
     sudo tee -a /private/etc/sudoers.d/yabai >/dev/null
 # reinstall the scripting addition
 sudo yabai --uninstall-sa || true
