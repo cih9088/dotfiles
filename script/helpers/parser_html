@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# https://www.cloudsavvyit.com/8315/parsing-html-in-bash/
+
+xmlgetnext () {
+  local IFS='>'
+  read -d '<' _TAG _VALUE
+}
+
+_FILTER="${1:-}"
+_IN="${2:-/dev/stdin}"
+
+[ ! -z $_FILTER ] && _FILTER="${_FILTER} "
+
+while xmlgetnext; do
+  if [[ "$_TAG" == "${_FILTER}"* ]]; then
+    echo "$_TAG >>> $_VALUE"
+  fi
+done < "$_IN"

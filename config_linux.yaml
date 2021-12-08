@@ -1,57 +1,236 @@
+help2man:
+  install: true
+  local: true
+  force: false
+
+pkg_config:
+  install: true
+  local: true
+  force: false
+
+ncurses:
+  install: true
+  local: true
+  force: false
+
+openssl:
+  install: true
+  local: true
+  force: false
+
+libevent:
+  install: true
+  local: true
+  force: false
+
+m4:
+  install: true
+  local: true
+  force: false
+
+autoconf:
+  install: true
+  local: true
+  force: false
+
+automake:
+  install: true
+  local: true
+  force: false
+
+libtool:
+  install: true
+  local: true
+  force: false
+
+gettext:
+  install: true
+  local: true
+  force: false
+
+patch:
+  install: true
+  local: true
+  force: false
+
+readline:
+  install: true
+  local: true
+  force: false
+
+zlib:
+  install: true
+  local: true
+  force: false
+
+bzip2:
+  install: true
+  local: true
+  force: false
+
+sqlite3:
+  install: true
+  local: true
+  force: false
+
+libgpg_error:
+  install: false
+  local: true
+  force: false
+
+libgcrypt:
+  install: false
+  local: true
+  force: false
+
+libassuan:
+  install: false
+  local: true
+  force: false
+
+libksba:
+  install: false
+  local: true
+  force: false
+
+npth:
+  install: false
+  local: true
+  force: false
+
+gpg:
+  install: false
+  local: true
+  force: false
+
+pth:
+  install: false
+  local: true
+  force: false
+
+dirmngr:
+  install: false
+  local: true
+  force: false
+
+xorgproto:
+  install: true
+  local: true
+  force: false
+
+xtrans:
+  install: true
+  local: true
+  force: false
+
+libxau:
+  install: true
+  local: true
+  force: false
+
+xcb_proto:
+  install: true
+  local: true
+  force: false
+
+libxcb:
+  install: true
+  local: true
+  force: false
+
+libx11:
+  install: true
+  local: true
+  force: false
+
+libffi:
+  install: true
+  local: true
+  force: false
+
+tcl:
+  install: true
+  local: true
+  force: false
+
+tk:
+  install: true
+  local: true
+  force: false
+
+boost:
+  install: true
+  local: true
+  force: false
+
+######################
+
+pyenv:
+  install: false
+  local: true
+  force: false
+
+goenv:
+  install: false
+  local: true
+  force: false
+
+asdf:
+  install: true
+  local: true
+  force: false
+
+shellcheck:
+  install: true
+  local: true
+  force: true
+
 #######################
-# installTermInfo
+
+python2:
+  install: true
+  version: latest
+
+python3:
+  install: true
+  version: latest
+
+go:
+  install: true
+  version: latest
+
+rust:
+  install: true
+  version: latest
+
+nodejs:
+  install: true
+  version: latest
+
 #######################
 
 terminfo:
   install: true
-
-#######################
-# installZsh
-#######################
 
 zsh:
   install: true
   local: true
   force: true
 
-#######################
-# installFish
-#######################
-
 fish:
   install: false
   local: true
   force: true
 
-#######################
-# changeDefaultShell
-#######################
-
-changeDefaultShell:
-  change: true
-  local: true
-  shell: zsh
-
-#######################
-# installPrezto
-#######################
-
 prezto:
   install: true
   force: true
 
-#######################
-# installNeovim
-#######################
-
-nvim:
+neovim:
   install: true
   local: true
   force: true
-
-#######################
-# installTmux
-#######################
+  version: stable
 
 tmux:
   install: true
@@ -59,157 +238,61 @@ tmux:
   force: true
 
 #######################
-# installTree
-#######################
 
 tree:
   install: true
   local: true
   force: true
 
-#######################
-# installFd
-#######################
-
 fd:
   install: true
   local: true
   force: true
-
-#######################
-# installRg
-#######################
 
 rg:
   install: true
   local: true
   force: true
 
-#######################
-# installThefuck
-#######################
-
 thefuck:
   install: true
   local: true
   force: true
 
-#######################
-# installRanger
-#######################
-
 ranger:
   install: true
   force: true
-
-#######################
-#  installTldr
-#######################
 
 tldr:
   install: true
   local: true
   force: true
 
-#######################
-#  installBashSnippets
-#######################
-
 bash_snippets:
   install: true
   local: true
   force: true
-
-#######################
-#  installBpytop
-#######################
 
 bpytop:
   install: true
   local: true
   force: true
 
-#######################
-#  installUp
-#######################
-
 up:
   install: true
   local: true
   force: true
 
-#######################
-# installDevshell
-#######################
-
-shellcheck:
+highlight:
   install: true
   local: true
   force: true
 
-bash_language_server:
-  install: true
-  force: true
-
-#######################
-# installDevNodejs
 #######################
 
-node:
-  install: true
+change_default_shell:
+  change: true
   local: true
-  force: false
-
-yarn:
-  install: false
-  local: true
-  force: false
+  shell: zsh
 
 #######################
-# installDevAsdf
-#######################
-
-asdf:
-  install: true
-  local: true
-  force: false
-
-#######################
-# installDevPython
-#######################
-
-pyenv:
-  install: false
-  local: true
-  force: false
-
-# install python2, python3
-python2:
-  install: true
-  version: 2.7.18
-
-python3:
-  install: true
-  version: 3.8.5
-
-#######################
-# installDevGo
-#######################
-
-goenv:
-  install: false
-  local: true
-  force: false
-
-# install golang
-go:
-  install: true
-  version: 1.15
-
-#######################
-# installDevC
-#######################
-
-ccls:
-  install: false
-  force: true

@@ -1,0 +1,277 @@
+#
+# Executes commands at login pre-zshrc.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#   Andy Cho <cih9088@gmail.com>
+#
+
+
+
+# =======================================================================================
+# PATH
+# =======================================================================================
+
+
+# Ensure path arrays do not contain duplicates.
+# ---------------------------------------------------------------------------------------
+  typeset -gU cdpath fpath mailpath path
+
+
+# Set the list of directories that cd searches.
+# ---------------------------------------------------------------------------------------
+  cdpath=(
+    $cdpath
+  )
+
+
+# Set default the list of directories that Zsh searches for programs.
+# ---------------------------------------------------------------------------------------
+  # systemwide bin directory
+  path=(
+    /usr/local/{bin,sbin}
+    /usr/{bin,sbin}
+    /{bin,sbin}
+    /snap/bin
+    $path
+  )
+  # apple silicon homebrew path
+  if [[ "$OSTYPE" == darwin* && "$(uname -m)" == "arm64" ]]; then
+    path=(
+      /opt/homebrew/{bin,sbin}
+      $path
+    )
+  fi
+  # user's local bin directory
+  path=(
+    ${HOME}/.local/bin
+    $path
+  )
+
+
+# Add system python (for ubuntu), brew python (for osx) bin directory
+# ---------------------------------------------------------------------------------------
+  path=(
+    $(python -m site --user-base)/bin
+    $path
+  )
+
+
+# # yarn to PATH
+# # ---------------------------------------------------------------------------------------
+#   [[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
+#   [[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
+#     export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
+
+
+# Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# ---------------------------------------------------------------------------------------
+  # prefer locally installed pyenv
+  if [[ -s "${PYENV_ROOT:=$HOME/.pyenv}/bin/pyenv" ]]; then
+    path=(
+      ${PYENV_ROOT}/bin
+      $path
+    )
+  fi
+
+# Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# ---------------------------------------------------------------------------------------
+  # prefer locally installed goenv
+  if [[ -s "${GOENV_ROOT:=$HOME/.goenv}/bin/goenv" ]]; then
+    path=(
+      ${GOENV_ROOT}/bin
+      $path
+    )
+  fi
+
+
+# =======================================================================================
+# CUSTOM BUILD PATH
+# =======================================================================================
+
+  [[ ":${LD_LIBRARY_PATH}:" != *":${HOME}/.local/lib:"* ]] && \
+    export LD_LIBRARY_PATH="${HOME}/.local/lib:${LD_LIBRARY_PATH}"
+
+  [[ ":${LD_LIBRARY_PATH}:" != *":${HOME}/.local/lib64:"* ]] && \
+    export LD_LIBRARY_PATH="${HOME}/.local/lib64:${LD_LIBRARY_PATH}"
+
+  [[ ":${PKG_CONFIG_PATH}:" != *":${HOME}/.local/lib/pkgconfig:"* ]] && \
+    export PKG_CONFIG_PATH="${HOME}/.local/lib/pkgconfig:${PKG_CONFIG_PATH}"
+
+  [[ " ${CFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
+    export CFLAGS="-I${HOME}/.local/include ${CFLAGS}"
+
+  [[ " ${CPPFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
+    export CPPFLAGS="-I${HOME}/.local/include ${CPPFLAGS}"
+
+  [[ " ${LDFLAGS} " != *" -I${HOME}/.local/lib "* ]] && \
+    export LDFLAGS="-I${HOME}/.local/lib ${LDFLAGS}"
+
+
+# =======================================================================================
+# BROWSER
+# =======================================================================================
+
+  if [[ "$OSTYPE" == darwin* ]]; then
+    export BROWSER='open'
+  fi
+
+
+
+# =======================================================================================
+# EDITORS
+# =======================================================================================
+
+  export EDITOR=`which nvim`
+  export VISUAL=`which nvim`
+  export PAGER='less'
+
+
+
+# =======================================================================================
+# LANGUAGE
+# =======================================================================================
+
+  if [[ -z "$LANG" ]]; then
+    export LANG='en_US.UTF-8'
+  fi
+
+
+# =======================================================================================
+# APPS
+# =======================================================================================
+
+
+# export dotfile path for easy access
+# --------------------------------------------------------------------------------------
+  export DOTS=$(dirname $(dirname $(dirname $(realpath ${(%):-%N}))))
+
+
+# get background luminance from xterm control sequence
+# https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+# --------------------------------------------------------------------------------------
+  [ -z "${TMUX+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
+
+
+# virtualenvwrapper (using system python)
+# ---------------------------------------------------------------------------------------
+  export WORKON_HOME=$HOME/.virtualenvs
+  export PROJECT_HOME=$HOME/workspace
+  # Inside tmux session, these environment variables are changed
+  # because of the change of PATH during zsh initialisation in non-tmux session
+  # This prevents no module found error in virtualenvwrapper
+  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+  # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+  # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+
+
+# CUDA enviroment variables
+# ---------------------------------------------------------------------------------------
+  if [[ $OSTYPE == "linux"* ]]; then
+    export CUDA_DEVICE_ORDER=PCI_BUS_ID
+    export CUDA_HOME=/usr/local/cuda
+    [[ ":${PATH}:" != *":${CUDA_HOME}/bin:"* ]] && \
+      export PATH="${PATH}:${CUDA_HOME}/bin"
+
+    # CUDA toolkit >= 9.0
+    [[ ":${LD_LIBRARY_PATH}:" != *":${CUDA_HOME}/lib64:"* ]] && \
+      export LD_LIBRARY_PATH="${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}"
+    [[ ":${LD_LIBRARY_PATH}:" != *":${CUDA_HOME}/extras/CUPTI/lib64:"* ]] && \
+      export LD_LIBRARY_PATH="${CUDA_HOME}/extras/CUPTI/lib64:${LD_LIBRARY_PATH}"
+  fi
+
+
+# Setup FZF
+# ---------------------------------------------------------------------------------------
+  # Change search command to fd
+  [ -x "$(command -v fd)" ] && (
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  )
+  # show tree view for the directory
+  [ -x "$(command -v tree)" ] &&
+    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+  # show preview with highlight
+  [ -x "$(command -v highlight)" ] &&
+    export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+  # show full command below
+  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
+  # change fzf color
+  [ -f $DOTS/zsh/fzf.$BG_LUMINANCE ] &&
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/zsh/fzf.$BG_LUMINANCE)"
+  # add path
+  [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
+    export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
+
+
+
+# Setup xpanes
+# ---------------------------------------------------------------------------------------
+  export TMUX_XPANES_PANE_BORDER_FORMAT='#[bg=colour238] #[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[bg=colour238] #[default]'
+
+
+# Setup tealdeer
+# ---------------------------------------------------------------------------------------
+  export TEALDEER_CONFIG_DIR="${HOME}/.config/tealdeer"
+
+
+# Setup default blocksize for ls, df, du
+# from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
+# ---------------------------------------------------------------------------------------
+  export BLOCKSIZE=1k
+
+
+# Add color to terminal
+# ---------------------------------------------------------------------------------------
+  # export CLICOLORS=1
+  # export LSCOLORS=exfxcxdxbxGxDxabagacad
+  # [ -x "$(command -v dircolors)" ] &&
+  #   eval "$(dircolors --sh $DOTS/zsh/LS_COLORS)"
+  [ -f $DOTS/zsh/ls_colors.$BG_LUMINANCE ] &&
+    export LS_COLORS=$(cat $DOTS/zsh/ls_colors.$BG_LUMINANCE)
+
+
+
+# # Clutter path -> no need
+# # ---------------------------------------------------------------------------------------
+#   if [ -n "$PATH" ]; then
+#     old_PATH=$PATH:; PATH=
+#     while [ -n "$old_PATH" ]; do
+#       x=${old_PATH%%:*}       # the first remaining entry
+#       case $PATH: in
+#         *:"$x":*) ;;          # already there
+#         *) PATH=$PATH:$x;;    # not there yet
+#       esac
+#       old_PATH=${old_PATH#*:}
+#     done
+#     PATH=${PATH#:}
+#     unset old_PATH x
+#   fi
+
+
+# Setup less
+# ---------------------------------------------------------------------------------------
+  # Set the default Less options.
+  # Mouse-wheel scrolling has been disabled by -X (disable screen clearing).
+  # Remove -X and -F (exit if the content fits on one screen) to enable it.
+  export LESS='-F -i -M -R -S -w -X -z-4'
+
+  # Set the Less input preprocessor.
+  # Try both `lesspipe` and `lesspipe.sh` as either might exist on a system.
+  if (( $#commands[(i)lesspipe(|.sh)] )); then
+    export LESSOPEN="| /usr/bin/env $commands[(i)lesspipe(|.sh)] %s 2>&-"
+  fi
+
+
+# Termcap
+# ---------------------------------------------------------------------------------------
+  export LESS_TERMCAP_mb=$'\E[01;31m'      # Begins blinking.
+  export LESS_TERMCAP_md=$'\E[01;31m'      # Begins bold.
+  export LESS_TERMCAP_me=$'\E[0m'          # Ends mode.
+  export LESS_TERMCAP_se=$'\E[0m'          # Ends standout-mode.
+  export LESS_TERMCAP_so=$'\E[01;43;30m'   # Begins standout-mode.
+  export LESS_TERMCAP_ue=$'\E[0m'          # Ends underline.
+  export LESS_TERMCAP_us=$'\E[01;32m'      # Begins underline.

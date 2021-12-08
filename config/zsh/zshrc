@@ -1,0 +1,323 @@
+#
+# Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Andy Cho <cih9088@gmail.com>
+#
+
+
+# =======================================================================================
+# ENVIRONMENT CONFIGURATION
+# =======================================================================================
+
+# Identify platform
+# ---------------------------------------------------------------------------------------
+  case "$OSTYPE" in
+    solaris*) platform="SOLARIS" ;;
+    darwin*)  platform="OSX" ;;
+    linux*)   platform="LINUX" ;;
+    bsd*)     platform="BSD" ;;
+    msys*)    platform="WINDOWS" ;;
+    *)        platform="unknown: $OSTYPE" ;;
+  esac
+  export platform
+
+
+# Setup virtualenvwrapper (using system python if installed)
+# ---------------------------------------------------------------------------------------
+  if [ -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
+    [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
+      pip3 install --user --force-reinstall virtualenv virtualenvwrapper
+    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+    export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+    export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+    export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+  fi
+  command -v virtualenvwrapper_lazy.sh >/dev/null  &&
+    source $(which virtualenvwrapper_lazy.sh)
+
+
+# Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# ---------------------------------------------------------------------------------------
+  if command -v pyenv >/dev/null; then
+    eval "$(pyenv init - --no-rehash zsh)"
+    eval "$(pyenv virtualenv-init - zsh)"
+    pyenv virtualenvwrapper_lazy >/dev/null || true
+  fi
+
+
+# Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
+# ---------------------------------------------------------------------------------------
+  if command -v goenv >/dev/null; then
+    eval "$(goenv init - --no-rehash zsh)"
+    [[ ":$PATH:" != *":$GOROOT/bin:"* ]] && export PATH="$GOROOT/bin:$PATH"
+    [[ ":$PATH:" != *":$GOPATH/bin:"* ]] && export PATH="$PATH:$GOPATH/bin"
+  fi
+
+
+# Setup asdf
+# ---------------------------------------------------------------------------------------
+  # prefer locally installed asdf
+  if [ -f $HOME/.asdf/asdf.sh ]; then
+    source $HOME/.asdf/asdf.sh
+    fpath=($fpath ${ASDF_DIR}/completions)
+  # brew --prefix asdf is way slow. hard code the path
+  elif command -v brew >/dev/null && [ -f $(brew --prefix)/opt/asdf/libexec/asdf.sh ]; then
+    source $(brew --prefix)/opt/asdf/libexec/asdf.sh
+    # zsh completion is installed with brew
+  fi
+
+
+# Setup virtualenvwrapper (using asdf/pyenv python)
+# ---------------------------------------------------------------------------------------
+  if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
+    [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
+      pip3 install --user --force-reinstall virtualenv virtualenvwrapper
+    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+    export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+    export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+    export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+  fi
+  command -v virtualenvwrapper_lazy.sh >/dev/null  &&
+    source $(which virtualenvwrapper_lazy.sh)
+
+
+# Source Prezto
+# ---------------------------------------------------------------------------------------
+  # prezto should be sourced here for the fast startup
+  [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] &&
+    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+
+
+# Setup FZF
+# ---------------------------------------------------------------------------------------
+  if [ -x "$(command -v fzf)" ]; then
+    # Auto-completion
+    [[ $- == *i* ]] && 
+      source "${HOME}/.local/share/nvim/plugged/fzf/shell/completion.zsh" 2>/dev/null
+    # Key bindings
+    source "${HOME}/.local/share/nvim/plugged/fzf/shell/key-bindings.zsh"
+  fi
+
+
+# #  Update environment in tmux just before every command -> use tmux bind $
+# #  --------------------------------------------------------------------------------------
+#   if [ -n "$TMUX" ]; then
+#     function refresh {
+#       eval $(tmux showenv -s DISPLAY)
+#       eval $(tmux showenv -s SSH_AUTH_SOCK)
+#     }
+#   else
+#     function refresh {
+#       :
+#     }
+#   fi
+#   function preexec() {
+#     refresh
+#   }
+
+
+# # vi mode for zsh (DEPRECATED) -> use readline shortcut!!
+# # ---------------------------------------------------------------------------------------
+#   if [ -n "$ZSH_VERSION" ]; then
+#     bindkey -v
+#     export KEYTIMEOUT=1
+#   fi
+
+
+
+# Behaviour like readline!
+# ---------------------------------------------------------------------------------------
+  bindkey "^U" backward-kill-line
+
+
+# Bring $EDITOR to amend your command through <C-x><C-e>
+# ---------------------------------------------------------------------------------------
+  if [ -n "$ZSH_VERSION" ]; then
+    autoload -z edit-command-line
+    zle -N edit-command-line
+    bindkey "^X^E" edit-command-line
+  fi
+
+
+
+
+# =======================================================================================
+# ALIASES
+# =======================================================================================
+
+
+# Easy use
+# ---------------------------------------------------------------------------------------
+  alias ls="${aliases[ls]:-ls} -F"        # Append indicator
+  alias ~="cd ~"                          # Go Home
+  alias c='clear'                         # Clear terminal display
+  alias path='echo -e ${PATH//:/\\n}'     # Echo all executable Paths
+  alias fix-stty='stty sane'              # Restore terminal settings when screwed up
+  alias make1mb='mkfile 1m ./1MB.dat'     # Creates a file of 1mb size (all zeros)
+  alias make5mb='mkfile 5m ./5MB.dat'     # Creates a file of 5mb size (all zeros)
+  alias make10mb='mkfile 10m ./10MB.dat'  # Creates a file of 10mb size (all zeros)
+  alias colour256='curl -s https://gist.githubusercontent.com/HaleTom/89ffe32783f89f403bba96bd7bcd1263/raw/ | bash'
+  alias py='python'
+  alias py2='python2'
+  alias py3='python3'
+
+
+# Custom functions
+# ---------------------------------------------------------------------------------------
+  alias ws="workspace"
+  alias cb="change-background"
+
+
+# Rsync with progressbar
+# ---------------------------------------------------------------------------------------
+  alias rsync-copy-sum='rsync-copy --info=progress2,name0 '
+  alias rsync-move-sum='rsync-move --info=progress2,name0 '
+
+
+# plarform specific
+# ---------------------------------------------------------------------------------------
+  if [[ ${platform} == "OSX" ]]; then
+    alias f='open -a Finder ./'                             # f:     Opens current directory in MacOS Finder
+    alias DT='tee ~/Desktop/terminalOut.txt'                # DT:    Pipe content to file on MacOS Desktop
+    alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
+    function trash () { command mv "$@" ~/.Trash ; }        # trash: Moves a file to the MacOS trash
+    function ql () { qlmanage -p "$*" >& /dev/null; }       # ql:    Opens any file in MacOS Quicklook Preview
+  elif [[ ${platform} == "LINUX" ]]; then
+    alias clear-swap="sudo sh -c 'swapoff -a && swapon -a'" # clear-swap:   clear swap memory
+  fi
+
+
+# Networking
+# ---------------------------------------------------------------------------------------
+  alias myip='dig myip.opendns.com @resolver1.opendns.com +short' # myip:         Public facing IP Address
+  alias flushDNS='dscacheutil -flushcache'                        # flushDNS:     Flush out the DNS Cache
+  alias lsock='sudo lsof -i -P'                                   # lsock:        Display open sockets
+  alias lsockU='sudo lsof -nP | grep UDP'                         # lsockU:       Display only open UDP sockets
+  alias lsockT='sudo lsof -nP | grep TCP'                         # lsockT:       Display only open TCP sockets
+  alias ipInfo0='ipconfig getpacket en0'                          # ipInfo0:      Get info on connections for en0
+  alias ipInfo1='ipconfig getpacket en1'                          # ipInfo1:      Get info on connections for en1
+  alias openPorts='sudo lsof -i -P | grep -i "listen"'            # openPorts:    All listening connections
+  alias showBlocked='sudo ipfw list'                              # showBlocked:  All ipfw rules inc/ blocked IPs
+
+
+  ########## DEPRECATED in favour of prezto
+  # alias cp='cp -iv'                           # Preferred 'cp' implementation
+  # alias mv='mv -iv'                           # Preferred 'mv' implementation
+  # alias mkdir='mkdir -pv'                     # Preferred 'mkdir' implementation
+  # alias ls='ls --group-directories-first --color=auto'
+  # alias ll='ls -FGlhp'                        # Preferred 'ls' implementation
+  # alias la='ll -A'                            #
+  # alias lr='ll -R'
+  # alias lx='ll -XB'
+  # alias lk='ll -Sr'
+  # alias rm='nocorrect rm -iv'
+  # alias less='less -FSRXc'                    # Preferred 'less' implementation
+  # alias which='type -all'                     # which:        Find executables
+  # alias show_options='shopt'                  # Show_options: display bash options settings
+  # alias cic='set completion-ignore-case On'   # cic:          Make tab-completion case-insensitive
+  # Full Recursive Directory Listing
+  # alias lr='ls -R | grep ":$" | sed -e '\''s/:$//'\'' -e '\''s/[^-][^\/]*\//--/g'\'' -e '\''s/^/   /'\'' -e '\''s/-/|/'\'' | less'
+
+
+
+
+# =======================================================================================
+# FUNCTIONS
+# =======================================================================================
+
+
+# # Make new dir and jumps inside --> DEPRECATED in favour of prezto
+# # ---------------------------------------------------------------------------------------
+#   mcd () {
+#     mkdir -p "$1" && cd "$1"
+#   }
+#
+
+# List directory contentes after upon cd
+# ---------------------------------------------------------------------------------------
+  unalias cd
+  cd() {
+    nocorrect builtin cd "$@" && 
+      (
+        n_files=$(\timeout 0.01 ls -f | wc -l)
+        if [ ${n_files} != 0 ]; then
+          term_size=$(( `tput lines` * `tput cols` / 100 ))
+          if [ ${n_files} -lt ${term_size} ]; then
+            ls
+          fi
+        fi
+      )
+  }
+
+
+# Fix man page width for better readability
+# ---------------------------------------------------------------------------------------
+  unalias man
+  man () {
+    local width="${COLUMNS:-100}"
+    (( width > 100 )) && width=100
+    MANWIDTH="$width" nocorrect command man "$@"
+  }
+
+
+# Utility function for custom function
+# ---------------------------------------------------------------------------------------
+  has() {
+    local verbose=0
+    if [[ $1 = '-v' ]]; then
+      verbose=1
+      shift
+    fi
+    for c; do c="${c%% *}"
+      if ! command -v "$c" &> /dev/null; then
+        (( verbose > 0 )) && printf "\033[1;31m%s\033[0m not found.\n" "$c" >&2
+        return 1
+      fi
+    done
+  }
+
+
+# # Extract most know archives with one command -> DEPRECATED in favour of prezto
+# # ---------------------------------------------------------------------------------------
+#   extract () {
+#     if [ -f $1 ] ; then
+#       case $1 in
+#         *.tar.bz2)   tar xjf $1     ;;
+#         *.tar.gz)    tar xzf $1     ;;
+#         *.bz2)       bunzip2 $1     ;;
+#         *.rar)       unrar e $1     ;;
+#         *.gz)        gunzip $1      ;;
+#         *.tar)       tar xf $1      ;;
+#         *.tbz2)      tar xjf $1     ;;
+#         *.tgz)       tar xzf $1     ;;
+#         *.zip)       unzip $1       ;;
+#         *.Z)         uncompress $1  ;;
+#         *.7z)        7z x $1        ;;
+#         *)     echo "'$1' cannot be extracted via extract()" ;;
+#       esac
+#     else
+#       echo "'$1' is not a valid file"
+#     fi
+#   }
+
+
+# Load custom function lazily
+# ---------------------------------------------------------------------------------------
+  custom_zsh_fpath="$(dirname $(realpath ${(%):-%N}))/functions"
+  fpath=($custom_zsh_fpath $fpath)
+  if [[ -d "$custom_zsh_fpath" ]]; then
+    for func in $custom_zsh_fpath/*; do
+      autoload -Uz ${func:t}
+    done
+  fi
+  unset custom_zsh_fpath
+
+
+# Find out the pid of a specified process
+# --------------------------------------------------------------------------------------
+#     Note that the command name can be specified via a regex
+#     E.g. findPid '/d$/' finds pids of all processes with names ending in 'd'
+#     Without the 'sudo' it will only find processes of the current user
+# --------------------------------------------------------------------------------------
+  # findPid () { lsof -t -c "$@" ; }

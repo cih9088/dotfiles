@@ -13,28 +13,30 @@ $ cd ~/dotfiles
 $ git pull
 $ git submodule update --init --recursive
 
-# make sure that you have commands `make`, `git`, `sudo`
+# make sure that you have following commands `make`, `git`, `sudo`, `which`
 $ command -v make
 $ command -v git
 $ command -v sudo
+$ command -v which
 ```
 
 ## Prerequisites
-The following list would be installed in your system. You need privilege (sudo). No need if you have them on your system.
-* OSX: python2, python2-pip, python3, python3-pip, wget, pbcopy, git, reattatch-to-user-namespace, xquartz, cmake
-* Ubuntu: python2, python2-pip, python3, python3-pip, wget, xclip, git
+The following list would be installed in your system. You need privilege (`sudo`).
+No need if you have them on your system.
 ```bash
 $ cd ~/dotfiles
-$ make prerequisitesTest    # Check what are installed and not
-$ make prerequisites        # Install prerequisites (previlege is needed)
+$ make prerequisitesTest    # Verify which commands are installed
+$ make prerequisites        # Install prerequisites (previlege is needed for linux)
 ```
 
 ## How to install and update (Easy way)
 ### Environement Variables
-- `CONFIG`: making script non-interactively. Create your own config based on `config_*.yaml` in `~/dotfiles` \
+- `CONFIG`: make script non-interactively. Create your own config based on `config_*.yaml` in `~/dotfiles` \
 ex) `CONFIG=config_linux.yaml make install`
-- `VERBOSE`: making script verbose \
+- `VERBOSE`: make script verbose \
 ex) `VERBOSE=true make install`
+- `GH_ACCESS`: give maximum of 5,000 rate limits to github REST API \
+ex) `GH_ACCESS=client_id:client_secret make install`
 
 
 ### one-liner
@@ -46,17 +48,17 @@ ex) `VERBOSE=true make install`
 - Only copy dotfiles `cd ~/dotfiles; make updateDotfiles`
 
 ### Install
-- Install **systemwide**: others could execute those commands (**homebrew** for OSX and **apt-get** (need privilege) for Ubuntu will be used.)
-- Install **locally**: others could not (All of commands would be installed in `$HOME/.local/bin`)
+- Install **systemwide**: others could execute those commands (need privilege)
+- Install **locally**: others could not (All of commands and libraries would be installed in `$HOME/.local`)
 
 **NOTE**: systemwide install is prefered for OSX.
 
 ```bash
 $ cd ~/dotfiles
 $ make init                 # includes 'install', 'update'
-                            # If you are new to my dotfiles, this is it. No further processes needed. 
+                            # If you are new to my dotfiles, this is it. No further processes needed.
                             # Recommended way for a newcomer.
-$ make install              # Install all commands
+$ make install              # Install all commands and libraries
 ```
 
 ### Update
@@ -75,28 +77,17 @@ $ make update               # Update all of dotfiles and configurations
 ```bash
 $ cd ~/dotfiles
 
-# COMMANDS
-# You could choose what to install in following list
-# [installZsh, installPrezto, installNeovim, installTmux, installTree, installFd,
-#  installRg, installRanger, installThefuck, installTldr, installBashSnippets,
-#  installBpytop, installUp]
-# For instance,
-$ make installNeovim          # Install neovim only with latest stable version
-$ make installNeovim 0.2.0    # Specify version if intended to install locally
-$ make installNeovim nightly  # even nightly is available (neovim only)
-# NOTE: 'make installNeovim' depdends on 'installDevPython', 'installDevNodejs', 'installDevGo'
-# which means thoes dependencies are automatically installed. See below dev environments
-# NOTE: version specification is only available for limited target
-# [installZsh, installNeovim, installTmux, installTree, installFd, installRg,
-#  installTldr, installUp]
-$ make installBins            # Install tree, fd, rg, ranger, thefuck, tldr, bash_snippets, bpytop, up at once
-
-# DEV ENVIRONMENT
-# You could choose what to install in following list
-# [installDevPython, installDevNodejs, installDevC, installDevGo, installDevAsdf]
-# For instance,
-$ make installDevPython      # Install python dev environment
-$ make installDevGo          # Install golang dev environment
+# Install all commands and libraries
+$ make install
+# Install neovim command only
+$ make installNeovim
+# Install ncurses library only
+$ make installLibraryNcurses
+# Install asdf only
+$ make installAsdf
+# Install python environment only
+$ make environmentPython
+# Please refer `Makefile` for full commands
 ```
 
 ### Update
@@ -106,9 +97,9 @@ $ git pull
 $ git submodule update --init --recursive
 
 # you could choose what to update in following list
-# [updateDotfiles, updateNeovimPlugins, updateTPM, updateTmuxPlugins, updateCustomBins, updatePrezto]
+# [updatePrezto, updateBins, updateConfigs, updateNeovimPlugins, updateTmuxPlugins, updateDevEnv]
 # For instance,
-$ make updateDotfiles       # Update dotfiles only
+$ make updateConfigs        # Update dotfiles and configs only
 $ make update               # Update all
 ```
 
@@ -117,14 +108,14 @@ Clean up dotfiles, configurations and folder itself.
 **Back up your local changes before clean up.**
 ```bash
 $ cd ~/dotfiles
-$ make clean        # delete installed dotfiles and folder itself (installed command remains)
+$ make clean        # delete installed dotfiles and folder itself (installed commands, libraries would be remained)
 ```
 
-### [Initialise OSX](https://github.com/donnemartin/dev-setup#osxprepsh-script)
+### [Initialise MAC](https://github.com/donnemartin/dev-setup#osxprepsh-script)
 Setup macOS development environment with easy. Mostly copied from [here](https://github.com/donnemartin/dev-setup).
 ```bash
 $ cd ~/dotfiles
-$ make initOSX
+$ make initMac
 ```
 
 

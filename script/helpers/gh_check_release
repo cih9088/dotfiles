@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${DIR}/functions.sh
+################################################################
+
+_HOST="${1}"
+_VERSION="${2}"
+_EXIT_CODE=0
+
+curl --silent --show-error --head https://github.com/${_HOST}/releases/tag/${_VERSION} |
+  head -n 1 | grep 'HTTP/\(1.\?[01]\?\|2\) [23]..' > /dev/null 2>&1 || _EXIT_CODE=${?}
+
+if [[ ${_EXIT_CODE} != 0 ]]; then
+  log_error "'${_VERSION}' is not a valid version."
+  log_error "Please visit https://github.com/${_HOST}/releases for valid versions."
+  exit ${_EXIT_CODE}
+fi

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+GH_REPO="${1}"
+GH_ACCESS="${2:-${GH_ACCESS:-}}"
+
+[ ! -z $GH_ACCESS ] && GH_ACCESS="--user $GH_ACCESS"
+
+curl --silent --show-error --fail $GH_ACCESS \
+  "https://api.github.com/repos/$GH_REPO/releases" |
+  grep '"tag_name"' |
+  sed -E 's/.*"([^"]+)".*/\1/'
