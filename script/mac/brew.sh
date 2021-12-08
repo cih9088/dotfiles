@@ -194,6 +194,7 @@ brew install --cask docker
 brew install --cask mathpix-snipping-tool
 brew install --cask notion
 brew install --cask transmission
+# brew install --cask swiftbar
 brew tap homebrew/cask-versions
 brew install --cask safari-technology-preview
 brew install --cask paragon-ntfs
@@ -216,6 +217,11 @@ killall Dock || true
 # install skhd
 brew install koekeishiya/formulae/skhd
 brew services start skhd
+
+# install uebersicht
+brew install --cask ubersicht
+# install simplebar
+git clone https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
 
 ## free stuff
 # mas install 1018899653  # HeliumLift -> Download it manually
