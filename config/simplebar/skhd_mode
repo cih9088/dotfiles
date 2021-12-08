@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+modefile=$TMPDIR/current_skhd_mode
+if [[ -r $modefile ]]; then
+    mod="$(cat "$modefile")"
+    mod="$(echo "$mod" | awk '{print toupper($0)}')"
+    if [[ -n $mod ]]; then
+        skhd_mode="$mod"
+        if [[ $skhd_mode == 'FOCUS' ]]; then
+            menu="✧"
+        elif [[ $skhd_mode == 'WARP' ]]; then
+            menu="⎌"
+        elif [[ $skhd_mode == 'RESIZE' ]]; then
+            menu="✠"
+        elif [[ $skhd_mode == 'PREFIX' ]]; then
+            menu="⚑"
+        fi
+    else
+        menu="✌"
+    fi
+else
+    menu=""
+fi
+
+echo $menu

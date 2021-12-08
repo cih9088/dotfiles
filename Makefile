@@ -267,6 +267,7 @@ clean:
 		${HOME}/.config/spacebar ${HOME}/.config/swiftbar ${HOME}/.config/bitbar \
 		${HOME}/.config/git ${HOME}/.config/flake8 ${HOME}/.config/pylintrc \
 		${HOME}/.config/fish ${HOME}/.config/tealdeer ${HOME}/.config/vivid \
+		${HOME}/.config/simplebar ${HOME}/.simplebarrc \
 		|| true )
 	@rm -rf $(PROJ_HOME)
 	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
