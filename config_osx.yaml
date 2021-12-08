@@ -237,6 +237,11 @@ tmux:
   local: false
   force: true
 
+tpm:
+  install: true
+  local: true
+  force: true
+
 #######################
 
 tree:

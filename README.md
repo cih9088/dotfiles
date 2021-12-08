@@ -40,7 +40,7 @@ ex) `GH_ACCESS=client_id:client_secret make install`
 
 
 ### one-liner
-- Non-interactive init for ubuntu `cd ~/dotfiles; CONFIG=config_linux.yaml make init`
+- Non-interactive init for ubuntu, centos, rocky `cd ~/dotfiles; CONFIG=config_linux.yaml make init`
 - Non-interactive init for osx `cd ~/dotfiles; CONFIG=config_osx.yaml make init`
 - Interactive init `cd ~/dotfiles; make init`
 - Install `cd ~/dotfiles; make install`
