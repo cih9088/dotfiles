@@ -290,7 +290,7 @@ installEnvironment: prepare \
 
 installEssentials: prepare \
 	installTermInfo installZsh installFish installPrezto \
-	installNeovim installTmux installTPM
+	installNeovim installTmux
 
 installUtilities: prepare \
 	installTree installFd installRg installRanger \
@@ -300,6 +300,7 @@ update: prepare \
 	updatePrezto \
 	updateBins updateConfigs \
 	updateNeovimPlugins \
+	installTPM \
 	updateTmuxPlugins \
 	updateDevEnv
 	@echo
