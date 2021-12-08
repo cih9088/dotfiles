@@ -51,10 +51,12 @@
 
 # Add system python (for ubuntu), brew python (for osx) bin directory
 # ---------------------------------------------------------------------------------------
-  path=(
-    $(python -m site --user-base)/bin
-    $path
-  )
+  if command -v python >/dev/null; then
+    path=(
+      $(python -m site --user-base)/bin
+      $path
+    )
+  fi
 
 
 # # yarn to PATH
