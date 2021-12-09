@@ -265,7 +265,7 @@ thefuck:
   force: true
 
 ranger:
-  install: true
+  install: false
   force: true
 
 tldr:
