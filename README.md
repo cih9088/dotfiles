@@ -13,11 +13,16 @@ $ cd ~/dotfiles
 $ git pull
 $ git submodule update --init --recursive
 
-# make sure that you have following commands `make`, `git`, `sudo`, `which`
+# make sure that you have following commands `make`, `git`, `sudo`
 $ command -v make
 $ command -v git
 $ command -v sudo
-$ command -v which
+
+# install them if not exist
+# ubuntu
+$ apt update && apt install -y make git sudo
+# rocky
+$ dnf install -y make git sudo
 ```
 
 ## Prerequisites
@@ -40,7 +45,7 @@ ex) `GH_ACCESS=client_id:client_secret make install`
 
 
 ### one-liner
-- Non-interactive init for ubuntu, centos, rocky `cd ~/dotfiles; CONFIG=config_linux.yaml make init`
+- Non-interactive init for ubuntu, rocky `cd ~/dotfiles; CONFIG=config_linux.yaml make init`
 - Non-interactive init for osx `cd ~/dotfiles; CONFIG=config_osx.yaml make init`
 - Interactive init `cd ~/dotfiles; make init`
 - Install `cd ~/dotfiles; make install`
