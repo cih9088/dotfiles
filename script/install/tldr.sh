@@ -37,7 +37,7 @@ setup_func_tldr_local() {
   pip2 uninstall tldr || true
   pip3 uninstall tldr || true
 
-  if [ ${ARCH} == "X86_64" ]; then
+  if [ ${ARCH} == "x86_64" ]; then
     wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tldr-linux-x86_64-musl || exit $?
     mv tldr-linux-x86_64-musl ${HOME}/.local/bin/tldr || exit $?
   elif [ ${ARCH} == "aarch64" ]; then
