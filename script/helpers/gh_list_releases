@@ -7,7 +7,19 @@ GH_ACCESS="${2:-${GH_ACCESS:-}}"
 
 [ ! -z $GH_ACCESS ] && GH_ACCESS="--user $GH_ACCESS"
 
-curl --silent --show-error --fail $GH_ACCESS \
-  "https://api.github.com/repos/$GH_REPO/releases" |
-  grep '"tag_name"' |
-  sed -E 's/.*"([^"]+)".*/\1/'
+# Get latest release from GitHub api
+_BODY=$(
+  curl --silent --show-error -w "%{http_code}" $GH_ACCESS \
+    "https://api.github.com/repos/$GH_REPO/releases"
+)
+_STATUS_CODE=$(echo "$_BODY" | tail -n 1)
+_BODY=$(echo "$_BODY" | sed \$d)
+
+if [ "$_STATUS_CODE" == "200" ]; then
+  echo "$_BODY" |
+    grep '"tag_name":' |         # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
+else
+  echo "$_BODY" >&2
+  exit "$_STATUS_CODE"
+fi
