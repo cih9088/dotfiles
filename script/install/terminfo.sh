@@ -11,6 +11,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare to install ${THIS_HL}"
+
+DEFAULT_VERSION="latest"
 ################################################################
 
 setup_func_terminfo_local() {
@@ -21,4 +23,5 @@ setup_func_terminfo_local() {
   tic -xe alacritty-direct,tmux-256color terminfo.src || exit $?
 }
 
-main_script ${THIS} setup_func_terminfo_local setup_func_terminfo_local
+main_script "${THIS}" setup_func_terminfo_local setup_func_terminfo_local "" \
+  "${DEFAULT_VERSION}"

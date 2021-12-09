@@ -46,7 +46,7 @@ setup_func_local() {
       popd
 
     elif [[ ${PLATFORM} == "LINUX" ]]; then
-      wget https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz || eixt $?
+      wget https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz || exit $?
       tar -xvzf fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz || exit $?
 
       pushd fd-${VERSION}-${ARCH}-unknown-linux-gnu

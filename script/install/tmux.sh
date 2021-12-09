@@ -70,7 +70,7 @@ setup_func_system() {
     if [[ $FAMILY == "DEBIAN" ]]; then
       sudo apt-get -y install tmux || exit $?
     elif [[ $FAMILY == "RHEL" ]]; then
-      sudo dnf -y install tmux || eixt $?
+      sudo dnf -y install tmux || exit $?
     fi
   fi
 

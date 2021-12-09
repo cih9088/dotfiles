@@ -202,8 +202,8 @@
   # show full command below
   export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
   # change fzf color
-  [ -f $DOTS/zsh/fzf.$BG_LUMINANCE ] &&
-    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/zsh/fzf.$BG_LUMINANCE)"
+  [ -f $DOTS/config/zsh/fzf.$BG_LUMINANCE ] &&
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
   # add path
   [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
     export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
@@ -231,9 +231,9 @@
   # export CLICOLORS=1
   # export LSCOLORS=exfxcxdxbxGxDxabagacad
   # [ -x "$(command -v dircolors)" ] &&
-  #   eval "$(dircolors --sh $DOTS/zsh/LS_COLORS)"
-  [ -f $DOTS/zsh/ls_colors.$BG_LUMINANCE ] &&
-    export LS_COLORS=$(cat $DOTS/zsh/ls_colors.$BG_LUMINANCE)
+  #   eval "$(dircolors --sh $DOTS/config/zsh/LS_COLORS)"
+  [ -f $DOTS/config/zsh/ls_colors.$BG_LUMINANCE ] &&
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
 
 
 

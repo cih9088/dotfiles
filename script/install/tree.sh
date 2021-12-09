@@ -10,13 +10,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 log_title "Prepare to ${BOLD}${UNDERLINE}install ${THIS}${NC}"
 
-VERSION=${1:-1.8.0}
+DEFAULT_VERSION=1.8.0
 ################################################################
 
 
 setup_func_tree_local() {
-  local FORCE=$1
+  local FORCE="$1"
+  local VERSION="${2:-}"
   local DO_INSTALL=no
+
+  [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
   if [ -d $HOME/.local/src/tree-* ]; then
     if [ ${FORCE} == 'true' ]; then
@@ -66,4 +69,5 @@ version_func_tree() {
   $1 --version | awk '{print $2}'
 }
 
-main_script ${THIS} setup_func_tree_local setup_func_tree_system version_func_tree
+main_script ${THIS} setup_func_tree_local setup_func_tree_system version_func_tree \
+  "${DEFAULT_VERSION}"

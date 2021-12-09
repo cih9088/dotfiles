@@ -11,6 +11,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare to install ${THIS_HL}"
+
+DEFAULT_VERSION="latest"
 ################################################################
 
 setup_func_bpytop_local() {
@@ -44,4 +46,5 @@ version_func_bpytop() {
   $1 --version 2>&1
 }
 
-main_script ${THIS} setup_func_bpytop_local setup_func_bpytop_system version_func_bpytop
+main_script ${THIS} setup_func_bpytop_local setup_func_bpytop_system version_func_bpytop \
+  "${DEFAULT_VERSION}"

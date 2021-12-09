@@ -11,6 +11,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare to install ${THIS_HL}"
+
+DEFAULT_VERSION="latest"
 ################################################################
 
 setup_func_local() {
@@ -55,4 +57,5 @@ version_func() {
   $1 version
 }
 
-main_script ${THIS} setup_func_local setup_func_system version_func
+main_script ${THIS} setup_func_local setup_func_system version_func \
+  "${DEFAULT_VERSION}"

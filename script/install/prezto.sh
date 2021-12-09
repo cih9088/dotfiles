@@ -10,6 +10,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 log_title "Prepare to ${BOLD}${UNDERLINE}install ${THIS}${NC}"
 
+DEFAULT_VERSION="latest"
 ###############################################################
 
 setup_func() {
@@ -50,4 +51,5 @@ setup_func() {
   done
 }
 
-main_script ${THIS} setup_func setup_func ""
+main_script ${THIS} setup_func setup_func "" \
+  "${DEFAULT_VERSION}"

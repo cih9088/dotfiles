@@ -11,6 +11,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare to install ${THIS_HL}"
+
+DEFAULT_VERSION="latest"
 ################################################################
 
 setup_func_ranger_local() {
@@ -28,9 +30,9 @@ setup_func_ranger_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    git clone https://github.com/ranger/ranger.git $HOME/.local/src/ranger
-    $HOME/.local/src/ranger/ranger.py --copy-config=all
-    ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger
+    git clone https://github.com/ranger/ranger.git $HOME/.local/src/ranger || exit $?
+    $HOME/.local/src/ranger/ranger.py --copy-config=all || exit $?
+    ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger || exit $?
   fi
 }
 
@@ -42,4 +44,5 @@ version_func_ranger() {
   $1 --version | head -1 | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}'
 }
 
-main_script ${THIS} setup_func_ranger_local setup_func_ranger_system version_func_ranger
+main_script ${THIS} setup_func_ranger_local setup_func_ranger_system version_func_ranger \
+  "${DEFAULT_VERSION}"

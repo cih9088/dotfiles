@@ -116,7 +116,7 @@ main_script() {
   if [ ! -z ${_FUNC_VERSION} ]; then
     if [ -x "$(command -v ${_TARGET_CMD})" ]; then
       log_info "The Following list is ${_TARGET_HL} installed on the machine."
-      coms=($(which -a ${_TARGET_CMD} | uniq))
+      coms=($(type -a ${_TARGET_CMD} | awk '{print $3}' | uniq))
       (
         printf 'LOCATION,VERSION\n'
         for com in "${coms[@]}"; do
@@ -160,13 +160,16 @@ main_script() {
         case $yn in
           [Ll]ocal* )
             if [ ! -z "${_DEFAULT_VERSION}" ]; then
+              _TARGET_VERSION=${_DEFAULT_VERSION}
               if [ ! -z "${_AVAILABLE_VERSIONS}" ]; then
                 log_info "List of available versions"
                 echo "${_AVAILABLE_VERSIONS}"
               fi
-              _TARGET_VERSION=$(question "Which version to install?" ${_DEFAULT_VERSION})
-              if ! ${_FUNC_VERIFY_VERSION} ${_TARGET_VERSION}; then
-                log_error "Invalid version ${_TARGET_VERSION}"; continue;
+              if [ ! -z "${_FUNC_VERIFY_VERSION}" ]; then
+                _TARGET_VERSION=$(question "Which version to install?" ${_DEFAULT_VERSION})
+                if ! ${_FUNC_VERIFY_VERSION} ${_TARGET_VERSION}; then
+                  log_error "Invalid version ${_TARGET_VERSION}"; continue;
+                fi
               fi
             fi
             _TARGET_LOCAL=true

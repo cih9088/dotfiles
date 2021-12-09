@@ -13,19 +13,19 @@ sleep 0.3
 export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
 # renew fzf color
-[ -f $DOTS/zsh/fzf.$BG_LUMINANCE ] &&
+[ -f $DOTS/config/zsh/fzf.$BG_LUMINANCE ] &&
   export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/zsh/fzf.$BG_LUMINANCE)"
 
 # renew ls color
-[ -f $DOTS/zsh/ls_colors.$BG_LUMINANCE ] &&
-  export LS_COLORS=$(cat $DOTS/zsh/ls_colors.$BG_LUMINANCE)
+[ -f $DOTS/config/zsh/ls_colors.$BG_LUMINANCE ] &&
+  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
 
 if tmux info &> /dev/null; then
   # update tmux environment
   tmux set-environment BG_LUMINANCE $BG_LUMINANCE
 
   # source tmux config
-  tmux source-file $DOTS/tmux/tmux.conf
+  tmux source-file $HOME/.tmux.conf
 
   # change vim colorscheme in all tmux session
   sessions=($(tmux list-sessions -F '#{session_name}'))
