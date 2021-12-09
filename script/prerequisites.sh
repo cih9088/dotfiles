@@ -46,13 +46,13 @@ echo
 
     # brew install python@2 -> python2 is not supported anymore
     brew install python
-    # create symlink manually
-    # https://github.com/Homebrew/homebrew-core/issues/16212
-    ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
-    ln -snf $(brew --prefix)/bin/python3-config $(brew --prefix)/bin/python-config
-    ln -snf $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
-    ln -snf $(brew --prefix)/bin/wheel3 $(brew --prefix)/bin/wheel
-    ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
+    # # create symlink manually
+    # # https://github.com/Homebrew/homebrew-core/issues/16212
+    # ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
+    # ln -snf $(brew --prefix)/bin/python3-config $(brew --prefix)/bin/python-config
+    # ln -snf $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
+    # ln -snf $(brew --prefix)/bin/wheel3 $(brew --prefix)/bin/wheel
+    # ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
 
     # # pyenv
     # brew install openssl readline sqlite3 xz zlib
@@ -99,8 +99,8 @@ echo
       # # treesitter
       # sudo dnf install -y gcc-c++ libstdc++-devel
 
-      sudo alternatives --set python /usr/bin/python3
-      sudo alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+      # sudo alternatives --set python /usr/bin/python3
+      # sudo alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
     fi
   else
     echo 'not defined'; exit 1
