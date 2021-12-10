@@ -204,23 +204,23 @@ shellcheck:
 
 python2:
   install: true
-  version: latest
+  version: 2.7.18
 
 python3:
   install: true
-  version: latest
+  version: 3.8.5
 
 golang:
   install: true
-  version: latest
+  version: 1.17.5
 
 rust:
   install: true
-  version: latest
+  version: 1.57.0
 
 nodejs:
   install: true
-  version: latest
+  version: 17.2.0
 
 #######################
 

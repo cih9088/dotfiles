@@ -8,7 +8,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
-log_title "Prepare to ${BOLD}${UNDERLINE}install ${THIS}${NC}"
+THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
+
+log_title "Prepare to install ${THIS_HL}"
 
 DEFAULT_VERSION=latest
 ###############################################################
