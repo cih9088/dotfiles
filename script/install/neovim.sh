@@ -35,17 +35,17 @@ neovim2_virenv='neovim2'
 ################################################################
 
 setup_func_python_support() {
-  pip3 install --user virtualenv
+  pip3 install --user --force-reinstall virtualenv
 
   rm -rf ${WORKON_HOME}/${neovim2_virenv} || true
-  virtualenv --python=$(which python2) ${WORKON_HOME}/${neovim2_virenv}
-  source ${WORKON_HOME}/${neovim2_virenv}/bin/activate
-  pip install --upgrade pynvim
+  virtualenv --python=$(which python2) ${WORKON_HOME}/${neovim2_virenv} || exit $?
+  source ${WORKON_HOME}/${neovim2_virenv}/bin/activate || exit $?
+  pip install --upgrade pynvim || exit $?
 
   rm -rf ${WORKON_HOME}/${neovim3_virenv} || true
-  virtualenv --python=$(which python3) ${WORKON_HOME}/${neovim3_virenv}
-  source ${WORKON_HOME}/${neovim3_virenv}/bin/activate
-  pip install --upgrade pynvim
+  virtualenv --python=$(which python3) ${WORKON_HOME}/${neovim3_virenv} || exit $?
+  source ${WORKON_HOME}/${neovim3_virenv}/bin/activate || exit $?
+  pip install --upgrade pynvim || exit $?
 }
 
 setup_func_local() {

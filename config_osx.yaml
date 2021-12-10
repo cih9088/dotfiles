@@ -80,27 +80,27 @@ libffi:
 
 gmp:
   install: true
-  local: true
+  local: false
   force: false
 
 libnettle:
   install: true
-  local: true
+  local: false
   force: false
 
 libtasn1:
   install: true
-  local: true
+  local: false
   force: false
 
 p11_kit:
   install: true
-  local: true
+  local: false
   force: false
 
 gnutls:
   install: true
-  local: true
+  local: false
   force: false
 
 libgpg_error:
@@ -208,7 +208,7 @@ python2:
 
 python3:
   install: true
-  version: 3.8.5
+  version: 3.10.0
 
 golang:
   install: true
@@ -254,7 +254,6 @@ tmux:
 
 tpm:
   install: true
-  local: true
   force: true
 
 #######################
@@ -299,11 +298,6 @@ bpytop:
   force: true
 
 up:
-  install: true
-  local: false
-  force: true
-
-highlight:
   install: true
   local: false
   force: true

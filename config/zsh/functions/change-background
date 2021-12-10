@@ -14,7 +14,7 @@ export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
 # renew fzf color
 [ -f $DOTS/config/zsh/fzf.$BG_LUMINANCE ] &&
-  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/zsh/fzf.$BG_LUMINANCE)"
+  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
 
 # renew ls color
 [ -f $DOTS/config/zsh/ls_colors.$BG_LUMINANCE ] &&
