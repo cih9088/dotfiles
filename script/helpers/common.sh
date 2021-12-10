@@ -15,17 +15,23 @@ SCRIPTS_DIR=${SCRIPTS_DIR:=${PROJ_HOME}/script}
 
 VERBOSE=$(echo ${VERBOSE:-false} | tr '[:upper:]' '[:lower:]')
 
+PREFIX=${PREFIX:-$HOME/.local}
+mkdir -p ${HOME}/.config
+mkdir -p ${PREFIX}/bin
+mkdir -p ${PREFIX}/src
+mkdir -p ${PREFIX}/lib/pkgconfig
+
 # path
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin${PATH+:$PATH}"
-export PATH="${HOME}/.local/bin${PATH+:$PATH}"
+export PATH="${PREFIX}/bin${PATH+:$PATH}"
 
 # build path
-export LD_LIBRARY_PATH="${HOME}/.local/lib:${HOME}/.local/lib64${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}"
-export PKG_CONFIG_PATH="${HOME}/.local/lib/pkgconfig${PKG_CONFIG_PATH+:$PKG_CONFIG_PATH}"
-export CFLAGS="-I${HOME}/.local/include"
-export CPPFLAGS="-I${HOME}/.local/include"
-export CXXFLAGS="-I${HOME}/.local/include"
-export LDFLAGS="-L${HOME}/.local/lib -L${HOME}/.local/lib64"
+export LD_LIBRARY_PATH="${PREFIX}/lib:${PREFIX}/lib64${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}"
+export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig${PKG_CONFIG_PATH+:$PKG_CONFIG_PATH}"
+export CFLAGS="-I${PREFIX}/include"
+export CPPFLAGS="-I${PREFIX}/include"
+export CXXFLAGS="-I${PREFIX}/include"
+export LDFLAGS="-L${PREFIX}/lib -L${PREFIX}/lib64"
 ################################################################
 
 # asdf
@@ -159,19 +165,6 @@ main_script() {
         yn=$(question "Install locally or systemwide?")
         case $yn in
           [Ll]ocal* )
-            if [ ! -z "${_DEFAULT_VERSION}" ]; then
-              _TARGET_VERSION=${_DEFAULT_VERSION}
-              if [ ! -z "${_AVAILABLE_VERSIONS}" ]; then
-                log_info "List of available versions"
-                echo "${_AVAILABLE_VERSIONS}"
-              fi
-              if [ ! -z "${_FUNC_VERIFY_VERSION}" ]; then
-                _TARGET_VERSION=$(question "Which version to install?" ${_DEFAULT_VERSION})
-                if ! ${_FUNC_VERIFY_VERSION} ${_TARGET_VERSION}; then
-                  log_error "Invalid version ${_TARGET_VERSION}"; continue;
-                fi
-              fi
-            fi
             _TARGET_LOCAL=true
             ;;
           [Ss]ystem* )
@@ -180,6 +173,23 @@ main_script() {
           * ) log_error "Please answer 'locally' or 'systemwide'."; continue;;
         esac
       fi
+
+      if [ $_TARGET_LOCAL == "true" ]; then
+        if [ ! -z "${_DEFAULT_VERSION}" ]; then
+          _TARGET_VERSION=${_DEFAULT_VERSION}
+          if [ ! -z "${_AVAILABLE_VERSIONS}" ]; then
+            log_info "List of available versions"
+            echo "${_AVAILABLE_VERSIONS}"
+          fi
+          if [ ! -z "${_FUNC_VERIFY_VERSION}" ]; then
+            _TARGET_VERSION=$(question "Which version to install?" ${_DEFAULT_VERSION})
+            if ! ${_FUNC_VERIFY_VERSION} ${_TARGET_VERSION}; then
+              log_error "Invalid version ${_TARGET_VERSION}"; continue;
+            fi
+          fi
+        fi
+      fi
+
       break
     done
   fi

@@ -27,10 +27,10 @@ setup_func_rg_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -f ${HOME}/.local/bin/rg ]; then
+  if [ -f ${PREFIX}/bin/rg ]; then
     if [ ${FORCE} == 'true' ]; then
-      rm -rf $HOME/.local/bin/rg || true
-      rm -rf $HOME/.local/man/man1/rg.1 || true
+      rm -rf ${PREFIX}/bin/rg || true
+      rm -rf ${PREFIX}/man/man1/rg.1 || true
       DO_INSTALL=true
     fi
   else
@@ -41,11 +41,11 @@ setup_func_rg_local() {
     if [[ ${PLATFORM} == "OSX" ]]; then
       wget https://github.com/microsoft/ripgrep-prebuilt/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz || exit $?
       tar -xvzf ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz || exit $?
-      \cp -rf rg $HOME/.local/bin
+      \cp -rf rg ${PREFIX}/bin
     elif [[ ${PLATFORM} == "LINUX" ]]; then
       wget https://github.com/microsoft/ripgrep-prebuilt/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz || exit $?
       tar -xvzf ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz || exit $?
-      \cp -rf rg $HOME/.local/bin
+      \cp -rf rg ${PREFIX}/bin
     fi
   fi
 }

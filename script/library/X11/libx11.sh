@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libX11-* ]; then
+  if [ -d ${PREFIX}/src/libX11-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libX11-*
+      pushd ${PREFIX}/src/libX11-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libX11-*
+      rm -rf ${PREFIX}/src/libX11-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://www.x.org/releases/individual/lib/libX11-${VERSION}.tar.gz || exit $?
     tar -xvzf libX11-${VERSION}.tar.gz || exit $?
 
-    mv libX11-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/libX11-${VERSION}
+    mv libX11-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/libX11-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

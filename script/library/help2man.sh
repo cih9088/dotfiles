@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/help2man-* ]; then
+  if [ -d ${PREFIX}/src/help2man-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/help2man-*
+      pushd ${PREFIX}/src/help2man-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/help2man-*
+      rm -rf ${PREFIX}/src/help2man-*
       DO_INSTALL=true
     fi
   else
@@ -46,10 +46,10 @@ setup_func_local() {
     wget https://gnuftp.uib.no/help2man/help2man-${VERSION}.tar.gz || exit $?
     tar -xvzf help2man-${VERSION}.tar.gz || exit $?
 
-    mv help2man-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/help2man-${VERSION}
+    mv help2man-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/help2man-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

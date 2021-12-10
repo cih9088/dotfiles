@@ -24,13 +24,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -d $HOME/.local/src/libevent-* ]; then
+  if [ -d ${PREFIX}/src/libevent-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libevent-*
+      pushd ${PREFIX}/src/libevent-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libevent-*
+      rm -rf ${PREFIX}/src/libevent-*
       DO_INSTALL=true
     fi
   else
@@ -42,10 +42,10 @@ setup_func_local() {
     wget https://github.com/libevent/libevent/releases/download/${VERSION}/${VERSION/release/libevent}.tar.gz || exit $?
     tar -xvzf ${VERSION/release/libevent}.tar.gz || exit $?
 
-    mv ${VERSION/release/libevent} $HOME/.local/src
-    pushd $HOME/.local/src/${VERSION/release/libevent}
+    mv ${VERSION/release/libevent} ${PREFIX}/src
+    pushd ${PREFIX}/src/${VERSION/release/libevent}
 
-    ./configure --prefix=$HOME/.local --enable-shared || exit $?
+    ./configure --prefix=${PREFIX} --enable-shared || exit $?
     make || exit $?
     make install || exit $?
 

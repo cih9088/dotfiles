@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libgpg-error-* ]; then
+  if [ -d ${PREFIX}/src/libgpg-error-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libgpg-error-*
+      pushd ${PREFIX}/src/libgpg-error-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libgpg-error-*
+      rm -rf ${PREFIX}/src/libgpg-error-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://gnupg.org/ftp/gcrypt/gpgrt/libgpg-error-${VERSION}.tar.bz2 || exit $?
     tar -xvjf libgpg-error-${VERSION}.tar.bz2 || exit $?
 
-    mv libgpg-error-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/libgpg-error-${VERSION}
+    mv libgpg-error-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/libgpg-error-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

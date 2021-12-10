@@ -60,16 +60,23 @@ random-string() {
   fi
 }
 
-backup-and-link() {
-  local SRC="$1"
-  local TGT="$2"
-  local BACKUP_PATH="$3"
+backup() {
+  local TGT="$1"
+  local BACKUP_PATH="$2"
 
   if [ -e ${TGT} ]; then
     log_info "Backup ${TGT} to ${BACKUP_PATH}"
     cp -RfL ${TGT} ${BACKUP_PATH}
     rm -rf ${TGT}
   fi
+}
+
+backup-and-link() {
+  local SRC="$1"
+  local TGT="$2"
+  local BACKUP_PATH="$3"
+
+  backup ${TGT} ${BACKUP_PATH}
   ln -snf ${SRC} ${TGT}
 }
 

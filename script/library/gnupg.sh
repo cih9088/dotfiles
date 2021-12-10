@@ -9,16 +9,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
-THIS_CMD="pkg-config"
+THIS_CMD="gpg"
 
 log_title "Prepare to install ${THIS_HL}"
 
 AVAILABLE_VERSIONS="$(
-  curl --silent --show-error https://pkgconfig.freedesktop.org/releases/ |
+  curl --silent --show-error https://gnupg.org/ftp/gcrypt/gnupg/ |
     ${DIR}/../helpers/parser_html 'a' |
-    grep 'pkg-config' | grep 'tar.gz\"' |
+    grep 'tar.bz2\"' |
     awk '{print $4}' |
-    sed -e 's/.tar.gz//' -e 's/pkg-config-//' |
+    sed -e 's/.tar.bz2//' -e 's/gnupg-//' |
     sort -Vr)"
 DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
 ################################################################
@@ -30,13 +30,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d ${PREFIX}/src/pkg-config-* ]; then
+  if [ -d ${PREFIX}/src/gnupg-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd ${PREFIX}/src/pkg-config-*
+      pushd ${PREFIX}/src/gnupg-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf ${PREFIX}/src/pkg-config-*
+      rm -rf ${PREFIX}/src/gnupg-*
       DO_INSTALL=true
     fi
   else
@@ -44,13 +44,14 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://pkgconfig.freedesktop.org/releases/pkg-config-${VERSION}.tar.gz || exit $?
-    tar -xvzf pkg-config-${VERSION}.tar.gz || exit $?
 
-    mv pkg-config-${VERSION} ${PREFIX}/src
-    pushd ${PREFIX}/src/pkg-config-${VERSION}
+    wget https://gnupg.org/ftp/gcrypt/gnupg/gnupg-${VERSION}.tar.bz2
+    tar -xvjf gnupg-${VERSION}.tar.bz2
 
-    ./configure --prefix=${PREFIX} --with-internal-glib || exit $?
+    mv gnupg-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/gnupg-${VERSION}
+
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 
@@ -62,26 +63,27 @@ setup_func_system() {
   local FORCE=$1
 
   if [[ ${PLATFORM} == "OSX" ]]; then
-    brew list pkg-config || brew install pkg-config || exit $?
+    brew list gpg || brew install gpg || exit $?
     if [ ${FORCE} == 'true' ]; then
-      brew upgrade pkg-config || exit $?
+      brew upgrade gpg || exit $?
     fi
   elif [[ ${PLATFORM} == "LINUX" ]]; then
     if [[ ${FAMILY} == "DEBIAN" ]]; then
-      sudo apt-get -y install pkg-config || exit $?
+      sudo apt-get -y install gnupg || exit $?
     elif [[ ${FAMILY} == "RHEL" ]]; then
-      sudo dnf -y install pkg-config || exit $?
+      sudo dnf -y install gnupg2 || exit $?
     fi
   fi
 }
 
 version_func() {
-  $1 --version
+  $1 --version | grep 'gpg' | awk '{print $3}'
 }
+
 
 verify_version() {
   [[ "$AVAILABLE_VERSIONS" == *"${1}"* ]]
 }
 
-main_script ${THIS} setup_func_local setup_func_system version_func \
+main_script "${THIS}" setup_func_local setup_func_system version_func \
   "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version

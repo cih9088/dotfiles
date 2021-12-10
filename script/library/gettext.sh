@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/gettext-* ]; then
+  if [ -d ${PREFIX}/src/gettext-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/gettext-*
+      pushd ${PREFIX}/src/gettext-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/gettext-*
+      rm -rf ${PREFIX}/src/gettext-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://ftp.gnu.org/pub/gnu/gettext/gettext-${VERSION}.tar.gz || exit $?
     tar -xvzf gettext-${VERSION}.tar.gz || exit $?
 
-    mv gettext-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/gettext-${VERSION}
+    mv gettext-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/gettext-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

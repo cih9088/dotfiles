@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libassuan-* ]; then
+  if [ -d ${PREFIX}/src/libassuan-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libassuan-*
+      pushd ${PREFIX}/src/libassuan-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libassuan-*
+      rm -rf ${PREFIX}/src/libassuan-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://gnupg.org/ftp/gcrypt/libassuan/libassuan-${VERSION}.tar.bz2 || exit $?
     tar -xvjf libassuan-${VERSION}.tar.bz2 || exit $?
 
-    mv libassuan-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/libassuan-${VERSION}
+    mv libassuan-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/libassuan-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

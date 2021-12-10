@@ -3,6 +3,7 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
+GH="jedisct1/libsodium"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
@@ -12,16 +13,8 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare to install ${THIS_HL}"
 
-# AVAILABLE_VERSIONS="$(
-#   curl --silent --show-error http://www.ossp.org/pkg/lib/pth/ |
-#     ${DIR}/../helpers/parser_html 'a' |
-#     grep 'tar.gz\"' |
-#     awk '{print $5}' |
-#     sed -e 's/.tar.gz//' -e 's/pth-//' |
-#     sort -Vr)"
-# DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
-AVAILABLE_VERSIONS=2.0.7
-DEFAULT_VERSION=2.0.7
+DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
+AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 ################################################################
 
 setup_func_local() {
@@ -31,13 +24,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/pth-* ]; then
+  if [ -d $HOME/.local/src/libsodium-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/pth-*
+      pushd $HOME/.local/src/libsodium-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/pth-*
+      rm -rf $HOME/.local/src/libsodium-*
       DO_INSTALL=true
     fi
   else
@@ -45,19 +38,13 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
+    wget https://github.com/${GH}/releases/download/${VERSION}/libsodium-${VERSION/-RELEASE/}.tar.gz || exit $?
+    tar -xvzf libsodium-${VERSION/-RELEASE/}.tar.gz || exit $?
 
-    # wget ftp://ftp.ossp.org/pkg/lib/pth/pth-${VERSION}.tar.gz || exit $?
-    # tar -xvzf pth-${VERSION}.tar.gz || exit $?
-    #
-    # mv pth-${VERSION} $HOME/.local/src
-    # pushd $HOME/.local/src/pth-${VERSION}
+    mv libsodium-${VERSION/-RELEASE/} $HOME/.local/src
+    pushd $HOME/.local/src/libsodium-${VERSION/-RELEASE/}
 
-    git clone https://github.com/danluu/gnu-pth $HOME/.local/src/pth-${VERSION}
-    pushd $HOME/.local/src/pth-${VERSION}
-
-    ./configure --prefix=$HOME/.local \
-      --build="$($HOME/.local/share/automake-*/config.guess)" \
-      --host="$($HOME/.local/share/automake-*/config.guess)" || exit $?
+    ./configure --prefix=$HOME/.local || exit $?
     make || exit $?
     make install || exit $?
 
@@ -69,13 +56,17 @@ setup_func_system() {
   local FORCE=$1
 
   if [[ ${PLATFORM} == "OSX" ]]; then
-    brew list pth || brew install pth || exit $?
+    brew list libsodium || brew install libsodium || exit $?
     if [ ${FORCE} == 'true' ]; then
-      brew upgrade pth || exit $?
+      brew upgrade libsodium || exit $?
     fi
   elif [[ ${PLATFORM} == "LINUX" ]]; then
-    log_info "No package in repository. Install it locally."
-    setup_func_local ${FORCE}
+    if [[ ${FAMILY} == "DEBIAN" ]]; then
+      sudo apt-get -y install  libsodium-dev  || exit $?
+    elif [[ ${FAMILY} == "RHEL" ]]; then
+      sudo dnf install epel-release || exit $?
+      sudo dnf -y install libsodium-devel || exit $?
+    fi
   fi
 }
 

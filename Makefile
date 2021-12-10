@@ -9,21 +9,11 @@
 # export BIN_DIR := $(PROJ_HOME)/bin
 export PROJ_HOME := $(shell git rev-parse --show-toplevel)
 export SCRIPTS_DIR := $(PROJ_HOME)/script
-#
+
 # ifeq (installNeovim,$(firstword $(MAKECMDGOALS)))
 #   nvim_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 #   $(eval $(nvim_version):;@:)
 # endif
-
-prepare:
-	@mkdir -p ${HOME}/.config
-	@mkdir -p ${HOME}/.local/bin
-	@mkdir -p ${HOME}/.local/src
-	@mkdir -p ${HOME}/.local/shared
-	@mkdir -p ${HOME}/.local/man/man1
-	@mkdir -p ${HOME}/.local/include
-	@mkdir -p ${HOME}/.local/lib
-	@mkdir -p ${HOME}/.local/lib/pkgconfig
 
 initMac:
 	@( $(SCRIPTS_DIR)/mac/prepare.sh )
@@ -36,219 +26,267 @@ prerequisites:
 prerequisitesTest:
 	@( $(SCRIPTS_DIR)/prerequisites_test.sh )
 
-installLibraryHelp2man: prepare
+# ====================================================
+# LIBRARIES
+# ====================================================
+
+libraryHelp2man:
 	@( $(SCRIPTS_DIR)/library/help2man.sh )
 
-installLibraryPkgConfig: prepare
+libraryPkgConfig:
 	@( $(SCRIPTS_DIR)/library/pkg_config.sh )
 
-installLibraryNcurses: prepare
+libraryNcurses:
 	@( $(SCRIPTS_DIR)/library/ncurses.sh )
 
-installLibraryOpenssl: prepare
+libraryOpenssl:
 	@( $(SCRIPTS_DIR)/library/openssl.sh )
 
-installLibraryLibevent: prepare
+libraryLibevent:
 	@( $(SCRIPTS_DIR)/library/libevent.sh )
 
-########################################################
-installLibraryM4: prepare
+# autotools
+# -----------------------------------------------------
+libraryM4:
 	@( $(SCRIPTS_DIR)/library/m4.sh )
 
-installLibraryAutoconf: prepare installLibraryM4
+libraryAutoconf: libraryM4
 	@( $(SCRIPTS_DIR)/library/autoconf.sh )
 
-installLibraryAutomake: prepare installLibraryAutoconf
+libraryAutomake: libraryAutoconf
 	@( $(SCRIPTS_DIR)/library/automake.sh )
 
-installLibraryLibtool: prepare installLibraryAutomake
+libraryLibtool: libraryAutomake
 	@( $(SCRIPTS_DIR)/library/libtool.sh )
 
-installLibraryAutotools: \
-	installLibraryM4 installLibraryAutoconf installLibraryAutomake installLibraryLibtool
-########################################################
+libraryAutotools: \
+	libraryM4 libraryAutoconf libraryAutomake libraryLibtool
+# -----------------------------------------------------
 
-installLibraryGettext: prepare
+libraryGettext:
 	@( $(SCRIPTS_DIR)/library/gettext.sh )
 
-installLibraryPatch: prepare
+libraryPatch:
 	@( $(SCRIPTS_DIR)/library/patch.sh )
 
-installLibraryReadline: prepare installLibraryNcurses
+libraryReadline: libraryNcurses
 	@( $(SCRIPTS_DIR)/library/readline.sh )
 
-installLibraryZlib: prepare
+libraryZlib:
 	@( $(SCRIPTS_DIR)/library/zlib.sh )
 
-installLibraryBzip2: prepare
+libraryBzip2:
 	@( $(SCRIPTS_DIR)/library/bzip2.sh )
 
-installLibrarySqlite3: prepare
+librarySqlite3:
 	@( $(SCRIPTS_DIR)/library/sqlite3.sh )
 
-########################################################
-installLibraryLibgpgError: prepare
+libraryLibffi:
+	@( $(SCRIPTS_DIR)/library/libffi.sh )
+
+# openldap
+# -----------------------------------------------------
+libraryCyrusSASL:
+	@( $(SCRIPTS_DIR)/library/cyrus_sasl.sh )
+
+libraryLibsodium:
+	@( $(SCRIPTS_DIR)/library/libsodium.sh )
+
+libraryOpenLDAP: \
+	libraryCyrusSASL libraryLibsodium libraryLibevent
+	@( $(SCRIPTS_DIR)/library/openldap.sh )
+# -----------------------------------------------------
+
+libraryTexinfo:
+	@( $(SCRIPTS_DIR)/library/texinfo.sh )
+
+libraryGroff: \
+	libraryTexinfo
+	@( $(SCRIPTS_DIR)/library/groff.sh )
+
+# gnutls
+# -----------------------------------------------------
+libraryGMP:
+	@( $(SCRIPTS_DIR)/library/gmp.sh )
+
+libraryLibnettle: \
+	libraryGMP
+	@( $(SCRIPTS_DIR)/library/libnettle.sh )
+
+libraryLibtasn1:
+	@( $(SCRIPTS_DIR)/library/libtasn1.sh )
+
+libraryP11Kit: \
+	libraryLibtasn1 libraryLibffi
+	@( $(SCRIPTS_DIR)/library/p11_kit.sh )
+
+libraryGnuTLS: \
+	libraryGMP libraryLibnettle libraryP11Kit
+	@( $(SCRIPTS_DIR)/library/gnutls.sh )
+# -----------------------------------------------------
+
+# gnupg
+# -----------------------------------------------------
+libraryLibgpgError:
 	@( $(SCRIPTS_DIR)/library/libgpg_error.sh )
 
-installLibraryLibgcrypt: prepare
+libraryLibgcrypt:
 	@( $(SCRIPTS_DIR)/library/libgcrypt.sh )
 
-installLibraryLibassuan: prepare
+libraryLibassuan:
 	@( $(SCRIPTS_DIR)/library/libassuan.sh )
 
-installLibraryLibksba: prepare
+libraryLibksba:
 	@( $(SCRIPTS_DIR)/library/libksba.sh )
 
-installLibraryNpth: prepare
+libraryNpth:
 	@( $(SCRIPTS_DIR)/library/npth.sh )
 
-installLibraryGpg: prepare \
-	installLibraryLibgpgError installLibraryLibgcrypt installLibraryLibassuan \
-	installLibraryLibksba installLibraryNpth
-	@( $(SCRIPTS_DIR)/install/gpg.sh )
+libraryGnuPG: \
+	libraryLibgpgError libraryLibgcrypt libraryLibassuan \
+	libraryLibksba libraryNpth libraryGnuTLS
+	@( $(SCRIPTS_DIR)/library/gnupg.sh )
+# -----------------------------------------------------
 
-installLibraryPth: prepare
-	@( $(SCRIPTS_DIR)/library/pth.sh )
-
-# openldap library
-# installLibraryLibgpgError installLibraryLibgcrypt installLibraryLibassuan installLibraryAutomake installLibraryPth
-installLibraryDirmngr: prepare
-	@( $(SCRIPTS_DIR)/install/dirmngr.sh )
-########################################################
-
-########################################################
-installLibraryXorgproto: prepare
+# x11
+# -----------------------------------------------------
+libraryXorgproto:
 	@( $(SCRIPTS_DIR)/library/X11/xorgproto.sh )
 
-installLibraryXtrans: prepare
+libraryXtrans:
 	@( $(SCRIPTS_DIR)/library/X11/xtrans.sh )
 
-installLibraryLibxau: prepare
+libraryLibxau:
 	@( $(SCRIPTS_DIR)/library/X11/libxau.sh )
 
-installLibraryXcbProto: prepare
+libraryXcbProto:
 	@( $(SCRIPTS_DIR)/library/X11/xcb_proto.sh )
 
-installLibraryLibxcb: prepare installLibraryLibxau installLibraryXcbProto
+libraryLibxcb: libraryLibxau libraryXcbProto
 	@( $(SCRIPTS_DIR)/library/X11/libxcb.sh )
 
 # (xproto >= 7.0.25 xextproto xtrans xcb >= 1.11.1 kbproto inputproto
-installLibraryLibx11: prepare \
-	installLibraryPkgConfig installLibraryXorgproto installLibraryXtrans installLibraryLibxcb
+libraryLibx11: \
+	libraryPkgConfig libraryXorgproto libraryXtrans libraryLibxcb
 	@( $(SCRIPTS_DIR)/library/X11/libx11.sh )
-########################################################
+# -----------------------------------------------------
 
-installLibraryLibffi: prepare
-	@( $(SCRIPTS_DIR)/library/libffi.sh )
-
-installLibraryTcl: prepare
+libraryTcl:
 	@( $(SCRIPTS_DIR)/library/tcl.sh )
 
-installLibraryTk: prepare \
-	installLibraryTcl installLibraryLibx11
+libraryTk: \
+	libraryTcl libraryLibx11
 	@( $(SCRIPTS_DIR)/library/tk.sh )
 
-installLibraryBoost: prepare
-	@( $(SCRIPTS_DIR)/library/boost.sh )
+# libraryBoost:
+#   @( $(SCRIPTS_DIR)/library/boost.sh )
 
-installTermInfo: prepare
+# ====================================================
+# APPS
+# ====================================================
+
+installTermInfo:
 	@( $(SCRIPTS_DIR)/install/terminfo.sh )
 
-# installLibraryNcurses
-installZsh: prepare
+# libraryNcurses
+installZsh:
 	@( $(SCRIPTS_DIR)/install/zsh.sh )
 
-# installLibraryNcurses
-installFish: prepare
+# libraryNcurses
+installFish:
 	@( $(SCRIPTS_DIR)/install/fish.sh )
 
-installPrezto: prepare
+installPrezto:
 	@( $(SCRIPTS_DIR)/install/prezto.sh )
 
-installNeovim: prepare
+installNeovim:
 	@( $(SCRIPTS_DIR)/install/neovim.sh )
 
-# installLibraryNcurses installLibraryLibevent
-installTmux: prepare
+# libraryNcurses libraryLibevent
+installTmux:
 	@( $(SCRIPTS_DIR)/install/tmux.sh )
 
 # installTmux
-installTPM: prepare
+installTPM:
 	@( $(SCRIPTS_DIR)/install/tpm.sh )
 
-installTree: prepare
+installTree:
 	@( $(SCRIPTS_DIR)/install/tree.sh )
 
-installFd: prepare
+installFd:
 	@( $(SCRIPTS_DIR)/install/fd.sh )
 
-installRg: prepare
+installRg:
 	@( $(SCRIPTS_DIR)/install/rg.sh )
 
-installThefuck: prepare
+installThefuck:
 	@( $(SCRIPTS_DIR)/install/thefuck.sh )
 
-installRanger: prepare
+installRanger:
 	@( $(SCRIPTS_DIR)/install/ranger.sh )
 
-installTldr: prepare
+installTldr:
 	@( $(SCRIPTS_DIR)/install/tldr.sh )
 
-installBashSnippets: prepare
+installBashSnippets:
 	@( $(SCRIPTS_DIR)/install/bash_snippets.sh )
 
-installBpytop: prepare
+installBpytop:
 	@( $(SCRIPTS_DIR)/install/bpytop.sh )
 
-installUp: prepare
+installUp:
 	@( $(SCRIPTS_DIR)/install/up.sh )
 
-# installLibraryBoost
-installHighlight: prepare
-	@( $(SCRIPTS_DIR)/install/highlight.sh )
+# # libraryBoost
+# installHighlight:
+#   @( $(SCRIPTS_DIR)/install/highlight.sh )
 
-installPyenv: prepare
+installPyenv:
 	@ ( $(SCRIPTS_DIR)/install/pyenv.sh )
 
-installGoenv: prepare
+installGoenv:
 	@( $(SCRIPTS_DIR)/install/goenv.sh )
 
-installAsdf: prepare
+installAsdf:
 	@ ( $(SCRIPTS_DIR)/install/asdf.sh )
 
-installShellcheck: prepare
+installShellcheck:
 	@( $(SCRIPTS_DIR)/install/shellcheck.sh )
 
-updatePrezto: prepare
+updatePrezto:
 	@( $(SCRIPTS_DIR)/update/prezto.sh )
 
-updateBins: prepare
+updateBins:
 	@( $(SCRIPTS_DIR)/update/bins.sh )
 
-updateConfigs: prepare
+updateConfigs:
 	@( $(SCRIPTS_DIR)/update/configs.sh )
 
-updateNeovimPlugins: prepare
+updateNeovimPlugins:
 	@( $(SCRIPTS_DIR)/update/neovim_plugins.sh )
 
 updateTmuxPlugins: installTPM
 	@( $(SCRIPTS_DIR)/update/tmux_plugins.sh )
 
-updateDevEnv: prepare
+updateDevEnv:
 	@( $(SCRIPTS_DIR)/update/dev_env.sh )
 
-# installLibraryOpenssl installLibraryReadline installLibraryZlib installLibraryBzip2 installLibrarySqlite3 installLibraryLibffi installLibraryTcl installLibraryTk
-environmentPython: prepare
+# ====================================================
+# ENVIRONMENT
+# ====================================================
+
+# libraryOpenssl libraryReadline libraryZlib libraryBzip2 librarySqlite3 libraryLibffi libraryTcl libraryTk
+environmentPython:
 	@( $(SCRIPTS_DIR)/environment/python.sh )
 
-environmentGo: prepare
-	@( $(SCRIPTS_DIR)/environment/go.sh )
+environmentGolang:
+	@( $(SCRIPTS_DIR)/environment/golang.sh )
 
-environmentRust: prepare
+environmentRust:
 	@( $(SCRIPTS_DIR)/environment/rust.sh )
 
-# installLibraryGpg installLibraryDirmngr
-environmentNodejs: prepare
+# libraryGnuPG
+environmentNodejs:
 	@( $(SCRIPTS_DIR)/environment/nodejs.sh )
 
 changeDefaultShell:
@@ -273,30 +311,31 @@ clean:
 	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
 	@echo "[0;92m[*][0m Remove all configurations files and custom functions"
 
-installLibraries: prepare \
-	installLibraryHelp2man installLibraryPkgConfig installLibraryNcurses \
-	installLibraryOpenssl installLibraryLibevent installLibraryAutotools \
-	installLibraryGettext installLibraryPatch installLibraryReadline \
-	installLibraryZlib installLibraryBzip2 installLibrarySqlite3 \
-	installLibraryLibx11 \
-	installLibraryLibffi installLibraryTcl installLibraryTk
+installLibraries: \
+	libraryHelp2man libraryPkgConfig libraryNcurses \
+	libraryOpenssl libraryLibevent libraryAutotools \
+	libraryGettext libraryPatch libraryReadline \
+	libraryZlib libraryBzip2 librarySqlite3 libraryLibffi \
+	libraryGnuTLS libraryGnuPG \
+	libraryLibx11 \
+	libraryTcl libraryTk
 
-installEnvironmentUtilities: prepare \
+installEnvironmentUtilities: \
 	installPyenv installGoenv installAsdf \
 	installShellcheck updateDevEnv
 
-installEnvironment: prepare \
-	environmentPython environmentGo environmentRust environmentNodejs
+installEnvironment: \
+	environmentPython environmentGolang environmentRust environmentNodejs
 
-installEssentials: prepare \
+installEssentials: \
 	installTermInfo installZsh installFish installPrezto \
 	installNeovim installTmux
 
-installUtilities: prepare \
+installUtilities: \
 	installTree installFd installRg installRanger \
 	installThefuck installTldr installBashSnippets installBpytop installUp
 
-update: prepare \
+update: \
 	updatePrezto \
 	updateBins updateConfigs \
 	updateNeovimPlugins \
@@ -306,35 +345,34 @@ update: prepare \
 	@echo
 	@echo "[42m[30m[*] Update has been finished.[0m"
 
-install: prepare \
+install: \
 	installLibraries \
 	installEnvironmentUtilities installEnvironment \
 	installEssentials installUtilities
 	@echo
 	@echo "[42m[30m[*] Install has been finished.[0m"
 
-init: prepare \
+init: \
 	install \
 	update \
 	changeDefaultShell
 	@echo
 	@echo "[42m[30m[*] Init has been finished.[0m"
 
-.PHONY: prepare prerequisites prerequisitesTest \
-	installLibraryHelp2man installLibraryHelp2man installLibraryNcurses \
-	installLibraryOpenssl installLibraryLibevent \
-	installLibraryM4 installLibraryAutoconf installLibraryAutomake installLibraryLibtool installLibraryAutotools \
-	installLibraryGettext installLibraryPatch installLibraryReadline installLibraryZlib \
-	installLibraryBzip2  installLibrarySqlite3 \
-	installLibraryLibgpgError installLibraryLibgcrypt installLibraryLibassuan installLibraryLibksba installLibraryNpth installLibraryGpg \
-	installLibraryPth installLibraryDirmngr \
-	installLibraryXorgproto installLibraryXtrans installLibraryLibxau installLibraryXcbProto installLibraryLibxcb installLibraryLibx11 \
-	installLibraryLibffi installLibraryTcl installLibraryTk \
-	installLibraryBoost \
+.PHONY: prerequisites prerequisitesTest \
+	libraryHelp2man libraryHelp2man libraryNcurses \
+	libraryOpenssl libraryLibevent \
+	libraryM4 libraryAutoconf libraryAutomake libraryLibtool libraryAutotools \
+	libraryGettext libraryPatch libraryReadline libraryZlib \
+	libraryBzip2  librarySqlite3 \
+	libraryLibgpgError libraryLibgcrypt libraryLibassuan libraryLibksba libraryNpth libraryGnuPG \
+	libraryPth libraryDirmngr \
+	libraryXorgproto libraryXtrans libraryLibxau libraryXcbProto libraryLibxcb libraryLibx11 \
+	libraryLibffi libraryTcl libraryTk \
 	installTermInfo installZsh installFish installPrezto \
 	installNeovim installTmux installTPM \
 	installTree installFd installRg installThefuck installRanger installTldr \
-	installBashSnippets installBpytop installUp installHighlight \
+	installBashSnippets installBpytop installUp \
 	installPyenv installGoenv installAsdf installShellcheck \
 	updatePrezto updateBins updateConfigs updateNeovimPlugins updateTmuxPlugins updateDevEnv \
 	environmentPython environmentGo environmentRust environmentNodejs \

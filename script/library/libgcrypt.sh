@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libgcrypt-* ]; then
+  if [ -d ${PREFIX}/src/libgcrypt-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libgcrypt-*
+      pushd ${PREFIX}/src/libgcrypt-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libgcrypt-*
+      rm -rf ${PREFIX}/src/libgcrypt-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-${VERSION}.tar.bz2 || exit $?
     tar -xvjf libgcrypt-${VERSION}.tar.bz2 || exit $?
 
-    mv libgcrypt-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/libgcrypt-${VERSION}
+    mv libgcrypt-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/libgcrypt-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

@@ -42,6 +42,8 @@ ex) `CONFIG=config_linux.yaml make install`
 ex) `VERBOSE=true make install`
 - `GH_ACCESS`: give maximum of 5,000 rate limits to github REST API \
 ex) `GH_ACCESS=client_id:client_secret make install`
+- `PREFIX`: change path to install (default: `$HOME/.local`) \
+ex) `PREFIX=$HOME/custom_path make init`
 
 
 ### one-liner

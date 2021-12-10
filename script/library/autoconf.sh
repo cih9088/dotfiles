@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/autoconf-* ]; then
+  if [ -d ${PREFIX}/src/autoconf-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/autoconf-*
+      pushd ${PREFIX}/src/autoconf-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/autoconf-*
+      rm -rf ${PREFIX}/src/autoconf-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://ftp.gnu.org/gnu/autoconf/autoconf-${VERSION}.tar.gz || exit $?
     tar -xvzf autoconf-${VERSION}.tar.gz || exit $?
 
-    mv autoconf-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/autoconf-${VERSION}
+    mv autoconf-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/autoconf-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

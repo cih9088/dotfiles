@@ -21,12 +21,12 @@ setup_func_tree_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -d $HOME/.local/src/tree-* ]; then
+  if [ -d ${PREFIX}/src/tree-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/tree-*
+      pushd ${PREFIX}/src/tree-*
       make clean || true
       popd
-      rm -rf $HOME/.local/src/tree-*
+      rm -rf ${PREFIX}/src/tree-*
       DO_INSTALL=true
     fi
   else
@@ -37,10 +37,10 @@ setup_func_tree_local() {
     wget http://mama.indstate.edu/users/ice/tree/src/tree-${VERSION}.tgz || exit $?
     tar -xvzf tree-${VERSION}.tgz || exit $?
 
-    mv tree-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/tree-${VERSION}
+    mv tree-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/tree-${VERSION}
 
-    sed -i -e "s|prefix = /usr|prefix = $HOME/.local|" Makefile || exit $?
+    sed -i -e "s|prefix = /usr|prefix = ${PREFIX}|" Makefile || exit $?
     make || exit $?
     make install || exit $?
 

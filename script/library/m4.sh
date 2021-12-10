@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/m4-* ]; then
+  if [ -d ${PREFIX}/src/m4-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/m4-*
+      pushd ${PREFIX}/src/m4-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/m4-*
+      rm -rf ${PREFIX}/src/m4-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://ftp.gnu.org/gnu/m4/m4-${VERSION}.tar.gz || exit $?
     tar -xvzf m4-${VERSION}.tar.gz || exit $?
 
-    mv m4-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/m4-${VERSION}
+    mv m4-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/m4-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

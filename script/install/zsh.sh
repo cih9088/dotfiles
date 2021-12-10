@@ -20,14 +20,14 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -d $HOME/.local/src/zsh-* ]; then
+  if [ -d ${PREFIX}/src/zsh-* ]; then
     # uninstall first if force is yes
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/zsh-*
+      pushd ${PREFIX}/src/zsh-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/zsh-*
+      rm -rf ${PREFIX}/src/zsh-*
       DO_INSTALL=true
     fi
   else
@@ -51,10 +51,10 @@ setup_func_local() {
       tar -xvJf zsh-${VERSION}.tar.xz || exit $?
     fi
 
-    mv zsh-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/zsh-${VERSION}
+    mv zsh-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/zsh-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

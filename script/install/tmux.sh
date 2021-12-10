@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # based on https://gist.github.com/ryin/3106801#gistcomment-2191503
-# tmux will be installed in $HOME/.local/bin if you specify to install without root access
+# tmux will be installed in ${PREFIX}/bin if you specify to install without root access
 # It's assumed that wget and a C/C++ compiler are installed.
 
 
@@ -28,13 +28,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -d $HOME/.local/src/tmux-* ]; then
+  if [ -d ${PREFIX}/src/tmux-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/tmux-*
+      pushd ${PREFIX}/src/tmux-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/tmux-*
+      rm -rf ${PREFIX}/src/tmux-*
       DO_INSTALL=true
     fi
   else
@@ -45,10 +45,10 @@ setup_func_local() {
     wget https://github.com/tmux/tmux/releases/download/${VERSION}/tmux-${VERSION}.tar.gz
     tar -xvzf tmux-${VERSION}.tar.gz
 
-    mv tmux-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/tmux-${VERSION}
+    mv tmux-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/tmux-${VERSION}
 
-    ./configure --prefix=$HOME/.local
+    ./configure --prefix=${PREFIX}
     make || exit $?
     make install || exit $?
 

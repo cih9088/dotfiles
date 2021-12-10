@@ -25,9 +25,10 @@ BEGIN {
   a[2] = "0x" a[2]
   a[3] = "0x" a[3]
 
-  r = int(parsehex(a[1]) / (2 ** 8))
-  g = int(parsehex(a[2]) / (2 ** 8))
-  b = int(parsehex(a[3]) / (2 ** 8))
+  # mawk compatible
+  r = int(parsehex(a[1]) / (2 * 2 * 2 * 2 * 2 * 2 * 2 * 2))
+  g = int(parsehex(a[2]) / (2 * 2 * 2 * 2 * 2 * 2 * 2 * 2))
+  b = int(parsehex(a[3]) / (2 * 2 * 2 * 2 * 2 * 2 * 2 * 2))
 
   luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 256.
   if (luminance >= 0.5)

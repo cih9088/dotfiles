@@ -28,12 +28,12 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/boost_* ]; then
+  if [ -d ${PREFIX}/src/boost_* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/boost_*
+      pushd ${PREFIX}/src/boost_*
       ./b2 uninstall || true
       popd
-      rm -rf $HOME/.local/src/boost_*
+      rm -rf ${PREFIX}/src/boost_*
       DO_INSTALL=true
     fi
   else
@@ -45,12 +45,12 @@ setup_func_local() {
     wget https://boostorg.jfrog.io/artifactory/main/release/${VERSION}/source/boost_${VERSION//./_}.tar.gz || exit $?
     tar -xvzf boost_${VERSION//./_}.tar.gz || exit $?
 
-    mv boost_${VERSION//./_} $HOME/.local/src
-    pushd  $HOME/.local/src/boost_${VERSION//./_}
+    mv boost_${VERSION//./_} ${PREFIX}/src
+    pushd  ${PREFIX}/src/boost_${VERSION//./_}
 
-    ./bootstrap.sh --prefix=$HOME/.local --with-libraries=all || exit $?
+    ./bootstrap.sh --prefix=${PREFIX} --with-libraries=all || exit $?
     ./b2 install || exit $?
-    # ./b2 install --prefix=$HOME/.local --with=all || exit $?
+    # ./b2 install --prefix=${PREFIX} --with=all || exit $?
 
     popd
   fi

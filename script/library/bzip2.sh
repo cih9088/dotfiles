@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/bzip2-* ]; then
+  if [ -d ${PREFIX}/src/bzip2-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/bzip2-*
+      pushd ${PREFIX}/src/bzip2-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/bzip2-*
+      rm -rf ${PREFIX}/src/bzip2-*
       DO_INSTALL=true
     fi
   else
@@ -47,19 +47,19 @@ setup_func_local() {
     wget https://www.sourceware.org/pub/bzip2/bzip2-${VERSION}.tar.gz || exit $?
     tar -xvzf bzip2-${VERSION}.tar.gz || exit $?
 
-    mv bzip2-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/bzip2-${VERSION}
+    mv bzip2-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/bzip2-${VERSION}
 
-    make install PREFIX=$HOME/.local || exit $?
+    make install PREFIX=${PREFIX} || exit $?
 
     # Build shared library
     make clean
     make -f Makefile-libbz2_so
-    mv bzip2-shared $HOME/.local/bin
-    mv libbz2.so* $HOME/.local/lib
+    mv bzip2-shared ${PREFIX}/bin
+    mv libbz2.so* ${PREFIX}/lib
 
     # link libbz2.so forcefully
-    pushd $HOME/.local/lib
+    pushd ${PREFIX}/lib
     ln -snf libbz2.so.${VERSION} libbz2.so
 
     popd; popd

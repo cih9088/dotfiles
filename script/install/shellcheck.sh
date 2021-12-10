@@ -24,9 +24,9 @@ setup_func_shellcheck_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -f ${HOME}/.local/bin/shellcheck ]; then
+  if [ -f ${PREFIX}/bin/shellcheck ]; then
     if [ ${FORCE} == 'true' ]; then
-      rm -rf $HOME/.local/bin/shellcheck || true
+      rm -rf ${PREFIX}/bin/shellcheck || true
       DO_INSTALL='true'
     fi
   else
@@ -40,7 +40,7 @@ setup_func_shellcheck_local() {
       tar -xvJf shellcheck-${VERSION}.darwin.x86_64.tar.xz || exit $?
 
       pushd shellcheck-${VERSION}
-      yes | \cp -rf shellcheck $HOME/.local/bin
+      yes | \cp -rf shellcheck ${PREFIX}/bin
       popd
 
     elif [[ ${PLATFORM} == "LINUX" ]]; then
@@ -48,7 +48,7 @@ setup_func_shellcheck_local() {
       tar -xvJf shellcheck-${VERSION}.linux.${ARCH}.tar.xz || exit $?
 
       pushd shellcheck-${VERSION}
-      yes | \cp -rf shellcheck $HOME/.local/bin
+      yes | \cp -rf shellcheck ${PREFIX}/bin
       popd
     fi
   fi

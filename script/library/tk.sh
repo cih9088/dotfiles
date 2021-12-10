@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libffi-* ]; then
+  if [ -d ${PREFIX}/src/tk* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libffi-*
+      pushd ${PREFIX}/src/tk*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libffi-*
+      rm -rf ${PREFIX}/src/tk*
       DO_INSTALL=true
     fi
   else
@@ -47,8 +47,8 @@ setup_func_local() {
       -O tk${VERSION}-src.tar.gz || exit $?
     tar -xvzf tk${VERSION}-src.tar.gz || exit $?
 
-    mv tk${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/tk${VERSION}
+    mv tk${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/tk${VERSION}
 
     if [[ ${PLATFORM} == "OSX" ]]; then
       pushd macosx
@@ -56,7 +56,7 @@ setup_func_local() {
       pushd unix
     fi
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

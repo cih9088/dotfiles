@@ -73,43 +73,63 @@ sqlite3:
   local: true
   force: false
 
+libffi:
+  install: true
+  local: true
+  force: false
+
+gmp:
+  install: true
+  local: true
+  force: false
+
+libnettle:
+  install: true
+  local: true
+  force: false
+
+libtasn1:
+  install: true
+  local: true
+  force: false
+
+p11_kit:
+  install: true
+  local: true
+  force: false
+
+gnutls:
+  install: true
+  local: true
+  force: false
+
 libgpg_error:
-  install: false
+  install: true
   local: true
   force: false
 
 libgcrypt:
-  install: false
+  install: true
   local: true
   force: false
 
 libassuan:
-  install: false
+  install: true
   local: true
   force: false
 
 libksba:
-  install: false
+  install: true
   local: true
   force: false
 
 npth:
-  install: false
+  install: true
   local: true
   force: false
 
-gpg:
-  install: false
-  local: true
-  force: false
-
-pth:
-  install: false
-  local: true
-  force: false
-
-dirmngr:
-  install: false
+gnupg:
+  install: true
   local: true
   force: false
 
@@ -139,11 +159,6 @@ libxcb:
   force: false
 
 libx11:
-  install: true
-  local: true
-  force: false
-
-libffi:
   install: true
   local: true
   force: false
@@ -195,7 +210,7 @@ python3:
   install: true
   version: latest
 
-go:
+golang:
   install: true
   version: latest
 

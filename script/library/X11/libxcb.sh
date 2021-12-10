@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libxcb-* ]; then
+  if [ -d ${PREFIX}/src/libxcb-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libxcb-*
+      pushd ${PREFIX}/src/libxcb-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libxcb-*
+      rm -rf ${PREFIX}/src/libxcb-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://www.x.org/archive/individual/lib/libxcb-${VERSION}.tar.gz || exit $?
     tar -xvzf libxcb-${VERSION}.tar.gz || exit $?
 
-    mv libxcb-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/libxcb-${VERSION}
+    mv libxcb-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/libxcb-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

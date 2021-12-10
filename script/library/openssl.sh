@@ -19,13 +19,13 @@ setup_func_local() {
   local FORCE=$1
 
   local DO_INSTALL=no
-  if [ -d $HOME/.local/src/openssl-* ]; then
+  if [ -d ${PREFIX}/src/openssl-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/openssl-*
+      pushd ${PREFIX}/src/openssl-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/openssl-*
+      rm -rf ${PREFIX}/src/openssl-*
       DO_INSTALL=true
     fi
   else
@@ -37,10 +37,10 @@ setup_func_local() {
     wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${VERSION}.tar.gz || exit $?
     tar -xvzf openssl-${VERSION}.tar.gz || exit $?
 
-    mv openssl-openssl-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/openssl-openssl-${VERSION}
+    mv openssl-openssl-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/openssl-openssl-${VERSION}
 
-    ./Configure --prefix=$HOME/.local || exit $?
+    ./Configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

@@ -19,13 +19,13 @@ setup_func_local() {
   local FORCE="$1"
   local DO_INSTALL=no
 
-  if [ -d $HOME/.local/src/sqlite-autoconf-* ]; then
+  if [ -d ${PREFIX}/src/sqlite-autoconf-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/sqlite-autoconf-*
+      pushd ${PREFIX}/src/sqlite-autoconf-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/sqlite-autoconf-*
+      rm -rf ${PREFIX}/src/sqlite-autoconf-*
       DO_INSTALL=true
     fi
   else
@@ -37,10 +37,10 @@ setup_func_local() {
     wget https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz || exit $?
     tar -xvzf sqlite-autoconf-3370000.tar.gz || exit $?
 
-    mv sqlite-autoconf-3370000 $HOME/.local/src
-    pushd $HOME/.local/src/sqlite-autoconf-3370000
+    mv sqlite-autoconf-3370000 ${PREFIX}/src
+    pushd ${PREFIX}/src/sqlite-autoconf-3370000
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

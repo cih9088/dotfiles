@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/ncurses-* ]; then
+  if [ -d ${PREFIX}/src/ncurses-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/ncurses-*
+      pushd ${PREFIX}/src/ncurses-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/ncurses-*
+      rm -rf ${PREFIX}/src/ncurses-*
       DO_INSTALL=true
     fi
   else
@@ -46,12 +46,12 @@ setup_func_local() {
     wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${VERSION}.tar.gz || exit $?
     tar -xvzf ncurses-${VERSION}.tar.gz || exit $?
 
-    mv ncurses-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/ncurses-${VERSION}
+    mv ncurses-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/ncurses-${VERSION}
 
-    # ./configure --prefix=$HOME/.local --with-shared --without-debug --enable-widec
-    # ./configure --prefix=$HOME/.local --with-shared --with-termlib --enable-pc-files || exit $?
-    ./configure --prefix=$HOME/.local --with-shared --enable-pc-files || exit $?
+    # ./configure --prefix=${PREFIX} --with-shared --without-debug --enable-widec
+    # ./configure --prefix=${PREFIX} --with-shared --with-termlib --enable-pc-files || exit $?
+    ./configure --prefix=${PREFIX} --with-shared --enable-pc-files || exit $?
     make || exit $?
     make install || exit $?
 

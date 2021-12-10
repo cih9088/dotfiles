@@ -24,10 +24,10 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -f ${HOME}/.local/bin/fd ]; then
+  if [ -f ${PREFIX}/bin/fd ]; then
     if [ ${FORCE} == 'true' ]; then
-      rm -rf $HOME/.local/bin/fd || true
-      rm -rf $HOME/.local/man/man1/fd.1 || true
+      rm -rf ${PREFIX}/bin/fd || true
+      rm -rf ${PREFIX}/man/man1/fd.1 || true
       DO_INSTALL=true
     fi
   else
@@ -41,8 +41,8 @@ setup_func_local() {
       tar -xvzf fd-${VERSION}-x86_64-apple-darwin.tar.gz || exit $?
 
       pushd fd-${VERSION}-x86_64-apple-darwin
-      yes | \cp -rf fd $HOME/.local/bin
-      yes | \cp -rf fd.1 $HOME/.local/man/man1
+      yes | \cp -rf fd ${PREFIX}/bin
+      yes | \cp -rf fd.1 ${PREFIX}/man/man1
       popd
 
     elif [[ ${PLATFORM} == "LINUX" ]]; then
@@ -50,8 +50,8 @@ setup_func_local() {
       tar -xvzf fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz || exit $?
 
       pushd fd-${VERSION}-${ARCH}-unknown-linux-gnu
-      yes | \cp -rf fd $HOME/.local/bin
-      yes | \cp -rf fd.1 $HOME/.local/man/man1
+      yes | \cp -rf fd ${PREFIX}/bin
+      yes | \cp -rf fd.1 ${PREFIX}/man/man1
       popd
 
     fi

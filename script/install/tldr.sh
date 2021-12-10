@@ -24,9 +24,9 @@ setup_func_tldr_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -f ${HOME}/.local/bin/tldr ]; then
+  if [ -f ${PREFIX}/bin/tldr ]; then
     if [ ${FORCE} == 'true' ]; then
-      rm -rf $HOME/.local/bin/tldr || true
+      rm -rf ${PREFIX}/bin/tldr || true
       DO_INSTALL=true
     fi
   else
@@ -39,13 +39,13 @@ setup_func_tldr_local() {
 
   if [ ${ARCH} == "x86_64" ]; then
     wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tldr-linux-x86_64-musl || exit $?
-    mv tldr-linux-x86_64-musl ${HOME}/.local/bin/tldr || exit $?
+    mv tldr-linux-x86_64-musl ${PREFIX}/bin/tldr || exit $?
   elif [ ${ARCH} == "aarch64" ]; then
     wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tldr-linux-armv7-musleabihf || exit $?
-    mv tldr-linux-armv7-musleabihf ${HOME}/.local/bin/tldr || exit $?
+    mv tldr-linux-armv7-musleabihf ${PREFIX}/bin/tldr || exit $?
   fi
-  chmod +x ${HOME}/.local/bin/tldr
-  ${HOME}/.local/bin/tldr --update
+  chmod +x ${PREFIX}/bin/tldr
+  ${PREFIX}/bin/tldr --update
 }
 
 setup_func_tldr_system() {

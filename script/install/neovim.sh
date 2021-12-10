@@ -55,11 +55,19 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -x "$(command -v ${HOME}/.local/bin/nvim)" ]; then
+  if [ -x "$(command -v ${PREFIX}/bin/nvim)" ]; then
     if [ ${FORCE} == 'true' ]; then
-      rm -rf ${HOME}/.local/bin/nvim || true
-      rm -rf ${HOME}/.local/man/man1/nvim.1 || true
-      rm -rf ${HOME}/.local/share/nvim/runtim || true
+      if [ ${ARCH} == "x86_64" ]; then
+        rm -rf ${PREFIX}/bin/nvim || true
+        rm -rf ${PREFIX}/man/man1/nvim.1 || true
+        rm -rf ${PREFIX}/share/nvim/runtim || true
+      elif [ ${ARCH} == "aarch64" ]; then
+        pushd ${PREFIX}/src/neovim
+        make uninstall || true
+        make clean || true
+        popd
+        rm -rf ${PREFIX}/src/neovim
+      fi
       DO_INSTALL=true
     fi
   else
@@ -71,7 +79,7 @@ setup_func_local() {
       if [ ${ARCH} == "X86_64" ]; then
         wget https://github.com/neovim/neovim/releases/download/${VERSION}/nvim-macos.tar.gz || exit $?
         tar -xvzf nvim-macos.tar.gz || exit $?
-        yes | \cp -rf nvim-osx64/* $HOME/.local/
+        yes | \cp -rf nvim-osx64/* ${PREFIX}/
       else
         log_error "${ARCH} not supported. Install it manually."; exit 1
       fi
@@ -81,23 +89,23 @@ setup_func_local() {
         # https://github.com/neovim/neovim/issues/7620
         # https://github.com/neovim/neovim/issues/7537
         chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract || exit $?
-        yes | \cp -rf squashfs-root/usr/bin $HOME/.local
-        yes | \cp -rf squashfs-root/usr/man $HOME/.local
-        yes | \cp -rf squashfs-root/usr/share/nvim $HOME/.local/share
-        # yes | \cp -rf squashfs-root/usr/* $HOME/.local
+        yes | \cp -rf squashfs-root/usr/bin ${PREFIX}
+        yes | \cp -rf squashfs-root/usr/man ${PREFIX}
+        yes | \cp -rf squashfs-root/usr/share/nvim ${PREFIX}/share
+        # yes | \cp -rf squashfs-root/usr/* ${PREFIX}
         # chmod u+x nvim.appimage && mv nvim.appimage nvim
-        # cp nvim $HOME/.local/bin
+        # cp nvim ${PREFIX}/bin
 
       elif [ ${ARCH} == "aarch64" ]; then
         # no arm built binary
         # https://github.com/neovim/neovim/pull/15542
         git clone https://github.com/neovim/neovim || exit $?
 
-        mv neovim $HOME/.local/src
-        pushd $HOME/.local/src/neovim
+        mv neovim ${PREFIX}/src
+        pushd ${PREFIX}/src/neovim
         git checkout ${VERSION}
 
-        make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=$HOME/.local" CMAKE_BUILD_TYPE=Release || exit $?
+        make CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=${PREFIX}" CMAKE_BUILD_TYPE=Release || exit $?
         make install || exit $?
 
         popd

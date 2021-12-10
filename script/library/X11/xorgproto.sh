@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/xorgproto-* ]; then
+  if [ -d ${PREFIX}/src/xorgproto-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/xorgproto-*
+      pushd ${PREFIX}/src/xorgproto-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/xorgproto-*
+      rm -rf ${PREFIX}/src/xorgproto-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://www.x.org/archive/individual/proto/xorgproto-${VERSION}.tar.gz || exit $?
     tar -xvzf xorgproto-${VERSION}.tar.gz || exit $?
 
-    mv xorgproto-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/xorgproto-${VERSION}
+    mv xorgproto-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/xorgproto-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

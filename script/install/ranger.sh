@@ -19,10 +19,10 @@ setup_func_ranger_local() {
   local FORCE=$1
   local DO_INSTALL=no
 
-  if [ -f ${HOME}/.local/bin/ranger ]; then
+  if [ -f ${PREFIX}/bin/ranger ]; then
     if [ ${FORCE} == 'true' ]; then
-      rm -rf $HOME/.local/src/ranger || true
-      rm -rf $HOME/.local/bin/ranger || true
+      rm -rf ${PREFIX}/src/ranger || true
+      rm -rf ${PREFIX}/bin/ranger || true
       DO_INSTALL=true
     fi
   else
@@ -30,9 +30,9 @@ setup_func_ranger_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    git clone https://github.com/ranger/ranger.git $HOME/.local/src/ranger || exit $?
-    $HOME/.local/src/ranger/ranger.py --copy-config=all || exit $?
-    ln -sf $HOME/.local/src/ranger/ranger.py $HOME/.local/bin/ranger || exit $?
+    git clone https://github.com/ranger/ranger.git ${PREFIX}/src/ranger || exit $?
+    ${PREFIX}/src/ranger/ranger.py --copy-config=all || exit $?
+    ln -sf ${PREFIX}/src/ranger/ranger.py ${PREFIX}/bin/ranger || exit $?
   fi
 }
 

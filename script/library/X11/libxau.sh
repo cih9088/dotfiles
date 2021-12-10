@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libXau-* ]; then
+  if [ -d ${PREFIX}/src/libXau-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libXau-*
+      pushd ${PREFIX}/src/libXau-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libXau-*
+      rm -rf ${PREFIX}/src/libXau-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://www.x.org/archive/individual/lib/libXau-${VERSION}.tar.gz || exit $?
     tar -xvzf libXau-${VERSION}.tar.gz || exit $?
 
-    mv libXau-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/libXau-${VERSION}
+    mv libXau-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/libXau-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

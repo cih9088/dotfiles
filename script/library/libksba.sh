@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libksba-* ]; then
+  if [ -d ${PREFIX}/src/libksba-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libksba-*
+      pushd ${PREFIX}/src/libksba-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libksba-*
+      rm -rf ${PREFIX}/src/libksba-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://gnupg.org/ftp/gcrypt/libksba/libksba-${VERSION}.tar.bz2 || exit $?
     tar -xvjf libksba-${VERSION}.tar.bz2 || exit $?
 
-    mv libksba-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/libksba-${VERSION}
+    mv libksba-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/libksba-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

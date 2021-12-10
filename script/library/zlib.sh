@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/zlib-* ]; then
+  if [ -d ${PREFIX}/src/zlib-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/zlib-*
+      pushd ${PREFIX}/src/zlib-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/zlib-*
+      rm -rf ${PREFIX}/src/zlib-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://zlib.net/fossils/zlib-${VERSION}.tar.gz || exit $?
     tar -xvzf zlib-${VERSION}.tar.gz || exit $?
 
-    mv zlib-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/zlib-${VERSION}
+    mv zlib-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/zlib-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

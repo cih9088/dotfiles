@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/npth-* ]; then
+  if [ -d ${PREFIX}/src/npth-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/npth-*
+      pushd ${PREFIX}/src/npth-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/npth-*
+      rm -rf ${PREFIX}/src/npth-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://gnupg.org/ftp/gcrypt/npth/npth-${VERSION}.tar.bz2 || exit $?
     tar -xvjf npth-${VERSION}.tar.bz2 || exit $?
 
-    mv npth-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/npth-${VERSION}
+    mv npth-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/npth-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

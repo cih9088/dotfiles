@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/source-highlight-* ]; then
+  if [ -d ${PREFIX}/src/source-highlight-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/source-highlight-*
+      pushd ${PREFIX}/src/source-highlight-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/source-highlight-*
+      rm -rf ${PREFIX}/src/source-highlight-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget http://mirror.rit.edu/gnu/src-highlite/source-highlight-${VERSION}.tar.gz || exit $?
     tar -xvzf source-highlight-${VERSION}.tar.gz || exit $?
 
-    mv source-highlight-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/source-highlight-${VERSION}
+    mv source-highlight-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/source-highlight-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

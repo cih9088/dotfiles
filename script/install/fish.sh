@@ -24,18 +24,18 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
-  if [ -d $HOME/.local/src/fish-* ]; then
+  if [ -d ${PREFIX}/src/fish-* ]; then
     # uninstall first if force is yes
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/fish-*
+      pushd ${PREFIX}/src/fish-*
       make uninstall || true
       make clean || true
-      rm -rf $HOME/.local/bin/fish || true
-      rm -rf $HOME/.local/bin/fish_key_reader || true
-      rm -rf $HOME/.local/bin/fish_indent || true
+      rm -rf ${PREFIX}/bin/fish || true
+      rm -rf ${PREFIX}/bin/fish_key_reader || true
+      rm -rf ${PREFIX}/bin/fish_indent || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/fish-*
+      rm -rf ${PREFIX}/src/fish-*
       DO_INSTALL=true
     fi
   else
@@ -47,8 +47,8 @@ setup_func_local() {
     wget https://github.com/${GH}/releases/download/${VERSION}/fish-${VERSION}.tar.xz || exit $?
     tar -xvJf fish-${VERSION}.tar.xz || exit $?
 
-    mv fish-${VERSION} $HOME/.local/src/
-    pushd $HOME/.local/src/fish-${VERSION}
+    mv fish-${VERSION} ${PREFIX}/src/
+    pushd ${PREFIX}/src/fish-${VERSION}
 
     mkdir build; pushd build
     cmake .. -DCMAKE_INSTALL_PREFIX=${HOME}/.local || exit $?

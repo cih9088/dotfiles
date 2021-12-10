@@ -13,7 +13,7 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare to install ${THIS_HL}"
 
-DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
+DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH} | grep -v 'rc')"
 AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 ################################################################
 
@@ -24,13 +24,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/libffi-* ]; then
+  if [ -d ${PREFIX}/src/libffi-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/libffi-*
+      pushd ${PREFIX}/src/libffi-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/libffi-*
+      rm -rf ${PREFIX}/src/libffi-*
       DO_INSTALL=true
     fi
   else
@@ -42,10 +42,10 @@ setup_func_local() {
     wget https://github.com/${GH}/releases/download/${VERSION}/libffi-${VERSION##v}.tar.gz || exit $?
     tar -xvzf libffi-${VERSION##v}.tar.gz || exit $?
 
-    mv libffi-${VERSION##v} $HOME/.local/src
-    pushd $HOME/.local/src/libffi-${VERSION##v}
+    mv libffi-${VERSION##v} ${PREFIX}/src
+    pushd ${PREFIX}/src/libffi-${VERSION##v}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

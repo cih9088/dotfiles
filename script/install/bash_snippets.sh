@@ -22,7 +22,7 @@ setup_func_bash_snippets_local() {
 
   pushd Bash-Snippets
 
-  ./install.sh --prefix=$HOME/.local transfer cheat
+  ./install.sh --prefix=${PREFIX} transfer cheat
 
   popd
 }

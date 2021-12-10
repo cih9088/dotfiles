@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/patch-* ]; then
+  if [ -d ${PREFIX}/src/patch-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/patch-*
+      pushd ${PREFIX}/src/patch-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/patch-*
+      rm -rf ${PREFIX}/src/patch-*
       DO_INSTALL=true
     fi
   else
@@ -47,10 +47,10 @@ setup_func_local() {
     wget https://ftp.gnu.org/gnu/patch/patch-${VERSION}.tar.gz || exit $?
     tar -xvzf patch-${VERSION}.tar.gz || exit $?
 
-    mv patch-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/patch-${VERSION}
+    mv patch-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/patch-${VERSION}
 
-    ./configure --prefix=$HOME/.local || exit $?
+    ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
     make install || exit $?
 

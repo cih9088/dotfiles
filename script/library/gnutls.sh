@@ -13,12 +13,11 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 log_title "Prepare to install ${THIS_HL}"
 
 AVAILABLE_VERSIONS="$(
-  curl --silent --show-error https://gnupg.org/ftp/gcrypt/gnupg/ |
+  curl --silent --show-error https://www.gnupg.org/ftp/gcrypt/gnutls/ |
     ${DIR}/../helpers/parser_html 'a' |
-    grep 'tar.bz2\"' |
+    grep '\"v' |
     awk '{print $4}' |
-    sed -e 's/.tar.bz2//' -e 's/gnupg-//' |
-    sort -Vr)"
+    sort -Vr | sed '1d')" # latest version is not stable release but next release
 DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
 ################################################################
 
@@ -29,13 +28,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d $HOME/.local/src/gnupg-* ]; then
+  if [ -d ${PREFIX}/src/gnutls-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd $HOME/.local/src/gnupg-*
+      pushd ${PREFIX}/src/gnutls-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf $HOME/.local/src/gnupg-*
+      rm -rf ${PREFIX}/src/gnutls-*
       DO_INSTALL=true
     fi
   else
@@ -44,13 +43,20 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://gnupg.org/ftp/gcrypt/gnupg/gnupg-${VERSION}.tar.bz2
-    tar -xvjf gnupg-${VERSION}.tar.bz2
+    _FINAL_VERSION="$(curl --silent --show-error https://www.gnupg.org/ftp/gcrypt/gnutls/${VERSION}/ |
+      ${DIR}/../helpers/parser_html 'a' |
+      grep 'tar.xz\"' |
+      awk '{print $4}' |
+      sed -e 's/.tar.xz//' -e 's/gnutls-//' |
+      sort -Vr | head -n 1)"
 
-    mv gnupg-${VERSION} $HOME/.local/src
-    pushd $HOME/.local/src/gnupg-${VERSION}
+    wget https://www.gnupg.org/ftp/gcrypt/gnutls/${VERSION}/gnutls-${_FINAL_VERSION}.tar.xz || exit $?
+    tar -xvJf gnutls-${_FINAL_VERSION}.tar.xz || exit $?
 
-    ./configure --prefix=$HOME/.local || exit $?
+    mv gnutls-${_FINAL_VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/gnutls-${_FINAL_VERSION}
+
+    ./configure --prefix=${PREFIX} --with-included-unistring
     make || exit $?
     make install || exit $?
 
@@ -62,27 +68,22 @@ setup_func_system() {
   local FORCE=$1
 
   if [[ ${PLATFORM} == "OSX" ]]; then
-    brew list gpg || brew install gpg || exit $?
+    brew list gnutls || brew install gnutls || exit $?
     if [ ${FORCE} == 'true' ]; then
-      brew upgrade gpg || exit $?
+      brew upgrade gnutls || exit $?
     fi
   elif [[ ${PLATFORM} == "LINUX" ]]; then
     if [[ ${FAMILY} == "DEBIAN" ]]; then
-      sudo apt-get -y install gnupg || exit $?
+      sudo apt-get -y install gnutls-bin || exit $?
     elif [[ ${FAMILY} == "RHEL" ]]; then
-      sudo dnf -y install gnupg2 || exit $?
+      sudo dnf -y install gnutls-devel || exit $?
     fi
   fi
 }
-
-version_func() {
-  $1 --version | grep 'gpg' | awk '{print $3}'
-}
-
 
 verify_version() {
   [[ "$AVAILABLE_VERSIONS" == *"${1}"* ]]
 }
 
-main_script "${THIS}" setup_func_local setup_func_system version_func \
+main_script "${THIS}" setup_func_local setup_func_system "" \
   "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
