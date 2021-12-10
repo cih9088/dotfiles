@@ -29,11 +29,16 @@ local_change() {
 
   # sed -i -e '/'$(echo $SHELL_FULL_PATH | sed 's/\//\\\//g')' ]]; then/,/fi/d' ${HOME}/${loginshell_rc}
   for f in ".bashrc" ".zshrc" ".cshrc" ".tcshrc" ".config/fish/config.fish" ".profile"; do
-    sed -i -e '/# added from andys dotfiles/,/^fi$/d' $HOME/$f 2>/dev/null || true
+    f=$(realpath $HOME/$f)
+    if [ -e $f ]; then
+      # -i destroy symlink. --follow-symlink option only in GNU sed
+      sed -e '/# added from andys dotfiles/,/^fi$/d' $f > temp
+      mv temp $f
+    fi
   done
 
   if [ ${SHELL##*/} = ${SHELL_FULL_PATH##*/} ]; then
-    log_info "Your default shell is ${SHELL}. No need to change"
+    log_info "Your default shell is ${SHELL}. No need to change."
     return 0
   fi
 
@@ -112,7 +117,7 @@ main() {
 
       yn=$(log_question "Change default shell to local ${TARGET_SHELL} or systemwide ${TARGET_SHELL}? [local/system]")
       case $yn in
-        [Ll]ocal* ) 
+        [Ll]ocal* )
           local_change ${TARGET_SHELL} &&
             log_ok "Changed default shell to local ${TARGET_SHELL}." ||
             log_error "Change default shell to local ${TARGET_SHELL} is failed."
