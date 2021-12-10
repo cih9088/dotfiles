@@ -50,7 +50,7 @@ setup_func_local() {
     mv readline-${VERSION} ${PREFIX}/src
     pushd ${PREFIX}/src/readline-${VERSION}
 
-    ./configure --prefix=${PREFIX} --with-shared || exit $?
+    ./configure --prefix=${PREFIX} --enable-shared --with-curses || exit $?
     make || exit $?
     make install || exit $?
 
