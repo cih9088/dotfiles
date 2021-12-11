@@ -84,25 +84,25 @@ librarySqlite3:
 libraryLibffi:
 	@( $(SCRIPTS_DIR)/library/libffi.sh )
 
-# openldap
-# -----------------------------------------------------
-libraryCyrusSASL:
-	@( $(SCRIPTS_DIR)/library/cyrus_sasl.sh )
-
-libraryLibsodium:
-	@( $(SCRIPTS_DIR)/library/libsodium.sh )
-
-libraryOpenLDAP: \
-	libraryCyrusSASL libraryLibsodium libraryLibevent
-	@( $(SCRIPTS_DIR)/library/openldap.sh )
-# -----------------------------------------------------
-
-libraryTexinfo:
-	@( $(SCRIPTS_DIR)/library/texinfo.sh )
-
-libraryGroff: \
-	libraryTexinfo
-	@( $(SCRIPTS_DIR)/library/groff.sh )
+# # openldap
+# # -----------------------------------------------------
+# libraryCyrusSASL:
+#   @( $(SCRIPTS_DIR)/library/cyrus_sasl.sh )
+#
+# libraryLibsodium:
+#   @( $(SCRIPTS_DIR)/library/libsodium.sh )
+#
+# libraryOpenLDAP: \
+#   libraryCyrusSASL libraryLibsodium libraryLibevent
+#   @( $(SCRIPTS_DIR)/library/openldap.sh )
+# # -----------------------------------------------------
+#
+# libraryTexinfo:
+#   @( $(SCRIPTS_DIR)/library/texinfo.sh )
+#
+# libraryGroff: \
+#   libraryTexinfo
+#   @( $(SCRIPTS_DIR)/library/groff.sh )
 
 # gnutls
 # -----------------------------------------------------
@@ -364,11 +364,12 @@ init: \
 	libraryOpenssl libraryLibevent \
 	libraryM4 libraryAutoconf libraryAutomake libraryLibtool libraryAutotools \
 	libraryGettext libraryPatch libraryReadline libraryZlib \
-	libraryBzip2  librarySqlite3 \
+	libraryBzip2  librarySqlite3 libraryLibffi\
+	libraryGMP libraryLibnettle libraryLibtasn1 libraryP11Kit libraryGnuTLS \
 	libraryLibgpgError libraryLibgcrypt libraryLibassuan libraryLibksba libraryNpth libraryGnuPG \
 	libraryPth libraryDirmngr \
 	libraryXorgproto libraryXtrans libraryLibxau libraryXcbProto libraryLibxcb libraryLibx11 \
-	libraryLibffi libraryTcl libraryTk \
+	libraryTcl libraryTk \
 	installTermInfo installZsh installFish installPrezto \
 	installNeovim installTmux installTPM \
 	installTree installFd installRg installThefuck installRanger installTldr \

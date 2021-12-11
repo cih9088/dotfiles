@@ -56,7 +56,7 @@ setup_func_local() {
     mv gnutls-${_FINAL_VERSION} ${PREFIX}/src
     pushd ${PREFIX}/src/gnutls-${_FINAL_VERSION}
 
-    ./configure --prefix=${PREFIX} --with-included-unistring
+    ./configure --prefix=${PREFIX} --with-included-unistring || exit $1
     make || exit $?
     make install || exit $?
 
