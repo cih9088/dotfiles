@@ -19,9 +19,9 @@ setup_func_bpytop_local() {
   local FORCE=$1
 
   if [ ${FORCE} == 'true' ]; then
-    pip3 install bpytop --user --force-reinstall --upgrade || exit $?
+    intelli_pip3 install bpytop --force-reinstall --upgrade || exit $?
   else
-    pip3 install bpytop --user || exit $?
+    intelli_pip3 install bpytop || exit $?
   fi
 }
 

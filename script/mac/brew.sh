@@ -85,13 +85,13 @@ brew install wget
 
 # Install python
 brew install python
-# create symlink manually
-# https://github.com/Homebrew/homebrew-core/issues/16212
-ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
-ln -snf $(brew --prefix)/bin/python3-config $(brew --prefix)/bin/python-config
-ln -snf $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
-ln -snf $(brew --prefix)/bin/wheel3 $(brew --prefix)/bin/wheel
-ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
+# # create symlink manually
+# # https://github.com/Homebrew/homebrew-core/issues/16212
+# ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
+# ln -snf $(brew --prefix)/bin/python3-config $(brew --prefix)/bin/python-config
+# ln -snf $(brew --prefix)/bin/pip3 $(brew --prefix)/bin/pip
+# ln -snf $(brew --prefix)/bin/wheel3 $(brew --prefix)/bin/wheel
+# ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
 
 # Install ruby
 brew install ruby

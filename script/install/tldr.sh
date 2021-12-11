@@ -34,8 +34,8 @@ setup_func_tldr_local() {
   fi
 
   # uninstall slow tldr client
-  pip2 uninstall tldr || true
-  pip3 uninstall tldr || true
+  pip2 uninstall --yes tldr || true
+  pip3 uninstall --yes tldr || true
 
   if [ ${ARCH} == "x86_64" ]; then
     wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tldr-linux-x86_64-musl || exit $?

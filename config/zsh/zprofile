@@ -93,12 +93,13 @@
 
   [[ ":${LD_LIBRARY_PATH}:" != *":${HOME}/.local/lib:"* ]] && \
     export LD_LIBRARY_PATH="${HOME}/.local/lib:${LD_LIBRARY_PATH}"
-
   [[ ":${LD_LIBRARY_PATH}:" != *":${HOME}/.local/lib64:"* ]] && \
     export LD_LIBRARY_PATH="${HOME}/.local/lib64:${LD_LIBRARY_PATH}"
 
   [[ ":${PKG_CONFIG_PATH}:" != *":${HOME}/.local/lib/pkgconfig:"* ]] && \
     export PKG_CONFIG_PATH="${HOME}/.local/lib/pkgconfig:${PKG_CONFIG_PATH}"
+  [[ ":${PKG_CONFIG_PATH}:" != *":${HOME}/.local/lib64/pkgconfig:"* ]] && \
+    export PKG_CONFIG_PATH="${HOME}/.local/lib64/pkgconfig:${PKG_CONFIG_PATH}"
 
   [[ " ${CFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
     export CFLAGS="-I${HOME}/.local/include ${CFLAGS}"
@@ -108,6 +109,8 @@
 
   [[ " ${LDFLAGS} " != *" -I${HOME}/.local/lib "* ]] && \
     export LDFLAGS="-I${HOME}/.local/lib ${LDFLAGS}"
+  [[ " ${LDFLAGS} " != *" -I${HOME}/.local/lib64 "* ]] && \
+    export LDFLAGS="-I${HOME}/.local/lib64 ${LDFLAGS}"
 
 
 # =======================================================================================
@@ -234,7 +237,6 @@
   #   eval "$(dircolors --sh $DOTS/config/zsh/LS_COLORS)"
   [ -f $DOTS/config/zsh/ls_colors.$BG_LUMINANCE ] &&
     export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
-
 
 
 # # Clutter path -> no need

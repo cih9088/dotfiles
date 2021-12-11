@@ -24,9 +24,9 @@ setup_func_thefuck_local() {
   [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
 
   if [ ${FORCE} == 'true' ]; then
-    pip3 install thefuck==${VERSION} --user --force-reinstall --upgrade || exit $?
+    intelli_pip3 install thefuck==${VERSION} --force-reinstall --upgrade || exit $?
   else
-    pip3 install thefuck==${VERSION} --user || exit $?
+    intelli_pip3 install thefuck==${VERSION} || exit $?
   fi
 }
 

@@ -72,7 +72,7 @@
 # ---------------------------------------------------------------------------------------
   if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
     [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
-      pip3 install --user --force-reinstall virtualenv virtualenvwrapper
+      pip3 install --force-reinstall virtualenv virtualenvwrapper
     export VIRTUALENVWRAPPER_PYTHON=$(which python3)
     export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
     export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)

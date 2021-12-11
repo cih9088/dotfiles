@@ -93,3 +93,36 @@ has() {
     fi
   done
 }
+
+intelli_pip3() {
+  local _PY_ORIGIN=
+  local _COMMAND="$1"
+  shift
+
+  command -v python3 >/dev/null 2>&1 &&
+    _PY_ORIGIN=$(
+    python3 << EOF
+import os, sys
+
+prefix = sys.prefix
+base_prefix = sys.base_prefix
+homedir = os.path.expanduser("~")
+
+if prefix != base_prefix:
+  print("virtualenv")
+elif prefix.startswith(homedir):
+  print("local")
+else:
+  print("system")
+EOF
+  )
+
+  if [ $_PY_ORIGIN == "system" ]; then
+    pip3 $_COMMAND --user $@
+  else
+    pip3 $_COMMAND $@
+  fi
+
+  command -v asdf >/dev/null 2>&1 && asdf reshim || true
+  command -v pyenv >/dev/null 2>&1 && pyenv rehash || true
+}

@@ -31,6 +31,7 @@ setup_func_local() {
     if [ -f "${HOME}/.asdf/asdf.sh" ]; then
       . $HOME/.asdf/asdf.sh
       asdf update
+      asdf plugin update --all
     else
       git clone https://github.com/asdf-vm/asdf.git ${HOME}/.asdf || exit $?
       pushd ${HOME}/.asdf
