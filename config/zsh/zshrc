@@ -25,7 +25,7 @@
 
 # Setup virtualenvwrapper (using system python if installed)
 # ---------------------------------------------------------------------------------------
-  if [ -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
+  if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
     [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
       pip3 install --user --force-reinstall virtualenv virtualenvwrapper
     export VIRTUALENVWRAPPER_PYTHON=$(which python3)
