@@ -199,13 +199,23 @@
       if a:0 > 0
         execute 'colorscheme ' . a:1
       else
-        let l:scheme = system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
-        let l:color =  matchstr(l:scheme, '[-_]\?\(light\|dark\)[-_]\?')
-        let l:scheme_clenaed = substitute(l:scheme, l:color, "", "")
-        execute 'colorscheme ' . l:scheme_clenaed
+        if !empty($TMUX)
+          if system('tmux show-env COLOUR_SCHEME') !~# '^-.*'
+            let l:scheme = split(trim(system('tmux show-env COLOUR_SCHEME')), '=')[1]
+          endif
+        else
+          if exists('$COLOUR_SCHEME')
+            let l:scheme = $COLOUR_SCHEME
+          else
+            let l:scheme = system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
+          endif
+        endif
       endif
+      let l:colour =  matchstr(l:scheme, '[-_]\?\(light\|dark\)[-_]\?')
+      let l:scheme_clenaed = substitute(l:scheme, l:colour, "", "")
+      execute 'colorscheme ' . l:scheme_clenaed
     catch
-      colorscheme miramare
+      colorscheme default
     endtry
 
     " Change background

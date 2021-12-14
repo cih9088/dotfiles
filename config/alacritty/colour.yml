@@ -55,7 +55,7 @@ schemes:
       cyan:    '#008787'
       white:   '#eeeeee'
 
-  seoul256_dark: &seoul256
+  seoul256_dark: &seoul256-dark
     # Default colors
     primary:
       background: '#4b4b4b'
@@ -110,7 +110,7 @@ schemes:
       magenta: '#ff92d0'
       cyan:    '#9aedfe'
 
-  gruvbox_dark: &gruvbox
+  gruvbox_dark: &gruvbox-dark
     primary:
       # hard contrast: background = '0x1d2021'
       background: '0x282828'

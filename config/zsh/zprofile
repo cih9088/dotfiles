@@ -152,27 +152,6 @@
   export DOTS=$(dirname $(dirname $(dirname $(realpath ${(%):-%N}))))
 
 
-# get background luminance from xterm control sequence
-# https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
-# --------------------------------------------------------------------------------------
-  [ -z "${TMUX+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
-
-
-# virtualenvwrapper (using system python)
-# ---------------------------------------------------------------------------------------
-  export WORKON_HOME=$HOME/.virtualenvs
-  export PROJECT_HOME=$HOME/workspace
-  # Inside tmux session, these environment variables are changed
-  # because of the change of PATH during zsh initialisation in non-tmux session
-  # This prevents no module found error in virtualenvwrapper
-  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
-  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
-  # [ -z "${TMUX+x}" ] && export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
-  # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
-  # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
-
-
 # CUDA enviroment variables
 # ---------------------------------------------------------------------------------------
   if [[ $OSTYPE == "linux"* ]]; then
@@ -189,35 +168,6 @@
   fi
 
 
-# Setup FZF
-# ---------------------------------------------------------------------------------------
-  # Change search command to fd
-  [ -x "$(command -v fd)" ] && (
-    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-  )
-  # show tree view for the directory
-  [ -x "$(command -v tree)" ] &&
-    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
-  # show preview with highlight
-  [ -x "$(command -v highlight)" ] &&
-    export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-  # show full command below
-  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
-  # change fzf color
-  [ -f $DOTS/config/zsh/fzf.$BG_LUMINANCE ] &&
-    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
-  # add path
-  [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
-    export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
-
-
-
-# Setup xpanes
-# ---------------------------------------------------------------------------------------
-  export TMUX_XPANES_PANE_BORDER_FORMAT='#[bg=colour238] #[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[bg=colour238] #[default]'
-
-
 # Setup tealdeer
 # ---------------------------------------------------------------------------------------
   export TEALDEER_CONFIG_DIR="${HOME}/.config/tealdeer"
@@ -227,16 +177,6 @@
 # from this: http://hints.macworld.com/comment.php?mode=view&cid=24491
 # ---------------------------------------------------------------------------------------
   export BLOCKSIZE=1k
-
-
-# Add color to terminal
-# ---------------------------------------------------------------------------------------
-  # export CLICOLORS=1
-  # export LSCOLORS=exfxcxdxbxGxDxabagacad
-  # [ -x "$(command -v dircolors)" ] &&
-  #   eval "$(dircolors --sh $DOTS/config/zsh/LS_COLORS)"
-  [ -f $DOTS/config/zsh/ls_colors.$BG_LUMINANCE ] &&
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
 
 
 # # Clutter path -> no need

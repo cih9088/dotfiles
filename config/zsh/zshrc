@@ -23,8 +23,63 @@
   export platform
 
 
+# Get terminal colour scheme and background luminance
+# https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+# --------------------------------------------------------------------------------------
+  [ -z "${COLOUR_SCHEME+x}" ] && export COLOUR_SCHEME=$(
+    grep -i $( $DOTS/bin/bg-colourscheme ) $HOME/.config/alacritty/colour.yml -B 5 |
+      grep \& | sed 's/.*: *&\(.*\)/\1/')
+  [ -z "${BG_LUMINANCE+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
+
+
+
+# Add color to terminal
+# ---------------------------------------------------------------------------------------
+  # export CLICOLORS=1
+  # export LSCOLORS=exfxcxdxbxGxDxabagacad
+  # [ -x "$(command -v dircolors)" ] &&
+  #   eval "$(dircolors --sh $DOTS/config/zsh/LS_COLORS)"
+  [ -f $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME ] &&
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME) ||
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
+
+
+# Setup FZF
+# ---------------------------------------------------------------------------------------
+  # Change search command to fd
+  [ -x "$(command -v fd)" ] && (
+    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  )
+  # show tree view for the directory
+  [ -x "$(command -v tree)" ] &&
+    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+  # show preview with highlight
+  [ -x "$(command -v highlight)" ] &&
+    export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+  # show full command below
+  export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
+  # change fzf color
+  [ -f $DOTS/config/zsh/fzf.$COLOUR_SCHEME ] &&
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$COLOUR_SCHEME)" ||
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
+  # add fzf path
+  [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
+    export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
+
+
+# Setup xpanes
+# ---------------------------------------------------------------------------------------
+  export TMUX_XPANES_PANE_BORDER_FORMAT='#[bg=colour238] #[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[bg=colour238] #[default]'
+
+
 # Setup virtualenvwrapper (using system python if installed)
 # ---------------------------------------------------------------------------------------
+  export WORKON_HOME=$HOME/.virtualenvs
+  export PROJECT_HOME=$HOME/workspace
+  # Inside tmux session, these environment variables are changed
+  # because of the change of PATH during zsh initialisation in non-tmux session
+  # This prevents no module found error in virtualenvwrapper
   if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
     [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
       pip3 install --user --force-reinstall virtualenv virtualenvwrapper
@@ -32,6 +87,8 @@
     export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
     export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
     export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
   fi
   command -v virtualenvwrapper_lazy.sh >/dev/null  &&
     source $(which virtualenvwrapper_lazy.sh)
@@ -77,6 +134,8 @@
     export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
     export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
     export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
   fi
   command -v virtualenvwrapper_lazy.sh >/dev/null  &&
     source $(which virtualenvwrapper_lazy.sh)
