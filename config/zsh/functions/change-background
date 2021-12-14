@@ -9,7 +9,7 @@ else
 fi
 
 # default colour scheme
-[ -z "${COLOUR_SCHEME+x}" ] && COLOUR_SCHEME=default
+[ -z "${COLOUR_SCHEME}" ] && COLOUR_SCHEME=default
 export COLOUR_SCHEME
 
 # change alcritty background
@@ -21,15 +21,16 @@ sleep 0.5
 # renew environment variable
 export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
+# renew ls color
+[ -f $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME ] &&
+  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME) ||
+  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
+
 # renew fzf color
 [ -f $DOTS/config/zsh/fzf.$COLOUR_SCHEME ] &&
   export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$COLOUR_SCHEME)" ||
   export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
 
-# renew ls color
-[ -f $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME ] &&
-  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME) ||
-  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
 
 if tmux info &> /dev/null; then
   # update tmux environment
