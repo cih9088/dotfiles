@@ -290,7 +290,7 @@ environmentNodejs:
 	@( $(SCRIPTS_DIR)/environment/nodejs.sh )
 
 changeDefaultShell:
-	@( $(SCRIPTS_DIR)/change_defualt_shell.sh )
+	@( $(SCRIPTS_DIR)/change_default_shell.sh )
 
 clean:
 	@( sed -i -e '/# added from andys dotfiles/,/^fi$$/d' ${HOME}/.bashrc )

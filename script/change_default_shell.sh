@@ -49,10 +49,10 @@ local_change() {
     case $shell in
       bash|zsh)
         # echo -e "if [[ -e ${SHELL_FULL_PATH} ]]; then\n\texec ${SHELL_FULL_PATH} -l\nfi" >> ${loginshell_rc}
-        echo -e "if [ -e ${SHELL_FULL_PATH} ]; then\n\texec env -u PATH ${SHELL_FULL_PATH} -l\nfi" >> ${loginshell_rc}
+        echo -e "if [[ \$- == *i* ]] && [[ -e ${SHELL_FULL_PATH} ]]; then\n\texec env -u PATH ${SHELL_FULL_PATH} -l\nfi" >> ${loginshell_rc}
         ;;
       fish)
-        echo -e "if test -e ${SHELL_FULL_PATH}\n\texec env -u PATH ${SHELL_FULL_PATH} -l\nend" >> ${loginshell_rc}
+        echo -e "if status is-interactive -a -e ${SHELL_FULL_PATH}\n\texec env -u PATH ${SHELL_FULL_PATH} -l\nend" >> ${loginshell_rc}
         ;;
       # csh|tcsh)
       #     echo -e "if ( -e ${SHELL_FULL_PATH} ) then\n\texec env -u PATH ${SHELL_FULL_PATH} -l\nendif" >> ${loginshell_rc}
