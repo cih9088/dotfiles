@@ -8,9 +8,11 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
-THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
+THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
-log_title "Prepare to ${BOLD}${UNDERLINE}update ${THIS}${NC}"
+log_title "Prepare to update ${THIS_HL}"
+
+################################################################
 
 [[ ${VERBOSE} == "true" ]] &&
   log_info "Updating ${THIS_HL}..." \
