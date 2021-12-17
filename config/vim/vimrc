@@ -23,6 +23,7 @@
   Plug 'joshdick/onedark.vim'
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'sainnhe/edge'
+  Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
 
 
 " Convenient Universally
@@ -194,6 +195,31 @@
 
   " ChangeBackground changes theme and background
   function! ChangeBackground(...)
+
+    " Change background
+    if !empty($TMUX)
+      if system('tmux show-env BG_LUMINANCE') !~# '^-.*'
+        if split(trim(system('tmux show-env BG_LUMINANCE')), '=')[1] == "light"
+          set background=light
+        else
+          set background=dark
+        endif
+      endif
+    else
+      if exists('$BG_LUMINANCE') && $BG_LUMINANCE == 'light'
+        set background=light
+      else
+        set background=dark
+      endif
+    endif
+
+    " colorscheme specific setting
+    if &background == "dark"
+      let g:rose_pine_variant = 'moon'
+    else
+      let g:rose_pine_variant = 'dawn'
+    endif
+
     " Change colorscheme
     try
       if a:0 > 0
@@ -218,22 +244,6 @@
       colorscheme default
     endtry
 
-    " Change background
-    if !empty($TMUX)
-      if system('tmux show-env BG_LUMINANCE') !~# '^-.*'
-        if split(trim(system('tmux show-env BG_LUMINANCE')), '=')[1] == "light"
-          set background=light
-        else
-          set background=dark
-        endif
-      endif
-    else
-      if exists('$BG_LUMINANCE') && $BG_LUMINANCE == 'light'
-        set background=light
-      else
-        set background=dark
-      endif
-    endif
   endfunction
 
   call ChangeBackground()

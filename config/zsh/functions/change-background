@@ -27,9 +27,9 @@ export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
   export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
 
 # renew fzf color
-[ -f $DOTS/config/zsh/fzf.$COLOUR_SCHEME ] &&
-  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$COLOUR_SCHEME)" ||
-  export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
+  [ -f $DOTS/config/zsh/fzf.$COLOUR_SCHEME ] &&
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf.$COLOUR_SCHEME)" ||
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
 
 
 if tmux info &> /dev/null; then
