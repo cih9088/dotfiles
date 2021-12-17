@@ -252,10 +252,6 @@ tmux:
   local: false
   force: true
 
-tpm:
-  install: true
-  force: true
-
 #######################
 
 tree:
@@ -293,7 +289,7 @@ bash_snippets:
   force: true
 
 bpytop:
-  install: true
+  install: false
   local: false
   force: true
 

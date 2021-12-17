@@ -206,10 +206,6 @@ installNeovim:
 installTmux:
 	@( $(SCRIPTS_DIR)/install/tmux.sh )
 
-# installTmux
-installTPM:
-	@( $(SCRIPTS_DIR)/install/tpm.sh )
-
 installTree:
 	@( $(SCRIPTS_DIR)/install/tree.sh )
 
@@ -265,7 +261,10 @@ updateConfigs:
 updateNeovimPlugins:
 	@( $(SCRIPTS_DIR)/update/neovim_plugins.sh )
 
-updateTmuxPlugins: installTPM
+updateTPM:
+	@( $(SCRIPTS_DIR)/update/tpm.sh )
+
+updateTmuxPlugins: updateTPM
 	@( $(SCRIPTS_DIR)/update/tmux_plugins.sh )
 
 updateDevEnv:
@@ -339,7 +338,7 @@ update: \
 	updatePrezto \
 	updateBins updateConfigs \
 	updateNeovimPlugins \
-	installTPM \
+	updateTPM \
 	updateTmuxPlugins \
 	updateDevEnv
 	@echo
@@ -371,11 +370,11 @@ init: \
 	libraryXorgproto libraryXtrans libraryLibxau libraryXcbProto libraryLibxcb libraryLibx11 \
 	libraryTcl libraryTk \
 	installTermInfo installZsh installFish installPrezto \
-	installNeovim installTmux installTPM \
+	installNeovim installTmux \
 	installTree installFd installRg installThefuck installRanger installTldr \
 	installBashSnippets installBpytop installUp \
 	installPyenv installGoenv installAsdf installShellcheck \
-	updatePrezto updateBins updateConfigs updateNeovimPlugins updateTmuxPlugins updateDevEnv \
+	updatePrezto updateBins updateConfigs updateNeovimPlugins updateTPM updateTmuxPlugins updateDevEnv \
 	environmentPython environmentGo environmentRust environmentNodejs \
 	changeDefaultShell \
 	clean installLibraries installEnvironmentUtilities installEnvironment \
