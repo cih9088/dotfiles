@@ -2,10 +2,8 @@
 if [ ! -z "${1+x}" ]; then
   COLOUR_SCHEME="${1}"
 else
-  if [ -z "${COLOUR_SCHEME+x}" ]; then
-    COLOUR_SCHEME=$(grep -i $( $DOTS/bin/bg-colourscheme ) $HOME/.config/alacritty/colour.yml -B 5 |
-      grep \& | sed 's/.*: *&\(.*\)/\1/')
-  fi
+  COLOUR_SCHEME=$(grep -i $( $DOTS/bin/bg-colourscheme ) $HOME/.config/alacritty/colour.yml -B 5 |
+    grep \& | sed 's/.*: *&\(.*\)/\1/')
 fi
 
 # default colour scheme
