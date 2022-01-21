@@ -193,7 +193,7 @@ goenv:
 asdf:
   install: true
   local: true
-  force: false
+  force: true
 
 shellcheck:
   install: true
