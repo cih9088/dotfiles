@@ -198,6 +198,7 @@ brew install --cask transmission
 brew tap homebrew/cask-versions
 brew install --cask safari-technology-preview
 brew install --cask paragon-ntfs
+brew install --cask zotero
 # brew install --cask virtualbox
 # brew install --cask vagrant
 # brew install --cask vagrant-manager
