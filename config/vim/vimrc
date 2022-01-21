@@ -48,7 +48,11 @@
     Plug 'rhysd/git-messenger.vim'
   endif
   Plug 'AndrewRadev/splitjoin.vim'
-  Plug 'Yggdroot/indentLine'
+  if has("nvim-0.5")
+    Plug 'lukas-reineke/indent-blankline.nvim'
+  else
+    Plug 'Yggdroot/indentLine'
+  endif
   if has("nvim-0.5")
     Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
   elseif has('nvim')
@@ -1054,6 +1058,16 @@
     " let g:indentLine_setConceal = 0
     " let g:indentLine_char = '┊'
     " let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+  endif
+
+
+" lukas-reineke/indent-blankline.nvim
+" ---------------------------------------------------------------------------------------
+  if has_key(g:plugs, 'indent-blankline.nvim')
+    let g:indent_blankline_show_first_indent_level = v:false
+    let g:indent_blankline_show_end_of_line = v:true
+    " let g:indent_blankline_show_current_context = v:true
+    let g:indent_blankline_filetype_exclude = ['help', 'checkhealth', 'startify']
   endif
 
 
