@@ -90,6 +90,10 @@ python3_install() {
     fi
     asdf install python ${VERSION}
     update_asdf_py_version ${VERSION}
+
+    # install utils
+    pip3 install black
+    asdf reshim
   fi
 }
 

@@ -17,7 +17,7 @@ DEFAULT_VERSION="latest"
 ################################################################
 
 nodejs_install() {
-  VERSION="${2:-}"
+  local VERSION="${2:-}"
 
   # curl -sL install-node.now.sh/lts | bash -s -- --prefix=${HOME}/.local --yes
   # Remove installed node
@@ -38,6 +38,11 @@ nodejs_install() {
     fi
     asdf install nodejs ${VERSION}
     asdf global nodejs ${VERSION}
+
+    # install utils
+    npm install --global prettier
+    npm install --global yarn
+    asdf reshim
   fi
 }
 

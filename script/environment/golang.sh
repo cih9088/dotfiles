@@ -18,7 +18,7 @@ VERSION=""
 ################################################################
 
 golang_install() {
-  VERSION="${2:-}"
+  local VERSION="${2:-}"
 
   # prefer goenv
   if command -v goenv > /dev/null; then

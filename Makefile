@@ -288,6 +288,9 @@ environmentRust:
 environmentNodejs:
 	@( $(SCRIPTS_DIR)/environment/nodejs.sh )
 
+environmentLua:
+	@( $(SCRIPTS_DIR)/environment/lua.sh )
+
 changeDefaultShell:
 	@( $(SCRIPTS_DIR)/change_default_shell.sh )
 
@@ -324,7 +327,7 @@ installEnvironmentUtilities: \
 	installShellcheck updateDevEnv
 
 installEnvironment: \
-	environmentPython environmentGolang environmentRust environmentNodejs
+	environmentPython environmentGolang environmentRust environmentNodejs environmentLua
 
 installEssentials: \
 	installTermInfo installZsh installFish installPrezto \
@@ -375,7 +378,7 @@ init: \
 	installBashSnippets installBpytop installUp \
 	installPyenv installGoenv installAsdf installShellcheck \
 	updatePrezto updateBins updateConfigs updateNeovimPlugins updateTPM updateTmuxPlugins updateDevEnv \
-	environmentPython environmentGo environmentRust environmentNodejs \
+	environmentPython environmentGo environmentRust environmentNodejs environmentLua \
 	changeDefaultShell \
 	clean installLibraries installEnvironmentUtilities installEnvironment \
 	installEssentials installUtilities \
