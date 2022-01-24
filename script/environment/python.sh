@@ -4,8 +4,8 @@
 THIS=$(basename "$0")
 THIS=${THIS%.*}
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-. ${DIR}/../helpers/common.sh
+CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. ${CUR_DIR}/../helpers/common.sh
 ################################################################
 
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
@@ -90,10 +90,6 @@ python3_install() {
     fi
     asdf install python ${VERSION}
     update_asdf_py_version ${VERSION}
-
-    # install utils
-    pip3 install black
-    asdf reshim
   fi
 }
 
@@ -116,8 +112,8 @@ if command -v pyenv > /dev/null; then
   log_info "Note that ${THIS_HL}3 would be installed using pyenv"
   main_script 'python3' python3_install python3_install python_version_func
   pyenv global | grep '[0-9.]' -q || pyenv global \
-    $(pyenv versions | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1) \
-    $(pyenv versions | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)
+    "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1)" \
+    "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)"
 elif command -v asdf > /dev/null; then
   asdf plugin list 2>/dev/null | grep -q python || asdf plugin add python >&3 2>&4
 
@@ -138,3 +134,8 @@ fi
 # upgrade pip
 command -v python2 >/dev/null && python2 -m pip install --upgrade pip >&3 2>&4 || true
 command -v python3 >/dev/null && python3 -m pip install --upgrade pip >&3 2>&4 || true
+
+# install utils
+"${CUR_DIR}/python_black.sh"
+"${CUR_DIR}/python_isort.sh"
+"${CUR_DIR}/python_flake8.sh"

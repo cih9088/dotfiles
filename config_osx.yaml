@@ -195,11 +195,6 @@ asdf:
   local: false
   force: true
 
-shellcheck:
-  install: true
-  local: false
-  force: true
-
 #######################
 
 python2:
@@ -208,7 +203,16 @@ python2:
 
 python3:
   install: true
-  version: 3.10.0
+  version: 3.8.5
+
+python_black:
+  install: true
+
+python_isort:
+  install: true
+
+python_flake8:
+  install: true
 
 golang:
   install: true
@@ -221,6 +225,19 @@ rust:
 nodejs:
   install: true
   version: 17.2.0
+
+lua:
+  install: true
+  version: 5.4.3
+
+lua_stylua:
+  install: true
+
+sh_shellcheck:
+  install: true
+
+sh_shfmt:
+  install: true
 
 #######################
 

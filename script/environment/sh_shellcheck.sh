@@ -5,11 +5,12 @@ THIS=$(basename "$0")
 THIS=${THIS%.*}
 GH="koalaman/shellcheck"
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-. ${DIR}/../helpers/common.sh
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
+. "${DIR}/../helpers/common.sh"
 ################################################################
 
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
+THIS_CMD=shellcheck
 
 log_title "Prepare to install ${THIS_HL}"
 
@@ -22,7 +23,7 @@ setup_func_shellcheck_local() {
   local VERSION="${2:-}"
   local DO_INSTALL="no"
 
-  [ -z $VERSION ] && VERSION=$DEFAULT_VERSION
+  [ -z "$VERSION" ] && VERSION=$DEFAULT_VERSION
 
   if [ -f ${PREFIX}/bin/shellcheck ]; then
     if [ ${FORCE} == 'true' ]; then

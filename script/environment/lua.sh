@@ -4,8 +4,8 @@
 THIS=$(basename "$0")
 THIS=${THIS%.*}
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-. ${DIR}/../helpers/common.sh
+CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+. "${CUR_DIR}/../helpers/common.sh"
 ################################################################
 
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
@@ -19,23 +19,11 @@ lua_install() {
   local VERSION="${2:-}"
 
   if command -v asdf > /dev/null; then
-    if [ ${VERSION} == "latest" ]; then
+    if [ "${VERSION}" == "latest" ]; then
       VERSION=$(asdf latest lua)
     fi
-    asdf install lua ${VERSION}
-    asdf global lua ${VERSION}
-
-    # install utils
-    local STYLUA_VERSION="$(${DIR}/../helpers/gh_get_latest_release JohnnyMorganz/StyLua)"
-    if [[ ${PLATFORM} == "OSX" ]]; then
-      wget https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-${STYLUA_VERSION##*v}-macos.zip || exit $?
-      unzip stylua-${STYLUA_VERSION##*v}-macos.zip || exit $?
-    elif [[ ${PLATFORM} == "LINUX" ]]; then
-      wget https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-${STYLUA_VERSION##*v}-linux.zip || exit $?
-      unzip stylua-${STYLUA_VERSION##*v}-linux.zip || exit $?
-    fi
-    chmod +x stylua || exit $?
-    \cp -rf stylua ${PREFIX}/bin || exit $?
+    asdf install lua "${VERSION}"
+    asdf global lua "${VERSION}"
   fi
 
 }
@@ -53,7 +41,7 @@ if command -v asdf > /dev/null; then
 
   log_info "Note that ${THIS_HL} would be installed using asdf"
   AVAILABLE_VERSIONS="$(asdf list all lua)"
-  main_script ${THIS} lua_install lua_install lua_version_func \
+  main_script "${THIS}" lua_install lua_install lua_version_func \
     "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
 
 else
@@ -61,3 +49,5 @@ else
   exit 1
 fi
 
+# install utils
+"${CUR_DIR}/lua_stylua.sh"

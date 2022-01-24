@@ -246,9 +246,6 @@ installGoenv:
 installAsdf:
 	@ ( $(SCRIPTS_DIR)/install/asdf.sh )
 
-installShellcheck:
-	@( $(SCRIPTS_DIR)/install/shellcheck.sh )
-
 updatePrezto:
 	@( $(SCRIPTS_DIR)/update/prezto.sh )
 
@@ -291,6 +288,9 @@ environmentNodejs:
 environmentLua:
 	@( $(SCRIPTS_DIR)/environment/lua.sh )
 
+environmentSh:
+	@( $(SCRIPTS_DIR)/environment/sh.sh )
+
 changeDefaultShell:
 	@( $(SCRIPTS_DIR)/change_default_shell.sh )
 
@@ -324,10 +324,11 @@ installLibraries: \
 
 installEnvironmentUtilities: \
 	installPyenv installGoenv installAsdf \
-	installShellcheck updateDevEnv
+	updateDevEnv
 
 installEnvironment: \
-	environmentPython environmentGolang environmentRust environmentNodejs environmentLua
+	environmentPython environmentGolang environmentRust environmentNodejs environmentLua \
+	environmentSh
 
 installEssentials: \
 	installTermInfo installZsh installFish installPrezto \
@@ -376,9 +377,9 @@ init: \
 	installNeovim installTmux \
 	installTree installFd installRg installThefuck installRanger installTldr \
 	installBashSnippets installBpytop installUp \
-	installPyenv installGoenv installAsdf installShellcheck \
+	installPyenv installGoenv installAsdf \
 	updatePrezto updateBins updateConfigs updateNeovimPlugins updateTPM updateTmuxPlugins updateDevEnv \
-	environmentPython environmentGo environmentRust environmentNodejs environmentLua \
+	environmentPython environmentGo environmentRust environmentNodejs environmentLua environmentSh\
 	changeDefaultShell \
 	clean installLibraries installEnvironmentUtilities installEnvironment \
 	installEssentials installUtilities \

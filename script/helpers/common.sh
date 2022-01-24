@@ -52,7 +52,7 @@ command -v goenv > /dev/null && eval "$(goenv init -)" || true
 ################################################################
 
 # parse config
-[[ ! -z ${CONFIG+x} ]] && eval $(${PROJ_HOME}/script/helpers/parser_yaml ${CONFIG} "CONFIG_") || true
+[[ ! -z ${CONFIG:-} ]] && eval $(${PROJ_HOME}/script/helpers/parser_yaml ${CONFIG} "CONFIG_") || true
 # set verbose
 [[ "${VERBOSE}" == "true" ]] && exec 3>&1 4>&2 || exec 3>/dev/null 4>/dev/null
 # check platform and family
