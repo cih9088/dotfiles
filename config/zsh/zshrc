@@ -29,7 +29,7 @@
   [ -z "${COLOUR_SCHEME+x}" ] && export COLOUR_SCHEME=$(
     grep -i $( $DOTS/bin/bg-colourscheme ) $HOME/.config/alacritty/colour.yml -B 5 |
       grep \& | sed 's/.*: *&\(.*\)/\1/')
-  [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=default
+  [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=seoul256-dark
   [ -z "${BG_LUMINANCE+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
 
