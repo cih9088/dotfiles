@@ -1,0 +1,24 @@
+snippet imptf
+	import tensorflow as tf
+
+snippet impto
+	import torch
+
+snippet impnp
+	import numpy as np
+
+snippet imppi
+	import pickle
+
+snippet impplt
+	import matplotlib
+	matplotlib.use('Agg')
+	import matplotlib.pyplot as plt
+
+snippet pickleload
+	with open(${1:file_to_dump}, 'rb') as f:
+		${0:var} = pickle.load(f)
+
+snippet pickledump
+	with open(${1:file_to_dump}, 'wb') as f:
+		pickle.dump(${0:var}, f)
