@@ -37,12 +37,18 @@ setup_func_tldr_local() {
   pip2 uninstall --yes tldr || true
   pip3 uninstall --yes tldr || true
 
+  # name is changed after version v1.5.0
+  _name="tldr"
+  if [ "$(printf '%s\n%s' ${VERSION} v1.5.0 | sort -V | head -n 1)" == "v1.5.0" ]; then
+    _name="tealdeer"
+  fi
+
   if [ ${ARCH} == "x86_64" ]; then
-    wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tldr-linux-x86_64-musl || exit $?
-    mv tldr-linux-x86_64-musl ${PREFIX}/bin/tldr || exit $?
+    wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-x86_64-musl || exit $?
+    mv ${_name}-linux-x86_64-musl ${PREFIX}/bin/tldr || exit $?
   elif [ ${ARCH} == "aarch64" ]; then
-    wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tldr-linux-armv7-musleabihf || exit $?
-    mv tldr-linux-armv7-musleabihf ${PREFIX}/bin/tldr || exit $?
+    wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-armv7-musleabihf || exit $?
+    mv ${_name}-linux-armv7-musleabihf ${PREFIX}/bin/tldr || exit $?
   fi
   chmod +x ${PREFIX}/bin/tldr
   ${PREFIX}/bin/tldr --update
