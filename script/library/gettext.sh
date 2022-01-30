@@ -50,7 +50,7 @@ setup_func_local() {
     mv gettext-${VERSION} ${PREFIX}/src
     pushd ${PREFIX}/src/gettext-${VERSION}
 
-    ./configure --prefix=${PREFIX} || exit $?
+    ./configure --prefix=${PREFIX} --with-shared --with-static || exit $?
     make || exit $?
     make install || exit $?
 

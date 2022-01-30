@@ -50,7 +50,7 @@ setup_func_local() {
     mv pkg-config-${VERSION} ${PREFIX}/src
     pushd ${PREFIX}/src/pkg-config-${VERSION}
 
-    ./configure --prefix=${PREFIX} --with-internal-glib || exit $?
+    ./configure --prefix=${PREFIX} --enable-shared --enable-static --with-internal-glib || exit $?
     make || exit $?
     make install || exit $?
 

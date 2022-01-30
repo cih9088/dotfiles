@@ -50,8 +50,9 @@ setup_func_local() {
     mv readline-${VERSION} ${PREFIX}/src
     pushd ${PREFIX}/src/readline-${VERSION}
 
-    ./configure --prefix=${PREFIX} --enable-shared --with-curses || exit $?
-    make || exit $?
+    ./configure --prefix=${PREFIX} --enable-shared || exit $?
+    # https://lists.gnu.org/archive/html/bug-readline/2017-10/msg00007.html
+    make SHLIB_LIBS="-lncurses -ltinfo" || exit $?
     make install || exit $?
 
     popd

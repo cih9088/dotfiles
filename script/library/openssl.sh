@@ -40,9 +40,10 @@ setup_func_local() {
     mv openssl-openssl-${VERSION} ${PREFIX}/src
     pushd ${PREFIX}/src/openssl-openssl-${VERSION}
 
-    ./Configure --prefix=${PREFIX} || exit $?
+    ./Configure --prefix=${PREFIX} shared zlib || exit $?
     make || exit $?
     make install || exit $?
+
 
     popd
   fi

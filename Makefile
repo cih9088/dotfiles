@@ -36,14 +36,23 @@ libraryHelp2man:
 libraryPkgConfig:
 	@( $(SCRIPTS_DIR)/library/pkg_config.sh )
 
+libraryZlib:
+	@( $(SCRIPTS_DIR)/library/zlib.sh )
+
+libraryBzip2:
+	@( $(SCRIPTS_DIR)/library/bzip2.sh )
+
+libraryOpenssl: libraryZlib
+	@( $(SCRIPTS_DIR)/library/openssl.sh )
+
 libraryNcurses:
 	@( $(SCRIPTS_DIR)/library/ncurses.sh )
 
-libraryOpenssl:
-	@( $(SCRIPTS_DIR)/library/openssl.sh )
-
 libraryLibevent:
 	@( $(SCRIPTS_DIR)/library/libevent.sh )
+
+libraryReadline: libraryNcurses
+	@( $(SCRIPTS_DIR)/library/readline.sh )
 
 # autotools
 # -----------------------------------------------------
@@ -68,15 +77,6 @@ libraryGettext:
 
 libraryPatch:
 	@( $(SCRIPTS_DIR)/library/patch.sh )
-
-libraryReadline: libraryNcurses
-	@( $(SCRIPTS_DIR)/library/readline.sh )
-
-libraryZlib:
-	@( $(SCRIPTS_DIR)/library/zlib.sh )
-
-libraryBzip2:
-	@( $(SCRIPTS_DIR)/library/bzip2.sh )
 
 librarySqlite3:
 	@( $(SCRIPTS_DIR)/library/sqlite3.sh )
@@ -314,10 +314,13 @@ clean:
 	@echo "[0;92m[*][0m Remove all configurations files and custom functions"
 
 installLibraries: \
-	libraryHelp2man libraryPkgConfig libraryNcurses \
-	libraryOpenssl libraryLibevent libraryAutotools \
-	libraryGettext libraryPatch libraryReadline \
-	libraryZlib libraryBzip2 librarySqlite3 libraryLibffi \
+	libraryHelp2man libraryPkgConfig \
+	libraryZlib libraryBzip2 \
+	libraryOpenssl \
+	libraryNcurses libraryLibevent libraryReadline \
+	libraryAutotools \
+	libraryGettext libraryPatch \
+	librarySqlite3 libraryLibffi \
 	libraryGnuTLS libraryGnuPG \
 	libraryLibx11 \
 	libraryTcl libraryTk
