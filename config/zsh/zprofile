@@ -101,16 +101,17 @@
   [[ ":${PKG_CONFIG_PATH}:" != *":${HOME}/.local/lib64/pkgconfig:"* ]] && \
     export PKG_CONFIG_PATH="${HOME}/.local/lib64/pkgconfig:${PKG_CONFIG_PATH}"
 
-  [[ " ${CFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
-    export CFLAGS="-I${HOME}/.local/include ${CFLAGS}"
+  # [[ " ${CFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
+  #   export CFLAGS="-I${HOME}/.local/include ${CFLAGS}"
+  #
+  # [[ " ${CPPFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
+  #   export CPPFLAGS="-I${HOME}/.local/include ${CPPFLAGS}"
+  #
+  # [[ " ${LDFLAGS} " != *" -L${HOME}/.local/lib "* ]] && \
+  #   export LDFLAGS="-L${HOME}/.local/lib ${LDFLAGS}"
+  # [[ " ${LDFLAGS} " != *" -L${HOME}/.local/lib64 "* ]] && \
+  #   export LDFLAGS="-L${HOME}/.local/lib64 ${LDFLAGS}"
 
-  [[ " ${CPPFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
-    export CPPFLAGS="-I${HOME}/.local/include ${CPPFLAGS}"
-
-  [[ " ${LDFLAGS} " != *" -I${HOME}/.local/lib "* ]] && \
-    export LDFLAGS="-I${HOME}/.local/lib ${LDFLAGS}"
-  [[ " ${LDFLAGS} " != *" -I${HOME}/.local/lib64 "* ]] && \
-    export LDFLAGS="-I${HOME}/.local/lib64 ${LDFLAGS}"
 
 
 # =======================================================================================
