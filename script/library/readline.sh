@@ -52,7 +52,7 @@ setup_func_local() {
 
     ./configure --prefix=${PREFIX} --enable-shared || exit $?
     # https://lists.gnu.org/archive/html/bug-readline/2017-10/msg00007.html
-    make SHLIB_LIBS="-lncurses -ltinfo" || exit $?
+    make SHLIB_LIBS="-lncurses" || exit $?
     make install || exit $?
 
     popd

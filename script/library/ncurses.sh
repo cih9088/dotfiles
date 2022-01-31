@@ -55,7 +55,7 @@ setup_func_local() {
     # ./configure --prefix=${PREFIX} --with-shared --with-termlib --enable-pc-files --with-versioned-syms || exit $?
 
     # https://stackoverflow.com/a/63730734
-    ./configure --prefix=${PREFIX} --with-shared --with-termlib --enable-pc-files --with-versioned-syms || exit $?
+    ./configure --prefix=${PREFIX} --with-shared --enable-pc-files --with-versioned-syms || exit $?
 
     make || exit $?
     make install || exit $?
