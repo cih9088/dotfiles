@@ -1,0 +1,8 @@
+local _CONDA_PATH=$HOME/miniconda3/bin/conda
+if [ -f $_CONDA_PATH ]; then
+  eval "$($_CONDA_PATH shell.zsh hook)"
+  conda "$@"
+else
+  echo "$_CONDA_PATH not found" >&2
+  exit 1
+fi

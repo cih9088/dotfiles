@@ -293,7 +293,7 @@
       highlight StatusLine   cterm=bold,reverse guibg=#2a273f guifg=#e0def4
     endif
   endfunction
-  
+
   augroup MyColors
     autocmd!
     autocmd ColorScheme rose-pine call RosePineOverride()

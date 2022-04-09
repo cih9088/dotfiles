@@ -125,6 +125,11 @@
   fi
 
 
+# Setup conda
+# ---------------------------------------------------------------------------------------
+  export CONDA_AUTO_ACTIVATE_BASE=false
+
+
 # Setup virtualenvwrapper (using asdf/pyenv python)
 # ---------------------------------------------------------------------------------------
   if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
