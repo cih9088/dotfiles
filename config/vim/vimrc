@@ -889,12 +889,12 @@
 
 " copy the current file's full absolute path.
 " ---------------------------------------------------------------------------------------
-  command! CopyFilePath let @+ = expand(has('win32') ? '%:p:gs?/?\\?' : '%:p')
+  command! CopyFilePath call s:yank(expand(has('win32') ? '%:p:gs?/?\\?' : '%:p'))
 
 
 " copy the directory where current file is in.
 " ---------------------------------------------------------------------------------------
-  command! CopyFileDir let @+ = expand(has('win32') ? '%:p:h:gs?/?\\?' : '%:p:h')
+  command! CopyFileDir call s:yank(expand(has('win32') ? '%:p:h:gs?/?\\?' : '%:p:h'))
 
 
 " go to current file directory
@@ -912,7 +912,7 @@
 
 " Custom location for quickfix and loclist
 " ---------------------------------------------------------------------------------------
-  function! CustomiseLocation()
+  function! s:customiseLocation()
     " if loclist, put it below the current window
     if getwininfo(win_getid())[0]['loclist'] == 1
     " if quickfix, put it bellow the whole window
@@ -920,7 +920,7 @@
       wincmd J
     endif
   endfunction
-  autocmd FileType qf call CustomiseLocation()
+  autocmd FileType qf call s:customiseLocation()
 
 
 " plugin install check
