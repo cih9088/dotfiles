@@ -24,6 +24,7 @@
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'sainnhe/edge'
   Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
+  Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 
 " Convenient Universally
@@ -1246,11 +1247,9 @@
     let g:mkdp_port = '40100'
 
     function! g:OpenBrowser(url)
+      call s:yank(a:url)
       if has('mac')
         silent exe 'silent !open -na "Google Chrome" --args --incognito --new-window ' . a:url
-      else
-        call s:yank(a:url)
-        echo 'url copied to clipboard'
       endif
     endfunction
     let g:mkdp_browserfunc = 'g:OpenBrowser'
