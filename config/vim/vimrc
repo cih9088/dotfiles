@@ -1290,7 +1290,6 @@ require'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
     use_languagetree = false,
-    disable = { "bash", },
   },
 }
 EOF
