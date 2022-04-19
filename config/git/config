@@ -5,3 +5,6 @@
 
 [commit]
 	template = ~/.config/git/gitmessage
+
+[credential]
+	helper = "!f() { ~/.config/git/credential_helper.py get; }; f"
