@@ -21,11 +21,11 @@ setup_func_stylua_local() {
 
   local STYLUA_VERSION="$(${DIR}/../helpers/gh_get_latest_release JohnnyMorganz/StyLua)"
   if [[ ${PLATFORM} == "OSX" ]]; then
-    curl -LO https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-${STYLUA_VERSION##*v}-macos.zip || exit $?
-    unzip stylua-${STYLUA_VERSION##*v}-macos.zip || exit $?
+    curl -LO https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-macos.zip || exit $?
+    unzip stylua-macos.zip || exit $?
   elif [[ ${PLATFORM} == "LINUX" ]]; then
-    curl -LO https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-${STYLUA_VERSION##*v}-linux.zip || exit $?
-    unzip stylua-${STYLUA_VERSION##*v}-linux.zip || exit $?
+    curl -LO https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-linux.zip || exit $?
+    unzip stylua-linux.zip || exit $?
   fi
   chmod +x stylua || exit $?
   \cp -rf stylua ${PREFIX}/bin || exit $?
