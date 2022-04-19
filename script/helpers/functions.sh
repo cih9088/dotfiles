@@ -76,6 +76,9 @@ backup-and-link() {
   local TGT="$2"
   local BACKUP_PATH="$3"
 
+  mkdir -p $(dirname $TGT)
+  mkdir -p $(dirname $BACKUP_PATH)
+
   backup ${TGT} ${BACKUP_PATH}
   ln -snf ${SRC} ${TGT}
 }
