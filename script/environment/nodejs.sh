@@ -42,6 +42,7 @@ nodejs_install() {
     # install utils
     npm install --global prettier
     npm install --global yarn
+    npm install --global typescript-language-server typescript
     asdf reshim
   fi
 }
