@@ -5,76 +5,80 @@
 #   HostName foo.example.com
 #   HostName 192.168.1.1
 
-
 if [[ $# -eq 0 ]] || [[ $# -eq 1 && $1 =~ "@$" ]]; then
-    has -v fzf awk || exit 1
+  has -v fzf awk xpanes || exit 1
 
-    _config=$HOME/.ssh/config
-    targets=$(awk '
-    BEGIN { current = ""; hosts[0] = ""; hostnames[0] = ""; ips[0] = ""; aliases[0] = "" }
-    {
-        if ($1 == "Host") {
-            if ( current != $2 ) {
-                current = $2
-                hosts[current] = $2
-            }
-        }
-        else if ( $1 == "HostName") {
-            if ( $2 ~ /[a-zA-Z]+/ ) {
-                hostnames[current] = hostnames[current] $2
-            } else if ( $2 ~ /[0-9.]+/ ) {
-                ips[current] = ips[current] "( " $2 " )"
-            }
-        }
-        else if ( $1 == "#alias" ) {
-            aliases[current] = "["
-            for(i=2;i<=NF;i++) {
-                aliases[current] = aliases[current] " " $i
-            }
-            aliases[current] = aliases[current] " ]"
-        }
+  _config=$HOME/.ssh/config
+  targets=$(awk '
+  BEGIN { current = ""; hosts[0] = ""; hostnames[0] = ""; ips[0] = ""; aliases[0] = "" }
+  {
+    if ($1 == "Host") {
+      if ( current != $2 ) {
+        current = $2
+        hosts[current] = $2
+      }
     }
-    END {
-        for (key in hosts) {
-            if ( key != 0 ) {
-                print hosts[key], "|->", hostnames[key], "|", ips[key], "|" aliases[key]
-            }
+    else if ( $1 == "HostName") {
+      if ( $2 ~ /[a-zA-Z]+/ ) {
+        if ( hostnames[current] == "" ) {
+          hostnames[current] = $2
+        } else {
+          hostnames[current] = hostnames[current] " / " $2
         }
+      } else if ( $2 ~ /[0-9.]+/ ) {
+        ips[current] = ips[current] "( " $2 " )"
+      }
     }
-    ' $_config | grep -v '*' | column -t -s '|')
+    else if ( $1 == "#alias" ) {
+      aliases[current] = "["
+      for(i=2;i<=NF;i++) {
+        aliases[current] = aliases[current] " " $i
+      }
+      aliases[current] = aliases[current] " ]"
+    }
+  }
+  END {
+    for (key in hosts) {
+      if ( key != 0 ) {
+        print hosts[key], "|->", hostnames[key], "|", ips[key], "|" aliases[key]
+      }
+    }
+  }
+  ' $_config | grep -v '*' | column -t -s '|')
 
-    exit_code=$?
-    [ ${exit_code} != 0 ] && return ${exit_code}
-    targets=$(echo ${targets} \
-        | fzf --bind 'ctrl-a:select-all' --multi \
-        --height=40% --cycle --no-sort --layout=reverse \
-        --preview-window=up:2 \
-        --preview='cat '"$_config"' | grep Host | \
-        awk -v host={} '"'"'{
-            split(host, fld, /->/)
-            gsub(/[ \t]+$/, "", fld[1])
-            if ($0~fld[1]) {
-                getline
-                gsub(/^[ \t]+/,"", $0)
-                print
-                getline
-                if ($0 ~ /HostName/) {
-                    gsub(/^[ \t]+/,"", $0)
-                    print
-                }
-            }
-        }'"'" | awk '{print $1}')
-    if [ -n "${targets}" ]; then
-        if [ -n "$1" ]; then
-            echo ${targets} | sed "s/^/$1/" | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
-        else
-            echo ${targets} | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
-        fi
+  exit_code=$?
+  [ ${exit_code} != 0 ] && return ${exit_code}
+  targets=$(echo "${targets}" \
+    | fzf --bind 'ctrl-a:select-all' --multi \
+      --height=40% --cycle --no-sort --layout=reverse \
+      --preview-window=up:2 \
+      --preview='cat '"$_config"' | grep Host \
+      | awk -v host={} '"'"'{
+        split(host, fld, /->/)
+        gsub(/[ \t]+$/, "", fld[1])
+        if ($0~fld[1]) {
+          getline
+          gsub(/^[ \t]+/,"", $0)
+          print
+          getline
+          if ($0 ~ /HostName/) {
+            gsub(/^[ \t]+/,"", $0)
+            print
+          }
+        }
+      }'"'" \
+    | awk '{print $1}')
+  if [ -n "${targets}" ]; then
+    if [ -n "$1" ]; then
+      echo "${targets}" | sed "s/^/$1/" | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
+    else
+      echo "${targets}" | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
     fi
+  fi
 else
-    if ps -p $$ -o ppid= \
-        | xargs -I{} ps -p {} -o comm= \
-        | grep -qw tmux; then
+  if [ -t 0 ] && ps -p $$ -o ppid= \
+    | xargs -I{} ps -p {} -o comm= \
+    | grep -qw tmux; then
     # Note: Options without parameter were hardcoded,
     # in order to distinguish an option's parameter from the destination.
     #
@@ -90,6 +94,7 @@ else
     # tmux set-option -p pane-border-format '#[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[default]'
     tmux select-pane -T "$(echo "$@" \
       | sed 's/[[:space:]]*\(\(\(-[46AaCfGgKkMNnqsTtVvXxYy]\)\|\(-[^[:space:]]*\([[:space:]]\+[^[:space:]]*\)\?\)\)[[:space:]]*\)*[[:space:]]\+\([^-][^[:space:]]*\).*/\6/')"
-    fi
-    command ssh "$@"
+  fi
+
+  command ssh "$@"
 fi

@@ -1,8 +1,8 @@
 if [ -x "$(command -v thefuck)" ]; then
-    unfunction "$0"
-    eval $(thefuck --alias)
-    $0 "$@"
+  unfunction "$0"
+  eval $(thefuck --alias)
+  $0 "$@"
 else
-    echo "thefuck not found" >&2
-    exit 1
+  echo "thefuck not found" >&2
+  exit 1
 fi

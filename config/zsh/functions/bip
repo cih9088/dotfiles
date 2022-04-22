@@ -3,8 +3,8 @@
 # mnemonic [B]rew [I]nstall [P]lugin
 
 if [ ${PLATFORM} != "OSX" ]; then
-    echo "${PLATFORM} is not supported" >&2
-    return 1
+  echo "${PLATFORM} is not supported" >&2
+  return 1
 fi
 
 has -v brew fzf
@@ -12,6 +12,6 @@ has -v brew fzf
 local inst=$(brew search | fzf -m)
 
 if [[ $inst ]]; then
-    for prog in $(echo $inst);
-    do; brew install $prog; done;
+  for prog in $(echo $inst);
+  do; brew install $prog; done;
 fi

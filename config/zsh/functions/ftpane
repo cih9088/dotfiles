@@ -15,6 +15,6 @@ target_pane=$(echo $target | awk 'BEGIN{FS=":|-"} {print$2}' | cut -c 1)
 if [[ $current_window -eq $target_window ]]; then
     tmux select-pane -t ${target_window}.${target_pane}
 else
-    tmux select-pane -t ${target_window}.${target_pane} &&
-        tmux select-window -t $target_window
+  tmux select-pane -t ${target_window}.${target_pane} &&
+    tmux select-window -t $target_window
 fi
