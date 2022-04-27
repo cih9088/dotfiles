@@ -4,7 +4,7 @@
 THIS=$(basename "$0")
 THIS=${THIS%.*}
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
@@ -32,7 +32,7 @@ nodejs_install() {
   rm -rf $HOME/.local/share/man/man1/node.1 || true
   rm -rf $HOME/.local/share/systemtap || true
 
-  if command -v asdf > /dev/null; then
+  if command -v asdf >/dev/null; then
     if [ ${VERSION} == "latest" ]; then
       VERSION=$(asdf latest nodejs)
     fi
@@ -55,7 +55,7 @@ verify_version() {
   [[ "$AVAILABLE_VERSIONS latest" == *"${1}"* ]]
 }
 
-if command -v asdf > /dev/null; then
+if command -v asdf >/dev/null; then
   asdf plugin list 2>/dev/null | grep -q nodejs || asdf plugin add nodejs >&3 2>&4
 
   log_info "Note that ${THIS_HL} would be installed using asdf"

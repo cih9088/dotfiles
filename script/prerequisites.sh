@@ -87,7 +87,8 @@ echo
         git make cmake curl gcc gcc-c++ \
         findutils util-linux-user sudo \
         perl-IPC-Cmd perl-Pod-Html perl-Thread-Queue \
-        python3-devel
+        python3-devel \
+        tar
       # # basic
       # sudo dnf install -y python3 python2  \
       #   xclip wget git cmake curl

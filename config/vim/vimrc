@@ -278,10 +278,10 @@
             let l:scheme = system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
           endif
         endif
+        let l:colour =  matchstr(l:scheme, '[-_]\?\(light\|dark\)[-_]\?')
+        let l:scheme_clenaed = substitute(l:scheme, l:colour, "", "")
+        execute 'colorscheme ' . l:scheme_clenaed
       endif
-      let l:colour =  matchstr(l:scheme, '[-_]\?\(light\|dark\)[-_]\?')
-      let l:scheme_clenaed = substitute(l:scheme, l:colour, "", "")
-      execute 'colorscheme ' . l:scheme_clenaed
     catch
       colorscheme default
     endtry
