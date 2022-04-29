@@ -27,8 +27,8 @@ if tmux ls >/dev/null 2>&1; then
         for pane in "${panes[@]}"; do
           (
             nohup bash -c "\
-            tmux if-shell -t \"$pane\" \"$is_vim\" 'send-keys -t \"$pane ESCAPE ENTER';\
-            tmux if-shell -t \"$pane\" \"$is_vim\" 'send-keys -t \"$pane \":call ChangeBackground()\" ENTER'" \
+              tmux if-shell -t '$pane' \"$is_vim\" 'send-keys -t \"$pane\" ESCAPE ENTER';\
+              tmux if-shell -t '$pane' \"$is_vim\" 'send-keys -t \"$pane\" \":call ChangeBackground()\" ENTER'" \
               >/dev/null 2>&1 &
           )
         done
