@@ -18,8 +18,11 @@ log_title "Prepare to ${BOLD}${UNDERLINE}update ${THIS}${NC}"
   start_spinner "Updating ${THIS_HL}..."
 (
 ## plugin
-log_info "Install and update plugins"
-nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugInstall +PlugUpgrade +PlugUpdate +qall
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +PlugUpgrade +qall
+log_info "Install plugins"
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'PlugInstall --sync' +%print +qall
+log_info "Update plugins"
+nvim -es -u "${HOME}/.config/nvim/init.vim" -i NONE +'PlugUpdate --sync' +%print +qall
 
 ## coc.nvim
 log_info "Install coc extensions"

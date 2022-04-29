@@ -80,6 +80,7 @@ backup-and-link() {
   mkdir -p $(dirname $BACKUP_PATH)
 
   backup ${TGT} ${BACKUP_PATH}
+  log_info "Update symbolic link '${SRC}' -> '${TGT}'"
   ln -snf ${SRC} ${TGT}
 }
 

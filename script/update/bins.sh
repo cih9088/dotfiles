@@ -22,10 +22,12 @@ cd $BIN_DIR; cc -Wall -pedantic -o dircnt dircnt.c;
 
 if [[ ${PLATFORM} == "OSX" ]]; then
   for file in `find ${BIN_DIR} -type f -perm +111 -exec basename {} \;`; do
+    log_info "Update symbolic link '${BIN_DIR}/${file}' -> '$HOME/.local/bin/$file'"
     ln -snf ${BIN_DIR}/${file} $HOME/.local/bin/$file
   done
 elif [[ ${PLATFORM} == "LINUX" ]]; then
   for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
+    log_info "Update symbolic link '${BIN_DIR}/${file}' -> '$HOME/.local/bin/$file'"
     ln -snf ${BIN_DIR}/${file} $HOME/.local/bin/$file
   done
 fi
