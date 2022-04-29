@@ -242,25 +242,27 @@
     if !empty($TMUX)
       if system('tmux show-env BG_LUMINANCE') !~# '^-.*'
         if split(trim(system('tmux show-env BG_LUMINANCE')), '=')[1] == "light"
-          set background=light
+          let l:background = "light"
         else
-          set background=dark
+          let l:background = "dark"
         endif
       endif
     else
       if exists('$BG_LUMINANCE') && $BG_LUMINANCE == 'light'
-        set background=light
+          let l:background = "light"
       else
-        set background=dark
+          let l:background = "dark"
       endif
     endif
 
     " colorscheme specific setting
-    if &background == "dark"
+    if l:background == "dark"
       let g:rose_pine_variant = 'moon'
     else
       let g:rose_pine_variant = 'dawn'
     endif
+
+    execute "set background=" . l:background
 
     " Change colorscheme
     try
@@ -285,6 +287,8 @@
     catch
       colorscheme default
     endtry
+
+    execute "set background=" . l:background
 
   endfunction
 
