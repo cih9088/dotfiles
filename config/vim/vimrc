@@ -36,7 +36,7 @@
   Plug 'scrooloose/nerdcommenter'
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
-  Plug 'junegunn/gv.vim', { 'on': ['GV', 'GV!'] }
+  Plug 'junegunn/gv.vim', { 'on': [ 'GV', 'GV!' ] }
   Plug 'junegunn/vim-peekaboo'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
@@ -48,6 +48,7 @@
   Plug 'tpope/vim-unimpaired'
   " Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-abolish'
+  Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 
   if has("nvim-0.5")
     Plug 'nvim-lua/plenary.nvim'
