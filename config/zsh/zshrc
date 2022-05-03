@@ -27,7 +27,7 @@
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
   [ -z "${COLOUR_SCHEME+x}" ] && export COLOUR_SCHEME=$(
-    grep -i $( $DOTS/bin/bg-colourscheme ) $HOME/.config/alacritty/colour.yml -B 5 |
+    grep -i $( $DOTS/bin/bg-colourscheme ) ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/colour.yml -B 5 |
       grep \& | sed 's/.*: *&\(.*\)/\1/')
   [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=seoul256-dark
   [ -z "${BG_LUMINANCE+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
@@ -122,6 +122,14 @@
   elif command -v brew >/dev/null && [ -f $(brew --prefix)/opt/asdf/libexec/asdf.sh ]; then
     source $(brew --prefix)/opt/asdf/libexec/asdf.sh
     # zsh completion is installed with brew
+  fi
+
+  # direnv
+  if command -v asdf >/dev/null; then
+    asdf plugin add direnv 2>/dev/null &&
+      asdf direnv setup --shell zsh --version latest &&
+      asdf global direnv latest
+    source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
   fi
 
 

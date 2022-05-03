@@ -76,6 +76,7 @@
     )
   fi
 
+
 # Setup goenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
 # ---------------------------------------------------------------------------------------
   # prefer locally installed goenv
