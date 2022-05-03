@@ -126,9 +126,11 @@
 
   # direnv
   if command -v asdf >/dev/null; then
-    asdf plugin add direnv 2>/dev/null &&
-      asdf direnv setup --shell zsh --version latest &&
+    if ! asdf plugin list | grep -q direnv; then
+      asdf plugin add direnv
+      asdf direnv setup --shell zsh --version latest
       asdf global direnv latest
+    fi
     source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
   fi
 
@@ -138,7 +140,7 @@
   export CONDA_AUTO_ACTIVATE_BASE=false
 
 
-# Setup virtualenvwrapper (using asdf/pyenv python)
+# Setup virtualenvwrapper (using asdf/pyenv/conda python)
 # ---------------------------------------------------------------------------------------
   if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
     [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
