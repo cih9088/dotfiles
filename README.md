@@ -1,6 +1,5 @@
-# Andy's dotfiles
-![my dotfiles](https://i.imgur.com/dNdouGV.png)
-This is my dotfiles. Only tested in OSX and Ubuntu.
+# dotfiles
+tested on macOS, Ubuntu, and Redhat.
 
 ## Get this repository
 ```bash
@@ -21,7 +20,7 @@ $ command -v sudo
 # install them if not exist
 # ubuntu
 $ apt update && apt install -y make git sudo
-# rocky
+# redhat
 $ dnf install -y make git sudo
 ```
 
@@ -34,9 +33,8 @@ $ make prerequisitesTest    # Verify which commands are installed
 $ make prerequisites        # Install prerequisites (previlege is needed for linux)
 ```
 
-## How to install and update (Easy way)
-### Environement Variables
-- `CONFIG`: make script non-interactively. Create your own config based on `config_*.yaml` in `~/dotfiles` \
+## Environement Variables
+- `CONFIG`: make script non-interactively. Create your own config based on `config_*.yaml`. \
 ex) `CONFIG=config_linux.yaml make install`
 - `VERBOSE`: make script verbose \
 ex) `VERBOSE=true make install`
@@ -46,25 +44,25 @@ ex) `GH_ACCESS=client_id:client_secret make install`
 ex) `PREFIX=$HOME/custom_path make init`
 
 
-### one-liner
-- Non-interactive init for ubuntu, rocky `cd ~/dotfiles; CONFIG=config_linux.yaml make init`
-- Non-interactive init for osx `cd ~/dotfiles; CONFIG=config_osx.yaml make init`
-- Interactive init `cd ~/dotfiles; make init`
-- Install `cd ~/dotfiles; make install`
-- Update `cd ~/dotfiles; make update`
-- Only copy dotfiles `cd ~/dotfiles; make updateDotfiles`
+## One-liner
+- Non-interactive init for ubuntu, redhat `CONFIG=config_linux.yaml make init`
+- Non-interactive init for macOS `CONFIG=config_osx.yaml make init`
+- Interactive init `make init`
+- Install `make install`
+- Update `make update`
+- Only copy dotfiles `make updateDotfiles`
+ 
+
+## Install and update dotfiles (Easy way)
 
 ### Install
-- Install **systemwide**: others could execute those commands (need privilege)
-- Install **locally**: others could not (All of commands and libraries would be installed in `$HOME/.local`)
+- **systemwide**: others could execute those commands (need privilege)
+- **locally**: others could not (All of commands and libraries would be installed in `PREFIX` (deafult: `$HOME/.local`) )
 
-**NOTE**: systemwide install is prefered for OSX.
+**NOTE**: systemwide install is prefered for macOS.
 
 ```bash
 $ cd ~/dotfiles
-$ make init                 # includes 'install', 'update'
-                            # If you are new to my dotfiles, this is it. No further processes needed.
-                            # Recommended way for a newcomer.
 $ make install              # Install all commands and libraries
 ```
 
@@ -77,6 +75,15 @@ $ git pull
 $ git submodule update --init --recursive
 $ make update               # Update all of dotfiles and configurations
 ```
+
+### Init
+This includes `install`, `update`, `changeDefaultShell` at once.
+
+```console
+$ cd ~/dotfiles
+$ make init                 # Same as 'make install && make update && make changeDefaultShell'
+```
+
 
 
 ## Advanced
@@ -118,7 +125,7 @@ $ cd ~/dotfiles
 $ make clean        # delete installed dotfiles and folder itself (installed commands, libraries would be remained)
 ```
 
-### [Initialise MAC](https://github.com/donnemartin/dev-setup#osxprepsh-script)
+### [Initialise macOS](https://github.com/donnemartin/dev-setup#osxprepsh-script)
 Setup macOS development environment with easy. Mostly copied from [here](https://github.com/donnemartin/dev-setup).
 ```bash
 $ cd ~/dotfiles
