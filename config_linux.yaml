@@ -178,6 +178,11 @@ boost:
   local: true
   force: false
 
+liblzma:
+  install: true
+  local: true
+  force: false
+
 ######################
 
 pyenv:

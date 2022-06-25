@@ -181,6 +181,9 @@ libraryTk: \
 # libraryBoost:
 #   @( $(SCRIPTS_DIR)/library/boost.sh )
 
+libraryLzma:
+	@( $(SCRIPTS_DIR)/library/liblzma.sh )
+
 # ====================================================
 # APPS
 # ====================================================
@@ -323,7 +326,8 @@ installLibraries: \
 	librarySqlite3 libraryLibffi \
 	libraryGnuTLS libraryGnuPG \
 	libraryLibx11 \
-	libraryTcl libraryTk
+	libraryTcl libraryTk \
+	libraryLzma
 
 installEnvironmentUtilities: \
 	installPyenv installGoenv installAsdf \
