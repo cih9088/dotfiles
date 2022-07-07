@@ -8,13 +8,13 @@
 #   --------------------------------------------------------------------------------------
     switch (uname)
         case Linux
-            set -x platform "LINUX"
+            set -x PLATFORM "LINUX"
         case Darwin
-            set -x platform "OSX"
+            set -x PLATFORM "OSX"
         case FreeBSD NetBSD DragonFly
-            set -x platform "FreeBSD"
+            set -x PLATFORM "FreeBSD"
         case \*
-            set -x platform "unknown: ( uname )"
+            set -x PLATFORM "unknown: ( uname )"
     end
 
 
@@ -59,7 +59,7 @@
 
 #   CUDA enviroment variables
 #   ------------------------------------------------------------------------------------
-    if [ $platform = "LINUX" ]
+    if [ $PLATFORM = "LINUX" ]
         set -x CUDA_DEVICE_ORDER PCI_BUS_ID
         set -x CUDA_HOME /usr/local/cuda
         set -x PATH $CUDA_HOME/bin PATH
@@ -113,10 +113,10 @@
     alias rsync-copy-sum="rsync-copy --info=progress2,name0"
     alias rsync-move-sum="rsync-move --info=progress2,name0"
 
-    if [ $platform = "OSX" ]
+    if [ $PLATFORM = "OSX" ]
         alias f='open -a Finder ./'                             # f:            Opens current directory in MacOS Finder
         alias DT='tee ~/Desktop/terminalOut.txt'                # DT:           Pipe content to file on MacOS Desktop
-    else if [ $platform = "LINUX" ]
+    else if [ $PLATFORM = "LINUX" ]
         alias clear-swap="sudo sh -c 'swapoff -a && swapon -a'" # clear-swap:   clear swap memory
     end
     alias e='$VISUAL'
@@ -146,7 +146,7 @@
         mkdir -p "$argv" && cd "$argv"
     end
 
-    if [ $platform = "OSX" ]
+    if [ $PLATFORM = "OSX" ]
         function trash
             command mv "$argv" ~/.Trash        # trash:        Moves a file to the MacOS trash
         end

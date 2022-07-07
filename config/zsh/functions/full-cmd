@@ -1,5 +1,5 @@
-if [ ${platform} != "LINUX" ]; then
-    echo "${platform} is not supported" >&2
+if [ ${PLATFORM} != "LINUX" ]; then
+    echo "${PLATFORM} is not supported" >&2
     return 1
 fi
 

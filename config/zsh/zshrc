@@ -2,7 +2,7 @@
 # Executes commands at the start of an interactive session.
 #
 # Authors:
-#   Andy Cho <cih9088@gmail.com>
+#   Inhyuk Andy Cho <cih9088@gmail.com>
 #
 
 
@@ -13,14 +13,14 @@
 # Identify platform
 # ---------------------------------------------------------------------------------------
   case "$OSTYPE" in
-    solaris*) platform="SOLARIS" ;;
-    darwin*)  platform="OSX" ;;
-    linux*)   platform="LINUX" ;;
-    bsd*)     platform="BSD" ;;
-    msys*)    platform="WINDOWS" ;;
-    *)        platform="unknown: $OSTYPE" ;;
+    solaris*) PLATFORM="SOLARIS" ;;
+    darwin*)  PLATFORM="OSX" ;;
+    linux*)   PLATFORM="LINUX" ;;
+    bsd*)     PLATFORM="BSD" ;;
+    msys*)    PLATFORM="WINDOWS" ;;
+    *)        PLATFORM="unknown: $OSTYPE" ;;
   esac
-  export platform
+  export PLATFORM
 
 
 # Get terminal colour scheme and background luminance
@@ -254,13 +254,13 @@
 
 # plarform specific
 # ---------------------------------------------------------------------------------------
-  if [[ ${platform} == "OSX" ]]; then
+  if [[ ${PLATFORM} == "OSX" ]]; then
     alias f='open -a Finder ./'                             # f:     Opens current directory in MacOS Finder
     alias DT='tee ~/Desktop/terminalOut.txt'                # DT:    Pipe content to file on MacOS Desktop
     alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
     function trash () { command mv "$@" ~/.Trash ; }        # trash: Moves a file to the MacOS trash
     function ql () { qlmanage -p "$*" >& /dev/null; }       # ql:    Opens any file in MacOS Quicklook Preview
-  elif [[ ${platform} == "LINUX" ]]; then
+  elif [[ ${PLATFORM} == "LINUX" ]]; then
     alias clear-swap="sudo sh -c 'swapoff -a && swapon -a'" # clear-swap:   clear swap memory
   fi
 

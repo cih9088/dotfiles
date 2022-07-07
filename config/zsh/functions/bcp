@@ -1,8 +1,8 @@
 # Delete (one or multiple) selected application(s)
 # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
 
-if [ ${platform} != "OSX" ]; then
-    echo "${platform} is not supported" >&2
+if [ ${PLATFORM} != "OSX" ]; then
+    echo "${PLATFORM} is not supported" >&2
     return 1
 fi
 
