@@ -103,9 +103,10 @@
 
   [[ " ${CFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
     export CFLAGS="-I${HOME}/.local/include ${CFLAGS}"
-
-  # [[ " ${CPPFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
-  #   export CPPFLAGS="-I${HOME}/.local/include ${CPPFLAGS}"
+  [[ " ${CPPFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
+    export CPPFLAGS="-I${HOME}/.local/include ${CPPFLAGS}"
+  [[ " ${CXXFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
+    export CXXFLAGS="-I${HOME}/.local/include ${CXXFLAGS}"
 
   [[ " ${LDFLAGS} " != *" -L${HOME}/.local/lib "* ]] && \
     export LDFLAGS="-L${HOME}/.local/lib ${LDFLAGS}"

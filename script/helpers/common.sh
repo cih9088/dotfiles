@@ -49,6 +49,9 @@ command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
 # goenv
 export GOENV_ROOT=$HOME/.goenv
 command -v goenv > /dev/null && eval "$(goenv init -)" || true
+# build python with shared object
+# (https://github.com/pyenv/pyenv/tree/master/plugins/python-build#building-with---enable-shared)
+export PYTHON_CONFIGURE_OPTS="--enable-shared"
 
 ################################################################
 

@@ -141,6 +141,13 @@
     source $(which virtualenvwrapper_lazy.sh)
 
 
+# Setup building python
+# ---------------------------------------------------------------------------------------
+  # build python with shared object
+  # (https://github.com/pyenv/pyenv/tree/master/plugins/python-build#building-with---enable-shared)
+  export PYTHON_CONFIGURE_OPTS="--enable-shared"
+
+
 # Source Prezto
 # ---------------------------------------------------------------------------------------
   # prezto should be sourced here for the fast startup
