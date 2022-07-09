@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://www.x.org/archive/individual/lib/xtrans-${VERSION}.tar.gz || exit $?
+    curl -LO https://www.x.org/archive/individual/lib/xtrans-${VERSION}.tar.gz || exit $?
     tar -xvzf xtrans-${VERSION}.tar.gz || exit $?
 
     mv xtrans-${VERSION} ${PREFIX}/src

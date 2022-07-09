@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://gnupg.org/ftp/gcrypt/libassuan/libassuan-${VERSION}.tar.bz2 || exit $?
+    curl -LO https://gnupg.org/ftp/gcrypt/libassuan/libassuan-${VERSION}.tar.bz2 || exit $?
     tar -xvjf libassuan-${VERSION}.tar.bz2 || exit $?
 
     mv libassuan-${VERSION} ${PREFIX}/src

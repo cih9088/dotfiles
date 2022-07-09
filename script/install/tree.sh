@@ -36,7 +36,7 @@ setup_func_tree_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget http://mama.indstate.edu/users/ice/tree/src/tree-${VERSION}.tgz || exit $?
+    curl -LO http://mama.indstate.edu/users/ice/tree/src/tree-${VERSION}.tgz || exit $?
     tar -xvzf tree-${VERSION}.tgz || exit $?
 
     mv tree-${VERSION} ${PREFIX}/src

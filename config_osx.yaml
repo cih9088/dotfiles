@@ -249,6 +249,16 @@ sh_shfmt:
 terminfo:
   install: true
 
+unzip:
+  install: true
+  local: false
+  force: false
+
+gzip:
+  install: true
+  local: false
+  force: false
+
 zsh:
   install: true
   local: false

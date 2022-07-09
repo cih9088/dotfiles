@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://gnupg.org/ftp/gcrypt/gpgrt/libgpg-error-${VERSION}.tar.bz2 || exit $?
+    curl -LO https://gnupg.org/ftp/gcrypt/gpgrt/libgpg-error-${VERSION}.tar.bz2 || exit $?
     tar -xvjf libgpg-error-${VERSION}.tar.bz2 || exit $?
 
     mv libgpg-error-${VERSION} ${PREFIX}/src

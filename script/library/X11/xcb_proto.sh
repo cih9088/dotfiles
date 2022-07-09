@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://www.x.org/archive/individual/proto/xcb-proto-${VERSION}.tar.gz || exit $?
+    curl -LO https://www.x.org/archive/individual/proto/xcb-proto-${VERSION}.tar.gz || exit $?
     tar -xvzf xcb-proto-${VERSION}.tar.gz || exit $?
 
     mv xcb-proto-${VERSION} ${PREFIX}/src

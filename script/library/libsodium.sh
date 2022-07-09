@@ -38,7 +38,7 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://github.com/${GH}/releases/download/${VERSION}/libsodium-${VERSION/-RELEASE/}.tar.gz || exit $?
+    curl -LO https://github.com/${GH}/releases/download/${VERSION}/libsodium-${VERSION/-RELEASE/}.tar.gz || exit $?
     tar -xvzf libsodium-${VERSION/-RELEASE/}.tar.gz || exit $?
 
     mv libsodium-${VERSION/-RELEASE/} $HOME/.local/src

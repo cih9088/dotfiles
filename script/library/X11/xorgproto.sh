@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://www.x.org/archive/individual/proto/xorgproto-${VERSION}.tar.gz || exit $?
+    curl -LO https://www.x.org/archive/individual/proto/xorgproto-${VERSION}.tar.gz || exit $?
     tar -xvzf xorgproto-${VERSION}.tar.gz || exit $?
 
     mv xorgproto-${VERSION} ${PREFIX}/src

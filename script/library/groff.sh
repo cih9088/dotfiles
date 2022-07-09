@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://ftp.gnu.org/gnu/groff/groff-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/groff/groff-${VERSION}.tar.gz || exit $?
     tar -xvzf groff-${VERSION}.tar.gz || exit $?
 
     mv groff-${VERSION} ${PREFIX}/src

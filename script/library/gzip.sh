@@ -13,11 +13,11 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 log_title "Prepare to install ${THIS_HL}"
 
 AVAILABLE_VERSIONS="$(
-  curl --silent --show-error https://ftp.gnu.org/gnu/automake/ |
+  curl --silent --show-error https://ftp.gnu.org/gnu/gzip/ |
     ${DIR}/../helpers/parser_html 'a' |
     grep 'tar.gz\"' |
     awk '{print $4}' |
-    sed -e 's/.tar.gz//' -e 's/automake-//' |
+    sed -e 's/.tar.gz//' -e 's/gzip-//' |
     sort -Vr)"
 DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
 ################################################################
@@ -29,13 +29,13 @@ setup_func_local() {
 
   [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
 
-  if [ -d ${PREFIX}/src/automake-* ]; then
+  if [ -d ${PREFIX}/src/gzip-* ]; then
     if [ ${FORCE} == 'true' ]; then
-      pushd ${PREFIX}/src/automake-*
+      pushd ${PREFIX}/src/gzip-*
       make uninstall || true
       make clean || true
       popd
-      rm -rf ${PREFIX}/src/automake-*
+      rm -rf ${PREFIX}/src/gzip-*
       DO_INSTALL=true
     fi
   else
@@ -44,11 +44,11 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    curl -LO https://ftp.gnu.org/gnu/automake/automake-${VERSION}.tar.gz || exit $?
-    tar -xvzf automake-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/gzip/gzip-${VERSION}.tar.gz || exit $?
+    tar -xvzf gzip-${VERSION}.tar.gz || exit $?
 
-    mv automake-${VERSION} ${PREFIX}/src
-    pushd ${PREFIX}/src/automake-${VERSION}
+    mv gzip-${VERSION} ${PREFIX}/src
+    pushd ${PREFIX}/src/gzip-${VERSION}
 
     ./configure --prefix=${PREFIX} || exit $?
     make || exit $?
@@ -62,21 +62,21 @@ setup_func_system() {
   local FORCE=$1
 
   if [[ ${PLATFORM} == "OSX" ]]; then
-    brew list automake || brew install automake || exit $?
+    brew list gzip || brew install gzip || exit $?
     if [ ${FORCE} == 'true' ]; then
-      brew upgrade automake || exit $?
+      brew upgrade gzip || exit $?
     fi
   elif [[ ${PLATFORM} == "LINUX" ]]; then
-    if [[ $FAMILY == "DEBIAN" ]]; then
-      sudo apt-get -y install automake || exit $?
-    elif [[ $FAMILY == "RHEL" ]]; then
-      sudo dnf -y install automake || exit $?
+    if [[ ${FAMILY} == "DEBIAN" ]]; then
+      sudo apt-get -y install gzip || exit $?
+    elif [[ ${FAMILY} == "RHEL" ]]; then
+      sudo dnf -y install gzip || exit $?
     fi
   fi
 }
 
 version_func() {
-  $1 --version | grep '(GNU' | awk '{print $4}'
+  $1 --version | grep '^GNU' | awk '{print $3}'
 }
 
 verify_version() {
@@ -85,3 +85,4 @@ verify_version() {
 
 main_script "${THIS}" setup_func_local setup_func_system version_func \
   "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+

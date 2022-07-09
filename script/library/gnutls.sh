@@ -50,7 +50,7 @@ setup_func_local() {
       sed -e 's/.tar.xz//' -e 's/gnutls-//' |
       sort -Vr | head -n 1)"
 
-    wget https://www.gnupg.org/ftp/gcrypt/gnutls/${VERSION}/gnutls-${_FINAL_VERSION}.tar.xz || exit $?
+    curl -LO https://www.gnupg.org/ftp/gcrypt/gnutls/${VERSION}/gnutls-${_FINAL_VERSION}.tar.xz || exit $?
     tar -xvJf gnutls-${_FINAL_VERSION}.tar.xz || exit $?
 
     mv gnutls-${_FINAL_VERSION} ${PREFIX}/src

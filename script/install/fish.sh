@@ -44,7 +44,7 @@ setup_func_local() {
  
   if [ ${DO_INSTALL} == 'true' ]; then
     # download latest version and specify version
-    wget https://github.com/${GH}/releases/download/${VERSION}/fish-${VERSION}.tar.xz || exit $?
+    curl -LO https://github.com/${GH}/releases/download/${VERSION}/fish-${VERSION}.tar.xz || exit $?
     tar -xvJf fish-${VERSION}.tar.xz || exit $?
 
     mv fish-${VERSION} ${PREFIX}/src/
@@ -76,7 +76,7 @@ setup_func_system() {
       log_error "Not supported"
       exit 1
       # pushd /etc/yum.repos.d/
-      # wget https://download.opensuse.org/repositories/shells:fish:release:3/CentOS_8/shells:fish:release:3.repo
+      # curl -LO https://download.opensuse.org/repositories/shells:fish:release:3/CentOS_8/shells:fish:release:3.repo
       # sudo dnf install -y fish
       # popd
     fi

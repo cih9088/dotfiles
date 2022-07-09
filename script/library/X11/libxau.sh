@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://www.x.org/archive/individual/lib/libXau-${VERSION}.tar.gz || exit $?
+    curl -LO https://www.x.org/archive/individual/lib/libXau-${VERSION}.tar.gz || exit $?
     tar -xvzf libXau-${VERSION}.tar.gz || exit $?
 
     mv libXau-${VERSION} ${PREFIX}/src

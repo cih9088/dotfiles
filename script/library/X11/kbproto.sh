@@ -44,7 +44,7 @@
 #
 #   if [ ${DO_INSTALL} == 'true' ]; then
 #
-#     wget https://www.x.org/archive/individual/proto/kbproto-${VERSION}.tar.gz
+#     curl -LO https://www.x.org/archive/individual/proto/kbproto-${VERSION}.tar.gz
 #     tar -xvzf kbproto-${VERSION}.tar.gz
 #
 #     mv kbproto-${VERSION} $HOME/.local/src

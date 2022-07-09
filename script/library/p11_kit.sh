@@ -38,7 +38,7 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://github.com/${GH}/releases/download/${VERSION}/p11-kit-${VERSION}.tar.xz || exit $?
+    curl -LO https://github.com/${GH}/releases/download/${VERSION}/p11-kit-${VERSION}.tar.xz || exit $?
     tar -xvJf p11-kit-${VERSION}.tar.xz || exit $?
 
     mv p11-kit-${VERSION} ${PREFIX}/src

@@ -44,10 +44,10 @@ setup_func_tldr_local() {
   fi
 
   if [ ${ARCH} == "x86_64" ]; then
-    wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-x86_64-musl || exit $?
+    curl -LO https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-x86_64-musl || exit $?
     mv ${_name}-linux-x86_64-musl ${PREFIX}/bin/tldr || exit $?
   elif [ ${ARCH} == "aarch64" ]; then
-    wget https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-armv7-musleabihf || exit $?
+    curl -LO https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-armv7-musleabihf || exit $?
     mv ${_name}-linux-armv7-musleabihf ${PREFIX}/bin/tldr || exit $?
   fi
   chmod +x ${PREFIX}/bin/tldr

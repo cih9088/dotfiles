@@ -27,7 +27,7 @@ setup_func_local() {
   if [ -f ${PREFIX}/bin/fd ]; then
     if [ ${FORCE} == 'true' ]; then
       rm -rf ${PREFIX}/bin/fd || true
-      rm -rf ${PREFIX}/man/man1/fd.1 || true
+      rm -rf ${PREFIX}/share/man/man1/fd.1 || true
       DO_INSTALL=true
     fi
   else
@@ -37,21 +37,21 @@ setup_func_local() {
   if [ ${DO_INSTALL} == 'true' ]; then
     if [[ ${PLATFORM} == "OSX" ]]; then
       # does not have aarch64 for apple
-      wget https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-x86_64-apple-darwin.tar.gz || exit $?
+      curl -LO https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-x86_64-apple-darwin.tar.gz || exit $?
       tar -xvzf fd-${VERSION}-x86_64-apple-darwin.tar.gz || exit $?
 
       pushd fd-${VERSION}-x86_64-apple-darwin
       yes | \cp -rf fd ${PREFIX}/bin
-      yes | \cp -rf fd.1 ${PREFIX}/man/man1
+      yes | \cp -rf fd.1 ${PREFIX}/sahre/man/man1
       popd
 
     elif [[ ${PLATFORM} == "LINUX" ]]; then
-      wget https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz || exit $?
+      curl -LO https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz || exit $?
       tar -xvzf fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz || exit $?
 
       pushd fd-${VERSION}-${ARCH}-unknown-linux-gnu
       yes | \cp -rf fd ${PREFIX}/bin
-      yes | \cp -rf fd.1 ${PREFIX}/man/man1
+      yes | \cp -rf fd.1 ${PREFIX}/share/man/man1
       popd
 
     fi

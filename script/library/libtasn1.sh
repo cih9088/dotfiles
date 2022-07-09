@@ -44,8 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-
-    wget https://ftp.gnu.org/gnu/libtasn1/libtasn1-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/libtasn1/libtasn1-${VERSION}.tar.gz || exit $?
     tar -xvzf libtasn1-${VERSION}.tar.gz || exit $?
 
     mv libtasn1-${VERSION} ${PREFIX}/src

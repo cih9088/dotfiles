@@ -43,7 +43,7 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${VERSION}.tar.gz || exit $?
     tar -xvzf ncurses-${VERSION}.tar.gz || exit $?
 
     mv ncurses-${VERSION} ${PREFIX}/src

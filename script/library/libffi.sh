@@ -39,7 +39,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://github.com/${GH}/releases/download/${VERSION}/libffi-${VERSION##v}.tar.gz || exit $?
+    curl -LO https://github.com/${GH}/releases/download/${VERSION}/libffi-${VERSION##v}.tar.gz || exit $?
     tar -xvzf libffi-${VERSION##v}.tar.gz || exit $?
 
     mv libffi-${VERSION##v} ${PREFIX}/src

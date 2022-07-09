@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://gmplib.org/download/gmp/gmp-${VERSION}.tar.xz || exit $?
+    curl -LO https://gmplib.org/download/gmp/gmp-${VERSION}.tar.xz || exit $?
     tar -xvJf gmp-${VERSION}.tar.xz || exit $?
 
     mv gmp-${VERSION} ${PREFIX}/src

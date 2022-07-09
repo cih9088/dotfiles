@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://gnupg.org/ftp/gcrypt/npth/npth-${VERSION}.tar.bz2 || exit $?
+    curl -LO https://gnupg.org/ftp/gcrypt/npth/npth-${VERSION}.tar.bz2 || exit $?
     tar -xvjf npth-${VERSION}.tar.bz2 || exit $?
 
     mv npth-${VERSION} ${PREFIX}/src

@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://zlib.net/fossils/zlib-${VERSION}.tar.gz || exit $?
+    curl -LO https://zlib.net/fossils/zlib-${VERSION}.tar.gz || exit $?
     tar -xvzf zlib-${VERSION}.tar.gz || exit $?
 
     mv zlib-${VERSION} ${PREFIX}/src

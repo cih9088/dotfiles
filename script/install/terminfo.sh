@@ -19,7 +19,7 @@ setup_func_terminfo_local() {
   local FORCE=$1
 
   curl -LO --silent --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz &&
-   gunzip terminfo.src.gz || exit $?
+   gzip -d terminfo.src.gz || exit $?
   tic -xe alacritty-direct,tmux-256color terminfo.src || exit $?
 }
 

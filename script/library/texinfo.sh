@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://ftp.gnu.org/gnu/texinfo/texinfo-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/texinfo/texinfo-${VERSION}.tar.gz || exit $?
     tar -xvzf texinfo-${VERSION}.tar.gz || exit $?
 
     mv texinfo-${VERSION} ${PREFIX}/src

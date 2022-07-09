@@ -81,7 +81,7 @@ setup_func_local() {
   if [ ${DO_INSTALL} == 'true' ]; then
     if [[ ${PLATFORM} == "OSX" ]]; then
       if [ ${ARCH} == "X86_64" ]; then
-        wget https://github.com/neovim/neovim/releases/download/${VERSION}/nvim-macos.tar.gz || exit $?
+        curl -LO https://github.com/neovim/neovim/releases/download/${VERSION}/nvim-macos.tar.gz || exit $?
         tar -xvzf nvim-macos.tar.gz || exit $?
         yes | \cp -rf nvim-osx64/* ${PREFIX}/
       else
@@ -89,7 +89,7 @@ setup_func_local() {
       fi
     elif [[ ${PLATFORM} == "LINUX" ]]; then
       if [ ${ARCH} == "x86_64" ]; then
-        wget https://github.com/neovim/neovim/releases/download/${VERSION}/nvim.appimage
+        curl -LO https://github.com/neovim/neovim/releases/download/${VERSION}/nvim.appimage
         # https://github.com/neovim/neovim/issues/7620
         # https://github.com/neovim/neovim/issues/7537
         chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract || exit $?

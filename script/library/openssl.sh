@@ -34,7 +34,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://github.com/openssl/openssl/archive/refs/tags/openssl-${VERSION}.tar.gz || exit $?
+    curl -LO https://github.com/openssl/openssl/archive/refs/tags/openssl-${VERSION}.tar.gz || exit $?
     tar -xvzf openssl-${VERSION}.tar.gz || exit $?
 
     mv openssl-openssl-${VERSION} ${PREFIX}/src

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # based on https://gist.github.com/ryin/3106801#gistcomment-2191503
 # tmux will be installed in ${PREFIX}/bin if you specify to install without root access
-# It's assumed that wget and a C/C++ compiler are installed.
 
 
 ################################################################
@@ -42,7 +41,7 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://github.com/tmux/tmux/releases/download/${VERSION}/tmux-${VERSION}.tar.gz
+    curl -LO https://github.com/tmux/tmux/releases/download/${VERSION}/tmux-${VERSION}.tar.gz
     tar -xvzf tmux-${VERSION}.tar.gz
 
     mv tmux-${VERSION} ${PREFIX}/src

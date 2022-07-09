@@ -37,7 +37,7 @@ setup_func_shellcheck_local() {
   if [ ${DO_INSTALL} == 'true' ]; then
     if [[ ${PLATFORM} == "OSX" ]]; then
       # does not have aarch64 for apple
-      wget https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.darwin.x86_64.tar.xz || exit $?
+      curl -LO https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.darwin.x86_64.tar.xz || exit $?
       tar -xvJf shellcheck-${VERSION}.darwin.x86_64.tar.xz || exit $?
 
       pushd shellcheck-${VERSION}
@@ -45,7 +45,7 @@ setup_func_shellcheck_local() {
       popd
 
     elif [[ ${PLATFORM} == "LINUX" ]]; then
-      wget https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.linux.${ARCH}.tar.xz || exit $?
+      curl -LO https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.linux.${ARCH}.tar.xz || exit $?
       tar -xvJf shellcheck-${VERSION}.linux.${ARCH}.tar.xz || exit $?
 
       pushd shellcheck-${VERSION}

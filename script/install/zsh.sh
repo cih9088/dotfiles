@@ -39,8 +39,8 @@ setup_func_local() {
   if [ ${DO_INSTALL} == 'true' ]; then
     # download latest version and specify version
     if [[ ${VERSION} == "latest" ]]; then
-      wget https://sourceforge.net/projects/zsh/files/latest/download \
-        -O zsh-${VERSION}.tar.xz || exit $?
+      curl -L https://sourceforge.net/projects/zsh/files/latest/download \
+        -o zsh-${VERSION}.tar.xz || exit $?
       tar -xvJf zsh-${VERSION}.tar.xz || exit $?
       for file in ./*; do
         if [[ -d "${file}" ]] && [[ "${file}" == *"zsh-"* ]]; then
@@ -48,8 +48,8 @@ setup_func_local() {
         fi
       done
     else
-      wget https://sourceforge.net/projects/zsh/files/zsh/${VERSION}/zsh-${VERSION}.tar.xz/download \
-        -O zsh-${VERSION}.tar.xz || exit $?
+      curl -L https://sourceforge.net/projects/zsh/files/zsh/${VERSION}/zsh-${VERSION}.tar.xz/download \
+        -o zsh-${VERSION}.tar.xz || exit $?
       tar -xvJf zsh-${VERSION}.tar.xz || exit $?
     fi
 

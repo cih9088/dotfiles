@@ -153,8 +153,8 @@ brew install --cask iterm2
 brew install --cask alacritty
 # download pretty icon for alacritty
 [ -e /Applications/Alacritty.app ] && (
-  wget 'https://www.dropbox.com/s/0i4ez0el7paksg3/Alacritty.icns' \
-    -O /Applications/Alacritty.app/Contents/Resources/alacritty.icns
+  curl -L 'https://www.dropbox.com/s/0i4ez0el7paksg3/Alacritty.icns' \
+    -o /Applications/Alacritty.app/Contents/Resources/alacritty.icns
   touch /Applications/Alacritty.app
 )
 brew install --cask xquartz # -> requires password

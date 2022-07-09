@@ -39,7 +39,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://github.com/libevent/libevent/releases/download/${VERSION}/${VERSION/release/libevent}.tar.gz || exit $?
+    curl -LO https://github.com/libevent/libevent/releases/download/${VERSION}/${VERSION/release/libevent}.tar.gz || exit $?
     tar -xvzf ${VERSION/release/libevent}.tar.gz || exit $?
 
     mv ${VERSION/release/libevent} ${PREFIX}/src

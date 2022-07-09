@@ -42,7 +42,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://boostorg.jfrog.io/artifactory/main/release/${VERSION}/source/boost_${VERSION//./_}.tar.gz || exit $?
+    curl -LO https://boostorg.jfrog.io/artifactory/main/release/${VERSION}/source/boost_${VERSION//./_}.tar.gz || exit $?
     tar -xvzf boost_${VERSION//./_}.tar.gz || exit $?
 
     mv boost_${VERSION//./_} ${PREFIX}/src

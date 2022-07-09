@@ -42,6 +42,12 @@ libraryZlib:
 libraryBzip2:
 	@( $(SCRIPTS_DIR)/library/bzip2.sh )
 
+libraryUnzip:
+	@( $(SCRIPTS_DIR)/library/unzip.sh )
+
+libraryGzip:
+	@( $(SCRIPTS_DIR)/library/gzip.sh )
+
 libraryOpenssl: libraryZlib
 	@( $(SCRIPTS_DIR)/library/openssl.sh )
 
@@ -159,6 +165,7 @@ libraryXtrans:
 libraryLibxau:
 	@( $(SCRIPTS_DIR)/library/X11/libxau.sh )
 
+# need python interpreter
 libraryXcbProto:
 	@( $(SCRIPTS_DIR)/library/X11/xcb_proto.sh )
 
@@ -319,6 +326,7 @@ clean:
 installLibraries: \
 	libraryHelp2man libraryPkgConfig \
 	libraryZlib libraryBzip2 \
+	libraryUnzip libraryGzip \
 	libraryOpenssl \
 	libraryNcurses libraryLibevent libraryReadline \
 	libraryAutotools \
@@ -327,7 +335,7 @@ installLibraries: \
 	libraryGnuTLS libraryGnuPG \
 	libraryLibx11 \
 	libraryTcl libraryTk \
-	libraryLzma
+	libraryLzma \
 
 installEnvironmentUtilities: \
 	installPyenv installGoenv installAsdf \
@@ -372,6 +380,7 @@ init: \
 .PHONY: prerequisites prerequisitesTest \
 	libraryHelp2man libraryHelp2man libraryNcurses \
 	libraryOpenssl libraryLibevent \
+	libraryUnzip libraryGzip \
 	libraryM4 libraryAutoconf libraryAutomake libraryLibtool libraryAutotools \
 	libraryGettext libraryPatch libraryReadline libraryZlib \
 	libraryBzip2  librarySqlite3 libraryLibffi\

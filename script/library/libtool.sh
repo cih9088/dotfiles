@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget http://ftp.jaist.ac.jp/pub/GNU/libtool/libtool-${VERSION}.tar.gz || exit $?
+    curl -LOsS http://ftp.jaist.ac.jp/pub/GNU/libtool/libtool-${VERSION}.tar.gz || exit $?
     tar -xvzf libtool-${VERSION}.tar.gz || exit $?
 
     mv libtool-${VERSION} $HOME/.local/src

@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://ftp.gnu.org/pub/gnu/gettext/gettext-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/pub/gnu/gettext/gettext-${VERSION}.tar.gz || exit $?
     tar -xvzf gettext-${VERSION}.tar.gz || exit $?
 
     mv gettext-${VERSION} ${PREFIX}/src

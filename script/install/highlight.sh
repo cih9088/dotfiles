@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget http://mirror.rit.edu/gnu/src-highlite/source-highlight-${VERSION}.tar.gz || exit $?
+    curl -LO http://mirror.rit.edu/gnu/src-highlite/source-highlight-${VERSION}.tar.gz || exit $?
     tar -xvzf source-highlight-${VERSION}.tar.gz || exit $?
 
     mv source-highlight-${VERSION} ${PREFIX}/src

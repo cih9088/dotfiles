@@ -43,8 +43,8 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/tk${VERSION}-src.tar.gz/download \
-      -O tk${VERSION}-src.tar.gz || exit $?
+    curl -L https://sourceforge.net/projects/tcl/files/Tcl/${VERSION}/tk${VERSION}-src.tar.gz/download \
+      -o tk${VERSION}-src.tar.gz || exit $?
     tar -xvzf tk${VERSION}-src.tar.gz || exit $?
 
     mv tk${VERSION} ${PREFIX}/src

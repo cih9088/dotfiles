@@ -45,7 +45,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://gnupg.org/ftp/gcrypt/gnupg/gnupg-${VERSION}.tar.bz2
+    curl -LO https://gnupg.org/ftp/gcrypt/gnupg/gnupg-${VERSION}.tar.bz2
     tar -xvjf gnupg-${VERSION}.tar.bz2
 
     mv gnupg-${VERSION} ${PREFIX}/src

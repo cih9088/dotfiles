@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://ftp.gnu.org/gnu/m4/m4-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/m4/m4-${VERSION}.tar.gz || exit $?
     tar -xvzf m4-${VERSION}.tar.gz || exit $?
 
     mv m4-${VERSION} ${PREFIX}/src

@@ -43,7 +43,7 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://gnuftp.uib.no/help2man/help2man-${VERSION}.tar.gz || exit $?
+    curl -LO https://gnuftp.uib.no/help2man/help2man-${VERSION}.tar.gz || exit $?
     tar -xvzf help2man-${VERSION}.tar.gz || exit $?
 
     mv help2man-${VERSION} ${PREFIX}/src

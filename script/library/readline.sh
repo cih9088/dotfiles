@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://ftp.gnu.org/gnu/readline/readline-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/readline/readline-${VERSION}.tar.gz || exit $?
     tar -xvzf readline-${VERSION}.tar.gz || exit $?
 
     mv readline-${VERSION} ${PREFIX}/src

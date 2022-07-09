@@ -35,11 +35,11 @@ setup_func_up_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
     if [[ ${PLATFORM} == "OSX" ]]; then
-      wget https://github.com/akavel/up/releases/download/${VERSION}/up-darwin || exit $?
+      curl -LO https://github.com/akavel/up/releases/download/${VERSION}/up-darwin || exit $?
       chmod +x up
       \cp -rf up-darwin ${PREFIX}/bin/up
     elif [[ ${PLATFORM} == "LINUX" ]]; then
-      wget https://github.com/akavel/up/releases/download/${VERSION}/up || exit $?
+      curl -LO https://github.com/akavel/up/releases/download/${VERSION}/up || exit $?
       chmod +x up
       \cp -rf up ${PREFIX}/bin/up
     fi

@@ -44,7 +44,7 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-${VERSION}.tgz || exit $?
+    curl -LO https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-${VERSION}.tgz || exit $?
     tar -xvzf openldap-${VERSION}.tgz || exit $?
 
     mv openldap-${VERSION} ${PREFIX}/src

@@ -34,7 +34,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz || exit $?
+    curl -LO https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz || exit $?
     tar -xvzf sqlite-autoconf-3370000.tar.gz || exit $?
 
     mv sqlite-autoconf-3370000 ${PREFIX}/src

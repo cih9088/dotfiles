@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://ftp.gnu.org/gnu/autoconf/autoconf-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/autoconf/autoconf-${VERSION}.tar.gz || exit $?
     tar -xvzf autoconf-${VERSION}.tar.gz || exit $?
 
     mv autoconf-${VERSION} ${PREFIX}/src

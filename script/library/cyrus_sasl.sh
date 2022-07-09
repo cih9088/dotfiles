@@ -38,7 +38,7 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://github.com/${GH}/releases/download/${VERSION}/${VERSION}.tar.gz || exit $?
+    curl -LO https://github.com/${GH}/releases/download/${VERSION}/${VERSION}.tar.gz || exit $?
     tar -xvzf ${VERSION}.tar.gz || exit $?
 
     mv ${VERSION} ${PREFIX}/src

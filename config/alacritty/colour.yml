@@ -267,4 +267,4 @@ schemes:
       - { index: 16, color: '0xF8BD96' }
       - { index: 17, color: '0xF5E0DC' }
 
-colors: *seoul256-dark
+colors: *rose-pine-dark

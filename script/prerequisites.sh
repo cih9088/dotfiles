@@ -57,7 +57,6 @@ echo
     # # pyenv
     # brew install openssl readline sqlite3 xz zlib
 
-    brew install wget
     brew install curl
     brew install coreutils
     brew install git
@@ -79,13 +78,14 @@ echo
       #   xz-utils tk-dev libffi-dev liblzma-dev python-openssl
       sudo apt update
       sudo apt install -y \
-        git make cmake curl wget gcc g++ \
-        bsdmainutils xz-utils unzip sudo \
-        python3-dev python3-pip
+        git make cmake curl gcc g++ \
+        bsdmainutils sudo \
+        python3-dev python3-pip \
+        tar
     elif [[ $FAMILY == "RHEL" ]]; then
       sudo dnf install -y \
-        git make cmake curl wget gcc gcc-c++ \
-        findutils xz unzip util-linux-user sudo \
+        git make cmake curl gcc gcc-c++ \
+        findutils util-linux-user sudo \
         perl-IPC-Cmd perl-Pod-Html perl-Thread-Queue \
         python3-devel
       # # basic

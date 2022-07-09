@@ -44,8 +44,8 @@ setup_func_local() {
   fi
 
   if [ ${DO_INSTALL} == 'true' ]; then
-    wget https://sourceforge.net/projects/lzmautils/files/xz-${VERSION}.tar.gz/download \
-      -O xz-${VERSION}.tar.gz || exit $?
+    curl -L https://sourceforge.net/projects/lzmautils/files/xz-${VERSION}.tar.gz/download \
+      -o xz-${VERSION}.tar.gz || exit $?
     tar -xvzf xz-${VERSION}.tar.gz || exit $?
 
     mv xz-${VERSION} $HOME/.local/src

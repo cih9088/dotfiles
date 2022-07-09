@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://www.sourceware.org/pub/bzip2/bzip2-${VERSION}.tar.gz || exit $?
+    curl -LO https://www.sourceware.org/pub/bzip2/bzip2-${VERSION}.tar.gz || exit $?
     tar -xvzf bzip2-${VERSION}.tar.gz || exit $?
 
     mv bzip2-${VERSION} ${PREFIX}/src

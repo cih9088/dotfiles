@@ -43,11 +43,11 @@ setup_func_shfmt_local() {
 
     if [[ ${PLATFORM} == "OSX" ]]; then
       # does not have aarch64 for apple
-      wget https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_darwin_${_ARCH} || exit $?
+      curl -LO https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_darwin_${_ARCH} || exit $?
       chmod +x shfmt_${VERSION}_darwin_${_ARCH}
       \cp -rf shfmt_${VERSION}_darwin_${_ARCH} ${PREFIX}/bin/shfmt
     elif [[ ${PLATFORM} == "LINUX" ]]; then
-      wget https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_linux_${_ARCH} || exit $?
+      curl -LO https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_linux_${_ARCH} || exit $?
       chmod +x shfmt_${VERSION}_linux_${_ARCH}
       \cp -rf shfmt_${VERSION}_linux_${_ARCH} ${PREFIX}/bin/shfmt
     fi

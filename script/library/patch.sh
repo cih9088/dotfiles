@@ -44,7 +44,7 @@ setup_func_local() {
 
   if [ ${DO_INSTALL} == 'true' ]; then
 
-    wget https://ftp.gnu.org/gnu/patch/patch-${VERSION}.tar.gz || exit $?
+    curl -LO https://ftp.gnu.org/gnu/patch/patch-${VERSION}.tar.gz || exit $?
     tar -xvzf patch-${VERSION}.tar.gz || exit $?
 
     mv patch-${VERSION} ${PREFIX}/src
