@@ -231,8 +231,3 @@
   export LESS_TERMCAP_so=$'\E[01;43;30m'   # Begins standout-mode.
   export LESS_TERMCAP_ue=$'\E[0m'          # Ends underline.
   export LESS_TERMCAP_us=$'\E[01;32m'      # Begins underline.
-  
-
-# MANPATH
-# ---------------------------------------------------------------------------------------
-  export MANPATH=":$HOME/.local/man:$HOME/.local/share/man"
