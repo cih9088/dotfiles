@@ -56,7 +56,7 @@ setup_func_local() {
       pushd unix
     fi
 
-    ./configure --prefix=${PREFIX} || exit $?
+    ./configure --prefix=${PREFIX} --mandir=${PREFIX}/share/man || exit $?
     make || exit $?
     make install || exit $?
 

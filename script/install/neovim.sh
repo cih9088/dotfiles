@@ -63,7 +63,7 @@ setup_func_local() {
     if [ ${FORCE} == 'true' ]; then
       if [ ${ARCH} == "x86_64" ]; then
         rm -rf ${PREFIX}/bin/nvim || true
-        rm -rf ${PREFIX}/man/man1/nvim.1 || true
+        rm -rf ${PREFIX}/share/man/man1/nvim.1 || true
         rm -rf ${PREFIX}/share/nvim/runtim || true
       elif [ ${ARCH} == "aarch64" ]; then
         pushd ${PREFIX}/src/neovim
@@ -94,7 +94,7 @@ setup_func_local() {
         # https://github.com/neovim/neovim/issues/7537
         chmod u+x nvim.appimage && ./nvim.appimage --appimage-extract || exit $?
         yes | \cp -rf squashfs-root/usr/bin ${PREFIX}
-        yes | \cp -rf squashfs-root/usr/man ${PREFIX}
+        yes | \cp -rf squashfs-root/usr/man ${PREFIX}/share
         yes | \cp -rf squashfs-root/usr/share/nvim ${PREFIX}/share
         # yes | \cp -rf squashfs-root/usr/* ${PREFIX}
         # chmod u+x nvim.appimage && mv nvim.appimage nvim

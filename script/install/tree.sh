@@ -43,6 +43,7 @@ setup_func_tree_local() {
     pushd ${PREFIX}/src/tree-${VERSION}
 
     sed -i -e "s|prefix = /usr|prefix = ${PREFIX}|" Makefile || exit $?
+    sed -i -e "s|MANDIR=\${prefix}/man/man1|MANDIR=\${prefix}/share/man/man1|" Makefile || exit $?
     make || exit $?
     make install || exit $?
 

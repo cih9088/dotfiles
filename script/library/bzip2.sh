@@ -50,6 +50,7 @@ setup_func_local() {
     mv bzip2-${VERSION} ${PREFIX}/src
     pushd ${PREFIX}/src/bzip2-${VERSION}
 
+    sed -i -e "s|\$(PREFIX)/man|\$(PREFIX)/share/man|" Makefile || exit $?
     make install PREFIX=${PREFIX} || exit $?
 
     # Build shared library
