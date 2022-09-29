@@ -24,7 +24,9 @@
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'sainnhe/edge'
   Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
-  Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+  if has('nvim')
+    Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+  endif
 
 
 " Convenient Universally
