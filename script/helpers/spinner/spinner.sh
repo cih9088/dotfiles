@@ -87,7 +87,6 @@ function _spinner() {
           printf "\033[2K\033[${ctr}D${GREEN}[*]${NC} ${msg_done}\n"
       else
           printf "\033[2K\033[${ctr}D${RED}[!]${NC} ${msg_failed}\n"
-          exit ${exit_status}
       fi
       ;;
     *)

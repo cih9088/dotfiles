@@ -1,0 +1,190 @@
+#!/usr/bin/env bash
+
+set -eu
+
+_DIR="$(cd "$(dirname $(realpath "${BASH_SOURCE[0]}"))" >/dev/null && pwd)"
+
+DOTFILES_ROOT="${_DIR}/.."
+_SCRIPT_DIR="${DOTFILES_ROOT}/script"
+
+. "${_SCRIPT_DIR}/helpers/functions.sh"
+
+DOTFILES_COMMAND=${DOTFILES_COMMAND:-skip}
+DOTFILES_TARGETS=${DOTFILES_TARGETS:-skip}
+DOTFILES_MODE=${DOTFILES_MODE:-}
+DOTFILES_YES=${DOTFILES_YES:-}
+DOTFILES_SKIP_DEPENDENCIES=${DOTFILES_SKIP_DEPENDENCIES:-}
+
+VERBOSE=${VERBOSE:-false}
+CONFIG=${CONFIG:-}
+GH_ACCESS=${GH_ACCESS:-}
+
+DOTFILES_APPS=(
+  "bzip2" "unzip" "gzip" "openssl"
+  "autotools" "gnutls" "gnupg" 
+  "zsh" "fish" "prezto"
+  "neovim" "tmux" "tpm"
+  "tree" "fd" "rg" "thefuck" "tldr" "bash-snippets" "up" "jq" "sox"
+  "pyenv" "goenv" "asdf"
+)
+
+DOTFILES_DOTS=(
+ "custom-bins" "configs" "tmux-plugins" "neovim-plugins"
+)
+
+DOTFILES_LIBS=(
+  "terminfo" "zlib" "ncurses" "libevent" "readline" "help2man" "patch"
+)
+
+
+DOTFILES_ENVIRONMENTS=(
+  "python" "python-env" "golang" "rust" "nodejs" "lua" "lua-env" "sh-env"
+)
+
+DOTFILES_AVAILABLES=(
+  "${DOTFILES_APPS[@]}" "${DOTFILES_DOTS[@]}" "${DOTFILES_LIBS[@]}" "${DOTFILES_ENVIRONMENTS[@]}"
+)
+
+
+usage() {
+  LESS=-FEXR less <<HELP
+
+${BOLD}${RED}SYNOPSIS${NC}
+    ${BOLD}${RED}$(basename "$0")${NC} ${BOLD}${GREEN}COMMAND${NC} ${BOLD}${GREEN}options${NC}
+
+
+${BOLD}${RED}DESCRIPTION${NC}
+    scp combining with fzf
+
+
+${BOLD}${RED}COMMAND${NC}
+    ${BOLD}${RED}list${NC}
+        List available libraries, applications and environments
+
+    ${BOLD}${RED}install${NC} ${BOLD}${GREEN}target${NC}
+        Install ${BOLD}${GREEN}target${NC}
+
+    ${BOLD}${RED}update${NC} ${BOLD}${GREEN}target${NC}
+        Update ${BOLD}${GREEN}target${NC}
+
+    ${BOLD}${RED}remove${NC} ${BOLD}${GREEN}target${NC}
+        Remove ${BOLD}${GREEN}target${NC}
+
+
+${BOLD}${RED}OPTIONS${NC}
+    ${BOLD}${RED}-m, --mode${NC} ${BOLD}${GREEN}mode${NC}
+        Specify mode for ${BOLD}${GREEN}target${NC} and do not prompt for it.
+
+        ${BOLD}local${NC}   command is managed without sudo
+        ${BOLD}system${NC}  command is managed with sudo
+
+    ${BOLD}${RED}-y, --yes${NC}
+
+    ${BOLD}${RED}-v, --verbose${NC}
+
+    ${BOLD}${RED}-s, --skip-dependencies${NC}
+
+    ${BOLD}${RED}--debug${NC}
+
+    ${BOLD}${RED}-h, --help${NC}
+        show this help message
+
+HELP
+}
+
+
+POSITIONAL_ARGS=()
+while [[ $# -gt 0 ]]; do
+  # make it also '=' separated arguments
+  [[ $1 == --*=* ]] && set -- "${1%%=*}" "${1#*=}" "${@:2}"
+  key="$1"
+
+  case $key in
+    -m | --mode)
+      DOTFILES_MODE="$2"
+      if [[ "local system"  != *"${DOTFILES_MODE}"* ]]; then
+        log_error "mode must be either 'local' or 'system'"
+        exit 1
+      fi
+      shift; shift
+      ;;
+    -y | --yes)
+      DOTFILES_YES=true
+      shift
+      ;;
+    -c | --config)
+      CONFIG="$2"
+      shift; shift
+      ;;
+    -v | --verbose)
+      VERBOSE=true
+      shift
+      ;;
+    -s|--skip-dependencies)
+      DOTFILES_SKIP_DEPENDENCIES=true
+      shift
+      ;;
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    -* | --*)
+      log_error "Unknown option $1"
+      usage
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1")
+      shift
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+[ $# -eq 0 ] && log_error "Command is not provided."
+DOTFILES_COMMAND="${1}"
+shift
+
+if [ "$DOTFILES_COMMAND" == "list" ]; then
+  cat <<EOF
+
+Available list to install
+
+- ${BOLD}${RED}Apps${NC}: ${DOTFILES_APPS[@]}
+- ${BOLD}${RED}Environments${NC}: ${DOTFILES_ENVIRONMENTS[@]}
+- ${BOLD}${RED}Configs${NC}: ${DOTFILES_DOTS[@]}
+
+EOF
+  exit 0
+elif [[ " install remove update " != *" $DOTFILES_COMMAND "* ]]; then
+  log_error "Unknown command $DOTFILES_COMMAND"
+  exit 1
+fi
+
+
+DOTFILES_TARGETS=($@)
+for i in "${!DOTFILES_TARGETS[@]}"; do
+  DOTFILES_TARGET=${DOTFILES_TARGETS[i]}
+
+  if [[ "${DOTFILES_AVAILABLES[@]}" != *"${DOTFILES_TARGET}"* ]]; then
+    log_error "Invalid target '$DOTFILES_TARGET' to ${DOTFILES_COMMAND}"
+    exit 1
+  fi
+done
+DOTFILES_TARGET="${DOTFILES_TARGETS[*]}"
+
+export DOTFILES_COMMAND
+export DOTFILES_TARGET
+export DOTFILES_MODE
+export DOTFILES_YES
+export DOTFILES_SKIP_DEPENDENCIES
+
+export VERBOSE
+export CONFIG
+export GH_ACCESS
+
+
+pushd "${DOTFILES_ROOT}" >/dev/null 2>&1 || exit $?
+make "${DOTFILES_TARGETS[@]}"
+popd >/dev/null 2>&1 || exit $?

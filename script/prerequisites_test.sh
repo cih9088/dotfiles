@@ -15,6 +15,8 @@ has -v type
 PATH=$(printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
 
 log_title "Essential to install"
+log_info "sudo"
+type -a sudo 2>/dev/null || echo "${IRED}sudo is not found.${NC}"
 log_info "git"
 type -a git 2>/dev/null || echo "${IRED}git is not found.${NC}"
 log_info "make"
@@ -27,8 +29,6 @@ log_info "g++"
 type -a g++ 2>/dev/null || echo "${IRED}g++ is not found.${NC}"
 log_info "curl"
 type -a curl 2>/dev/null || echo "${IRED}curl is not found.${NC}"
-log_info "sudo"
-type -a sudo 2>/dev/null || echo "${IRED}sudo is not found.${NC}"
 log_info "column"
 type -a column 2>/dev/null || echo "${IRED}column is not found.${NC}"
 log_info "find"
