@@ -2,7 +2,7 @@
 " Language:		Python
 " Maintainer:		Bram Moolenaar <Bram@vim.org>
 " Original Author:	David Bustos <bustos@caltech.edu>
-" Modifier:		Inhyeok Andy Cho <cih9088@gmail.com>
+" Modifier:		Inhyuk Andy Cho <cih9088@gmail.com>
 " Last Change:		2021 Sep 26
 " https://github.com/jeetsukumaran/vim-python-indent-black
 

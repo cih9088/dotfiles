@@ -1,6 +1,9 @@
 temp
 
 config/nvim/coc-settings.json
+config/nvim/undodir
+
+config/vim/undodir
 
 config/git/config.local
 

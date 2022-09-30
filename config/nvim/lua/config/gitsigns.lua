@@ -1,17 +1,12 @@
 require("gitsigns").setup({
    on_attach = function(bufnr)
-      local function buf_set_keymap(...)
-         vim.api.nvim_buf_set_keymap(bufnr, ...)
+      local function map(mode, lhs, rhs, opts)
+        opts = vim.tbl_extend('force', {noremap = true, silent = true}, opts or {})
+        vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, opts)
       end
 
-      local opts = { noremap = true, silent = true }
-
       -- Navigation
-      buf_set_keymap("n", "]c", "<cmd>Gitsigns next_hunk<CR>", opts)
-      buf_set_keymap("n", "[c", "<cmd>Gitsigns prev_hunk<CR>", opts)
-
-      -- Actions
-      buf_set_keymap("v", "<leader>ghs", "<cmd>Gitsigns stage_hunk<CR>", opts)
-      buf_set_keymap("v", "<leader>ghu", "<cmd>Gitsigns undo_stage_hunk<CR>", opts)
+      map('n', ']c', "&diff ? ']c' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
+      map('n', '[c', "&diff ? '[c' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
    end,
 })

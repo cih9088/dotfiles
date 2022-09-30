@@ -12,7 +12,9 @@ end
 
 local function diagnostic_override()
    vim.diagnostic.config({
-      virtual_text = false,
+      virtual_text = {
+         severity = vim.diagnostic.severity.ERROR,
+      },
       float = {
          source = "always",
          focusable = false, -- See neovim#16425

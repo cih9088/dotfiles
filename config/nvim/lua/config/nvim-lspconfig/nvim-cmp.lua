@@ -4,8 +4,8 @@ local M = {}
 local function luasnip_setup()
    local ls = require("luasnip")
    ls.filetype_extend("all", { "_" })
-   require("luasnip.loaders.from_snipmate").load()
-   -- require("luasnip.loaders.from_vscode").load()
+   require("luasnip.loaders.from_snipmate").lazy_load()
+   -- require("luasnip.loaders.from_vscode").lazy_load()
 end
 
 local function tabnine_setup()
@@ -90,9 +90,9 @@ local function cmp_setup()
          { name = "luasnip" },
          -- { name = 'ultisnips' },
          -- { name = "cmp_tabnine" },
-         { name = "buffer", keyword_length = 5 },
+         { name = "buffer", keyword_length = 3 },
          { name = "path" },
-         { name = "tmux", max_item_count = 5 },
+         { name = "tmux", max_item_count = 3 },
       },
    })
 

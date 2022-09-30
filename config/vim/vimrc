@@ -157,7 +157,11 @@
   set history=1000                      " remember more commands and search history
   set undofile                          " Maintain undo history between sessions
   set undolevels=1000                   " use many muchos levels of undo
-  set undodir=~/.vim/undodir
+  if has('nvim')
+    set undodir=~/.config/nvim/undodir
+  else
+    set undodir=~/.vim/undodir
+  endif
   set laststatus=2                      " status bar is always on
   set showtabline=2                     " tab bar is always on
   set signcolumn=yes                    " always draw the sign column
@@ -299,37 +303,25 @@
     endif
   endfunction
 
+  function! Seoul256Override() abort
+    highlight DiagnosticError ctermfg=168 guifg=#E17899
+    highlight DiagnosticInfo NONE
+    highlight link DiagnosticInfo String
+    highlight DiagnosticHint NONE
+    highlight link DiagnosticHint Pmenu
+    highlight NormalFloat NONE
+    highlight link NormalFloat Pmenu
+    highlight FloatBorder NONE
+    highlight link FloatBorder NormalFloat
+  endfunction
+
   augroup MyColors
     autocmd!
     autocmd ColorScheme rose-pine call RosePineOverride()
+    autocmd ColorScheme seoul256 call Seoul256Override()
   augroup END
 
   call ChangeBackground()
-
-  " if has('nvim')
-  "   let g:terminal_color_0  = '#4e4e4e'
-  "   let g:terminal_color_1  = '#d68787'
-  "   let g:terminal_color_2  = '#5f865f'
-  "   let g:terminal_color_3  = '#d8af5f'
-  "   let g:terminal_color_4  = '#85add4'
-  "   let g:terminal_color_5  = '#d7afaf'
-  "   let g:terminal_color_6  = '#87afaf'
-  "   let g:terminal_color_7  = '#d0d0d0'
-  "   let g:terminal_color_8  = '#626262'
-  "   let g:terminal_color_9  = '#d75f87'
-  "   let g:terminal_color_10 = '#87af87'
-  "   let g:terminal_color_11 = '#ffd787'
-  "   let g:terminal_color_12 = '#add4fb'
-  "   let g:terminal_color_13 = '#ffafaf'
-  "   let g:terminal_color_14 = '#87d7d7'
-  "   let g:terminal_color_15 = '#e4e4e4'
-  " else
-  "   let g:terminal_ansi_colors = [
-  "         \ '#4e4e4e', '#d68787', '#5f865f', '#d8af5f',
-  "         \ '#85add4', '#d7afaf', '#87afaf', '#d0d0d0',
-  "         \ '#626262', '#d75f87', '#87af87', '#ffd787',
-  "         \ '#add4fb', '#ffafaf', '#87d7d7', '#e4e4e4']
-  " endif
 
 
 " Spaces & Tabs
@@ -378,39 +370,18 @@
 
 " StatusLine
 " ---------------------------------------------------------------------------------------
-
-  " function! Status() abort
-  "   let info = get(g:, 'coc_status', '')
-  "   if empty(info)
-  "     return ''
-  "   else
-  "     return winwidth(0) > 100 ? (info): ''
-  "   endif
-  " endfunction
-  "
-  " function! CocDiagnostics(kind, sign) abort
-  "   let info = get(b:, 'coc_diagnostic_info', 0)
-  "   if empty(info) || get(info, a:kind, 0) == 0
-  "     return ''
-  "   endif
-  "   return printf('%s %d', a:sign, info[a:kind])
-  " endfunction
-
-  if !has("nvim-0.5")
-    function! s:statusline_expr()
-      let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-      let ro  = "%{&readonly ? '[RO] ' : ''}"
-      let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-      let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-      let sep = ' %= '
-      let pos = ' %-12(%l : %c%V%) '
-      let pct = ' %P'
-      " let coc_warn = '%#WarningMsg#%{CocDiagnostics("warning", "•")}' . '%*'
-      " let coc_err = '%#WarningMsg#%{CocDiagnostics("error", "•")}' . '%*'
-      return '[%n] %f '.ft.mod.ro.' %<'.sep.fug.pos.'%*'.pct
-    endfunction
-    let &statusline = s:statusline_expr()
-  endif
+  function! s:statusline_expr()
+    let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+    let mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
+    let ro  = "%{&readonly ? '👀' : ''}"
+    let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+    let sep = ' %= '
+    let pos = ' %-12(%l : %c%V%) '
+    let format = ' %-7([%{&fileformat}]%) '
+    let pct = ' %P'
+    return '[%n] %f '.ft.mod.' '.ro.' %<'.sep.fug.format.pos.'%*'.pct
+  endfunction
+  let &statusline = s:statusline_expr()
 
 
 
@@ -1135,6 +1106,7 @@
     let g:indent_blankline_show_first_indent_level = v:false
     let g:indent_blankline_show_end_of_line = v:true
     let g:indent_blankline_show_current_context = v:false
+    let g:indent_blankline_show_current_context_start = v:false
     let g:indent_blankline_filetype_exclude = ['help', 'checkhealth', 'startify']
   endif
 
@@ -1382,11 +1354,11 @@
   endif
 
 
-" statusline
-" ---------------------------------------------------------------------------------------
-  if has("nvim-0.5")
-    lua require("config.statusline")
-  endif
+" " statusline
+" " ---------------------------------------------------------------------------------------
+"   if has("nvim-0.5")
+"     lua require("config.statusline")
+"   endif
 
 
 " }}}
