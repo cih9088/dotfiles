@@ -126,7 +126,7 @@
 
   # direnv
   if command -v asdf >/dev/null; then
-    if ! asdf plugin list | grep -q direnv; then
+    if [ ! -e "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ]; then
       asdf plugin add direnv
       asdf direnv setup --shell zsh --version latest
       asdf global direnv latest

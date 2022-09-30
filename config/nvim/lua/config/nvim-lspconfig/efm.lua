@@ -45,6 +45,13 @@ return {
          lintFormats = { "%f:%l:%c: %t%n%n%n %m" },
          lintSource = "flake8",
       },
+      -- {
+      --    lintCommand = "pylint --output-format text --score no --msg-template {path}:{line}:{column}:{C}:{msg} ${INPUT}",
+      --    lintStdin = false,
+      --    lintIgnoreExitCode = true,
+      --    lintFormats = { "%f:%l:%c: %t%n%n%n %m" },
+      --    lintSource = "pylint",
+      -- },
    },
    lua = {
       {
