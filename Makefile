@@ -68,6 +68,10 @@ libffi:
 #   @( $(SCRIPTS_DIR)/libs/glibc.sh )
 # # -----------------------------------------------------
 
+cmake: \
+	openssl
+	@( $(SCRIPTS_DIR)/libs/cmake.sh )
+
 # compressions
 # -----------------------------------------------------
 zlib:
@@ -216,14 +220,15 @@ zsh: \
 	@( $(SCRIPTS_DIR)/apps/zsh.sh )
 
 fish: \
-	ncurses gettext xz
+	ncurses gettext xz cmake
 	@( $(SCRIPTS_DIR)/apps/fish.sh )
 
 prezto: \
 	zsh
 	@( $(SCRIPTS_DIR)/apps/prezto.sh )
 
-neovim:
+neovim: \
+	cmake
 	@( $(SCRIPTS_DIR)/apps/neovim.sh )
 
 tmux: \

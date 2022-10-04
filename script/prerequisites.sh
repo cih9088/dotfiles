@@ -60,7 +60,6 @@ echo
     brew install curl
     brew install coreutils
     brew install git
-    brew install cmake
 
     # brew install reattach-to-user-namespace
     # brew install --cask xquartz
@@ -78,13 +77,13 @@ echo
       #   xz-utils tk-dev libffi-dev liblzma-dev python-openssl
       sudo apt update
       sudo apt install -y \
-        git make cmake curl gcc g++ \
+        git make curl gcc g++ \
         bsdmainutils sudo \
         python3-dev python3-pip \
         tar
     elif [[ $FAMILY == "RHEL" ]]; then
       sudo dnf install -y \
-        git make cmake curl gcc gcc-c++ \
+        git make curl gcc gcc-c++ \
         findutils util-linux-user sudo \
         perl-IPC-Cmd perl-Pod-Html perl-Thread-Queue \
         python3-devel \
