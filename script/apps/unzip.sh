@@ -27,7 +27,7 @@ setup_func_local() {
   local VERSION="${2:-}"
   local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
-  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "unzip-*")"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "unzip*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then

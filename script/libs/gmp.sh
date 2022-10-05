@@ -92,11 +92,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove nettle-devel
+            ++ sudo dnf -y remove nettle-devel nettle
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install nettle-devel
+            ++ sudo dnf -y install nettle-devel nettle
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update nettle-devel
+            ++ sudo dnf -y update nettle-devel nettle
           fi
           ;;
       esac

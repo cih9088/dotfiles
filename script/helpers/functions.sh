@@ -26,7 +26,21 @@ log() {
   local TITLE="$1"; shift
   local CONTENT="$1"; shift
   local CODE=""
-  for i in $@; do
+  for i in "$@"; do
+    CODE="${CODE}${!i}"
+  done
+
+  if [[ "$(get_cursor_position)" != *":0" ]]; then
+    echo "" >&2
+  fi
+  printf "${CODE}${TITLE}${NC} ${CONTENT}\n" >&2
+}
+
+log_verbose() {
+  local TITLE="$1"; shift
+  local CONTENT="$1"; shift
+  local CODE=""
+  for i in "$@"; do
     CODE="${CODE}${!i}"
   done
 
@@ -52,7 +66,7 @@ log_ok() {
 }
 
 log_error() {
-  log "[!]" "$1" "BOLD" "RED"
+  log_verbose "[!]" "$1" "BOLD" "RED"
 }
 
 log_question() {

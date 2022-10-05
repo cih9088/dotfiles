@@ -131,11 +131,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove ncurses-devel
+            ++ sudo dnf -y remove ncurses-devel ncurses
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install ncurses-devel
+            ++ sudo dnf -y install ncurses-devel ncurses
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update ncurses-devel
+            ++ sudo dnf -y update ncurses-devel ncurses
           fi
           ;;
       esac

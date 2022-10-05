@@ -12,6 +12,7 @@ _SCRIPT_DIR="${DOTFILES_ROOT}/script"
 DOTFILES_COMMAND=${DOTFILES_COMMAND:-skip}
 DOTFILES_TARGETS=${DOTFILES_TARGETS:-skip}
 DOTFILES_MODE=${DOTFILES_MODE:-}
+DOTFILES_VERSION=${DOTFILES_VERSION:-}
 DOTFILES_YES=${DOTFILES_YES:-}
 DOTFILES_SKIP_DEPENDENCIES=${DOTFILES_SKIP_DEPENDENCIES:-}
 
@@ -19,26 +20,36 @@ VERBOSE=${VERBOSE:-false}
 CONFIG=${CONFIG:-}
 GH_ACCESS=${GH_ACCESS:-}
 
+
 DOTFILES_APPS=(
-  "bzip2" "unzip" "gzip" "openssl"
-  "autotools" "gnutls" "gnupg"
-  "zsh" "fish" "prezto"
+  "zsh" "fish"
+  "prezto"
   "neovim" "tmux" "tpm"
-  "tree" "fd" "rg" "thefuck" "tldr" "bash-snippets" "up" "jq" "sox" "tcpdump"
+  "wget" "tree" "fd" "rg" "thefuck" "tldr" "bash-snippets" "up" "jq" "sox" "tcpdump"
   "pyenv" "goenv" "asdf"
 )
 
 DOTFILES_DOTS=(
- "custom-bins" "configs" "tmux-plugins" "neovim-plugins"
+ "bins" "configs" "tmux-plugins" "neovim-plugins"
 )
 
 DOTFILES_LIBS=(
-  "terminfo" "zlib" "ncurses" "libevent" "readline" "help2man" "patch" "cmake" "pkg-config" "libxcb" "tk" "tcl" "oniguruma" "texinfo"
+  "terminfo"
+  "pkg-config" "help2man" "patch" "ncurses" "readline" "gettext"
+  "cmake"
+  "zlib" "bzip2" "unzip" "gzip" "xz"
+  "sqlite3" "libffi" "tcl" "tk"
+  "openssl" "autotools" "gnutls" "gnupg" "libx11"
 )
 
 
 DOTFILES_ENVIRONMENTS=(
-  "python" "python-env" "golang" "rust" "nodejs" "lua" "lua-env" "sh-env"
+  "python" "python-env"
+  "golang"
+  "rust"
+  "nodejs" "nodejs-env"
+  "lua" "lua-env"
+  "sh-env"
 )
 
 DOTFILES_AVAILABLES=(
@@ -69,6 +80,8 @@ ${BOLD}${RED}COMMAND${NC}
 
     ${BOLD}${RED}remove${NC} ${BOLD}${GREEN}target${NC}
         Remove ${BOLD}${GREEN}target${NC}
+
+    ${BOLD}${RED}change-default-shell${NC}
 
 
 ${BOLD}${RED}OPTIONS${NC}
@@ -116,6 +129,10 @@ while [[ $# -gt 0 ]]; do
       CONFIG="$2"
       shift; shift
       ;;
+    -t | --version)
+      DOTFILES_VERSION="$2"
+      shift; shift
+      ;;
     -v | --verbose)
       VERBOSE=true
       shift
@@ -157,13 +174,33 @@ Available list to install
 
 EOF
   exit 0
+elif [ "$DOTFILES_COMMAND" == "test-prerequisites" ]; then
+  make prerequisitesTest
+  exit 0
+elif [ "$DOTFILES_COMMAND" == "install-prerequisites" ]; then
+  make prerequisites
+  exit 0
+elif [ "$DOTFILES_COMMAND" == "change-default-shell" ]; then
+  make changeDefaultShell
+  exit 0
 elif [[ " install remove update " != *" $DOTFILES_COMMAND "* ]]; then
   log_error "Unknown command $DOTFILES_COMMAND"
+  usage
   exit 1
 fi
 
+# parse config
+if [ -n "${CONFIG}" ]; then
+  if [ "$#" -gt 0 ]; then
+    log_error "target should not be specified if config is given."
+    exit 1
+  fi
+  eval $(${_SCRIPT_DIR}/helpers/parser_yaml ${CONFIG} "CONFIG_")
+  DOTFILES_TARGETS=("${CONFIG_TARGETS[@]}")
+else
+  DOTFILES_TARGETS=($@)
+fi
 
-DOTFILES_TARGETS=($@)
 for i in "${!DOTFILES_TARGETS[@]}"; do
   DOTFILES_TARGET=${DOTFILES_TARGETS[i]}
 
@@ -177,13 +214,13 @@ DOTFILES_TARGET="${DOTFILES_TARGETS[*]}"
 export DOTFILES_COMMAND
 export DOTFILES_TARGET
 export DOTFILES_MODE
+export DOTFILES_VERSION
 export DOTFILES_YES
 export DOTFILES_SKIP_DEPENDENCIES
 
 export VERBOSE
 export CONFIG
 export GH_ACCESS
-
 
 pushd "${DOTFILES_ROOT}" >/dev/null 2>&1 || exit $?
 make "${DOTFILES_TARGETS[@]}"

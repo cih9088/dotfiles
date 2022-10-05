@@ -88,20 +88,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove gnutls-bin
+            ++ sudo apt-get -y remove gnutls-bin libgnutls28-dev
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install gnutls-bin
+            ++ sudo apt-get -y install gnutls-bin libgnutls28-dev
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install gnutls-bin
+            ++ sudo apt-get -y --only-upgrade install gnutls-bin libgnutls28-dev
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove gnutls-devel
+            ++ sudo dnf -y remove gnutls-devel gnutls
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install gnutls-devel
+            ++ sudo dnf -y install gnutls-devel gnutls
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update gnutls-devel
+            ++ sudo dnf -y update gnutls-devel gnutls
           fi
           ;;
       esac

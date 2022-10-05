@@ -66,56 +66,6 @@ setup_func_local() {
 setup_func_system() {
   local COMMAND="${1:-skip}"
 
-  if [ "${COMMAND}" == "remove" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list bison >/dev/null 2>&1 && brew uninstall bison
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y remove libc6-dev || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y remove bison-devel || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  elif [ "${COMMAND}" == "install" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list bison >/dev/null 2>&1 || brew install bison
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y install libc6-dev || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y install bison-devel || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  elif [ "${COMMAND}" == "update" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew upgrade bison
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y --only-upgrade install libc6-dev || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y update bison-devel || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  fi
-
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
@@ -130,20 +80,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libc6-dev
+            ++ sudo apt-get -y remove libbison-dev bison
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libc6-dev
+            ++ sudo apt-get -y install libbison-dev bison
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libc6-dev
+            ++ sudo apt-get -y --only-upgrade install libbison-dev bison
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove bison-devel
+            ++ sudo dnf -y remove bison-devel bison
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install bison-devel
+            ++ sudo dnf -y install bison-devel bison
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update bison-devel
+            ++ sudo dnf -y update bison-devel bison
           fi
           ;;
       esac

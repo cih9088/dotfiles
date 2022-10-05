@@ -92,11 +92,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove readline-devel
+            ++ sudo dnf -y remove readline-devel readline
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install readline-devel
+            ++ sudo dnf -y install readline-devel readline
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update readline-devel
+            ++ sudo dnf -y update readline-devel readline
           fi
           ;;
       esac

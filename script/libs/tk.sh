@@ -87,20 +87,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove tk-dev
+            ++ sudo apt-get -y remove tk-dev tk
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install tk-dev
+            ++ sudo apt-get -y install tk-dev tk
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install tk-dev
+            ++ sudo apt-get -y --only-upgrade install tk-dev tk
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove tk-devel
+            ++ sudo dnf -y remove tk-devel tk
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install tk-devel
+            ++ sudo dnf -y install tk-devel tk
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update tk-devel
+            ++ sudo dnf -y update tk-devel tk
           fi
           ;;
       esac

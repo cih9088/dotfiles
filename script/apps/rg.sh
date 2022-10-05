@@ -6,7 +6,8 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
-GH="microsoft/ripgrep-prebuilt"
+# GH="microsoft/ripgrep-prebuilt"
+GH="BurntSushi/ripgrep"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
@@ -23,12 +24,14 @@ AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 setup_func_rg_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -f ${PREFIX}/bin/rg ]; then
-      rm -rf ${PREFIX}/bin/rg || true
-      rm -rf ${PREFIX}/share/man/man1/rg.1 || true
+    if [ -f "${PREFIX}/bin/rg" ]; then
+      rm -rf "${PREFIX}/bin/rg" || true
+      rm -rf "${PREFIX}/share/man/man1/rg.1.gz" || true
+      rm -rf "${PREFIX}/share/bash-completion/completions/rg" || true
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -39,22 +42,31 @@ setup_func_rg_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -f ${PREFIX}/bin/rg ]; then
-      [ -z $VERSION ] && VERSION=${DEFAULT_VERSION}
+    if [ ! -f "${PREFIX}/bin/rg" ]; then
 
       case ${PLATFORM} in
         OSX )
           # does not have aarch64 for apple
-          ++ curl -LO https://github.com/microsoft/ripgrep-prebuilt/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz
-          ++ tar -xvzf ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz
+          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
+          ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
 
-          \cp -rf rg ${PREFIX}/bin
+          ++ pushd "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl"
+          ++ cp rg "${PREFIX}/bin"
+          ++ gzip doc/rg.1
+          ++ cp doc/rg.1.gz "${PREFIX}/share/man/man1"
+          ++ cp complete/rg.bash "${PREFIX}/share/bash-completion/completions/rg"
+          ++ popd
           ;;
         LINUX )
-          ++ curl -LO https://github.com/microsoft/ripgrep-prebuilt/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz
-          ++ tar -xvzf ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz
+          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+          ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
 
-          \cp -rf rg ${PREFIX}/bin
+          ++ pushd "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl"
+          ++ cp rg "${PREFIX}/bin"
+          ++ gzip doc/rg.1
+          ++ cp doc/rg.1.gz "${PREFIX}/share/man/man1"
+          ++ cp complete/rg.bash "${PREFIX}/share/bash-completion/completions/rg"
+          ++ popd
           ;;
       esac
     fi
@@ -86,8 +98,25 @@ setup_func_rg_system() {
           fi
           ;;
         RHEL)
-            log_error "No package in repository. Please install it in local mode"
-            exit 1
+          if [[ "remove update"  == *"${COMMAND}"* ]]; then
+            ++ sudo rm -f /usr/local/bin/rg
+            ++ sudo rm -f /usr/local/share/man/man1/rg.1.gz
+            ++ sudo rm -f /usr/local/share/bash-completion/completions/rg
+          fi
+          if [[ "install update"  == *"${COMMAND}"* ]]; then
+            ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+            ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+
+            ++ pushd "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl"
+            ++ sudo mkdir -p /usr/local/bin
+            ++ sudo cp rg /usr/local/bin/
+            ++ gzip doc/rg.1
+            ++ chown root:root doc/rg.1.gz
+            ++ sudo cp doc/rg.1.gz /usr/local/share/man/man1
+            ++ sudo mkdir -p /usr/local/share/bash-completion/completions
+            ++ sudo cp complete/rg.bash /usr/local/share/bash-completion/completions/rg
+            ++ popd
+          fi
           ;;
       esac
       ;;

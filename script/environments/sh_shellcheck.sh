@@ -42,20 +42,20 @@ setup_func_shellcheck_local() {
 
       if [[ ${PLATFORM} == "OSX" ]]; then
         # does not have aarch64 for apple
-        curl -LO https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.darwin.x86_64.tar.xz || exit $?
-        tar -xvJf shellcheck-${VERSION}.darwin.x86_64.tar.xz || exit $?
+        ++ curl -LO "https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.darwin.x86_64.tar.xz"
+        ++ tar -xvJf "shellcheck-${VERSION}.darwin.x86_64.tar.xz"
 
-        pushd shellcheck-${VERSION}
-        yes | \cp -rf shellcheck ${PREFIX}/bin
-        popd
+        ++ pushd shellcheck-${VERSION}
+        ++ cp shellcheck ${PREFIX}/bin
+        ++ popd
 
       elif [[ ${PLATFORM} == "LINUX" ]]; then
-        curl -LO https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.linux.${ARCH}.tar.xz || exit $?
-        tar -xvJf shellcheck-${VERSION}.linux.${ARCH}.tar.xz || exit $?
+        ++ curl -LO "https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.linux.${ARCH}.tar.xz"
+        ++ tar -xvJf "shellcheck-${VERSION}.linux.${ARCH}.tar.xz"
 
-        pushd shellcheck-${VERSION}
-        yes | \cp -rf shellcheck ${PREFIX}/bin
-        popd
+        ++ pushd "shellcheck-${VERSION}"
+        ++ cp shellcheck "${PREFIX}/bin"
+        ++ popd
       fi
     fi
   fi
@@ -64,37 +64,31 @@ setup_func_shellcheck_local() {
 setup_func_shellcheck_system() {
   local COMMAND="${1:-skip}"
 
-  if [ "${COMMAND}" == "remove" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list shellcheck >/dev/null 2>&1 && brew uninstall shellcheck
-        ;;
-      LINUX )
-        log_error "No package in repository. Please install it in local mode"
-        exit 1
-        ;;
-    esac
-  elif [ "${COMMAND}" == "install" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list shellcheck >/dev/null 2>&1 || brew install shellcheck
-        ;;
-      LINUX )
-        log_error "No package in repository. Please install it in local mode"
-        exit 1
-        ;;
-    esac
-  elif [ "${COMMAND}" == "update" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew upgrade shellcheck
-        ;;
-      LINUX )
-        log_error "No package in repository. Please install it in local mode"
-        exit 1
-        ;;
-    esac
-  fi
+  case "${PLATFORM}" in
+    OSX)
+      if [ "${COMMAND}" == "remove" ]; then
+        ++ brew list shellcheck >/dev/null 2>&1 && ++ brew uninstall shellcheck
+      elif [ "${COMMAND}" == "install" ]; then
+        ++ brew list shellcheck >/dev/null 2>&1 || ++ brew install shellcheck
+      elif [ "${COMMAND}" == "update" ]; then
+        ++ brew upgrade shellcheck
+      fi
+      ;;
+    LINUX)
+      if [[ "remove update"  == *"${COMMAND}"* ]]; then
+        ++ sudo rm -f /usr/local/bin/shellcheck
+      fi
+      if [[ "install update"  == *"${COMMAND}"* ]]; then
+        ++ curl -LO "https://github.com/koalaman/shellcheck/releases/download/${DEFAULT_VERSION}/shellcheck-${DEFAULT_VERSION}.linux.${ARCH}.tar.xz"
+        ++ tar -xvJf "shellcheck-${DEFAULT_VERSION}.linux.${ARCH}.tar.xz"
+
+        ++ pushd "shellcheck-${DEFAULT_VERSION}"
+        ++ sudo mkdir -p /usr/local/bin
+        ++ sudo cp shellcheck /usr/local/bin
+        ++ popd
+      fi
+      ;;
+  esac
 }
 
 version_func_shellcheck() {

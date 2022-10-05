@@ -24,9 +24,10 @@ setup_func_local() {
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -f ${PREFIX}/bin/fd ]; then
-      rm -rf ${PREFIX}/bin/fd || true
-      rm -rf ${PREFIX}/share/man/man1/fd.1 || true
+    if [ -f "${PREFIX}/bin/fd" ]; then
+      rm -f "${PREFIX}/bin/fd" || true
+      rm -f "${PREFIX}/share/man/man1/fd.1.gz" || true
+      rm -f "${PREFIX}/share/bash-completion/completions/fd" || true
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -37,26 +38,30 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -f ${PREFIX}/bin/fd ]; then
+    if [ ! -f "${PREFIX}/bin/fd" ]; then
 
       case ${PLATFORM} in
         OSX )
           # does not have aarch64 for apple
-          ++ curl -LO https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-x86_64-apple-darwin.tar.gz
-          ++ tar -xvzf fd-${VERSION}-x86_64-apple-darwin.tar.gz
+          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-x86_64-apple-darwin.tar.gz"
+          ++ tar -xvzf "fd-${VERSION}-x86_64-apple-darwin.tar.gz"
 
-          ++ pushd fd-${VERSION}-x86_64-apple-darwin
-          ++ yes | \cp -rf fd ${PREFIX}/bin
-          ++ yes | \cp -rf fd.1 ${PREFIX}/sahre/man/man1
+          ++ pushd "fd-${VERSION}-x86_64-apple-darwin"
+          ++ cp fd "${PREFIX}/bin"
+          ++ gzip fd.1
+          ++ cp fd.1.gz "${PREFIX}/share/man/man1"
+          ++ cp autocomplete/fd.bash "${PREFIX}/share/bash-completion/completions/fd"
           ++ popd
           ;;
         LINUX )
-          ++ curl -LO https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz
-          ++ tar -xvzf fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz
+          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
+          ++ tar -xvzf "fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
 
-          ++ pushd fd-${VERSION}-${ARCH}-unknown-linux-gnu
-          ++ yes | \cp -rf fd ${PREFIX}/bin
-          ++ yes | \cp -rf fd.1 ${PREFIX}/share/man/man1
+          ++ pushd "fd-${VERSION}-${ARCH}-unknown-linux-gnu"
+          ++ cp fd "${PREFIX}/bin"
+          ++ gzip fd.1
+          ++ cp fd.1.gz "${PREFIX}/share/man/man1"
+          ++ cp autocomplete/fd.bash "${PREFIX}/share/bash-completion/completions/fd"
           ++ popd
           ;;
       esac
@@ -89,8 +94,25 @@ setup_func_system() {
           fi
           ;;
         RHEL)
-            log_error "No package in repository. Please install it in local mode"
-            exit 1
+          if [[ "remove update"  == *"${COMMAND}"* ]]; then
+            ++ sudo rm -f /usr/local/bin/fd
+            ++ sudo rm -f /usr/local/share/man/man1/fd.1.gz
+            ++ sudo rm -f /usr/local/share/bash-completion/completions/fd
+          fi
+          if [[ "install update"  == *"${COMMAND}"* ]]; then
+            ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/fd-${DEFAULT_VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
+            ++ tar -xvzf "fd-${DEFAULT_VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
+
+            ++ pushd "fd-${DEFAULT_VERSION}-${ARCH}-unknown-linux-gnu"
+            ++ sudo mkdir -p /usr/local/bin
+            ++ sudo cp fd /usr/local/bin/
+            ++ gzip fd.1
+            ++ chown root:root fd.1.gz
+            ++ sudo cp fd.1.gz /usr/local/share/man/man1
+            ++ sudo mkdir -p /usr/local/share/bash-completion/completions
+            ++ sudo cp autocomplete/fd.bash /usr/local/share/bash-completion/completions/fd
+            ++ popd
+          fi
           ;;
       esac
       ;;

@@ -28,12 +28,12 @@ setup_func_local() {
   if [[ "remove update" == *"${COMMAND}"* ]]; then
     if [ -n "${SRC_PATH}" ]; then
       # https://fishshell.com/docs/current/faq.html#uninstalling-fish
-      rm -rf "${PREFIX}"/share/fish || true
-      rm -rf "${PREFIX}"/etc/fish || true
-      rm "${PREFIX}"/share/man/man1/fish*.1 || true
-      rm -rf "${PREFIX}"/bin/fish || true
-      rm -rf "${PREFIX}"/bin/fish_key_reader || true
-      rm -rf "${PREFIX}"/bin/fish_indent || true
+      rm -Rf "${PREFIX}"/share/fish || true
+      rm -Rf "${PREFIX}"/etc/fish || true
+      rm -f "${PREFIX}"/share/man/man1/fish*.1 || true
+      rm -f "${PREFIX}"/bin/fish || true
+      rm -f "${PREFIX}"/bin/fish_key_reader || true
+      rm -f "${PREFIX}"/bin/fish_indent || true
       rm -rf "${SRC_PATH}"
       SRC_PATH=""
     else
@@ -96,8 +96,25 @@ setup_func_system() {
           fi
           ;;
         RHEL)
-          log_error "No package in repository. Please install it in local mode"
-          exit 1
+          if [[ "remove update"  == *"${COMMAND}"* ]]; then
+            # https://fishshell.com/docs/current/faq.html#uninstalling-fish
+            ++ sudo rm -Rf /usr/local/etc/fish /usr/local/share/fish
+            ++ sudo rm -f /usr/local/share/man/man1/fish*.1
+            ++ sudo rm -f /usr/local/bin/fish
+            ++ sudo rm -f /usr/local/bin/fish_key_reader
+            ++ sudo rm -f /usr/local/bin/fish_indent
+          fi
+          if [[ "install update"  == *"${COMMAND}"* ]]; then
+            ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/fish-${VERSION}.tar.xz"
+            ++ tar -xvJf "fish-${VERSION}.tar.xz"
+
+            ++ pushd "fish-${VERSION}"
+            ++ mkdir build && ++ cd build
+            ++ cmake .. -DWITH_GETTEXT=ON
+            ++ make
+            ++ sudo make install
+            ++ popd
+          fi
           ;;
       esac
       ;;

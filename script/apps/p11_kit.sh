@@ -22,7 +22,7 @@ setup_func_local() {
   local VERSION="${2:-}"
   local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
-  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "gp11-kit-*")"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "p11-kit-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -76,20 +76,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libp11-kit-dev
+            ++ sudo apt-get -y remove libp11-kit-dev libp11-kit0
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libp11-kit-dev
+            ++ sudo apt-get -y install libp11-kit-dev libp11-kit0
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libp11-kit-dev
+            ++ sudo apt-get -y --only-upgrade install libp11-kit-dev libp11-kit0
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove p11-kit-devel
+            ++ sudo dnf -y remove p11-kit-devel p11-kit
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install p11-kit-devel
+            ++ sudo dnf -y install p11-kit-devel p11-kit
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update p11-kit-devel
+            ++ sudo dnf -y update p11-kit-devel p11-kit
           fi
           ;;
       esac

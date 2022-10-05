@@ -37,30 +37,30 @@ setup_func_local() {
       make clean || true
       ++ popd
 
-      rm -f ${PREFIX}/bin/bzip2-shared || true
-      rm -f ${PREFIX}/lib/libbz2.so* || true
+      rm -f "${PREFIX}/bin/bzip2-shared" || true
+      rm -f "${PREFIX}/lib/libbz2.so*" || true
 
-      rm -f ${PREFIX}/bin/bzip2 || true
-      rm -f ${PREFIX}/bin/bunzip2 || true
-      rm -f ${PREFIX}/bin/bzcat || true
-      rm -f ${PREFIX}/bin/bzip2recover || true
-      rm -f ${PREFIX}/share/man/man1/bzip2.1 || true
-      rm -f ${PREFIX}/include/bzlib.h || true
-      rm -f ${PREFIX}/lib/libbz2.a || true
-      rm -f ${PREFIX}/bin/bzgrep || true
-      rm -f ${PREFIX}/bin/bzegrep || true
-      rm -f ${PREFIX}/bin/bzfgrep || true
-      rm -f ${PREFIX}/bin/bzmore || true
-      rm -f ${PREFIX}/bin/bzless || true
-      rm -f ${PREFIX}/bin/bzdiff || true
-      rm -f ${PREFIX}/bin/bzcmp || true
-      rm -f ${PREFIX}/share/man/man1/bzgrep.1 || true
-      rm -f ${PREFIX}/share/man/man1/bzmore.1 || true
-      rm -f ${PREFIX}/share/man/man1/bzdiff.1 || true
-      rm -f ${PREFIX}/share/man/man1/bzegrep.1 || true
-      rm -f ${PREFIX}/share/man/man1/bzfgrep.1 || true
-      rm -f ${PREFIX}/share/man/man1/bzless.1 || true
-      rm -f ${PREFIX}/share/man/man1/bzcmp.1 || true
+      rm -f "${PREFIX}/bin/bzip2" || true
+      rm -f "${PREFIX}/bin/bunzip2" || true
+      rm -f "${PREFIX}/bin/bzcat" || true
+      rm -f "${PREFIX}/bin/bzip2recover" || true
+      rm -f "${PREFIX}/share/man/man1/bzip2.1" || true
+      rm -f "${PREFIX}/include/bzlib.h" || true
+      rm -f "${PREFIX}/lib/libbz2.a" || true
+      rm -f "${PREFIX}/bin/bzgrep" || true
+      rm -f "${PREFIX}/bin/bzegrep" || true
+      rm -f "${PREFIX}/bin/bzfgrep" || true
+      rm -f "${PREFIX}/bin/bzmore" || true
+      rm -f "${PREFIX}/bin/bzless" || true
+      rm -f "${PREFIX}/bin/bzdiff" || true
+      rm -f "${PREFIX}/bin/bzcmp" || true
+      rm -f "${PREFIX}/share/man/man1/bzgrep.1" || true
+      rm -f "${PREFIX}/share/man/man1/bzmore.1" || true
+      rm -f "${PREFIX}/share/man/man1/bzdiff.1" || true
+      rm -f "${PREFIX}/share/man/man1/bzegrep.1" || true
+      rm -f "${PREFIX}/share/man/man1/bzfgrep.1" || true
+      rm -f "${PREFIX}/share/man/man1/bzless.1" || true
+      rm -f "${PREFIX}/share/man/man1/bzcmp.1" || true
 
       rm -rf "${SRC_PATH}"
       SRC_PATH=""
@@ -117,20 +117,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libbz2-dev
+            ++ sudo apt-get -y remove libbz2-dev bzip2
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libbz2-dev
+            ++ sudo apt-get -y install libbz2-dev bzip2
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libbz2-dev
+            ++ sudo apt-get -y --only-upgrade install libbz2-dev bzip2
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove bzip2-devel
+            ++ sudo dnf -y remove bzip2-devel bzip2
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install bzip2-devel
+            ++ sudo dnf -y install bzip2-devel bzip2
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update bzip2-devel
+            ++ sudo dnf -y update bzip2-devel bzip2
           fi
           ;;
       esac

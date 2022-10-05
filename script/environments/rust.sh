@@ -8,6 +8,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
+has -v asdf
+
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 THIS_CMD="rustc"
 
@@ -18,14 +20,23 @@ VERSION=""
 ################################################################
 
 rust_install() {
+  local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
 
   if command -v asdf > /dev/null; then
-    if [ ${VERSION} == "latest" ]; then
+    if [ "${VERSION}" == "latest" ]; then
       VERSION=$(asdf latest rust)
     fi
-    asdf install rust ${VERSION}
-    asdf global rust ${VERSION}
+
+    if [ "${COMMAND}" == "remove" ]; then
+      ++ asdf uninstall rust "${VERSION}"
+    elif [ "${COMMAND}" == "install" ]; then
+      ++ asdf install rust "${VERSION}"
+      ++ asdf global rust "${VERSION}"
+    elif [ "${COMMAND}" == "update" ]; then
+      log_error "Not supported command 'update'"
+      exit 1
+    fi
   fi
 }
 

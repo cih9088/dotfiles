@@ -59,7 +59,7 @@ setup_func_system() {
       fi
       ;;
     LINUX)
-      log_error "No package in repository. Please install it in local mode"
+      log_error "Not able to install systemwide."
       exit 1
       ;;
   esac

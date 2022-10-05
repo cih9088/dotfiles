@@ -82,20 +82,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libgcrypt20-dev
+            ++ sudo apt-get -y remove libgcrypt20-dev libgcrypt20
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libgcrypt20-dev
+            ++ sudo apt-get -y install libgcrypt20-dev libgcrypt20
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libgcrypt20-dev
+            ++ sudo apt-get -y --only-upgrade install libgcrypt20-dev libgcrypt20
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libgcrypt-devel
+            ++ sudo dnf -y remove libgcrypt-devel libgcrypt
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libgcrypt-devel
+            ++ sudo dnf -y install libgcrypt-devel libgcrypt
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libgcrypt-devel
+            ++ sudo dnf -y update libgcrypt-devel libgcrypt
           fi
           ;;
       esac

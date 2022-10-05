@@ -27,8 +27,8 @@ setup_func_tldr_local() {
   has pip3 && pip3 uninstall --yes tldr >/dev/null 2>&1 || true
 
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -f ${PREFIX}/bin/tldr ]; then
-      rm -rf ${PREFIX}/bin/tldr || true
+    if [ -f "${PREFIX}/bin/tldr" ]; then
+      rm -rf "${PREFIX}/bin/tldr" || true
     fi
   fi
 
@@ -41,15 +41,15 @@ setup_func_tldr_local() {
         _name="tealdeer"
       fi
 
-      if [ ${ARCH} == "x86_64" ]; then
-        ++ curl -LO https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-x86_64-musl
-        ++ mv ${_name}-linux-x86_64-musl ${PREFIX}/bin/tldr
-      elif [ ${ARCH} == "aarch64" ]; then
-        ++ curl -LO https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-armv7-musleabihf
-        ++ mv ${_name}-linux-armv7-musleabihf ${PREFIX}/bin/tldr
+      if [ "${ARCH}" == "x86_64" ]; then
+        ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-x86_64-musl"
+        ++ mv "${_name}-linux-x86_64-musl" "${PREFIX}/bin/tldr"
+      elif [ "${ARCH}" == "aarch64" ]; then
+        ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-armv7-musleabihf"
+        ++ mv "${_name}-linux-armv7-musleabihf" "${PREFIX}/bin/tldr"
       fi
-      ++ chmod +x ${PREFIX}/bin/tldr
-      ++ ${PREFIX}/bin/tldr --update
+      ++ chmod +x "${PREFIX}/bin/tldr"
+      ++ "${PREFIX}/bin/tldr" --update
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -73,8 +73,21 @@ setup_func_tldr_system() {
       fi
       ;;
     LINUX)
-      log_error "No package in repository. Please install it in local mode"
-      exit 1
+      if [[ "remove update"  == *"${COMMAND}"* ]]; then
+        ++ sudo rm -rf /usr/local/bin/tldr
+      fi
+      if [[ "install update"  == *"${COMMAND}"* ]]; then
+        ++ sudo mkdir -p /usr/local/bin
+        if [ "${ARCH}" == "x86_64" ]; then
+          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${DEFAULT_VERSION}/tealdeer-linux-x86_64-musl"
+          ++ mv "tealdeer-linux-x86_64-musl" "/usr/local/bin/tldr"
+        elif [ "${ARCH}" == "aarch64" ]; then
+          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${DEFAULT_VERSION}/tealdeer-linux-armv7-musleabihf"
+          ++ sudo mv "tealdeer-linux-armv7-musleabihf" "/usr/local/bin/tldr"
+        fi
+        ++ sudo chmod +x /usr/local/bin/tldr
+        ++ /usr/local/bin/tldr --update
+      fi
       ;;
   esac
 }

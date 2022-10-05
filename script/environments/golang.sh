@@ -18,21 +18,30 @@ VERSION=""
 ################################################################
 
 golang_install() {
+  local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
 
   # prefer goenv
   if command -v goenv > /dev/null; then
-    if [ ${VERSION} == "latest" ]; then
+    if [ "${VERSION}" == "latest" ]; then
       goenv latest install -s
     else
-      goenv install ${VERSION}
+      goenv install "${VERSION}"
     fi
   elif command -v asdf > /dev/null; then
-    if [ ${VERSION} == "latest" ]; then
+    if [ "${VERSION}" == "latest" ]; then
       VERSION=$(asdf latest golang)
     fi
-    asdf install golang ${VERSION}
-    asdf global golang ${VERSION}
+
+    if [ "${COMMAND}" == "remove" ]; then
+      ++ asdf uninstall golang "${VERSION}"
+    elif [ "${COMMAND}" == "install" ]; then
+      ++ asdf install golang "${VERSION}"
+      ++ asdf global golang "${VERSION}"
+    elif [ "${COMMAND}" == "update" ]; then
+      log_error "Not supported command 'update'"
+      exit 1
+    fi
   fi
 }
 

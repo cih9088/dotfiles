@@ -58,7 +58,7 @@ setup_func_system() {
       fi
       ;;
     LINUX)
-      log_error "No package in repository. Please install it in local mode"
+      log_error "Not able to install systemwide."
       exit 1
       ;;
   esac
@@ -68,5 +68,5 @@ version_func() {
   $1 version
 }
 
-main_script ${THIS} setup_func_local setup_func_system version_func \
+main_script "${THIS}" setup_func_local setup_func_system version_func \
   "${DEFAULT_VERSION}"

@@ -29,7 +29,6 @@ setup_func_local() {
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "m4-*")"
 
-
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
     if [ -n "${SRC_PATH}" ]; then

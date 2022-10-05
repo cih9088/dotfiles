@@ -87,20 +87,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove tcl-dev
+            ++ sudo apt-get -y remove tcl-dev tcl
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install tcl-dev
+            ++ sudo apt-get -y install tcl-dev tcl
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install tcl-dev
+            ++ sudo apt-get -y --only-upgrade install tcl-dev tcl
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove tcl-devel
+            ++ sudo dnf -y remove tcl-devel tcl
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install tcl-devel
+            ++ sudo dnf -y install tcl-devel tcl
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update tcl-devel
+            ++ sudo dnf -y update tcl-devel tcl
           fi
           ;;
       esac

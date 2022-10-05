@@ -80,20 +80,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libxcb1-dev
+            ++ sudo apt-get -y remove libxcb1-dev libxcb1
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libxcb1-dev
+            ++ sudo apt-get -y install libxcb1-dev libxcb1
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libxcb1-dev
+            ++ sudo apt-get -y --only-upgrade install libxcb1-dev libxcb1
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libxcb-devel
+            ++ sudo dnf -y remove libxcb-devel libxcb
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libxcb-devel
+            ++ sudo dnf -y install libxcb-devel libxcb
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libxcb-devel
+            ++ sudo dnf -y update libxcb-devel libxcb
           fi
           ;;
       esac

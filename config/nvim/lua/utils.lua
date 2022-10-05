@@ -21,4 +21,3 @@ function _G.dump(o)
       return tostring(o)
    end
 end
-

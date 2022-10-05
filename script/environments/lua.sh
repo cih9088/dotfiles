@@ -8,6 +8,8 @@ CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . "${CUR_DIR}/../helpers/common.sh"
 ################################################################
 
+has -v asdf
+
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 
 log_title "Prepare for ${THIS_HL}"
@@ -16,14 +18,23 @@ DEFAULT_VERSION="latest"
 ################################################################
 
 lua_install() {
+  local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
 
   if command -v asdf > /dev/null; then
     if [ "${VERSION}" == "latest" ]; then
       VERSION=$(asdf latest lua)
     fi
-    asdf install lua "${VERSION}"
-    asdf global lua "${VERSION}"
+
+    if [ "${COMMAND}" == "remove" ]; then
+      ++ asdf uninstall lua "${VERSION}"
+    elif [ "${COMMAND}" == "install" ]; then
+      ++ asdf install lua "${VERSION}"
+      ++ asdf global lua "${VERSION}"
+    elif [ "${COMMAND}" == "update" ]; then
+      log_error "Not supported command 'update'"
+      exit 1
+    fi
   fi
 
 }

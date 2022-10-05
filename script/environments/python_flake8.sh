@@ -20,11 +20,11 @@ setup_func_flake8_local() {
   local COMMAND="${1:-skip}"
 
   if [ "${COMMAND}" == "install" ]; then
-    intelli_pip3 install flake8 || exit $?
+    ++ intelli_pip3 install flake8
   elif [ "${COMMAND}" == "update" ]; then
-    intelli_pip3 install flake8 --force-reinstall --upgrade || exit $?
+    ++ intelli_pip3 install flake8 --force-reinstall --upgrade
   elif [ "${COMMAND}" == "remove" ]; then
-    intelli_pip3 uninstall flake8 || exit $?
+    ++ intelli_pip3 uninstall flake8
   fi
 }
 
@@ -32,4 +32,5 @@ version_func_flake8() {
   $1 --version | head -n 1 | awk '{print $1}'
 }
 
-main_script ${THIS} setup_func_flake8_local setup_func_flake8_local version_func_flake8
+main_script "${THIS}" setup_func_flake8_local setup_func_flake8_local version_func_flake8 \
+  "latest"

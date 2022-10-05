@@ -83,20 +83,21 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libsox-dev
+            ++ sudo apt-get -y remove libsox-dev sox
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libsox-dev
+            ++ sudo apt-get -y install libsox-dev sox
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libsox-dev
+            ++ sudo apt-get -y --only-upgrade install libsox-dev sox
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove sox-devel
+            ++ sudo dnf -y remove sox-devel sox
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install sox-devel
+            ++ sudo dnf -y install epel-release
+            ++ sudo dnf -y install sox-devel sox
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update sox-devel
+            ++ sudo dnf -y update sox-devel sox
           fi
           ;;
       esac

@@ -74,20 +74,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libsqlite3-dev
+            ++ sudo apt-get -y remove libsqlite3-dev libsqlite3-0
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libsqlite3-dev
+            ++ sudo apt-get -y install libsqlite3-dev libsqlite3-0
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libsqlite3-dev
+            ++ sudo apt-get -y --only-upgrade install libsqlite3-dev libsqlite3-0
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove sqlite-devel
+            ++ sudo dnf -y remove sqlite-devel sqlite
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install sqlite-devel
+            ++ sudo dnf -y install sqlite-devel sqlite
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update sqlite-devel
+            ++ sudo dnf -y update sqlite-devel sqlite
           fi
           ;;
       esac

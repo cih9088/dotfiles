@@ -50,11 +50,11 @@ setup_func_local() {
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
 
-      ++ curl -LO https://ftp.gnu.org/gnu/libtasn1/libtasn1-${VERSION}.tar.gz
-      ++ tar -xvzf libtasn1-${VERSION}.tar.gz
+      ++ curl -LO "https://ftp.gnu.org/gnu/libtasn1/libtasn1-${VERSION}.tar.gz"
+      ++ tar -xvzf "libtasn1-${VERSION}.tar.gz"
 
       ++ pushd "libtasn1-${VERSION}"
-      ++ ./configure --prefix=${PREFIX}
+      ++ ./configure --prefix="${PREFIX}"
       ++ make
       ++ make install
       ++ popd
@@ -81,20 +81,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libtans1-6-dev
+            ++ sudo apt-get -y remove libtasn1-6-dev libtasn1-6
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libtans1-6-dev
+            ++ sudo apt-get -y install libtasn1-6-dev libtasn1-6
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libtans1-6-dev
+            ++ sudo apt-get -y --only-upgrade install libtasn1-6-dev libtasn1-6
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libtasn1-devel
+            ++ sudo dnf -y remove libtasn1-devel libtasn1
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libtasn1-devel
+            ++ sudo dnf -y install libtasn1-devel libtasn1
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libtasn1-devel
+            ++ sudo dnf -y update libtasn1-devel libtasn1
           fi
           ;;
       esac

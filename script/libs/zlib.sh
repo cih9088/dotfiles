@@ -81,20 +81,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove zlib1g-dev
+            ++ sudo apt-get -y remove zlib1g-dev zlib1g
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install zlib1g-dev
+            ++ sudo apt-get -y install zlib1g-dev zlib1g
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install zlib1g-dev
+            ++ sudo apt-get -y --only-upgrade install zlib1g-dev zlib1g
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove zlib-devel
+            ++ sudo dnf -y remove zlib-devel zlib
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install zlib-devel
+            ++ sudo dnf -y install zlib-devel zlib
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update zlib-devel
+            ++ sudo dnf -y update zlib-devel zlib
           fi
           ;;
       esac

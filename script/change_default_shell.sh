@@ -11,7 +11,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 TARGET_SHELL=""
 
-log_title "Prepare to apply ${THIS_HL}"
+log_title "Prepare for ${THIS_HL}"
 ################################################################
 
 local_change() {
@@ -32,7 +32,7 @@ local_change() {
     f=$(realpath $HOME/$f)
     if [ -e $f ]; then
       # -i destroy symlink. --follow-symlink option only in GNU sed
-      sed -e '/# added from andys dotfiles/,/^fi$/d' $f > temp
+      sed -e '/# added by dots/,/^fi$/d' $f > temp
       mv temp $f
     fi
   done
@@ -45,7 +45,7 @@ local_change() {
   shell=${SHELL##*/}
 
   if [[ -e ${SHELL_FULL_PATH} ]]; then
-    echo -e "# added from andys dotfiles" >> ${loginshell_rc}
+    echo -e "# added by dots" >> ${loginshell_rc}
     case $shell in
       bash|zsh)
         # echo -e "if [[ -e ${SHELL_FULL_PATH} ]]; then\n\texec ${SHELL_FULL_PATH} -l\nfi" >> ${loginshell_rc}
@@ -78,10 +78,10 @@ system_change() {
     exit 1
   fi
 
-  grep -q ${SHELL_FULL_PATH} /etc/shells || \
-    echo ${SHELL_FULL_PATH} | sudo tee -a /etc/shells >/dev/null
+  grep -q ${SHELL_FULL_PATH} /etc/shells \
+    || echo ${SHELL_FULL_PATH} | sudo tee -a /etc/shells >/dev/null
 
-  chsh -s "${SHELL_FULL_PATH}" || exit $?
+  ++ chsh -s "${SHELL_FULL_PATH}"
 }
 
 main() {
@@ -97,7 +97,7 @@ main() {
           log_error "Change default shell to system ${CONFIG_change_default_shell_shell} is failed."
       fi
     else
-      log_ok "Default shell is unchanged"
+      log_ok "Default shell is unchanged."
     fi
   else
     while true; do

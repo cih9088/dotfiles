@@ -34,35 +34,6 @@ setup_func_thefuck_local() {
 setup_func_thefuck_system() {
   local COMMAND="${1:-skip}"
 
-  if [ "${COMMAND}" == "remove" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list thefuck >/dev/null 2>&1 && brew uninstall thefuck
-        ;;
-      LINUX )
-        sudo pip3 uninstall --yes thefuck || exit $?
-        ;;
-    esac
-  elif [ "${COMMAND}" == "install" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list thefuck >/dev/null 2>&1 || brew install thefuck
-        ;;
-      LINUX )
-        sudo pip3 install thefuck || exit $?
-        ;;
-    esac
-  elif [ "${COMMAND}" == "update" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew upgrade thefuck
-        ;;
-      LINUX )
-        sudo pip3 install thefuck --upgrade --force-reinstall || exit $?
-        ;;
-    esac
-  fi
-
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then

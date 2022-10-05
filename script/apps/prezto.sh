@@ -29,7 +29,7 @@ setup_func() {
       ++ git clone --recurse-submodules https://github.com/belak/prezto-contrib "$HOME/.zprezto/contrib"
 
       # pure prompt update
-      cd ${HOME}/.zprezto/modules/prompt/external/pure
+      ++ pushd "${HOME}/.zprezto/modules/prompt/external/pure"
       ++ git checkout main
       ++ git pull
       ## Clone garrett prompt repository
@@ -42,7 +42,7 @@ setup_func() {
       #
 
       # Create a new zsh configureation by copying the zsh config files
-      for rcfile in $HOME/.zprezto/runcoms/z*; do
+      for rcfile in "$HOME"/.zprezto/runcoms/z*; do
         ln -s "$rcfile" "$HOME/.$(basename ${rcfile})" || true
       done
     fi
@@ -54,7 +54,7 @@ setup_func() {
       ++ git submodule update --init --recursive
 
       # update pure prompt
-      ++ cd ${HOME}/.zprezto/modules/prompt/external/pure
+      ++ pushd "${HOME}/.zprezto/modules/prompt/external/pure"
       ++ git checkout main
       ++ git pull
     else

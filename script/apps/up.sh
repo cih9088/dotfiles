@@ -24,8 +24,8 @@ setup_func_up_local() {
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -f ${PREFIX}/bin/up ]; then
-      rm -rf ${PREFIX}/bin/up || true
+    if [ -f "${PREFIX}/bin/up" ]; then
+      rm -rf "${PREFIX}/bin/up" || true
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -36,18 +36,18 @@ setup_func_up_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -f ${PREFIX}/bin/up ]; then
+    if [ ! -f "${PREFIX}/bin/up" ]; then
 
       case ${PLATFORM} in
         OSX )
-          ++ curl -LO https://github.com/akavel/up/releases/download/${VERSION}/up-darwin
+          ++ curl -LO "https://github.com/akavel/up/releases/download/${VERSION}/up-darwin"
           ++ chmod +x up
-          \cp -rf up-darwin ${PREFIX}/bin/up
+          ++ cp -f up-darwin "${PREFIX}/bin/up"
           ;;
         LINUX )
-          ++ curl -LO https://github.com/akavel/up/releases/download/${VERSION}/up
+          ++ curl -LO "https://github.com/akavel/up/releases/download/${VERSION}/up"
           ++ chmod +x up
-          \cp -rf up ${PREFIX}/bin/up
+          ++ cp -f up "${PREFIX}/bin/up"
           ;;
       esac
     fi
@@ -68,8 +68,15 @@ setup_func_up_system() {
       fi
       ;;
     LINUX)
-      log_error "No package in repository. Please install it in local mode"
-      exit 1
+      if [[ "remove update"  == *"${COMMAND}"* ]]; then
+        ++ sudo rm -f /usr/local/bin/up
+      fi
+      if [[ "install update"  == *"${COMMAND}"* ]]; then
+        ++ curl -LO "https://github.com/akavel/up/releases/download/${DEFAULT_VERSION}/up"
+        ++ chmod +x up
+        ++ sudo mkdir -p /usr/local/bin
+        ++ sudo cp up /usr/local/bin
+      fi
       ;;
   esac
 }

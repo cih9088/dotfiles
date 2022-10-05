@@ -86,20 +86,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libc6-dev
+            ++ sudo apt-get -y remove texinfo
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libc6-dev
+            ++ sudo apt-get -y install texinfo
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libc6-dev
+            ++ sudo apt-get -y --only-upgrade install texinfo
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove texinfo-devel
+            ++ sudo dnf -y remove texinfo
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install texinfo-devel
+            ++ sudo dnf -y install texinfo
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update texinfo-devel
+            ++ sudo dnf -y update texinfo
           fi
           ;;
       esac

@@ -84,11 +84,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libogg-devel
+            ++ sudo dnf -y remove libogg-devel libogg
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libogg-devel
+            ++ sudo dnf -y install libogg-devel libogg
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libogg-devel
+            ++ sudo dnf -y update libogg-devel libogg
           fi
           ;;
       esac

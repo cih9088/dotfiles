@@ -48,8 +48,8 @@ setup_func_tree_local() {
       ++ tar -xvzf "tree-${VERSION}.tgz"
 
       ++ pushd "tree-${VERSION}"
-      ++ sed -i -e "s|prefix = /usr|prefix = ${PREFIX}|" Makefile
-      ++ sed -i -e "s|MANDIR=\${prefix}/man/man1|MANDIR=\${prefix}/share/man/man1|" Makefile
+      ++ sed -i -e "\"s|prefix = /usr|prefix = ${PREFIX}|\"" Makefile
+      ++ sed -i -e "\"s|MANDIR=\\\${prefix}/man/man1|MANDIR=\\\${prefix}/share/man/man1|\"" Makefile
       ++ make
       ++ make install
       ++ popd

@@ -92,11 +92,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libgpg-error-devel
+            ++ sudo dnf -y remove libgpg-error-devel libgpg-error
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libgpg-error-devel
+            ++ sudo dnf -y install libgpg-error-devel libgpg-error
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libgpg-error-devel
+            ++ sudo dnf -y update libgpg-error-devel libgpg-error
           fi
           ;;
       esac

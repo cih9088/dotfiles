@@ -37,41 +37,43 @@ neovim2_virenv='neovim2'
 setup_func_python_support() {
   local COMMAND="${1:-skip}"
 
-  has -v pip3 python3 || exit $?
+  has -v pip3 python3
 
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    rm -rf ${WORKON_HOME}/${neovim3_virenv} || true
+    rm -rf "${WORKON_HOME}/${neovim3_virenv}" || true
   fi
 
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${WORKON_HOME}/${neovim2_virenv}" ] && [ ! -d "${WORKON_HOME}/${neovim3_virenv}" ]; then
-      intelli_pip3 install --force-reinstall --upgrade virtualenv || exit $?
+    if [ ! -d "${WORKON_HOME}/${neovim3_virenv}" ]; then
+      if ! has virtualenv; then
+        ++ intelli_pip3 install --force-reinstall --upgrade virtualenv
+      fi
 
-      virtualenv --python=$(type -p python3) ${WORKON_HOME}/${neovim3_virenv} || exit $?
-      source ${WORKON_HOME}/${neovim3_virenv}/bin/activate || exit $?
-      pip install --upgrade pynvim || exit $?
-      deactivate
+      ++ virtualenv --python=$(type -p python3) ${WORKON_HOME}/${neovim3_virenv}
+      ++ source ${WORKON_HOME}/${neovim3_virenv}/bin/activate
+      ++ pip install --upgrade pynvim
+      ++ deactivate
 
-      intelli_pip3 uninstall --yes virtualenv || exit $?
+      ++ intelli_pip3 uninstall --yes virtualenv
     fi
   fi
 
-  # has -v pip3 python2 || exit $?
+  # has -v pip3 python2
   #
   # if [[ "remove update"  == *"${COMMAND}"* ]]; then
   #   rm -rf ${WORKON_HOME}/${neovim2_virenv} || true
   # fi
   #
   # if [[ "install update"  == *"${COMMAND}"* ]]; then
-  #   if [ ! -d "${WORKON_HOME}/${neovim2_virenv}" ] && [ ! -d "${WORKON_HOME}/${neovim3_virenv}" ]; then
-  #     intelli_pip3 install --force-reinstall --upgrade virtualenv || exit $?
+  #   if [ ! -d "${WORKON_HOME}/${neovim2_virenv}" ]; then
+  #     ++ intelli_pip3 install --force-reinstall --upgrade virtualenv
   #
-  #     virtualenv --python=$(type -p python2) ${WORKON_HOME}/${neovim2_virenv} || exit $?
-  #     source ${WORKON_HOME}/${neovim2_virenv}/bin/activate || exit $?
-  #     pip install --upgrade pynvim || exit $?
-  #     deactivate
+  #     ++ virtualenv --python=$(type -p python2) ${WORKON_HOME}/${neovim2_virenv}
+  #     ++ source ${WORKON_HOME}/${neovim2_virenv}/bin/activate
+  #     ++ pip install --upgrade pynvim
+  #     ++ deactivate
   #
-  #     intelli_pip3 uninstall --yes virtualenv || exit $?
+  #     ++ intelli_pip3 uninstall --yes virtualenv
   #   fi
   # fi
 }

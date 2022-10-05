@@ -81,7 +81,8 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove gzip
+            # ++ sudo apt-get -y remove gzip
+            log_error "${THIS_HL} is not able to remove"
           elif [ "${COMMAND}" == "install" ]; then
             ++ sudo apt-get -y install gzip
           elif [ "${COMMAND}" == "update" ]; then
@@ -90,7 +91,8 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove gzip
+            # ++ sudo dnf -y remove gzip
+            log_error "${THIS_HL} is not able to remove"
           elif [ "${COMMAND}" == "install" ]; then
             ++ sudo dnf -y install gzip
           elif [ "${COMMAND}" == "update" ]; then

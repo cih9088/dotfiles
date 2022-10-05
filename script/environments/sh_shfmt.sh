@@ -48,13 +48,13 @@ setup_func_shfmt_local() {
 
       if [[ ${PLATFORM} == "OSX" ]]; then
         # does not have aarch64 for apple
-        curl -LO https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_darwin_${_ARCH} || exit $?
-        chmod +x shfmt_${VERSION}_darwin_${_ARCH}
-        \cp -rf shfmt_${VERSION}_darwin_${_ARCH} ${PREFIX}/bin/shfmt
+        ++ curl -LO "https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_darwin_${_ARCH}"
+        ++ chmod +x "shfmt_${VERSION}_darwin_${_ARCH}"
+        ++ cp "shfmt_${VERSION}_darwin_${_ARCH}" "${PREFIX}/bin/shfmt"
       elif [[ ${PLATFORM} == "LINUX" ]]; then
-        curl -LO https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_linux_${_ARCH} || exit $?
-        chmod +x shfmt_${VERSION}_linux_${_ARCH}
-        \cp -rf shfmt_${VERSION}_linux_${_ARCH} ${PREFIX}/bin/shfmt
+        ++ curl -LO "https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_linux_${_ARCH}"
+        ++ chmod +x "shfmt_${VERSION}_linux_${_ARCH}"
+        ++ cp "shfmt_${VERSION}_linux_${_ARCH}" "${PREFIX}/bin/shfmt"
       fi
     fi
   fi
@@ -63,37 +63,34 @@ setup_func_shfmt_local() {
 setup_func_shfmt_system() {
   local COMMAND="${1:-skip}"
 
-  if [ "${COMMAND}" == "remove" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list shfmt >/dev/null 2>&1 && brew uninstall shfmt
-        ;;
-      LINUX )
-        log_error "No package in repository. Please install it in local mode"
-        exit 1
-        ;;
-    esac
-  elif [ "${COMMAND}" == "install" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list shfmt >/dev/null 2>&1 || brew install shfmt
-        ;;
-      LINUX )
-        log_error "No package in repository. Please install it in local mode"
-        exit 1
-        ;;
-    esac
-  elif [ "${COMMAND}" == "update" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew upgrade shfmt
-        ;;
-      LINUX )
-        log_error "No package in repository. Please install it in local mode"
-        exit 1
-        ;;
-    esac
-  fi
+  case "${PLATFORM}" in
+    OSX)
+      if [ "${COMMAND}" == "remove" ]; then
+        ++ brew list shfmt >/dev/null 2>&1 && ++ brew uninstall shfmt
+      elif [ "${COMMAND}" == "install" ]; then
+        ++ brew list shfmt >/dev/null 2>&1 || ++ brew install shfmt
+      elif [ "${COMMAND}" == "update" ]; then
+        ++ brew upgrade shfmt
+      fi
+      ;;
+    LINUX)
+      if [[ "remove update"  == *"${COMMAND}"* ]]; then
+        ++ sudo rm -f /usr/local/bin/shfmt
+      fi
+      if [[ "install update"  == *"${COMMAND}"* ]]; then
+        if [ "${ARCH}" == "x86_64" ]; then
+          _ARCH=amd64
+        elif [ "${ARCH}" == "aarch64" ]; then
+          _ARCH=arm64
+        fi
+        ++ curl -LO "https://github.com/mvdan/sh/releases/download/${DEFAULT_VERSION}/shfmt_${DEFAULT_VERSION}_linux_${_ARCH}"
+        ++ chmod +x "shfmt_${DEFAULT_VERSION}_linux_${_ARCH}"
+        ++ sudo mkdir -p /usr/local/bin
+        ++ sudo cp "shfmt_${DEFAULT_VERSION}_linux_${_ARCH}" /usr/local/bin/shfmt
+      fi
+      ;;
+  esac
+
 }
 
 version_func_shfmt() {

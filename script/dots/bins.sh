@@ -46,4 +46,4 @@ setup_func() {
   fi
 }
 
-main_script ${THIS} setup_func setup_func "" "NONE"
+main_script ${THIS} setup_func "" "" "NONE"

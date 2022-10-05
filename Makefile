@@ -2,7 +2,7 @@ export PROJ_HOME := $(shell git rev-parse --show-toplevel)
 export SCRIPTS_DIR := $(PROJ_HOME)/script
 
 # ====================================================
-# INIT
+# ETC.
 # ====================================================
 
 initMac:
@@ -15,6 +15,9 @@ prerequisites:
 
 prerequisitesTest:
 	@( $(SCRIPTS_DIR)/prerequisites_test.sh )
+
+changeDefaultShell:
+	@( $(SCRIPTS_DIR)/change_default_shell.sh )
 
 # ====================================================
 # TARGETS
@@ -243,12 +246,16 @@ prezto:
 	@( $(SCRIPTS_DIR)/apps/prezto.sh )
 
 neovim: \
-	cmake unzip
+	patch pkg-config cmake autotools unzip gettext
 	@( $(SCRIPTS_DIR)/apps/neovim.sh )
 
 tmux: \
 	ncurses libevent terminfo
 	@( $(SCRIPTS_DIR)/apps/tmux.sh )
+
+wget: \
+	pkg-config gnutls gzip
+	@( $(SCRIPTS_DIR)/apps/wget.sh )
 
 tree:
 	@( $(SCRIPTS_DIR)/apps/tree.sh )
@@ -276,7 +283,8 @@ up:
 oniguruma:
 	@( $(SCRIPTS_DIR)/libs/oniguruma.sh )
 
-jq: oniguruma
+jq: \
+	oniguruma
 	@( $(SCRIPTS_DIR)/apps/jq.sh )
 # -----------------------------------------------------
 
@@ -294,29 +302,29 @@ tpm: \
 	tmux
 	@( $(SCRIPTS_DIR)/apps/tpm.sh )
 
+# ====================================================
+# DOTS
+# ====================================================
+
+bins:
+	@( $(SCRIPTS_DIR)/dots/bins.sh )
+
 configs:
 	@( $(SCRIPTS_DIR)/dots/configs.sh )
 
-tmux-plugins: \
-	tpm tmux
+tmux-plugins:
 	@( $(SCRIPTS_DIR)/dots/tmux_plugins.sh )
 
 neovim-plugins:
 	@( $(SCRIPTS_DIR)/dots/neovim_plugins.sh )
 
-custom-bins:
-	@( $(SCRIPTS_DIR)/dots/custom_bins.sh )
-
 # ====================================================
-# ENVIRONMENT
+# ENVIRONMENTS
 # ====================================================
 
 python: \
 	patch openssl readline zlib bzip2 sqlite3 libffi tcl tk xz ncurses
 	@( $(SCRIPTS_DIR)/environments/python.sh )
-
-python-env:
-	@( $(SCRIPTS_DIR)/environments/python_env.sh )
 
 golang:
 	@( $(SCRIPTS_DIR)/environments/golang.sh )
@@ -331,12 +339,38 @@ nodejs: \
 lua:
 	@( $(SCRIPTS_DIR)/environments/lua.sh )
 
+python-env:
+	@( $(SCRIPTS_DIR)/environments/python_env.sh )
+
 lua-env: \
 	unzip
-	@( $(SCRIPTS_DIR)/environments/lua-env.sh )
+	@( $(SCRIPTS_DIR)/environments/lua_env.sh )
 
 sh-env: \
 	xz
 	@( $(SCRIPTS_DIR)/environments/sh_env.sh )
 
+nodejs-env:
+	@( $(SCRIPTS_DIR)/environments/nodejs_env.sh )
+
 # ====================================================
+
+.PHONY: initMac prerequisites prerequisitesTest changeDefaultShell \
+	pkg-config ncurses libevent readline patch help2man gettext sqlite3 libffi \
+	texinfo bison \
+	cmake  \
+	zlib bzip2 unzip gzip xz \
+	openssl \
+	m4 autoconf automake libtool autotools \
+	gmp libnettle libtasn1 p11-kit gnutls \
+	libgpg-error libgcrypt libassuan libksba npth gnupg \
+	xorgproto xtrans libxau xcb-proto libxcb libx11 \
+	tcl tk \
+	libogg libsndfile flac sox \
+	flex libpcap tcpdump \
+	terminfo zsh fish prezto neovim tmux \
+	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq \
+	pyenv goenv asdf tpm \
+	bins configs tmux-plugins neovim-plugins \
+	python golang rust nodejs lua \
+	python-env lua-env sh-env nodejs-env

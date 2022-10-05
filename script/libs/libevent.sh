@@ -85,11 +85,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libevent-devel
+            ++ sudo dnf -y remove libevent-devel libevent
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libevent-devel
+            ++ sudo dnf -y install libevent-devel libevent
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libevent-devel
+            ++ sudo dnf -y update libevent-devel libevent
           fi
           ;;
       esac

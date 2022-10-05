@@ -11,20 +11,39 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 TARGET=${TARGET:-$(basename -- ${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]})}
 TARGET=$(echo "${TARGET%.*}" | sed -e 's/_/-/g')
 
+if [ ! -z "${CONFIG+x}" ] && [ -n "${CONFIG}" ]; then
+  # config is given
+  eval $(${PROJ_HOME}/script/helpers/parser_yaml ${CONFIG} "CONFIG_")
 
-if [ ! -z ${DOTFILES_TARGET+x} ]; then
-  if [ ! -z ${DOTFILES_COMMAND+x} ]; then
-    if [[ " ${DOTFILES_TARGET} " != *" ${TARGET} "* ]] && [ "${DOTFILES_COMMAND}" != "install" ]; then
+  DOTFILES_YES="true"
+
+  # underscore to dash
+  _TARGET=${TARGET/-/_}
+
+  _TARGET_MODE_CONFIG="CONFIG_${_TARGET}_mode"
+  if [ ! -z "${!_TARGET_MODE_CONFIG+x}" ]; then
+    DOTFILES_MODE=${!_TARGET_MODE_CONFIG}
+  fi
+
+  _TARGET_VERSION_CONFIG="CONFIG_${_TARGET}_version"
+  if [ ! -z "${!_TARGET_VERSION_CONFIG+x}" ]; then
+    DOTFILES_VERSION=${!_TARGET_VERSION_CONFIG}
+  fi
+fi
+
+if [ ! -z "${DOTFILES_TARGET+x}" ]; then
+  if [ ! -z "${DOTFILES_COMMAND+x}" ]; then
+    if [[ " "${DOTFILES_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTFILES_COMMAND}" != "install" ]; then
       exit 0
     fi
   fi
-  if [ ! -z ${DOTFILES_MODE+x} ]; then
-    if [[ " ${DOTFILES_TARGET} " != *" ${TARGET} "* ]] && [ "${DOTFILES_MODE}" == "system" ]; then
-      exit 0
-    fi
-  fi
-  if [ ! -z ${DOTFILES_SKIP_DEPENDENCIES+x} ] && [ "$DOTFILES_SKIP_DEPENDENCIES" == "true" ]; then
-    if [[ " ${DOTFILES_TARGET} " != *" ${TARGET} "* ]]; then
+  # if [ ! -z "${DOTFILES_MODE+x}" ]; then
+  #   if [[ " "${DOTFILES_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTFILES_MODE}" != "local" ]; then
+  #     exit 0
+  #   fi
+  # fi
+  if [ ! -z "${DOTFILES_SKIP_DEPENDENCIES+x}" ] && [ "$DOTFILES_SKIP_DEPENDENCIES" == "true" ]; then
+    if [[ " "${DOTFILES_TARGET}" " != *" ${TARGET} "* ]]; then
       exit 0
     fi
   fi
@@ -35,17 +54,18 @@ PROJ_HOME=${PROJ_HOME:-$(git rev-parse --show-toplevel)}
 BIN_DIR=${BIN_DIR:=${PROJ_HOME}/bin}
 SCRIPTS_DIR=${SCRIPTS_DIR:=${PROJ_HOME}/script}
 
-VERBOSE=$(echo ${VERBOSE:-false} | tr '[:upper:]' '[:lower:]')
+VERBOSE=$(echo "${VERBOSE:-false}" | tr '[:upper:]' '[:lower:]')
 
 PREFIX=${PREFIX:-$HOME/.local}
-mkdir -p ${HOME}/.config
-mkdir -p ${PREFIX}/bin
-mkdir -p ${PREFIX}/src
-mkdir -p ${PREFIX}/lib/pkgconfig
-mkdir -p ${PREFIX}/lib64/pkgconfig
-mkdir -p ${PREFIX}/include
-mkdir -p ${PREFIX}/share
-mkdir -p ${PREFIX}/share/man/man1
+mkdir -p "${HOME}/.config"
+mkdir -p "${PREFIX}/bin"
+mkdir -p "${PREFIX}/src"
+mkdir -p "${PREFIX}/lib/pkgconfig"
+mkdir -p "${PREFIX}/lib64/pkgconfig"
+mkdir -p "${PREFIX}/include"
+mkdir -p "${PREFIX}/share"
+mkdir -p "${PREFIX}/share/man/man1"
+mkdir -p "${PREFIX}/share/bash-completion/completions"
 
 # path
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin${PATH+:$PATH}"
@@ -62,12 +82,12 @@ export LDFLAGS="-L${PREFIX}/lib -L${PREFIX}/lib64"
 ################################################################
 
 # asdf
-if [ -f $HOME/.asdf/asdf.sh ]; then
+if [ -f "$HOME/.asdf/asdf.sh" ]; then
   export ASDF_DIR=${HOME}/.asdf
-  . ${ASDF_DIR}/asdf.sh
+  . "${ASDF_DIR}/asdf.sh"
 elif command -v brew >/dev/null && [ -f $(brew --prefix asdf)/libexec/asdf.sh ]; then
   export ASDF_DIR=$(brew --prefix asdf)/libexec
-  . ${ASDF_DIR}/asdf.sh
+  . "${ASDF_DIR}/asdf.sh"
 fi
 # pyenv
 export PYENV_ROOT=$HOME/.pyenv
@@ -81,8 +101,6 @@ export PYTHON_CONFIGURE_OPTS="--enable-shared"
 
 ################################################################
 
-# parse config
-[[ ! -z ${CONFIG:-} ]] && eval $(${PROJ_HOME}/script/helpers/parser_yaml ${CONFIG} "CONFIG_") || true
 # set verbose
 # 3: stdout, 4: stderr, 5: logger
 [[ "${VERBOSE}" == "true" ]] && exec 3>&1 4>&2 5>&2 || exec 3>/dev/null 4>/dev/null 5>&2
@@ -150,11 +168,11 @@ main_script() {
 
   _TARGET_COMMAND="${DOTFILES_COMMAND:-}"
   _TARGET_MODE="${DOTFILES_MODE:-}"
-  _TARGET_VERSION=
+  _TARGET_VERSION="${DOTFILES_VERSION:-${_DEFAULT_VERSION}}"
   _TARGET_YES="${DOTFILES_YES:-}"
 
-  # underscore to dash
-  _TARGET=${_TARGET/_/-}
+  # # underscore to dash
+  # _TARGET=${_TARGET/_/-}
 
   # if _FUNC_VERSION is given, process version checker
   if [ -n "${_FUNC_VERSION}" ]; then
@@ -218,8 +236,6 @@ main_script() {
           fi
         fi
       fi
-    else
-      _TARGET_VERSION="${_DEFAULT_VERSION}"
     fi
 
     if [ -z "${_TARGET_YES}" ]; then
@@ -242,7 +258,7 @@ main_script() {
   # fi
 
   if [ ${_TARGET_YES} == "true" ]; then
-    local _TMP_DIR=$(mktemp -d -t dotfiles.andy.XXXXX)
+    local _TMP_DIR=$(mktemp -d -t dotfiles.XXXXXXXX)
 
     if [ "${_TARGET_MODE}" == "local" ]; then
       _FUNC_SETUP="${_FUNC_SETUP_LOCAL}"
@@ -250,6 +266,11 @@ main_script() {
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
       _BANNER="[mode=system]"
+    fi
+
+    if [ -z "${_FUNC_SETUP}" ]; then
+      log_error "${_TARGET_MODE} is not supported for ${THIS_HL}."
+      exit 1
     fi
 
     if [ "${_TARGET_COMMAND}" = "install" ]; then

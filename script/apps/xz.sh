@@ -92,11 +92,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove xz-devel
+            ++ sudo dnf -y remove xz-devel xz
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install xz-devel
+            ++ sudo dnf -y install xz-devel xz
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update xz-devel
+            ++ sudo dnf -y update xz-devel xz
           fi
           ;;
       esac

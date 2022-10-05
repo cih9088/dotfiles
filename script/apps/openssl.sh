@@ -91,11 +91,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove openssl-devel
+            ++ sudo dnf -y remove openssl-devel openssl
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install openssl-devel
+            ++ sudo dnf -y install openssl-devel openssl
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update openssl-devel
+            ++ sudo dnf -y update openssl-devel openssl
           fi
           ;;
       esac

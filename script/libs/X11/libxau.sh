@@ -80,20 +80,20 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libxau-dev
+            ++ sudo apt-get -y remove libxau-dev libxau6
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libxau-dev
+            ++ sudo apt-get -y install libxau-dev libxau6
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libxau-dev
+            ++ sudo apt-get -y --only-upgrade install libxau-dev libxau6
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libXau-devel
+            ++ sudo dnf -y remove libXau-devel libXau
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libXau-devel
+            ++ sudo dnf -y install libXau-devel libXau
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libXau-devel
+            ++ sudo dnf -y update libXau-devel libXau
           fi
           ;;
       esac

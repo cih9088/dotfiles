@@ -1,14 +1,19 @@
+local M = {}
+
+
+local lspconfig = require("lspconfig")
+
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
-return function(client, bufnr)
+local on_attach = function(client, bufnr)
 
    -- Mappings.
-   local opts = { noremap=true, silent=true }
+   local opts = { noremap = true, silent = true }
    vim.keymap.set("n", "[d", "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
    vim.keymap.set("n", "]d", "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
    vim.keymap.set("n", "<space>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
    --
-   local bufopts = { noremap=true, silent=true, buffer=bufnr }
+   local bufopts = { noremap = true, silent = true, buffer = bufnr }
    vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", bufopts)
    vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", bufopts)
    vim.keymap.set("n", "gc", "<cmd>lua vim.lsp.buf.implementation()<CR>", bufopts)
@@ -65,3 +70,69 @@ return function(client, bufnr)
    --    ]]
    -- end
 end
+
+
+local server_configs = {
+   -- efm = {
+   --    filetypes = vim.tbl_keys(efm_config),
+   --    init_options = { documentFormatting = true },
+   --    root_dir = lspconfig.util.root_pattern({ ".git/", "." }),
+   --    settings = { languages = efm_config },
+   -- },
+   -- sumneko_lua = {
+   --    settings = {
+   --       Lua = {
+   --          diagnostics = {
+   --             globals = { "vim" },
+   --          },
+   --       },
+   --    },
+   -- },
+}
+
+local function get_config(server_name)
+   local config = server_configs[server_name] or {}
+   local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+   -- Add additional capabilities supported by nvim-cmp
+   capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+   capabilities = vim.tbl_extend("keep", capabilities, require("lsp-status").capabilities)
+
+   config.on_attach = on_attach
+   config.capabilities = capabilities
+   return config
+end
+
+--
+-- require("nvim-lsp-installer").on_server_ready(function(server)
+--    server:setup(get_config(server.name))
+--    -- vim.cmd [[ do User LspAttachBuffers ]]
+-- end)
+
+
+function M.setup()
+
+   -- Use a loop to conveniently call 'setup' on multiple servers and
+   -- map buffer local keybindings when the language server attaches
+   local servers = {
+      "pyright",
+      "gopls",
+      "rust_analyzer",
+      "bashls",
+      "vimls",
+      "yamlls",
+      "jsonls",
+      "sumneko_lua",
+      "ansiblels",
+      "tsserver",
+   }
+   for _, server in ipairs(servers) do
+      local config = get_config(server)
+      lspconfig[server].setup {
+         on_attach = config.on_attach,
+         capabilities = config.capabilities
+      }
+   end
+end
+
+return M

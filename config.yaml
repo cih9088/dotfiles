@@ -1,0 +1,106 @@
+#######################
+# apps & libs
+#######################
+
+pkg-config:
+
+patch:
+
+cmake:
+
+zlib:
+
+bzip2:
+
+unzip:
+
+gzip:
+
+xz:
+
+gnutls:
+
+gnupg:
+
+libx11:
+
+terminfo:
+
+zsh:
+
+prezto:
+
+neovim:
+
+tmux:
+
+wget:
+
+tree:
+
+fd:
+
+rg:
+
+tldr:
+
+up:
+
+jq:
+
+sox:
+
+tcpdump:
+
+#######################
+# dots
+#######################
+
+bins:
+  mode: local
+
+configs:
+  mode: local
+
+tpm:
+  mode: local
+
+#######################
+# envs
+#######################
+
+asdf:
+  mode: local
+
+python:
+  version: 3.8.5
+
+golang:
+  version: 1.17.5
+
+rust:
+  version: 1.64.0
+
+nodejs:
+  version: 17.2.0
+
+lua:
+  version: 5.4.3
+
+python-env:
+
+lua-env:
+
+sh-env:
+
+nodejs-env:
+
+#######################
+# plugins
+#######################
+
+tmux-plugins:
+  mode: local
+
+neovim-plugins:
+  mode: local

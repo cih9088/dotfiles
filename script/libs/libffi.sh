@@ -86,11 +86,11 @@ setup_func_system() {
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove libffi-devel
+            ++ sudo dnf -y remove libffi-devel libffi
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install libffi-devel
+            ++ sudo dnf -y install libffi-devel libffi
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update libffi-devel
+            ++ sudo dnf -y update libffi-devel libffi
           fi
           ;;
       esac

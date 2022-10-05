@@ -90,6 +90,12 @@ setup_func_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove xorg-x11-xtrans-devel
           elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo dnf -y install dnf-plugins-core
+            if dnf repolist --all | grep -q -i crb; then
+              ++ sudo dnf config-manager --set-enabled crb
+            elif dnf repolist --all | grep -q -i powertools; then
+              ++ sudo dnf config-manager --set-enabled powertools
+            fi
             ++ sudo dnf -y install xorg-x11-xtrans-devel
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update xorg-x11-xtrans-devel
