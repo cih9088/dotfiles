@@ -108,9 +108,9 @@ if command -v pyenv > /dev/null; then
     git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
   eval "$(pyenv init -)"
   log_info "Note that ${THIS_HL}2 would be installed using pyenv"
-  main_script 'python2' python2_install python2_install python_version_func
+  main_script 'python2' python2_install "" python_version_func
   log_info "Note that ${THIS_HL}3 would be installed using pyenv"
-  main_script 'python3' python3_install python3_install python_version_func
+  main_script 'python3' python3_install "" python_version_func
   pyenv global | grep '[0-9.]' -q || pyenv global \
     "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1)" \
     "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)"
@@ -119,12 +119,12 @@ elif command -v asdf > /dev/null; then
 
   log_info "Note that ${THIS_HL}2 would be installed using asdf"
   AVAILABLE_VERSIONS="$(asdf list all python 2 | grep -v 'dev')"
-  main_script 'python2' python2_install python2_install python_version_func \
+  main_script 'python2' python2_install "" python_version_func \
     "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
 
   log_info "Note that ${THIS_HL}3 would be installed using asdf"
   AVAILABLE_VERSIONS="$(asdf list all python 3 | grep -v 'dev')"
-  main_script 'python3' python3_install python3_install python_version_func \
+  main_script 'python3' python3_install "" python_version_func \
     "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
 else
   log_error "pyenv or asdf not found. Please install it then try again."

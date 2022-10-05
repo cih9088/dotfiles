@@ -25,15 +25,19 @@ DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libXau-*")"
+
 
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/libXau-* ]; then
-      ++ pushd ${PREFIX}/src/libXau-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf ${PREFIX}/src/libXau-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -43,7 +47,7 @@ setup_func_local() {
   fi
 
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/libXau-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -LO "https://www.x.org/archive/individual/lib/libXau-${VERSION}.tar.gz"
       ++ tar -xvzf "libXau-${VERSION}.tar.gz"

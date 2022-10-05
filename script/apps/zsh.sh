@@ -25,16 +25,19 @@ DEFAULT_VERSION=latest
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "zsh-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d "${PREFIX}"/src/zsh-* ]; then
-      ++ pushd "${PREFIX}"/src/zsh-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf "${PREFIX}"/src/zsh-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -45,18 +48,14 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/zsh-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       # download latest version and specify version
       if [[ ${VERSION} == "latest" ]]; then
         ++ curl -L https://sourceforge.net/projects/zsh/files/latest/download \
           -o "zsh-${VERSION}.tar.xz"
         ++ tar -xvJf "zsh-${VERSION}.tar.xz"
-        for file in ./*; do
-          if [[ -d "${file}" ]] && [[ "${file}" == *"zsh-"* ]]; then
-            VERSION=$(echo ${file##*zsh-})
-          fi
-        done
+        VERSION="$(find . -type d -name 'zsh-*' -exec basename {} \; | sed 's/zsh-//')"
       else
         ++ curl -L "https://sourceforge.net/projects/zsh/files/zsh/${VERSION}/zsh-${VERSION}.tar.xz/download" \
           -o "zsh-${VERSION}.tar.xz"

@@ -28,7 +28,7 @@ AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 
 # python virtualenv path
 export WORKON_HOME=${HOME}/.virtualenvs
-mkdir -p ${WORKON_HOME} || true
+mkdir -p "${WORKON_HOME}" || true
 
 neovim3_virenv='neovim3'
 neovim2_virenv='neovim2'
@@ -79,7 +79,9 @@ setup_func_python_support() {
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "neovim-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -96,12 +98,13 @@ setup_func_local() {
     #     ++ popd
     #     rm -rf ${PREFIX}/src/neovim
     #   fi
-    if [ -d "${PREFIX}"/src/neovim-* ]; then
-      ++ pushd "${PREFIX}"/src/neovim-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       cmake --build build/ --target uninstall || true
       make clean || true
       ++ popd
-      rm -rf "${PREFIX}"/src/neovim-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -112,7 +115,8 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -x "$(command -v ${PREFIX}/bin/nvim)" ]; then
+    if [ -z "${SRC_PATH}" ]; then
+
       ++ curl -LO "https://github.com/neovim/neovim/archive/refs/tags/${VERSION}.tar.gz"
       ++ tar -xvzf "${VERSION}.tar.gz"
 
@@ -172,57 +176,6 @@ setup_func_local() {
 
 setup_func_system() {
   local COMMAND="${1:-skip}"
-
-  if [ "${COMMAND}" == "remove" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list neovim >/dev/null 2>&1 && brew uninstall neovim
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y remove neovim || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y remove neovim || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  elif [ "${COMMAND}" == "install" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list neovim >/dev/null 2>&1 || brew install neovim
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y install neovim || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y install epel-release || exit $?
-            sudo dnf -y install neovim || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  elif [ "${COMMAND}" == "update" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew upgrade neovim
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y --only-upgrade install neovim || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y update neovim || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  fi
 
   case "${PLATFORM}" in
     OSX)

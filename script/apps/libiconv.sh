@@ -35,6 +35,7 @@ setup_func_local() {
       make clean || true
       popd || exit $?
       rm -rf ${PREFIX}/src/libiconv-*
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."

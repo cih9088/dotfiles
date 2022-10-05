@@ -24,16 +24,20 @@ DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "gnutls-*")"
+
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/gnutls-* ]; then
-      ++ pushd ${PREFIX}/src/gnutls-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf ${PREFIX}/src/gnutls-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -44,8 +48,7 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/gnutls-* ]; then
-      [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+    if [ -z "${SRC_PATH}" ]; then
 
       _FINAL_VERSION="$(curl --silent --show-error https://www.gnupg.org/ftp/gcrypt/gnutls/${VERSION}/ |
         ${DIR}/../helpers/parser_html 'a' |

@@ -54,19 +54,20 @@ sqlite3:
 libffi:
 	@( $(SCRIPTS_DIR)/libs/libffi.sh )
 
-# # glibc
-# # -----------------------------------------------------
-# texinfo:
-#   @( $(SCRIPTS_DIR)/libs/texinfo.sh )
-#
-# bison: \
-#   m4 texinfo
-#   @( $(SCRIPTS_DIR)/libs/bison.sh )
-#
+# glibc
+# -----------------------------------------------------
+texinfo: \
+	ncurses
+	@( $(SCRIPTS_DIR)/libs/texinfo.sh )
+
+bison: \
+	m4 texinfo
+	@( $(SCRIPTS_DIR)/libs/bison.sh )
+
 # glibc: \
 #   bison bzip2 gettext texinfo
 #   @( $(SCRIPTS_DIR)/libs/glibc.sh )
-# # -----------------------------------------------------
+# -----------------------------------------------------
 
 cmake: \
 	openssl
@@ -158,7 +159,7 @@ npth: \
 
 gnupg: \
 	libgpg-error libgcrypt libassuan \
-	libksba npth gnutls
+	libksba npth bzip2 gnutls
 	@( $(SCRIPTS_DIR)/apps/gnupg.sh )
 # -----------------------------------------------------
 
@@ -212,6 +213,21 @@ sox: \
 	@( $(SCRIPTS_DIR)/apps/sox.sh )
 # -----------------------------------------------------
 
+# tcptump
+# -----------------------------------------------------
+flex: \
+	autotools gettext help2man
+	@( $(SCRIPTS_DIR)/libs/flex.sh )
+
+libpcap: \
+	flex bison
+	@( $(SCRIPTS_DIR)/libs/libpcap.sh )
+
+tcpdump: \
+	libpcap
+	@( $(SCRIPTS_DIR)/apps/tcpdump.sh )
+# -----------------------------------------------------
+
 terminfo:
 	@( $(SCRIPTS_DIR)/libs/terminfo.sh )
 
@@ -223,12 +239,11 @@ fish: \
 	ncurses gettext xz cmake
 	@( $(SCRIPTS_DIR)/apps/fish.sh )
 
-prezto: \
-	zsh
+prezto:
 	@( $(SCRIPTS_DIR)/apps/prezto.sh )
 
 neovim: \
-	cmake
+	cmake unzip
 	@( $(SCRIPTS_DIR)/apps/neovim.sh )
 
 tmux: \

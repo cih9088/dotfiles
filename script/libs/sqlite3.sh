@@ -18,16 +18,19 @@ DEFAULT_VERSION="3.37.0"
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "sqlite-autoconf-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/sqlite-autoconf-* ]; then
-      ++ pushd ${PREFIX}/src/sqlite-autoconf-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf ${PREFIX}/src/sqlite-autoconf-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -38,7 +41,7 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d ${PREFIX}/src/sqlite-autoconf-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -LO https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz
       ++ tar -xvzf sqlite-autoconf-3370000.tar.gz

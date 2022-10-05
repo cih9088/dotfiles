@@ -3,31 +3,29 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
+GH="the-tcpdump-group/libpcap"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
-THIS_CMD="makeinfo"
 
 log_title "Prepare for ${THIS_HL}"
 
 AVAILABLE_VERSIONS="$(
-  curl --silent --show-error https://ftp.gnu.org/gnu/texinfo/ |
-    ${DIR}/../helpers/parser_html 'a' |
-    grep 'texinfo-[0-9]\+' | grep 'tar.gz\"' |
-    awk '{print $4}' |
-    sed -e 's/.tar.gz//' -e 's/texinfo-//' |
-    sort -Vr)"
-DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
+  ${DIR}/../helpers/gh_list_tags ${GH} | 
+    sed 's/libpcap-//' | tr ' ' '\n' | 
+    grep -v 'bp' | grep -v 'rc')"
+DEFAULT_VERSION="$(echo ${AVAILABLE_VERSIONS} | awk '{print $1}')"
 ################################################################
 
-setup_func_local() {
+setup_func_up_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
-  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "texinfo-*")"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libpcap-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -50,56 +48,51 @@ setup_func_local() {
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
 
-      ++ curl -LO "https://ftp.gnu.org/gnu/texinfo/texinfo-${VERSION}.tar.gz"
-      ++ tar -xvzf "texinfo-${VERSION}.tar.gz"
+      ++ curl -LO "https://github.com/${GH}/archive/refs/tags/libpcap-${VERSION}.tar.gz"
+      ++ tar -xvzf "libpcap-${VERSION}.tar.gz"
 
-      ++ pushd "texinfo-${VERSION}"
-      if [ "${VERSION}" == 6.8 ]; then
-        # https://groups.google.com/g/linux.debian.bugs.dist/c/HWZb5w-kpTk
-        ++ curl -LO https://src.fedoraproject.org/rpms/texinfo/raw/rawhide/f/texinfo-6.8-undo-gnulib-nonnul.patch
-        ++ git apply texinfo-6.8-undo-gnulib-nonnul.patch
-      fi
+      ++ pushd "libpcap-libpcap-${VERSION}"
       ++ ./configure --prefix="${PREFIX}"
       ++ make
       ++ make install
       ++ popd
 
-      ++ mv "texinfo-${VERSION}" "${PREFIX}/src"
+      ++ mv "libpcap-libpcap-${VERSION}" "${PREFIX}/src/libpcap-${VERSION}"
     fi
   fi
 }
 
-setup_func_system() {
+setup_func_up_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list texinfo >/dev/null 2>&1 && ++ brew uninstall texinfo
+        ++ brew list libpcap >/dev/null 2>&1 && ++ brew uninstall libpcap
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list texinfo >/dev/null 2>&1 || ++ brew install texinfo
+        ++ brew list libpcap >/dev/null 2>&1 || ++ brew install libpcap
       elif [ "${COMMAND}" == "update" ]; then
-        ++ brew upgrade texinfo
+        ++ brew upgrade libpcap
       fi
       ;;
     LINUX)
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libc6-dev
+            ++ sudo apt-get -y remove libpcap-dev
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libc6-dev
+            ++ sudo apt-get -y install libpcap-dev
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libc6-dev
+            ++ sudo apt-get -y --only-upgrade install libpcap-dev
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove texinfo-devel
+            ++ sudo dnf -y remove libpcap
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install texinfo-devel
+            ++ sudo dnf -y install libpcap
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update texinfo-devel
+            ++ sudo dnf -y update libpcap
           fi
           ;;
       esac
@@ -108,13 +101,10 @@ setup_func_system() {
 
 }
 
-version_func() {
-  $1 --version | head -1 | cut -d ' ' -f4
-}
-
 verify_version() {
-  [[ "$AVAILABLE_VERSIONS" == *"${1}"* ]]
+  $(${DIR}/../helpers/gh_check_release ${GH} ${1})
 }
 
-main_script "${THIS}" setup_func_local setup_func_system "" \
+main_script ${THIS} setup_func_up_local setup_func_up_system "" \
   "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+

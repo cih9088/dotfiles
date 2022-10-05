@@ -26,15 +26,17 @@ setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "bison-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/bison-* ]; then
-      pushd ${PREFIX}/src/bison-* || exit $?
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
-      popd || exit $?
-      rm -rf ${PREFIX}/src/bison-*
+      ++ popd
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -45,19 +47,18 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/bison-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
-      curl -LO https://ftp.gnu.org/gnu/bison/bison-${VERSION}.tar.gz || exit $?
-      tar -xvzf bison-${VERSION}.tar.gz || exit $?
+      ++ curl -LO "https://ftp.gnu.org/gnu/bison/bison-${VERSION}.tar.gz"
+      ++ tar -xvzf "bison-${VERSION}.tar.gz"
 
-      mv bison-${VERSION} ${PREFIX}/src
-      pushd ${PREFIX}/src/bison-${VERSION} || exit $?
+      ++ pushd "bison-${VERSION}"
+      ++ ./configure --prefix="${PREFIX}"
+      ++ make
+      ++ make install
+      ++ popd
 
-      ./configure --prefix=${PREFIX} || exit $?
-      make || exit $?
-      make install || exit $?
-
-      popd || exit $?
+      ++ mv "bison-${VERSION}" "${PREFIX}/src"
     fi
   fi
 }
@@ -114,6 +115,40 @@ setup_func_system() {
         ;;
     esac
   fi
+
+  case "${PLATFORM}" in
+    OSX)
+      if [ "${COMMAND}" == "remove" ]; then
+        ++ brew list bison >/dev/null 2>&1 && ++ brew uninstall bison
+      elif [ "${COMMAND}" == "install" ]; then
+        ++ brew list bison >/dev/null 2>&1 || ++ brew install bison
+      elif [ "${COMMAND}" == "update" ]; then
+        ++ brew upgrade bison
+      fi
+      ;;
+    LINUX)
+      case "${FAMILY}" in
+        DEBIAN)
+          if [ "${COMMAND}" == "remove" ]; then
+            ++ sudo apt-get -y remove libc6-dev
+          elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo apt-get -y install libc6-dev
+          elif [ "${COMMAND}" == "update" ]; then
+            ++ sudo apt-get -y --only-upgrade install libc6-dev
+          fi
+          ;;
+        RHEL)
+          if [ "${COMMAND}" == "remove" ]; then
+            ++ sudo dnf -y remove bison-devel
+          elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo dnf -y install bison-devel
+          elif [ "${COMMAND}" == "update" ]; then
+            ++ sudo dnf -y update bison-devel
+          fi
+          ;;
+      esac
+      ;;
+  esac
 }
 
 verify_version() {

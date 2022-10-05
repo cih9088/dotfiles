@@ -22,6 +22,7 @@ AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 setup_func_shfmt_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION=$DEFAULT_VERSION
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -38,7 +39,6 @@ setup_func_shfmt_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ ! -f "${PREFIX}/bin/shfmt" ]; then
-      [ -z "${VERSION}" ] && VERSION=$DEFAULT_VERSION
 
       if [ "${ARCH}" == "x86_64" ]; then
         _ARCH=amd64

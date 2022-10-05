@@ -45,6 +45,7 @@ mkdir -p ${PREFIX}/lib/pkgconfig
 mkdir -p ${PREFIX}/lib64/pkgconfig
 mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/share
+mkdir -p ${PREFIX}/share/man/man1
 
 # path
 export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin${PATH+:$PATH}"
@@ -248,7 +249,7 @@ main_script() {
       _BANNER="[mode=local, version=${_TARGET_VERSION}]"
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
-      _BANNER="[mode=systrm]"
+      _BANNER="[mode=system]"
     fi
 
     if [ "${_TARGET_COMMAND}" = "install" ]; then
@@ -273,6 +274,10 @@ main_script() {
       "${_FUNC_SETUP}" "${_TARGET_COMMAND}" "${_TARGET_VERSION}"
     ) >&3 2>&4 && exit_code="0" || exit_code="$?"
     stop_spinner "${exit_code}" "$_END_BANNER_PASS" "$_END_BANNER_FAIL"
+
+    if [ "$exit_code" -ne 0 ]; then
+      exit "$exit_code"
+    fi
 
     # clean up
     rm -rf "${_TMP_DIR}"

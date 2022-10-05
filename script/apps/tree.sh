@@ -19,16 +19,19 @@ DEFAULT_VERSION=1.8.0
 setup_func_tree_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "tree-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/tree-* ]; then
-      ++ pushd ${PREFIX}/src/tree-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf ${PREFIX}/src/tree-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -39,7 +42,7 @@ setup_func_tree_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/tree-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -LO "http://mama.indstate.edu/users/ice/tree/src/tree-${VERSION}.tgz"
       ++ tar -xvzf "tree-${VERSION}.tgz"

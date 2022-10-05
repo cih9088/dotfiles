@@ -15,7 +15,7 @@ log_title "Prepare for ${THIS_HL}"
 DEFAULT_VERSION="latest"
 ################################################################
 
-setup_func_terminfo_local() {
+setup_func_local() {
   local COMMAND="${1:-skip}"
 
   if [[ "remove update" == *"${COMMAND}"* ]]; then
@@ -35,5 +35,18 @@ setup_func_terminfo_local() {
   fi
 }
 
-main_script "${THIS}" setup_func_terminfo_local setup_func_terminfo_local "" \
+setup_func_system() {
+  local COMMAND="${1:-skip}"
+
+  if [[ "install update"  == *"${COMMAND}"* ]]; then
+    ++ curl -LO --silent --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz
+    ++ gzip -d terminfo.src.gz
+    ++ tic -x -o /usr/share/terminfo terminfo.src
+  elif [ "${COMMAND}" == "remove" ]; then
+    log_error "${THIS_HL} is not removable."
+    exit 1
+  fi
+}
+
+main_script "${THIS}" setup_func_local setup_func_system "" \
   "${DEFAULT_VERSION}"

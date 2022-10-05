@@ -26,15 +26,32 @@ DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1)
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
+  local SRC_PATH_2=""
+  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncurses-*")"
+  SRC_PATH_2="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncursesw-*")"
 
   # remove
   if [[ "remove update" == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/ncurses-* ]; then
-      ++ pushd ${PREFIX}/src/ncurses-*
-      make uninstall || true
-      make clean || true
-      ++ popd
-      rm -rf ${PREFIX}/src/ncurses-*
+    if [ -n "${SRC_PATH}" ] || [ -n "${SRC_PATH_2}" ] ; then
+      if [ -n "${SRC_PATH}" ]; then
+        ++ pushd "${SRC_PATH}"
+        make uninstall || true
+        make clean || true
+        ++ popd
+        rm -rf "${SRC_PATH}"
+        SRC_PATH=""
+      fi
+
+      if [ -n "${SRC_PATH_2}" ]; then
+        ++ pushd "${SRC_PATH_2}"
+        make uninstall || true
+        make clean || true
+        ++ popd
+        rm -rf "${SRC_PATH_2}"
+        SRC_PATH_2=""
+      fi
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -45,42 +62,45 @@ setup_func_local() {
 
   # install
   if [[ "install update" == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/ncurses-* ]; then
-
+    if [ -z "${SRC_PATH}" ] || [ -z "${SRC_PATH_2}" ] ; then
       ++ curl -LO "https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${VERSION}.tar.gz"
-      ++ tar -xvzf "ncurses-${VERSION}.tar.gz"
 
-      ++ pushd "ncurses-${VERSION}"
-      ++ ./configure \
-        --prefix="${PREFIX}" \
-        --with-normal \
-        --with-shared \
-        --enable-pc-files \
-        --with-versioned-syms
-      ++ make
-      ++ make install.includes
-      ++ make install.libs
-      ++ popd
+      if [ -z "${SRC_PATH}" ]; then
+        ++ tar -xvzf "ncurses-${VERSION}.tar.gz"
 
-      ++ mv "ncurses-${VERSION}" "${PREFIX}/src"
+        ++ pushd "ncurses-${VERSION}"
+        ++ ./configure \
+          --prefix="${PREFIX}" \
+          --with-normal \
+          --with-shared \
+          --enable-pc-files \
+          --with-versioned-syms
+        ++ make
+        ++ make install.includes
+        ++ make install.libs
+        ++ popd
 
-      ++ tar -xvzf "ncurses-${VERSION}.tar.gz"
+        ++ mv "ncurses-${VERSION}" "${PREFIX}/src"
+      fi
 
-      ++ pushd "ncurses-${VERSION}"
-      ++ ./configure \
-        --prefix="${PREFIX}" \
-        --with-normal \
-        --with-shared \
-        --enable-pc-files \
-        --with-versioned-syms \
-        --enable-widec
-      ++ make
-      ++ make install.includes
-      ++ make install.libs
-      ++ popd
+      if [ -z "${SRC_PATH_2}" ]; then
+        ++ tar -xvzf "ncurses-${VERSION}.tar.gz"
 
-      ++ mv "ncurses-${VERSION}" "${PREFIX}/src/ncursesw-${VERSION}"
+        ++ pushd "ncurses-${VERSION}"
+        ++ ./configure \
+          --prefix="${PREFIX}" \
+          --with-normal \
+          --with-shared \
+          --enable-pc-files \
+          --with-versioned-syms \
+          --enable-widec
+        ++ make
+        ++ make install.includes
+        ++ make install.libs
+        ++ popd
 
+        ++ mv "ncurses-${VERSION}" "${PREFIX}/src/ncursesw-${VERSION}"
+      fi
     fi
   fi
 }

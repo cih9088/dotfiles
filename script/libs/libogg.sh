@@ -18,16 +18,20 @@ DEFAULT_VERSION="1.3.5"
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libogg-*")"
+
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/libogg-* ]; then
-      ++ pushd ${PREFIX}/src/libogg-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf ${PREFIX}/src/libogg-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -38,7 +42,7 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/libogg-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -LO "https://downloads.xiph.org/releases/ogg/libogg-${VERSION}.tar.gz"
       ++ tar -xvzf "libogg-${VERSION}.tar.gz"

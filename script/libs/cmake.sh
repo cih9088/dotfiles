@@ -20,16 +20,19 @@ DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "cmake-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/cmake-* ]; then
-      ++ pushd ${PREFIX}/src/cmake-*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf ${PREFIX}/src/cmake-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -40,13 +43,13 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d ${PREFIX}/src/cmake-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -LO "https://github.com/Kitware/CMake/releases/download/${VERSION}/cmake-${VERSION##v}.tar.gz"
       ++ tar -xvzf "cmake-${VERSION##v}.tar.gz"
 
       ++ pushd "cmake-${VERSION##v}"
-      ++ ./bootstrap --prefix=/root/.local -- -DCMAKE_BUILD_TYPE:STRING=Release
+      ++ ./bootstrap --prefix="${PREFIX}" -- -DCMAKE_BUILD_TYPE:STRING=Release
       ++ make
       ++ make install
       ++ popd

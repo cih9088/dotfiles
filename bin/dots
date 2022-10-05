@@ -21,10 +21,10 @@ GH_ACCESS=${GH_ACCESS:-}
 
 DOTFILES_APPS=(
   "bzip2" "unzip" "gzip" "openssl"
-  "autotools" "gnutls" "gnupg" 
+  "autotools" "gnutls" "gnupg"
   "zsh" "fish" "prezto"
   "neovim" "tmux" "tpm"
-  "tree" "fd" "rg" "thefuck" "tldr" "bash-snippets" "up" "jq" "sox"
+  "tree" "fd" "rg" "thefuck" "tldr" "bash-snippets" "up" "jq" "sox" "tcpdump"
   "pyenv" "goenv" "asdf"
 )
 
@@ -33,7 +33,7 @@ DOTFILES_DOTS=(
 )
 
 DOTFILES_LIBS=(
-  "terminfo" "zlib" "ncurses" "libevent" "readline" "help2man" "patch"
+  "terminfo" "zlib" "ncurses" "libevent" "readline" "help2man" "patch" "cmake" "pkg-config" "libxcb" "tk" "tcl" "oniguruma" "texinfo"
 )
 
 

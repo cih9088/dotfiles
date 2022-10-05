@@ -25,16 +25,19 @@ DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libtasn1-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/libtasn1-* ]; then
-      pushd ${PREFIX}/src/libtasn1-* || exit $?
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
-      popd || exit $?
-      rm -rf ${PREFIX}/src/libtasn1-*
+      ++ popd
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -45,19 +48,18 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/libtasn1-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
-      curl -LO https://ftp.gnu.org/gnu/libtasn1/libtasn1-${VERSION}.tar.gz || exit $?
-      tar -xvzf libtasn1-${VERSION}.tar.gz || exit $?
+      ++ curl -LO https://ftp.gnu.org/gnu/libtasn1/libtasn1-${VERSION}.tar.gz
+      ++ tar -xvzf libtasn1-${VERSION}.tar.gz
 
-      mv libtasn1-${VERSION} ${PREFIX}/src
-      pushd ${PREFIX}/src/libtasn1-${VERSION} || exit $?
+      ++ pushd "libtasn1-${VERSION}"
+      ++ ./configure --prefix=${PREFIX}
+      ++ make
+      ++ make install
+      ++ popd
 
-      ./configure --prefix=${PREFIX} || exit $?
-      make || exit $?
-      make install || exit $?
-
-      popd || exit $?
+      ++ mv "libtasn1-${VERSION}" "${PREFIX}/src"
     fi
   fi
 }
@@ -65,55 +67,40 @@ setup_func_local() {
 setup_func_system() {
   local COMMAND="${1:-skip}"
 
-  if [ "${COMMAND}" == "remove" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list libtasn1 >/dev/null 2>&1 && brew uninstall libtasn1
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y remove libtans1-6-dev || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y remove libtasn1-devel || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  elif [ "${COMMAND}" == "install" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew list libtasn1 >/dev/null 2>&1 || brew install libtasn1
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y install libtans1-6-dev || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y install libtasn1-devel || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  elif [ "${COMMAND}" == "update" ]; then
-    case ${PLATFORM} in
-      OSX )
-        brew upgrade libtasn1
-        ;;
-      LINUX )
-        case ${FAMILY} in
-          DEBIAN )
-            sudo apt-get -y --only-upgrade install libtans1-6-dev || exit $?
-            ;;
-          RHEL )
-            sudo dnf -y update libtasn1-devel || exit $?
-            ;;
-        esac
-        ;;
-    esac
-  fi
+  case "${PLATFORM}" in
+    OSX)
+      if [ "${COMMAND}" == "remove" ]; then
+        ++ brew list libtasn1 >/dev/null 2>&1 && ++ brew uninstall libtasn1
+      elif [ "${COMMAND}" == "install" ]; then
+        ++ brew list libtasn1 >/dev/null 2>&1 || ++ brew install libtasn1
+      elif [ "${COMMAND}" == "update" ]; then
+        ++ brew upgrade libtasn1
+      fi
+      ;;
+    LINUX)
+      case "${FAMILY}" in
+        DEBIAN)
+          if [ "${COMMAND}" == "remove" ]; then
+            ++ sudo apt-get -y remove libtans1-6-dev
+          elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo apt-get -y install libtans1-6-dev
+          elif [ "${COMMAND}" == "update" ]; then
+            ++ sudo apt-get -y --only-upgrade install libtans1-6-dev
+          fi
+          ;;
+        RHEL)
+          if [ "${COMMAND}" == "remove" ]; then
+            ++ sudo dnf -y remove libtasn1-devel
+          elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo dnf -y install libtasn1-devel
+          elif [ "${COMMAND}" == "update" ]; then
+            ++ sudo dnf -y update libtasn1-devel
+          fi
+          ;;
+      esac
+      ;;
+  esac
+
 }
 
 verify_version() {

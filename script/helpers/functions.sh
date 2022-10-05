@@ -160,6 +160,6 @@ EOF
 }
 
 ++() {
-  set -f  # no double expand
+  # set -f  # no double expand
   eval "$@" || exit $?
 }

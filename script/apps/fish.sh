@@ -20,19 +20,22 @@ AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "fish-*")"
 
   # remove
   if [[ "remove update" == *"${COMMAND}"* ]]; then
-    if [ -d "${PREFIX}"/src/fish-* ]; then
-      ++ pushd "${PREFIX}"/src/fish-*
-      make uninstall || true
-      make clean || true
-      ++ popd
+    if [ -n "${SRC_PATH}" ]; then
+      # https://fishshell.com/docs/current/faq.html#uninstalling-fish
+      rm -rf "${PREFIX}"/share/fish || true
+      rm -rf "${PREFIX}"/etc/fish || true
+      rm "${PREFIX}"/share/man/man1/fish*.1 || true
       rm -rf "${PREFIX}"/bin/fish || true
       rm -rf "${PREFIX}"/bin/fish_key_reader || true
       rm -rf "${PREFIX}"/bin/fish_indent || true
-      rm -rf "${PREFIX}"/src/fish-*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -43,14 +46,19 @@ setup_func_local() {
 
   # install
   if [[ "install update" == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/fish-* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/fish-${VERSION}.tar.xz"
       ++ tar -xvJf "fish-${VERSION}.tar.xz"
 
       ++ pushd "fish-${VERSION}"
       ++ mkdir build && ++ cd build
-      ++ cmake .. -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DWITH_GETTEXT=ON
+      # headers for test are not properly set
+      # https://github.com/fish-shell/fish-shell/issues/9032#issuecomment-1173243686
+      ++ cmake .. \
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+        -DWITH_GETTEXT=ON \
+        -DCMAKE_CXX_FLAGS="-I ${PREFIX}/include/ncurses"
       ++ make
       ++ make install
       ++ popd

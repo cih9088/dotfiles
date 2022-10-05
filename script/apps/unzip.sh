@@ -25,16 +25,19 @@ DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1 )
 setup_func_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "unzip-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    if [ -d ${PREFIX}/src/unzip* ]; then
-      ++ pushd ${PREFIX}/src/unzip*
+    if [ -n "${SRC_PATH}" ]; then
+      ++ pushd "${SRC_PATH}"
       make uninstall || true
       make clean || true
       ++ popd
-      rm -rf ${PREFIX}/src/unzip*
+      rm -rf "${SRC_PATH}"
+      SRC_PATH=""
     else
       if [ "${COMMAND}" == "update" ]; then
         log_error "${THIS_HL} is not installed. Please install it before update it."
@@ -45,7 +48,7 @@ setup_func_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${PREFIX}"/src/unzip* ]; then
+    if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -L "https://sourceforge.net/projects/infozip/files/UnZip%206.x%20%28latest%29/UnZip%20${VERSION}/unzip${VERSION/./}.tar.gz/download" \
         -o unzip${VERSION/./}.tar.gz

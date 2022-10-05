@@ -15,7 +15,6 @@ DEFAULT_VERSION="latest"
 ###############################################################
 
 setup_func() {
-  local FORCE="${1}"
   local COMMAND="${1:-skip}"
 
   if [ "${COMMAND}" == "remove" ]; then
