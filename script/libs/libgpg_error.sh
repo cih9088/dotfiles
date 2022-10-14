@@ -72,9 +72,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libgpg-error >/dev/null 2>&1 && ++ brew uninstall libgpg-error
+        brew list libgpg-error >/dev/null 2>&1 && ++ brew uninstall libgpg-error
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libgpg-error >/dev/null 2>&1 || ++ brew install libgpg-error
+        brew list libgpg-error >/dev/null 2>&1 || ++ brew install libgpg-error
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libgpg-error
       fi

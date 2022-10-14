@@ -65,9 +65,9 @@ setup_func_tldr_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list tealdeer >/dev/null 2>&1 && ++ brew uninstall tealdeer
+        brew list tealdeer >/dev/null 2>&1 && ++ brew uninstall tealdeer
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list tealdeer >/dev/null 2>&1 || ++ brew install tealdeer
+        brew list tealdeer >/dev/null 2>&1 || ++ brew install tealdeer
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade tealdeer
       fi

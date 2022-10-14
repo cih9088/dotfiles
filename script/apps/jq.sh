@@ -65,9 +65,9 @@ setup_func_up_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list jq >/dev/null 2>&1 && ++ brew uninstall jq
+        brew list jq >/dev/null 2>&1 && ++ brew uninstall jq
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list jq >/dev/null 2>&1 || ++ brew install jq
+        brew list jq >/dev/null 2>&1 || ++ brew install jq
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade jq
       fi

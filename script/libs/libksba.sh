@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libksba >/dev/null 2>&1 && ++ brew uninstall libksba
+        brew list libksba >/dev/null 2>&1 && ++ brew uninstall libksba
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libksba >/dev/null 2>&1 || ++ brew install libksba
+        brew list libksba >/dev/null 2>&1 || ++ brew install libksba
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libksba
       fi

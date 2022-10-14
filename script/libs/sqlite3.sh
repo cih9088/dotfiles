@@ -63,9 +63,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list sqlite3 >/dev/null 2>&1 && ++ brew uninstall sqlite3
+        brew list sqlite3 >/dev/null 2>&1 && ++ brew uninstall sqlite3
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list sqlite3 >/dev/null 2>&1 || ++ brew install sqlite3
+        brew list sqlite3 >/dev/null 2>&1 || ++ brew install sqlite3
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade sqlite3
       fi

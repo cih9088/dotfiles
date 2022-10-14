@@ -54,9 +54,9 @@ setup_func_stylua_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list stylua >/dev/null 2>&1 && ++ brew uninstall stylua
+        brew list stylua >/dev/null 2>&1 && ++ brew uninstall stylua
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list stylua >/dev/null 2>&1 || ++ brew install stylua
+        brew list stylua >/dev/null 2>&1 || ++ brew install stylua
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade stylua
       fi

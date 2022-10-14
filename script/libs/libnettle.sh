@@ -71,9 +71,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list nettle >/dev/null 2>&1 && ++ brew uninstall nettle
+        brew list nettle >/dev/null 2>&1 && ++ brew uninstall nettle
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list nettle >/dev/null 2>&1 || ++ brew install nettle
+        brew list nettle >/dev/null 2>&1 || ++ brew install nettle
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade nettle
       fi

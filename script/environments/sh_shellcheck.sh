@@ -67,9 +67,9 @@ setup_func_shellcheck_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list shellcheck >/dev/null 2>&1 && ++ brew uninstall shellcheck
+        brew list shellcheck >/dev/null 2>&1 && ++ brew uninstall shellcheck
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list shellcheck >/dev/null 2>&1 || ++ brew install shellcheck
+        brew list shellcheck >/dev/null 2>&1 || ++ brew install shellcheck
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade shellcheck
       fi

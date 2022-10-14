@@ -69,9 +69,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libx11 >/dev/null 2>&1 && ++ brew uninstall libx11
+        brew list libx11 >/dev/null 2>&1 && ++ brew uninstall libx11
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libx11 >/dev/null 2>&1 || ++ brew install libx11
+        brew list libx11 >/dev/null 2>&1 || ++ brew install libx11
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libx11
       fi

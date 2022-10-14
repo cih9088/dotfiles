@@ -71,9 +71,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libtool >/dev/null 2>&1 && ++ brew uninstall libtool
+        brew list libtool >/dev/null 2>&1 && ++ brew uninstall libtool
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libtool >/dev/null 2>&1 || ++ brew install libtool
+        brew list libtool >/dev/null 2>&1 || ++ brew install libtool
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libtool
       fi

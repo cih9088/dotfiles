@@ -76,9 +76,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list tcl-tk >/dev/null 2>&1 && ++ brew uninstall tcl-tk
+        brew list tcl-tk >/dev/null 2>&1 && ++ brew uninstall tcl-tk
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list tcl-tk >/dev/null 2>&1 || ++ brew install tcl-tk
+        brew list tcl-tk >/dev/null 2>&1 || ++ brew install tcl-tk
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade tcl-tk
       fi

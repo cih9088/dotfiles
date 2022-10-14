@@ -182,9 +182,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list neovim >/dev/null 2>&1 && ++ brew uninstall neovim
+        brew list neovim >/dev/null 2>&1 && ++ brew uninstall neovim
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list neovim >/dev/null 2>&1 || ++ brew install neovim
+        brew list neovim >/dev/null 2>&1 || ++ brew install neovim
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade neovim
       fi

@@ -66,9 +66,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libffi >/dev/null 2>&1 && ++ brew uninstall libffi
+        brew list libffi >/dev/null 2>&1 && ++ brew uninstall libffi
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libffi >/dev/null 2>&1 || ++ brew install libffi
+        brew list libffi >/dev/null 2>&1 || ++ brew install libffi
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libffi
       fi

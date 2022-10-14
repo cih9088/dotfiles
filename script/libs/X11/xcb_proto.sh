@@ -69,9 +69,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list xcb-proto >/dev/null 2>&1 && ++ brew uninstall xcb-proto
+        brew list xcb-proto >/dev/null 2>&1 && ++ brew uninstall xcb-proto
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list xcb-proto >/dev/null 2>&1 || ++ brew install xcb-proto
+        brew list xcb-proto >/dev/null 2>&1 || ++ brew install xcb-proto
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade xcb-proto
       fi

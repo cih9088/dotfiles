@@ -72,9 +72,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list gpg >/dev/null 2>&1 && ++ brew uninstall gpg
+        brew list gpg >/dev/null 2>&1 && ++ brew uninstall gpg
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list gpg >/dev/null 2>&1 || ++ brew install gpg
+        brew list gpg >/dev/null 2>&1 || ++ brew install gpg
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade gpg
       fi

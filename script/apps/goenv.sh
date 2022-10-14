@@ -37,10 +37,10 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list goenv >/dev/null 2>&1 && ++ brew uninstall goenv
+        brew list goenv >/dev/null 2>&1 && ++ brew uninstall goenv
         [ -d ${GOENV_ROOT} ] && rm -rf ${GOENV_ROOT}
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list goenv >/dev/null 2>&1 || ++ brew install goenv
+        brew list goenv >/dev/null 2>&1 || ++ brew install goenv
         [ ! -d ${GOENV_ROOT}/plugins/xxenv-latest ] &&
           git clone https://github.com/momo-lab/xxenv-latest.git \
           ${GOENV_ROOT}/plugins/xxenv-latest

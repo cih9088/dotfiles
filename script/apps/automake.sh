@@ -71,9 +71,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list automake >/dev/null 2>&1 && ++ brew uninstall automake
+        brew list automake >/dev/null 2>&1 && ++ brew uninstall automake
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list automake >/dev/null 2>&1 || ++ brew install automake
+        brew list automake >/dev/null 2>&1 || ++ brew install automake
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade automake
       fi

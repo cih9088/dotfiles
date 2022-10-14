@@ -50,9 +50,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list asdf >/dev/null 2>&1 && ++ brew uninstall asdf
+        brew list asdf >/dev/null 2>&1 && ++ brew uninstall asdf
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list asdf >/dev/null 2>&1 || ++ brew install asdf
+        brew list asdf >/dev/null 2>&1 || ++ brew install asdf
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade asdf
       fi

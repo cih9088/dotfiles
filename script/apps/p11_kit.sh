@@ -65,9 +65,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list p11-kit >/dev/null 2>&1 && ++ brew uninstall p11-kit
+        brew list p11-kit >/dev/null 2>&1 && ++ brew uninstall p11-kit
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list p11-kit >/dev/null 2>&1 || ++ brew install p11-kit
+        brew list p11-kit >/dev/null 2>&1 || ++ brew install p11-kit
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade p11-kit
       fi

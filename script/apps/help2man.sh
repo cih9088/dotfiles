@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list help2man >/dev/null 2>&1 && ++ brew uninstall help2man
+        brew list help2man >/dev/null 2>&1 && ++ brew uninstall help2man
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list help2man >/dev/null 2>&1 || ++ brew install help2man
+        brew list help2man >/dev/null 2>&1 || ++ brew install help2man
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade help2man
       fi

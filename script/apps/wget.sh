@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list wget >/dev/null 2>&1 && ++ brew uninstall wget
+        brew list wget >/dev/null 2>&1 && ++ brew uninstall wget
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list wget >/dev/null 2>&1 || ++ brew install wget
+        brew list wget >/dev/null 2>&1 || ++ brew install wget
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade wget
       fi

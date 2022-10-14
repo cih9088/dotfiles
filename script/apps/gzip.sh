@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list gzip >/dev/null 2>&1 && ++ brew uninstall gzip
+        brew list gzip >/dev/null 2>&1 && ++ brew uninstall gzip
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list gzip >/dev/null 2>&1 || ++ brew install gzip
+        brew list gzip >/dev/null 2>&1 || ++ brew install gzip
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade gzip
       fi

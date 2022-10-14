@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libsndfile >/dev/null 2>&1 && ++ brew uninstall libsndfile
+        brew list libsndfile >/dev/null 2>&1 && ++ brew uninstall libsndfile
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libsndfile >/dev/null 2>&1 || ++ brew install libsndfile
+        brew list libsndfile >/dev/null 2>&1 || ++ brew install libsndfile
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libsndfile
       fi

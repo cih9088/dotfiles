@@ -68,9 +68,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list xorgproto >/dev/null 2>&1 && ++ brew uninstall xorgproto
+        brew list xorgproto >/dev/null 2>&1 && ++ brew uninstall xorgproto
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list xorgproto >/dev/null 2>&1 || ++ brew install xorgproto
+        brew list xorgproto >/dev/null 2>&1 || ++ brew install xorgproto
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade xorgproto
       fi

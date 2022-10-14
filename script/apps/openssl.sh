@@ -71,9 +71,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list openssl >/dev/null 2>&1 && ++ brew uninstall openssl
+        brew list openssl >/dev/null 2>&1 && ++ brew uninstall openssl
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list openssl >/dev/null 2>&1 || ++ brew install openssl
+        brew list openssl >/dev/null 2>&1 || ++ brew install openssl
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade openssl
       fi

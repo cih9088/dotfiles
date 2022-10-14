@@ -69,9 +69,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libxcb >/dev/null 2>&1 && ++ brew uninstall libxcb
+        brew list libxcb >/dev/null 2>&1 && ++ brew uninstall libxcb
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libxcb >/dev/null 2>&1 || ++ brew install libxcb
+        brew list libxcb >/dev/null 2>&1 || ++ brew install libxcb
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libxcb
       fi

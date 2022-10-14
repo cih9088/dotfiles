@@ -75,9 +75,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list fd >/dev/null 2>&1 && ++ brew uninstall fd
+        brew list fd >/dev/null 2>&1 && ++ brew uninstall fd
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list fd >/dev/null 2>&1 || ++ brew install fd
+        brew list fd >/dev/null 2>&1 || ++ brew install fd
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade fd
       fi

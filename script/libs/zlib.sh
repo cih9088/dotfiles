@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list zlib >/dev/null 2>&1 && ++ brew uninstall zlib
+        brew list zlib >/dev/null 2>&1 && ++ brew uninstall zlib
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list zlib >/dev/null 2>&1 || ++ brew install zlib
+        brew list zlib >/dev/null 2>&1 || ++ brew install zlib
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade zlib
       fi

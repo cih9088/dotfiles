@@ -79,9 +79,9 @@ setup_func_rg_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list ripgrep >/dev/null 2>&1 && ++ brew uninstall ripgrep
+        brew list ripgrep >/dev/null 2>&1 && ++ brew uninstall ripgrep
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list ripgrep >/dev/null 2>&1 || ++ brew install ripgrep
+        brew list ripgrep >/dev/null 2>&1 || ++ brew install ripgrep
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade ripgrep
       fi

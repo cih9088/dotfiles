@@ -106,9 +106,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list bzip2 >/dev/null 2>&1 && ++ brew uninstall bzip2
+        brew list bzip2 >/dev/null 2>&1 && ++ brew uninstall bzip2
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list bzip2 >/dev/null 2>&1 || ++ brew install bzip2
+        brew list bzip2 >/dev/null 2>&1 || ++ brew install bzip2
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade bzip2
       fi

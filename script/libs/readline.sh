@@ -72,9 +72,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list readline >/dev/null 2>&1 && ++ brew uninstall readline
+        brew list readline >/dev/null 2>&1 && ++ brew uninstall readline
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list readline >/dev/null 2>&1 || ++ brew install readline
+        brew list readline >/dev/null 2>&1 || ++ brew install readline
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade readline
       fi

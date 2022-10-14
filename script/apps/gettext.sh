@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list gettext >/dev/null 2>&1 && ++ brew uninstall gettext
+        brew list gettext >/dev/null 2>&1 && ++ brew uninstall gettext
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list gettext >/dev/null 2>&1 || ++ brew install gettext
+        brew list gettext >/dev/null 2>&1 || ++ brew install gettext
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade gettext
       fi

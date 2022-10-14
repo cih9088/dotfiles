@@ -69,9 +69,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list autoconf >/dev/null 2>&1 && ++ brew uninstall autoconf
+        brew list autoconf >/dev/null 2>&1 && ++ brew uninstall autoconf
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list autoconf >/dev/null 2>&1 || ++ brew install autoconf
+        brew list autoconf >/dev/null 2>&1 || ++ brew install autoconf
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade autoconf
       fi

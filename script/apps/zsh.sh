@@ -79,9 +79,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list zsh >/dev/null 2>&1 && ++ brew uninstall zsh
+        brew list zsh >/dev/null 2>&1 && ++ brew uninstall zsh
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list zsh >/dev/null 2>&1 || ++ brew install zsh
+        brew list zsh >/dev/null 2>&1 || ++ brew install zsh
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade zsh
       fi

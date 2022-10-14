@@ -65,9 +65,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libevent >/dev/null 2>&1 && ++ brew uninstall libevent
+        brew list libevent >/dev/null 2>&1 && ++ brew uninstall libevent
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libevent >/dev/null 2>&1 || ++ brew install libevent
+        brew list libevent >/dev/null 2>&1 || ++ brew install libevent
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libevent
       fi

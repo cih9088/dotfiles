@@ -72,9 +72,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list pkg-config >/dev/null 2>&1 && ++ brew uninstall pkg-config
+        brew list pkg-config >/dev/null 2>&1 && ++ brew uninstall pkg-config
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list pkg-config >/dev/null 2>&1 || ++ brew install pkg-config
+        brew list pkg-config >/dev/null 2>&1 || ++ brew install pkg-config
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade pkg-config
       fi

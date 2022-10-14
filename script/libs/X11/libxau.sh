@@ -69,9 +69,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libxau >/dev/null 2>&1 && ++ brew uninstall libxau
+        brew list libxau >/dev/null 2>&1 && ++ brew uninstall libxau
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libxau >/dev/null 2>&1 || ++ brew install libxau
+        brew list libxau >/dev/null 2>&1 || ++ brew install libxau
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libxau
       fi

@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list m4 >/dev/null 2>&1 && ++ brew uninstall m4
+        brew list m4 >/dev/null 2>&1 && ++ brew uninstall m4
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list m4 >/dev/null 2>&1 || ++ brew install m4
+        brew list m4 >/dev/null 2>&1 || ++ brew install m4
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade m4
       fi

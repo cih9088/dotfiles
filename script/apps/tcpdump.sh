@@ -68,9 +68,9 @@ setup_func_up_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list tcpdump >/dev/null 2>&1 && ++ brew uninstall tcpdump
+        brew list tcpdump >/dev/null 2>&1 && ++ brew uninstall tcpdump
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list tcpdump >/dev/null 2>&1 || ++ brew install tcpdump
+        brew list tcpdump >/dev/null 2>&1 || ++ brew install tcpdump
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade tcpdump
       fi

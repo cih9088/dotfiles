@@ -65,9 +65,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list cmake >/dev/null 2>&1 && ++ brew uninstall cmake
+        brew list cmake >/dev/null 2>&1 && ++ brew uninstall cmake
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list cmake >/dev/null 2>&1 || ++ brew install cmake
+        brew list cmake >/dev/null 2>&1 || ++ brew install cmake
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade cmake
       fi

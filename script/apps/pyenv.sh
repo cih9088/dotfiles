@@ -38,14 +38,14 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list pyenv >/dev/null 2>&1 && ++ brew uninstall pyenv
-        ++ brew list pyenv-virtualenv >/dev/null 2>&1 && ++ brew uninstall pyenv-virtualenv
-        ++ brew list pyenv-virtualenvwrapper >/dev/null 2>&1 && ++ brew uninstall pyenv-virtualenvwrapper
+        brew list pyenv >/dev/null 2>&1 && ++ brew uninstall pyenv
+        brew list pyenv-virtualenv >/dev/null 2>&1 && ++ brew uninstall pyenv-virtualenv
+        brew list pyenv-virtualenvwrapper >/dev/null 2>&1 && ++ brew uninstall pyenv-virtualenvwrapper
         [ -d ${PYENV_ROOT} ] && rm -rf ${PYENV_ROOT}
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list pyenv >/dev/null 2>&1 || ++ brew install pyenv
-        ++ brew list pyenv-virtualenv >/dev/null 2>&1 || ++ brew install pyenv-virtualenv
-        ++ brew list pyenv-virtualenvwrapper >/dev/null 2>&1 || ++ brew install pyenv-virtualenvwrapper
+        brew list pyenv >/dev/null 2>&1 || ++ brew install pyenv
+        brew list pyenv-virtualenv >/dev/null 2>&1 || ++ brew install pyenv-virtualenv
+        brew list pyenv-virtualenvwrapper >/dev/null 2>&1 || ++ brew install pyenv-virtualenvwrapper
         [ ! -d ${PYENV_ROOT}/plugins/xxenv-latest ] &&
           git clone https://github.com/momo-lab/xxenv-latest.git \
           ${PYENV_ROOT}/plugins/xxenv-latest

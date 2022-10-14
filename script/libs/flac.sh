@@ -66,9 +66,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list flac >/dev/null 2>&1 && ++ brew uninstall flac
+        brew list flac >/dev/null 2>&1 && ++ brew uninstall flac
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list flac >/dev/null 2>&1 || ++ brew install flac
+        brew list flac >/dev/null 2>&1 || ++ brew install flac
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade flac
       fi

@@ -75,9 +75,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list texinfo >/dev/null 2>&1 && ++ brew uninstall texinfo
+        brew list texinfo >/dev/null 2>&1 && ++ brew uninstall texinfo
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list texinfo >/dev/null 2>&1 || ++ brew install texinfo
+        brew list texinfo >/dev/null 2>&1 || ++ brew install texinfo
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade texinfo
       fi

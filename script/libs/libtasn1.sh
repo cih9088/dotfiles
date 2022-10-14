@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libtasn1 >/dev/null 2>&1 && ++ brew uninstall libtasn1
+        brew list libtasn1 >/dev/null 2>&1 && ++ brew uninstall libtasn1
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libtasn1 >/dev/null 2>&1 || ++ brew install libtasn1
+        brew list libtasn1 >/dev/null 2>&1 || ++ brew install libtasn1
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libtasn1
       fi

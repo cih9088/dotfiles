@@ -65,9 +65,9 @@ setup_func_up_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list oniguruma >/dev/null 2>&1 && ++ brew uninstall oniguruma
+        brew list oniguruma >/dev/null 2>&1 && ++ brew uninstall oniguruma
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list oniguruma >/dev/null 2>&1 || ++ brew install oniguruma
+        brew list oniguruma >/dev/null 2>&1 || ++ brew install oniguruma
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade oniguruma
       fi

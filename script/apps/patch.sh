@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list gpatch >/dev/null 2>&1 && ++ brew uninstall gpatch
+        brew list gpatch >/dev/null 2>&1 && ++ brew uninstall gpatch
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list gpatch >/dev/null 2>&1 || ++ brew install gpatch
+        brew list gpatch >/dev/null 2>&1 || ++ brew install gpatch
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade gpatch
       fi

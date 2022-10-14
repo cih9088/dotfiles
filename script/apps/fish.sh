@@ -74,9 +74,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list fish >/dev/null 2>&1 && ++ brew uninstall fish
+        brew list fish >/dev/null 2>&1 && ++ brew uninstall fish
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list fish >/dev/null 2>&1 || ++ brew install fish
+        brew list fish >/dev/null 2>&1 || ++ brew install fish
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade fish
       fi

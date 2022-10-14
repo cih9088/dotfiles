@@ -37,9 +37,9 @@ setup_func_bash_snippets_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list bash-snippets >/dev/null 2>&1 && ++ brew uninstall bash-snippets
+        brew list bash-snippets >/dev/null 2>&1 && ++ brew uninstall bash-snippets
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list bash-snippets >/dev/null 2>&1 || ++ brew install bash-snippets
+        brew list bash-snippets >/dev/null 2>&1 || ++ brew install bash-snippets
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade bash-snippets
       fi

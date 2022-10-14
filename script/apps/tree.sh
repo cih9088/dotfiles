@@ -65,9 +65,9 @@ setup_func_tree_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list tree >/dev/null 2>&1 && ++ brew uninstall tree
+        brew list tree >/dev/null 2>&1 && ++ brew uninstall tree
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list tree >/dev/null 2>&1 || ++ brew install tree
+        brew list tree >/dev/null 2>&1 || ++ brew install tree
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade tree
       fi

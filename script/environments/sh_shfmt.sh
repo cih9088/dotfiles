@@ -66,9 +66,9 @@ setup_func_shfmt_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list shfmt >/dev/null 2>&1 && ++ brew uninstall shfmt
+        brew list shfmt >/dev/null 2>&1 && ++ brew uninstall shfmt
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list shfmt >/dev/null 2>&1 || ++ brew install shfmt
+        brew list shfmt >/dev/null 2>&1 || ++ brew install shfmt
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade shfmt
       fi

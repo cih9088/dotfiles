@@ -71,9 +71,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libassuan >/dev/null 2>&1 && ++ brew uninstall libassuan
+        brew list libassuan >/dev/null 2>&1 && ++ brew uninstall libassuan
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libassuan >/dev/null 2>&1 || ++ brew install libassuan
+        brew list libassuan >/dev/null 2>&1 || ++ brew install libassuan
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libassuan
       fi

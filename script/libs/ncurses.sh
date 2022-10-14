@@ -111,9 +111,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list ncurses >/dev/null 2>&1 && ++ brew uninstall ncurses
+        brew list ncurses >/dev/null 2>&1 && ++ brew uninstall ncurses
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list ncurses >/dev/null 2>&1 || ++ brew install ncurses
+        brew list ncurses >/dev/null 2>&1 || ++ brew install ncurses
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade ncurses
       fi

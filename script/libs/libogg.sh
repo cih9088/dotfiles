@@ -64,9 +64,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libogg >/dev/null 2>&1 && ++ brew uninstall libogg
+        brew list libogg >/dev/null 2>&1 && ++ brew uninstall libogg
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libogg >/dev/null 2>&1 || ++ brew install libogg
+        brew list libogg >/dev/null 2>&1 || ++ brew install libogg
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libogg
       fi

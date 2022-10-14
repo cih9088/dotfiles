@@ -70,9 +70,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list npth >/dev/null 2>&1 && ++ brew uninstall npth
+        brew list npth >/dev/null 2>&1 && ++ brew uninstall npth
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list npth >/dev/null 2>&1 || ++ brew install npth
+        brew list npth >/dev/null 2>&1 || ++ brew install npth
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade npth
       fi

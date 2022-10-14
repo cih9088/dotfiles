@@ -68,10 +68,10 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        # ++ brew list reattach-to-user-namespace >/dev/null 2>&1 && ++ brew uninstall reattach-to-user-namespace
-        ++ brew list tmux >/dev/null 2>&1 && ++ brew uninstall tmux
+        # brew list reattach-to-user-namespace >/dev/null 2>&1 && ++ brew uninstall reattach-to-user-namespace
+        brew list tmux >/dev/null 2>&1 && ++ brew uninstall tmux
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list tmux >/dev/null 2>&1 || ++ brew install tmux
+        brew list tmux >/dev/null 2>&1 || ++ brew install tmux
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade tmux
       fi

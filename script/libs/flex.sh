@@ -65,9 +65,9 @@ setup_func_up_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list flex >/dev/null 2>&1 && ++ brew uninstall flex
+        brew list flex >/dev/null 2>&1 && ++ brew uninstall flex
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list flex >/dev/null 2>&1 || ++ brew install flex
+        brew list flex >/dev/null 2>&1 || ++ brew install flex
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade flex
       fi

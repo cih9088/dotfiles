@@ -68,9 +68,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list xtrans >/dev/null 2>&1 && ++ brew uninstall xtrans
+        brew list xtrans >/dev/null 2>&1 && ++ brew uninstall xtrans
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list xtrans >/dev/null 2>&1 || ++ brew install xtrans
+        brew list xtrans >/dev/null 2>&1 || ++ brew install xtrans
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade xtrans
       fi

@@ -71,9 +71,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list libgcrypt >/dev/null 2>&1 && ++ brew uninstall libgcrypt
+        brew list libgcrypt >/dev/null 2>&1 && ++ brew uninstall libgcrypt
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list libgcrypt >/dev/null 2>&1 || ++ brew install libgcrypt
+        brew list libgcrypt >/dev/null 2>&1 || ++ brew install libgcrypt
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade libgcrypt
       fi

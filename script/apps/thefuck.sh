@@ -37,9 +37,9 @@ setup_func_thefuck_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list thefuck >/dev/null 2>&1 && ++ brew uninstall thefuck
+        brew list thefuck >/dev/null 2>&1 && ++ brew uninstall thefuck
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list thefuck >/dev/null 2>&1 || ++ brew install thefuck
+        brew list thefuck >/dev/null 2>&1 || ++ brew install thefuck
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade thefuck
       fi

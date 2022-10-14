@@ -69,9 +69,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list bison >/dev/null 2>&1 && ++ brew uninstall bison
+        brew list bison >/dev/null 2>&1 && ++ brew uninstall bison
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list bison >/dev/null 2>&1 || ++ brew install bison
+        brew list bison >/dev/null 2>&1 || ++ brew install bison
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade bison
       fi

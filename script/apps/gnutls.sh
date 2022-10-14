@@ -77,9 +77,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list gnutls >/dev/null 2>&1 && ++ brew uninstall gnutls
+        brew list gnutls >/dev/null 2>&1 && ++ brew uninstall gnutls
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list gnutls >/dev/null 2>&1 || ++ brew install gnutls
+        brew list gnutls >/dev/null 2>&1 || ++ brew install gnutls
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade gnutls
       fi

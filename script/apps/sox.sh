@@ -72,9 +72,9 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list sox >/dev/null 2>&1 && ++ brew uninstall sox
+        brew list sox >/dev/null 2>&1 && ++ brew uninstall sox
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list sox >/dev/null 2>&1 || ++ brew install sox
+        brew list sox >/dev/null 2>&1 || ++ brew install sox
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade sox
       fi

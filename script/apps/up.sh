@@ -60,9 +60,9 @@ setup_func_up_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        ++ brew list up >/dev/null 2>&1 && ++ brew uninstall up
+        brew list up >/dev/null 2>&1 && ++ brew uninstall up
       elif [ "${COMMAND}" == "install" ]; then
-        ++ brew list up >/dev/null 2>&1 || ++ brew install up
+        brew list up >/dev/null 2>&1 || ++ brew install up
       elif [ "${COMMAND}" == "update" ]; then
         ++ brew upgrade up
       fi
