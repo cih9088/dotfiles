@@ -152,7 +152,7 @@
 
 # export dotfile path for easy access
 # --------------------------------------------------------------------------------------
-  export DOTS=$(dirname $(dirname $(dirname $(realpath ${(%):-%N}))))
+  export DOTS=$(dirname $(dirname $(dirname $(readlink -f ${(%):-%N}))))
 
 
 # CUDA enviroment variables

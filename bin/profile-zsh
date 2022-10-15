@@ -2,7 +2,7 @@
 
 logfile=$(mktemp zsh_profile.XXXXXXXX)
 echo "Logging to $logfile"
-zshrc=$(realpath $HOME/.zshrc)
+zshrc=$(readlink -f $HOME/.zshrc)
 zshrcbak="$(dirname $zshrc)/$(basename $zshrc)-e"
 
 sed -i -e '1s/^/# profile start \

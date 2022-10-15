@@ -29,7 +29,7 @@ local_change() {
 
   # sed -i -e '/'$(echo $SHELL_FULL_PATH | sed 's/\//\\\//g')' ]]; then/,/fi/d' ${HOME}/${loginshell_rc}
   for f in ".bashrc" ".zshrc" ".cshrc" ".tcshrc" ".config/fish/config.fish" ".profile"; do
-    f=$(realpath $HOME/$f)
+    f=$(readlink -f $HOME/$f)
     if [ -e $f ]; then
       # -i destroy symlink. --follow-symlink option only in GNU sed
       sed -e '/# added by dots/,/^fi$/d' $f > temp

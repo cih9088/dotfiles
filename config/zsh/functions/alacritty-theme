@@ -1,5 +1,5 @@
 
-_CONFIG_PATH="$(realpath ~/.config/alacritty/colour.yml)"
+_CONFIG_PATH="$(readlink -f ~/.config/alacritty/colour.yml)"
 
 _THEME=${1:-gruvbox_dark}
 

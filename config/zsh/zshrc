@@ -396,7 +396,7 @@
 
 # Load custom function lazily
 # ---------------------------------------------------------------------------------------
-  custom_zsh_fpath="$(dirname $(realpath ${(%):-%N}))/functions"
+  custom_zsh_fpath="$(dirname $(readlink -f ${(%):-%N}))/functions"
   fpath=($custom_zsh_fpath $fpath)
   if [[ -d "$custom_zsh_fpath" ]]; then
     for func in $custom_zsh_fpath/*; do
