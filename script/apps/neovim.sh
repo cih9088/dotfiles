@@ -151,8 +151,6 @@ setup_func_system() {
       esac
       ;;
   esac
-
-  setup_func_python_support "${COMMAND}"
 }
 
 version_func() {

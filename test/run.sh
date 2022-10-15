@@ -9,7 +9,7 @@ COMMAND="${1:-docker}"
 ITEMS=(
   cmake zlib bzip2 unzip gzip xz
   "zsh prezto" "neovim" "tmux tpm tmux-plugins"
-  tree fd rg thefuck tldr bash-snippets up jq sox tcpdump
+  wget tree fd rg thefuck tldr bash-snippets up jq sox tcpdump
   "pyenv python" "goenv golang" "asdf python golang rust nodejs lua"
 )
 

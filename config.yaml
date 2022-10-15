@@ -74,7 +74,7 @@ asdf:
   mode: local
 
 python:
-  version: 3.8.5
+  version: 3.9.1
 
 golang:
   version: 1.17.5
@@ -104,4 +104,7 @@ tmux-plugins:
   mode: local
 
 neovim-plugins:
+  mode: local
+
+neovim-providers:
   mode: local

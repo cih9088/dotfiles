@@ -72,11 +72,11 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        brew list lzip >/dev/null 2>&1 && ++ brew uninstall lzip
+        brew list xz >/dev/null 2>&1 && ++ brew uninstall xz
       elif [ "${COMMAND}" == "install" ]; then
-        brew list lzip >/dev/null 2>&1 || ++ brew install lzip
+        brew list xz >/dev/null 2>&1 || ++ brew install xz
       elif [ "${COMMAND}" == "update" ]; then
-        ++ brew upgrade lzip
+        ++ brew upgrade xz
       fi
       ;;
     LINUX)

@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
-# Original repo of ripgrep is https://github.com/BurntSushi/ripgrep
-# but it has limited number of pre-built binaries.
-# This script will download pre-built binary from microsoft.
 
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
-# GH="microsoft/ripgrep-prebuilt"
 GH="BurntSushi/ripgrep"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
@@ -46,27 +42,40 @@ setup_func_rg_local() {
 
       case ${PLATFORM} in
         OSX )
-          # does not have aarch64 for apple
-          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
-          ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
+          if [ "${ARCH}" = "aarch64" ]; then
+            # prebuilt ripgrep from microsoft repository
+            ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
+            ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
+            ++ cp -rf rg "${PREFIX}/bin"
+          else
+            ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
+            ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-apple-darwin.tar.gz"
 
-          ++ pushd "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl"
-          ++ cp rg "${PREFIX}/bin"
-          ++ gzip doc/rg.1
-          ++ cp doc/rg.1.gz "${PREFIX}/share/man/man1"
-          ++ cp complete/rg.bash "${PREFIX}/share/bash-completion/completions/rg"
-          ++ popd
+            ++ pushd "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl"
+            ++ cp rg "${PREFIX}/bin"
+            ++ gzip doc/rg.1
+            ++ cp doc/rg.1.gz "${PREFIX}/share/man/man1"
+            ++ cp complete/rg.bash "${PREFIX}/share/bash-completion/completions/rg"
+            ++ popd
+          fi
           ;;
         LINUX )
-          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
-          ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+          if [ "${ARCH}" = "aarch64" ]; then
+            # prebuilt ripgrep from microsoft repository
+            ++ curl -LO "https://github.com/microsoft/ripgrep-prebuilt/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+            ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+            ++ cp -rf rg "${PREFIX}/bin"
+          else
+            ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+            ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
 
-          ++ pushd "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl"
-          ++ cp rg "${PREFIX}/bin"
-          ++ gzip doc/rg.1
-          ++ cp doc/rg.1.gz "${PREFIX}/share/man/man1"
-          ++ cp complete/rg.bash "${PREFIX}/share/bash-completion/completions/rg"
-          ++ popd
+            ++ pushd "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl"
+            ++ cp rg "${PREFIX}/bin"
+            ++ gzip doc/rg.1
+            ++ cp doc/rg.1.gz "${PREFIX}/share/man/man1"
+            ++ cp complete/rg.bash "${PREFIX}/share/bash-completion/completions/rg"
+            ++ popd
+          fi
           ;;
       esac
     fi
@@ -99,23 +108,30 @@ setup_func_rg_system() {
           ;;
         RHEL)
           if [[ "remove update"  == *"${COMMAND}"* ]]; then
-            ++ sudo rm -f /usr/local/bin/rg
-            ++ sudo rm -f /usr/local/share/man/man1/rg.1.gz
-            ++ sudo rm -f /usr/local/share/bash-completion/completions/rg
+            sudo rm -f /usr/local/bin/rg || true
+            sudo rm -f /usr/local/share/man/man1/rg.1.gz || true
+            sudo rm -f /usr/local/share/bash-completion/completions/rg || true
           fi
           if [[ "install update"  == *"${COMMAND}"* ]]; then
-            ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
-            ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+            if [ "${ARCH}" = "aarch64" ]; then
+              # prebuilt ripgrep from microsoft repository
+              ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ sudo cp -rf rg /usr/local/bin/
+            else
+              ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
 
-            ++ pushd "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl"
-            ++ sudo mkdir -p /usr/local/bin
-            ++ sudo cp rg /usr/local/bin/
-            ++ gzip doc/rg.1
-            ++ chown root:root doc/rg.1.gz
-            ++ sudo cp doc/rg.1.gz /usr/local/share/man/man1
-            ++ sudo mkdir -p /usr/local/share/bash-completion/completions
-            ++ sudo cp complete/rg.bash /usr/local/share/bash-completion/completions/rg
-            ++ popd
+              ++ pushd "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl"
+              ++ sudo mkdir -p /usr/local/bin
+              ++ sudo cp rg /usr/local/bin/
+              ++ gzip doc/rg.1
+              ++ chown root:root doc/rg.1.gz
+              ++ sudo cp doc/rg.1.gz /usr/local/share/man/man1
+              ++ sudo mkdir -p /usr/local/share/bash-completion/completions
+              ++ sudo cp complete/rg.bash /usr/local/share/bash-completion/completions/rg
+              ++ popd
+            fi
           fi
           ;;
       esac

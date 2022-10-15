@@ -27,7 +27,7 @@ setup_func_local() {
   local VERSION="${2:-}"
   local SRC_PATH=""
   [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
-  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "readline-*")"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "groff-*")"
 
 
   # remove
@@ -71,31 +71,31 @@ setup_func_system() {
   case "${PLATFORM}" in
     OSX)
       if [ "${COMMAND}" == "remove" ]; then
-        brew list readline >/dev/null 2>&1 && ++ brew uninstall readline
+        brew list groff >/dev/null 2>&1 && ++ brew uninstall groff
       elif [ "${COMMAND}" == "install" ]; then
-        brew list readline >/dev/null 2>&1 || ++ brew install readline
+        brew list groff >/dev/null 2>&1 || ++ brew install groff
       elif [ "${COMMAND}" == "update" ]; then
-        ++ brew upgrade readline
+        ++ brew upgrade groff
       fi
       ;;
     LINUX)
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libreadline-dev
+            ++ sudo apt-get -y remove groff
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libreadline-dev
+            ++ sudo apt-get -y install groff
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libreadline-dev
+            ++ sudo apt-get -y --only-upgrade install groff
           fi
           ;;
         RHEL)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove readline-devel readline
+            ++ sudo dnf -y remove groff
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install readline-devel readline
+            ++ sudo dnf -y install groff
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo dnf -y update readline-devel readline
+            ++ sudo dnf -y update groff
           fi
           ;;
       esac
