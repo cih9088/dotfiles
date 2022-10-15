@@ -30,7 +30,7 @@ DOTFILES_APPS=(
 )
 
 DOTFILES_DOTS=(
- "bins" "configs" "tmux-plugins" "neovim-plugins"
+ "bins" "configs" "tmux-plugins" "neovim-plugins" "neovim-providers"
 )
 
 DOTFILES_LIBS=(
@@ -40,6 +40,7 @@ DOTFILES_LIBS=(
   "zlib" "bzip2" "unzip" "gzip" "xz"
   "sqlite3" "libffi" "tcl" "tk"
   "openssl" "autotools" "gnutls" "gnupg" "libx11"
+  "openldap"
 )
 
 

@@ -57,6 +57,20 @@ sqlite3:
 libffi:
 	@( $(SCRIPTS_DIR)/libs/libffi.sh )
 
+# openldap
+# -----------------------------------------------------
+libsodium:
+	@( $(SCRIPTS_DIR)/libs/libsodium.sh )
+
+groff: \
+	texinfo
+	@( $(SCRIPTS_DIR)/libs/groff.sh )
+
+openldap: \
+	groff openssl libevent libsodium
+	@( $(SCRIPTS_DIR)/libs/openldap.sh )
+# -----------------------------------------------------
+
 # glibc
 # -----------------------------------------------------
 texinfo: \
@@ -162,7 +176,7 @@ npth: \
 
 gnupg: \
 	libgpg-error libgcrypt libassuan \
-	libksba npth bzip2 gnutls
+	libksba readline openldap npth bzip2 gnutls
 	@( $(SCRIPTS_DIR)/apps/gnupg.sh )
 # -----------------------------------------------------
 
@@ -318,6 +332,9 @@ tmux-plugins:
 neovim-plugins:
 	@( $(SCRIPTS_DIR)/dots/neovim_plugins.sh )
 
+neovim-providers:
+	@( $(SCRIPTS_DIR)/dots/neovim_providers.sh )
+
 # ====================================================
 # ENVIRONMENTS
 # ====================================================
@@ -357,6 +374,7 @@ nodejs-env:
 
 .PHONY: initMac prerequisites prerequisitesTest changeDefaultShell \
 	pkg-config ncurses libevent readline patch help2man gettext sqlite3 libffi \
+	libsodium groff openldap \
 	texinfo bison \
 	cmake  \
 	zlib bzip2 unzip gzip xz \
@@ -371,6 +389,6 @@ nodejs-env:
 	terminfo zsh fish prezto neovim tmux \
 	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq \
 	pyenv goenv asdf tpm \
-	bins configs tmux-plugins neovim-plugins \
+	bins configs tmux-plugins neovim-plugins neovim-providers \
 	python golang rust nodejs lua \
 	python-env lua-env sh-env nodejs-env

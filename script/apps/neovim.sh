@@ -16,67 +16,7 @@ log_title "Prepare for ${THIS_HL}"
 
 DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
 AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
-
-# # use sytem python
-# export VIRTUALENVWRAPPER_PYTHON=$(type -p python)
-# export VIRTUALENVWRAPPER_VIRTUALENV=$(type -p virtualenv)
-# export VIRTUALENVWRAPPER_SCRIPT=$(type -p virtualenvwrapper.sh)
-# export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(type -p virtualenvwrapper_lazy.sh)
-# export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
-# export PYENV_ROOT=${HOME}/.pyenv
-# export PATH="${HOME}/.pyenv/bin:$PATH"
-
-# python virtualenv path
-export WORKON_HOME=${HOME}/.virtualenvs
-mkdir -p "${WORKON_HOME}" || true
-
-neovim3_virenv='neovim3'
-neovim2_virenv='neovim2'
 ################################################################
-
-setup_func_python_support() {
-  local COMMAND="${1:-skip}"
-
-  has -v pip3 python3
-
-  if [[ "remove update"  == *"${COMMAND}"* ]]; then
-    rm -rf "${WORKON_HOME}/${neovim3_virenv}" || true
-  fi
-
-  if [[ "install update"  == *"${COMMAND}"* ]]; then
-    if [ ! -d "${WORKON_HOME}/${neovim3_virenv}" ]; then
-      if ! has virtualenv; then
-        ++ intelli_pip3 install --force-reinstall --upgrade virtualenv
-      fi
-
-      ++ virtualenv --python=$(type -p python3) ${WORKON_HOME}/${neovim3_virenv}
-      ++ source ${WORKON_HOME}/${neovim3_virenv}/bin/activate
-      ++ pip install --upgrade pynvim
-      ++ deactivate
-
-      ++ intelli_pip3 uninstall --yes virtualenv
-    fi
-  fi
-
-  # has -v pip3 python2
-  #
-  # if [[ "remove update"  == *"${COMMAND}"* ]]; then
-  #   rm -rf ${WORKON_HOME}/${neovim2_virenv} || true
-  # fi
-  #
-  # if [[ "install update"  == *"${COMMAND}"* ]]; then
-  #   if [ ! -d "${WORKON_HOME}/${neovim2_virenv}" ]; then
-  #     ++ intelli_pip3 install --force-reinstall --upgrade virtualenv
-  #
-  #     ++ virtualenv --python=$(type -p python2) ${WORKON_HOME}/${neovim2_virenv}
-  #     ++ source ${WORKON_HOME}/${neovim2_virenv}/bin/activate
-  #     ++ pip install --upgrade pynvim
-  #     ++ deactivate
-  #
-  #     ++ intelli_pip3 uninstall --yes virtualenv
-  #   fi
-  # fi
-}
 
 setup_func_local() {
   local COMMAND="${1:-skip}"
@@ -172,8 +112,6 @@ setup_func_local() {
       # esac
     fi
   fi
-
-  setup_func_python_support "${COMMAND}"
 }
 
 setup_func_system() {

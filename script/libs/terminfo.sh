@@ -29,7 +29,7 @@ setup_func_local() {
     fi
   fi
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    ++ curl -LO --silent --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz
+    ++ curl -LO --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz
     ++ gzip -d terminfo.src.gz
     ++ tic -x -o "${HOME}/.terminfo" terminfo.src
   fi
@@ -39,7 +39,7 @@ setup_func_system() {
   local COMMAND="${1:-skip}"
 
   if [[ "install update"  == *"${COMMAND}"* ]]; then
-    ++ curl -LO --silent --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz
+    ++ curl -LO --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz
     ++ gzip -d terminfo.src.gz
     ++ tic -x -o /usr/share/terminfo terminfo.src
   elif [ "${COMMAND}" == "remove" ]; then
@@ -48,5 +48,5 @@ setup_func_system() {
   fi
 }
 
-main_script "${THIS}" setup_func_local setup_func_system "" \
+main_script "${THIS}" setup_func_local "" "" \
   "${DEFAULT_VERSION}"

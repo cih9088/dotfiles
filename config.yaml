@@ -25,6 +25,7 @@ gnupg:
 libx11:
 
 terminfo:
+  mode: local
 
 zsh:
 

@@ -291,6 +291,7 @@ main_script() {
       log_info "${_BEGIN_BANNER}" ||
       start_spinner "${_BEGIN_BANNER}"
     (
+      log_info "Temp directory: ${_TMP_DIR}"
       cd "${_TMP_DIR}"
       "${_FUNC_SETUP}" "${_TARGET_COMMAND}" "${_TARGET_VERSION}"
     ) >&3 2>&4 && exit_code="0" || exit_code="$?"
