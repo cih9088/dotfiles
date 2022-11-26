@@ -871,6 +871,11 @@
   command! CopyFilePath call s:yank(expand(has('win32') ? '%:p:gs?/?\\?' : '%:p'))
 
 
+" copy the current file's name.
+" ---------------------------------------------------------------------------------------
+  command! CopyFileName call s:yank(expand(has('win32') ? '%:t:gs?/?\\?' : '%:t'))
+
+
 " copy the directory where current file is in.
 " ---------------------------------------------------------------------------------------
   command! CopyFileDir call s:yank(expand(has('win32') ? '%:p:h:gs?/?\\?' : '%:p:h'))
@@ -1320,7 +1325,6 @@
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('vim-which-key')
     nnoremap <silent> <leader> :<c-u>WhichKey '\'<CR>
-    highlight default link WhichKeyFloating CocFloating
   endif
 
 

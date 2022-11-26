@@ -11,6 +11,14 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
+if [ "${ARCH}" = "aarch64" ]; then
+  # Original repo of ripgrep is https://github.com/BurntSushi/ripgrep
+  # but it has limited number of pre-built binaries.
+  # This script will download pre-built binary from microsoft.
+  GH="microsoft/ripgrep-prebuilt"
+fi
+
+
 log_title "Prepare for ${THIS_HL}"
 
 DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
@@ -62,7 +70,7 @@ setup_func_rg_local() {
         LINUX )
           if [ "${ARCH}" = "aarch64" ]; then
             # prebuilt ripgrep from microsoft repository
-            ++ curl -LO "https://github.com/microsoft/ripgrep-prebuilt/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+            ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
             ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
             ++ cp -rf rg "${PREFIX}/bin"
           else
@@ -84,6 +92,7 @@ setup_func_rg_local() {
 
 setup_func_rg_system() {
   local COMMAND="${1:-skip}"
+
 
   case "${PLATFORM}" in
     OSX)
@@ -115,8 +124,8 @@ setup_func_rg_system() {
           if [[ "install update"  == *"${COMMAND}"* ]]; then
             if [ "${ARCH}" = "aarch64" ]; then
               # prebuilt ripgrep from microsoft repository
-              ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
-              ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
               ++ sudo cp -rf rg /usr/local/bin/
             else
               ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"

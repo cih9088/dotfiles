@@ -60,22 +60,6 @@ setup_func_local() {
 }
 
 setup_func_system() {
-  local FORCE=$1
-
-  if [[ ${PLATFORM} == "OSX" ]]; then
-    brew list libsodium || brew install libsodium || exit $?
-    if [ ${FORCE} == 'true' ]; then
-      brew upgrade libsodium || exit $?
-    fi
-  elif [[ ${PLATFORM} == "LINUX" ]]; then
-    if [[ ${FAMILY} == "DEBIAN" ]]; then
-      sudo apt-get -y install  libsodium-dev  || exit $?
-    elif [[ ${FAMILY} == "RHEL" ]]; then
-      sudo dnf -y install epel-release || exit $?
-      sudo dnf -y install libsodium-devel || exit $?
-    fi
-  fi
-
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -103,6 +87,7 @@ setup_func_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove libsodium-devel
           elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo dnf -y install epel-release
             ++ sudo dnf -y install libsodium-devel
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update libsodium-devel
