@@ -97,6 +97,12 @@ setup_func_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove texinfo
           elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo dnf -y install dnf-plugins-core
+            if dnf repolist --all | grep -q -i crb; then
+              ++ sudo dnf config-manager --set-enabled crb
+            elif dnf repolist --all | grep -q -i powertools; then
+              ++ sudo dnf config-manager --set-enabled powertools
+            fi
             ++ sudo dnf -y install texinfo
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update texinfo

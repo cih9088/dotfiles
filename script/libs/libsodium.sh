@@ -71,7 +71,7 @@ setup_func_system() {
     if [[ ${FAMILY} == "DEBIAN" ]]; then
       sudo apt-get -y install  libsodium-dev  || exit $?
     elif [[ ${FAMILY} == "RHEL" ]]; then
-      sudo dnf install epel-release || exit $?
+      sudo dnf -y install epel-release || exit $?
       sudo dnf -y install libsodium-devel || exit $?
     fi
   fi

@@ -19,6 +19,7 @@ DOTFILES_SKIP_DEPENDENCIES=${DOTFILES_SKIP_DEPENDENCIES:-}
 VERBOSE=${VERBOSE:-false}
 CONFIG=${CONFIG:-}
 GH_ACCESS=${GH_ACCESS:-}
+PREFIX=${PREFIX:-$HOME/.local}
 
 
 DOTFILES_APPS=(
@@ -66,12 +67,18 @@ ${BOLD}${RED}SYNOPSIS${NC}
 
 
 ${BOLD}${RED}DESCRIPTION${NC}
-    scp combining with fzf
+    dotfile management tool
 
 
 ${BOLD}${RED}COMMAND${NC}
     ${BOLD}${RED}list${NC}
         List available libraries, applications and environments
+
+    ${BOLD}${RED}test-prerequisites${NC}
+        Test prerequisites
+
+    ${BOLD}${RED}install-prerequisites${NC}
+        Install prerequisites
 
     ${BOLD}${RED}install${NC} ${BOLD}${GREEN}target${NC}
         Install ${BOLD}${GREEN}target${NC}
@@ -83,22 +90,21 @@ ${BOLD}${RED}COMMAND${NC}
         Remove ${BOLD}${GREEN}target${NC}
 
     ${BOLD}${RED}change-default-shell${NC}
+        Change default shell to zsh/fish
 
 
 ${BOLD}${RED}OPTIONS${NC}
     ${BOLD}${RED}-m, --mode${NC} ${BOLD}${GREEN}mode${NC}
         Specify mode for ${BOLD}${GREEN}target${NC} and do not prompt for it.
 
-        ${BOLD}local${NC}   command is managed without sudo
-        ${BOLD}system${NC}  command is managed with sudo
+        ${BOLD}local${NC}   run without sudo
+        ${BOLD}system${NC}  run with sudo
 
     ${BOLD}${RED}-y, --yes${NC}
 
     ${BOLD}${RED}-v, --verbose${NC}
 
     ${BOLD}${RED}-s, --skip-dependencies${NC}
-
-    ${BOLD}${RED}--debug${NC}
 
     ${BOLD}${RED}-h, --help${NC}
         show this help message
@@ -164,6 +170,8 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 DOTFILES_COMMAND="${1}"
 shift
 
+pushd "${DOTFILES_ROOT}" >/dev/null 2>&1 || exit $?
+
 if [ "$DOTFILES_COMMAND" == "list" ]; then
   cat <<EOF
 
@@ -202,6 +210,11 @@ else
   DOTFILES_TARGETS=($@)
 fi
 
+if [ ${#DOTFILES_TARGETS[@]} -eq 0 ]; then
+  log_error "Please provide targets."
+  exit 1
+fi
+
 for i in "${!DOTFILES_TARGETS[@]}"; do
   DOTFILES_TARGET=${DOTFILES_TARGETS[i]}
 
@@ -222,7 +235,8 @@ export DOTFILES_SKIP_DEPENDENCIES
 export VERBOSE
 export CONFIG
 export GH_ACCESS
+export PREFIX
 
-pushd "${DOTFILES_ROOT}" >/dev/null 2>&1 || exit $?
 make "${DOTFILES_TARGETS[@]}"
+
 popd >/dev/null 2>&1 || exit $?

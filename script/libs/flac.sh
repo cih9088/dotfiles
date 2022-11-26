@@ -47,7 +47,7 @@ setup_func_local() {
     if [ -z "${SRC_PATH}" ]; then
 
       ++ curl -LO "https://github.com/xiph/flac/releases/download/${VERSION}/flac-${VERSION}.tar.xz"
-      ++ tar -xvJf "flac-${VERSION}.tar.xz"
+      ++ tar -xvJf "flac-${VERSION}.tar.xz" --no-same-owner
 
       ++ pushd "flac-${VERSION}"
       ++ ./configure --prefix="${PREFIX}"
