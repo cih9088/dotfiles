@@ -266,6 +266,7 @@ main_script() {
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
       _BANNER="[mode=system]"
+      [ "${FAMILY}" == "DEBIAN" ] && ++ sudo apt-get update
     fi
 
     if [ -z "${_FUNC_SETUP}" ]; then
@@ -291,6 +292,8 @@ main_script() {
       log_info "${_BEGIN_BANNER}" ||
       start_spinner "${_BEGIN_BANNER}"
     (
+      # sudo drops user environment
+      # [ "${VERBOSE}" = "false" ] && DEBIAN_FRONTEND=noninteractive
       log_info "Temp directory: ${_TMP_DIR}"
       cd "${_TMP_DIR}"
       "${_FUNC_SETUP}" "${_TARGET_COMMAND}" "${_TARGET_VERSION}"

@@ -761,6 +761,7 @@
     for elem in a:000
       let l:expands += ['"' . expand(elem) . '"']
     endfor
+    echo join([&grepprg] + l:expands)
     return system(join([&grepprg] + l:expands))
   endfunction
   command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
@@ -1009,6 +1010,24 @@
           \   <bang>0 ? fzf#vim#with_preview('up:60%')
           \           : fzf#vim#with_preview('right:50%:hidden', '?'),
           \   <bang>0)
+
+    " http://ericnode.info/post/fzf_jump_to_tab_in_vim/
+    " tab navigation
+    function TabName(n)
+      let buflist = tabpagebuflist(a:n)
+      let winnr = tabpagewinnr(a:n)
+      return fnamemodify(bufname(buflist[winnr - 1]), ':.')
+    endfunction
+    function! s:jumpToTab(line)
+      let pair = split(a:line, ' ')
+      let cmd = pair[0].'gt'
+      execute 'normal' cmd
+    endfunction
+    nnoremap <silent> <Leader>T :call fzf#run(fzf#wrap({
+    \   'source':  reverse(map(range(1, tabpagenr('$')), 'v:val." "." ".TabName(v:val)')),
+    \   'sink':    function('<sid>jumpToTab')
+    \ }))<CR>
+
   endif
 
 
@@ -1257,7 +1276,7 @@
 " liuchengxu/vista.vim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('vista.vim')
-    nmap <leader>T :Vista!!<CR>
+    nmap <leader>V :Vista!!<CR>
 
     let g:vista_icon_indent = ["▸ ", ""]
 
