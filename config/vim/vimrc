@@ -928,7 +928,7 @@
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('vim-fugitive')
     nnoremap <leader>gs :Git<CR>
-    nnoremap <leader>gd :Gdiff<CR>
+    nnoremap <leader>gd :Gvdiffsplit<CR>
   endif
 
 

@@ -31,6 +31,14 @@ setup_func_local() {
       ++ pushd ${HOME}/.asdf
       ++ git checkout "$(git describe --abbrev=0 --tags)"
       ++ popd
+
+      # direnv
+      . $HOME/.asdf/asdf.sh
+      ++ asdf plugin add direnv
+      ++ asdf direnv setup --shell zsh --version latest
+      ++ asdf direnv setup --shell bash --version latest
+      ++ asdf direnv setup --shell fish --version latest
+      ++ asdf global direnv latest
     fi
   elif [ "${COMMAND}" == "update" ]; then
     if [ -f "${HOME}/.asdf/asdf.sh" ]; then

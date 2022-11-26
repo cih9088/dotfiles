@@ -33,6 +33,11 @@ setup_func() {
     log_info "Update plugins"
     nvim --headless +"set nonumber" +"PlugUpdate  --sync" +%print +UpdateRemotePlugins +qall
 
+    ## treesitter
+    log_info "Install Treesitter parsers"
+    nvim --headless +'if has_key(g:plugs, "nvim-treesitter") | execute "TSInstallSync all" | endif' +qall
+    nvim --headless +'if has_key(g:plugs, "nvim-treesitter") | execute "TSUpdateSync all" | endif' +qall
+
     ## coc.nvim
     log_info "Install coc extensions"
     # install coc extensions
@@ -51,10 +56,6 @@ setup_func() {
     log_info "Install fzf"
     nvim --headless +'if has_key(g:plugs, "fzf") | call fzf#install() | endif' +qall
 
-    ## treesitter
-    log_info "Install Treesitter parsers"
-    nvim --headless +'if has_key(g:plugs, "nvim-treesitter") | execute "TSInstallSync all" | endif' +qall
-    nvim --headless +'if has_key(g:plugs, "nvim-treesitter") | execute "TSUpdateSync all" | endif' +qall
   fi
 }
 

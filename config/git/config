@@ -8,3 +8,13 @@
 
 [credential]
 	helper = "!f() { ~/.config/git/credential_helper.py get; }; f"
+
+[alias]
+	fixup = "!git log -n 50 --pretty=format:'%h (%ar) %s' | fzf | cut -d' ' -f1 | xargs git commit --fixup"
+	# https://gist.github.com/gnarf/5406589
+	pr  = "!f() { git fetch -fu ${2:-$(git remote |grep ^upstream || echo origin)} refs/pull/$1/head:pr/$1 && git checkout pr/$1; }; f"
+	pr-clean = "!git for-each-ref refs/heads/pr/* --format='%(refname)' | while read ref ; do branch=${ref#refs/heads/} ; git branch -D $branch ; done"
+
+[merge]
+	tool = nvimdiff
+	conflictstyle = diff3

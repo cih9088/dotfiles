@@ -31,7 +31,7 @@ DOTFILES_APPS=(
 )
 
 DOTFILES_DOTS=(
- "bins" "configs" "tmux-plugins" "neovim-plugins" "neovim-providers"
+  "bins" "configs" "tmux-plugins" "neovim-plugins" "neovim-providers"
 )
 
 DOTFILES_LIBS=(
@@ -71,7 +71,7 @@ ${BOLD}${RED}DESCRIPTION${NC}
 
 
 ${BOLD}${RED}COMMAND${NC}
-    ${BOLD}${RED}list${NC}
+    ${BOLD}${RED}list, l${NC}
         List available libraries, applications and environments
 
     ${BOLD}${RED}test-prerequisites${NC}
@@ -80,13 +80,13 @@ ${BOLD}${RED}COMMAND${NC}
     ${BOLD}${RED}install-prerequisites${NC}
         Install prerequisites
 
-    ${BOLD}${RED}install${NC} ${BOLD}${GREEN}target${NC}
+    ${BOLD}${RED}install, i${NC} ${BOLD}${GREEN}target${NC}
         Install ${BOLD}${GREEN}target${NC}
 
-    ${BOLD}${RED}update${NC} ${BOLD}${GREEN}target${NC}
+    ${BOLD}${RED}update, u${NC} ${BOLD}${GREEN}target${NC}
         Update ${BOLD}${GREEN}target${NC}
 
-    ${BOLD}${RED}remove${NC} ${BOLD}${GREEN}target${NC}
+    ${BOLD}${RED}remove, r${NC} ${BOLD}${GREEN}target${NC}
         Remove ${BOLD}${GREEN}target${NC}
 
     ${BOLD}${RED}change-default-shell${NC}
@@ -166,11 +166,28 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
-[ $# -eq 0 ] && log_error "Command is not provided."
+
+make_wrapper() {
+  pushd "${DOTFILES_ROOT}" >/dev/null 2>&1 || exit $?
+  make "$@"
+  popd >/dev/null 2>&1 || exit $?
+}
+
+
+if [ $# -eq 0 ]; then
+  log_error "Command is not provided."
+  exit 1
+fi
 DOTFILES_COMMAND="${1}"
 shift
 
-pushd "${DOTFILES_ROOT}" >/dev/null 2>&1 || exit $?
+
+# alias
+[ "$DOTFILES_COMMAND" == "l" ] && DOTFILES_COMMAND=list
+[ "$DOTFILES_COMMAND" == "i" ] && DOTFILES_COMMAND=install
+[ "$DOTFILES_COMMAND" == "r" ] && DOTFILES_COMMAND=remove
+[ "$DOTFILES_COMMAND" == "u" ] && DOTFILES_COMMAND=update
+
 
 if [ "$DOTFILES_COMMAND" == "list" ]; then
   cat <<EOF
@@ -184,13 +201,13 @@ Available list to install
 EOF
   exit 0
 elif [ "$DOTFILES_COMMAND" == "test-prerequisites" ]; then
-  make prerequisitesTest
+  make_wrapper prerequisitesTest
   exit 0
 elif [ "$DOTFILES_COMMAND" == "install-prerequisites" ]; then
-  make prerequisites
+  make_wrapper prerequisites
   exit 0
 elif [ "$DOTFILES_COMMAND" == "change-default-shell" ]; then
-  make changeDefaultShell
+  make_wrapper changeDefaultShell
   exit 0
 elif [[ " install remove update " != *" $DOTFILES_COMMAND "* ]]; then
   log_error "Unknown command $DOTFILES_COMMAND"
@@ -204,11 +221,16 @@ if [ -n "${CONFIG}" ]; then
     log_error "target should not be specified if config is given."
     exit 1
   fi
+  if [ ! -f "${CONFIG}" ]; then
+    log_error "$CONFIG not found."
+    exit 1
+  fi
   eval $(${_SCRIPT_DIR}/helpers/parser_yaml ${CONFIG} "CONFIG_")
   DOTFILES_TARGETS=("${CONFIG_TARGETS[@]}")
 else
   DOTFILES_TARGETS=($@)
 fi
+
 
 if [ ${#DOTFILES_TARGETS[@]} -eq 0 ]; then
   log_error "Please provide targets."
@@ -237,6 +259,5 @@ export CONFIG
 export GH_ACCESS
 export PREFIX
 
-make "${DOTFILES_TARGETS[@]}"
 
-popd >/dev/null 2>&1 || exit $?
+make_wrapper "${DOTFILES_TARGETS[@]}"

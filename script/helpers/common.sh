@@ -266,7 +266,7 @@ main_script() {
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
       _BANNER="[mode=system]"
-      [ "${FAMILY}" == "DEBIAN" ] && ++ sudo apt-get update
+      [[ "${PLATFORM}" == "LINUX" && -z "${FAMILY}" ]] && ++ sudo apt-get update
     fi
 
     if [ -z "${_FUNC_SETUP}" ]; then

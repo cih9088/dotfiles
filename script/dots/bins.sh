@@ -17,9 +17,9 @@ setup_func() {
   local COMMAND="${1:-skip}"
 
   # remove broken symlink
-  for file in `find -L ${PREFIX}/bin -type l`; do
-    log_info "Remove broken symbolic link '${PREFIX}/bin/$file'"
-    rm -rf ${PREFIX}/bin/${file}
+  for file in $(find -L ${PREFIX}/bin -type l); do
+    log_info "Remove broken symbolic link '$file'"
+    rm -rf ${file}
   done
 
   if [ "${COMMAND}" == "remove" ]; then
