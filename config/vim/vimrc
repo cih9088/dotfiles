@@ -78,6 +78,8 @@
   Plug 'tpope/vim-vinegar'
   Plug 'liuchengxu/vista.vim'
   Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+  Plug 'mfussenegger/nvim-dap'
+  Plug 'rcarriga/nvim-dap-ui'
 
 
 " Language Specific
@@ -177,6 +179,7 @@
   set updatetime=300                    " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
                                         " delays and poor user experience.
   set shortmess+=c                      " Don't pass messages to ins-completion-menu.
+  set mouse=                            " Disable mouse support
 
   " Always show the signcolumn, otherwise it would shift the text each time
   " diagnostics appear/become resolved.
@@ -1376,6 +1379,22 @@
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('lualine.nvim')
     lua require('config.lualine')
+  endif
+
+
+" mfussenegger/nvim-dap
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('nvim-dap')
+    lua require('config.dap')
+    nnoremap <silent> <leader>dc <Cmd>lua require'dap'.continue()<CR>
+    nnoremap <silent> <leader>dn <Cmd>lua require'dap'.step_over()<CR>
+    nnoremap <silent> <leader>di <Cmd>lua require'dap'.step_into()<CR>
+    nnoremap <silent> <leader>do <Cmd>lua require'dap'.step_out()<CR>
+    nnoremap <silent> <Leader>db <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+    nnoremap <silent> <Leader>dB <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+    nnoremap <silent> <Leader>dlp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
+    nnoremap <silent> <Leader>ddr <Cmd>lua require'dap'.repl.open()<CR>
+    nnoremap <silent> <Leader>ddl <Cmd>lua require'dap'.run_last()<CR>
   endif
 
 

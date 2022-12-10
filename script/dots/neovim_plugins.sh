@@ -37,16 +37,21 @@ setup_func() {
 
     ## treesitter
     log_info "Install Treesitter parsers"
-    nvim --headless +'if has_key(g:plugs, "nvim-treesitter") | execute "TSInstallSync all" | endif' +qall
-    nvim --headless +'if has_key(g:plugs, "nvim-treesitter") | execute "TSUpdateSync all" | endif' +qall
+    nvim --headless +'if has_key(g:plugs, "nvim-treesitter") '`
+      `'| execute "TSInstallSync all" '`
+      `'| execute "TSUpdateSync all"'`
+      `'| endif' +qall
 
     ## coc.nvim
     log_info "Install coc extensions"
     # install coc extensions
-    nvim --headless +'if has_key(g:plugs, "coc.nvim") | execute "CocInstall -sync coc-vimlsp coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-pyright coc-go coc-sh coc-highlight" | endif' +qall
-    nvim --headless +'if has_key(g:plugs, "coc.nvim") | execute "CocUninstall -sync coc-python" | endif' +qall
-    # update coc extensions
-    nvim --headless +'if has_key(g:plugs, "coc.nvim") | execute "CocUpdateSync" | endif' +qall
+    nvim --headless +'if has_key(g:plugs, "coc.nvim") | '`
+      `'execute "CocInstall -sync coc-vimlsp coc-json coc-snippets coc-tsserver coc-html coc-css coc-emoji coc-yaml coc-vimtex coc-pyright coc-go coc-sh coc-highlight" '`
+      `'| execute "CocUninstall -sync coc-python" '`
+      `'| execute "CocUpdateSync" '`
+      `'| endif' +qall
+    nvim --headless +'if has_key(g:plugs, "coc.nvim") '`
+      `'| endif' +qall
     # update remote plugins
     nvim --headless +UpdateRemotePlugins +qall
     # update coc-settings.json
@@ -57,8 +62,13 @@ setup_func() {
     log_info "Install fzf"
     nvim --headless +'if has_key(g:plugs, "fzf") | call fzf#install() | endif' +qall
 
-    # mason
-    nvim --headless +'if has_key(g:plugs, "mason.nvim") | execute "MasonInstall isort black flake8 debugpy shfmt shellcheck prettier" | endif' +qall
+    ## mason
+    nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
+      `'| execute "MasonInstall pyright gopls rust_analyzer bashls vimls yamlls jsonls sumneko_lua ansiblels tsserver" '`
+      `'| endif' +qall
+    nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
+      `'| execute "MasonInstall isort black flake8 debugpy shfmt shellcheck prettier node-debug2-adapter" '`
+      `'| endif' +qall
   fi
 }
 
