@@ -155,7 +155,8 @@ gnutls: \
 
 # gnupg
 # -----------------------------------------------------
-libgpg-error:
+libgpg-error: \
+	bzip2
 	@( $(SCRIPTS_DIR)/libs/libgpg_error.sh )
 
 libgcrypt: \

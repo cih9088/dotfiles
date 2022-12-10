@@ -11,6 +11,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 
 log_title "Prepare for ${THIS_HL}"
+
+has -v npm pip
 ################################################################
 
 setup_func() {

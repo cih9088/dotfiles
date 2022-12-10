@@ -15,9 +15,8 @@ log_title "Prepare for ${THIS_HL}"
 
 AVAILABLE_VERSIONS="$(
   ./script/helpers/gh_list_tags ${GH} |
-    grep -o 'openssl-[0-9.]\+' | 
+    grep 'openssl-[0-9.]\+$' |
     sed -e 's/openssl-//' |
-    uniq | 
     sort -Vr
 )"
 DEFAULT_VERSION=$(echo "${AVAILABLE_VERSIONS}" | head -1)
