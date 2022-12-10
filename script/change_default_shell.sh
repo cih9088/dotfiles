@@ -15,7 +15,7 @@ log_title "Prepare for ${THIS_HL}"
 ################################################################
 
 local_change() {
-  local SHELL_FULL_PATH="${HOME}/.local/bin/$1"
+  local SHELL_FULL_PATH="$1"
 
   case "$SHELL" in
     *bash) loginshell_rc="$HOME/.bashrc" ;;
@@ -67,19 +67,14 @@ local_change() {
 
 system_change() {
   local SHELL_FULL_PATH=$1
-  if [[ ${PLATFORM} == "OSX" ]]; then
-    SHELL_FULL_PATH="$(brew --prefix)/bin/${SHELL_FULL_PATH}"
-  elif [[ ${PLATFORM} == "LINUX" ]]; then
-    SHELL_FULL_PATH="/usr/bin/${SHELL_FULL_PATH}"
-  fi
 
   if [[ ! -s ${SHELL_FULL_PATH} ]]; then
     echo "${SHELL_FULL_PATH} is not a proper shell" >&2
     exit 1
   fi
 
-  grep -q ${SHELL_FULL_PATH} /etc/shells \
-    || echo ${SHELL_FULL_PATH} | sudo tee -a /etc/shells >/dev/null
+  # grep -q ${SHELL_FULL_PATH} /etc/shells \
+  #   || echo ${SHELL_FULL_PATH} | sudo tee -a /etc/shells >/dev/null
 
   ++ chsh -s "${SHELL_FULL_PATH}"
 }
@@ -101,35 +96,51 @@ main() {
     fi
   else
     while true; do
-      yn=$(log_question "Do you want to change default shell? [y/n]")
-      case $yn in
-        [Yy]* ) :; ;;
-        [Nn]* ) log_ok "Default shell is unchanged"; break;;
-        * ) log_error "Please answer yes or no"; continue;;
-      esac
-
-      yn=$(log_question "Which shell? [zsh/fish]")
-      case $yn in
-        zsh ) TARGET_SHELL="zsh"; ;;
-        fish ) TARGET_SHELL="fish"; ;;
-        * ) log_error "Please answer zsh or fish"; continue;;
-      esac
-
-      yn=$(log_question "Change default shell to local ${TARGET_SHELL} or systemwide ${TARGET_SHELL}? [local/system]")
-      case $yn in
-        [Ll]ocal* )
-          local_change ${TARGET_SHELL} &&
-            log_ok "Changed default shell to local ${TARGET_SHELL}." ||
-            log_error "Change default shell to local ${TARGET_SHELL} is failed."
-          break;;
-        [Ss]ystem* )
-          system_change ${TARGET_SHELL} &&
-            log_ok "Changed default shell to systemwide ${TARGET_SHELL}." ||
-            log_error "Change default shell to systemwide ${TARGET_SHELL} is failed."
-          break;;
-        * ) log_error "Please answer locally or systemwide";;
-      esac
+      log_info "Please provide full path. Type shell to list full path of them."
+      SHELL_FULL_PATH=$(log_question "Which shell? ")
+      if [[ $SHELL_FULL_PATH != *"bash" ]] && [[ $SHELL_FULL_PATH != *"zsh" ]] && [[ $SHELL_FULL_PATH != *"fish" ]]; then
+        log_error "Supported shells are bash, zsh, and fish"
+        echo
+        continue
+      fi
+      if [ ! -x "$SHELL_FULL_PATH" ]; then
+        paths=$(type -aP $SHELL_FULL_PATH || true)
+        if [ ${#paths} -ne 0 ]; then
+          log_info "List of $SHELL_FULL_PATH"
+          echo "$paths"
+          echo
+        else
+          log_error "Wrong command or path $SHELL_FULL_PATH"
+          echo
+          continue
+        fi
+      else
+        break
+      fi
     done
+
+    is_valid_shell=false
+    if grep -q '^'$SHELL_FULL_PATH'$' /etc/shells; then
+      is_valid_shell=true
+    fi
+
+    yn=$(log_question "Change default shell to ${SHELL_FULL_PATH}? [y/n] ")
+    case $yn in
+      [Yy]* )
+        if [ $is_valid_shell == true ]; then
+          system_change ${SHELL_FULL_PATH} &&
+            log_ok "Changed default shell to ${SHELL_FULL_PATH}." ||
+            log_error "Change default shell to ${SHELL_FULL_PATH} is failed."
+        else
+          local_change ${SHELL_FULL_PATH} &&
+            log_ok "Changed default shell to ${SHELL_FULL_PATH}." ||
+            log_error "Change default shell to ${SHELL_FULL_PATH} is failed."
+        fi
+        ;;
+      [Nn]* )
+        ;;
+    esac
+
   fi
 }
 
