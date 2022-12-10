@@ -31,7 +31,9 @@ setup_func_python_provider() {
     if [[ "install update"  == *"${COMMAND}"* ]]; then
       if [ ! -d "${WORKON_HOME}/${NEOVIM3_VIRENV_NAME}" ]; then
         PATH=$(python3 -c "import site; print(site.USER_BASE)")/bin:$PATH
+        no_virtualenv=false
         if ! has virtualenv; then
+          no_virtualenv=true
           ++ intelli_pip3 install --force-reinstall --upgrade virtualenv
         fi
 
@@ -40,7 +42,9 @@ setup_func_python_provider() {
         ++ pip install --upgrade pynvim
         ++ deactivate
 
-        ++ intelli_pip3 uninstall --yes virtualenv
+        if [ $no_virtualenv == true ]; then
+          ++ intelli_pip3 uninstall --yes virtualenv
+        fi
       fi
     fi
   fi

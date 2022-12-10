@@ -74,25 +74,25 @@
   export TMUX_XPANES_PANE_BORDER_FORMAT='#[bg=colour238] #[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[bg=colour238] #[default]'
 
 
-# Setup virtualenvwrapper (using system python if installed)
-# ---------------------------------------------------------------------------------------
-  export WORKON_HOME=$HOME/.virtualenvs
-  export PROJECT_HOME=$HOME/workspace
-  # Inside tmux session, these environment variables are changed
-  # because of the change of PATH during zsh initialisation in non-tmux session
-  # This prevents no module found error in virtualenvwrapper
-  if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
-    [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
-      pip3 install --user --force-reinstall virtualenv virtualenvwrapper
-    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-    export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
-    export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
-    export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
-    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
-    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
-  fi
-  command -v virtualenvwrapper_lazy.sh >/dev/null  &&
-    source $(which virtualenvwrapper_lazy.sh)
+# # Setup virtualenvwrapper (using system python if installed)
+# # ---------------------------------------------------------------------------------------
+#   export WORKON_HOME=$HOME/.virtualenvs
+#   export PROJECT_HOME=$HOME/workspace
+#   # Inside tmux session, these environment variables are changed
+#   # because of the change of PATH during zsh initialisation in non-tmux session
+#   # This prevents no module found error in virtualenvwrapper
+#   if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
+#     [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
+#       pip3 install --user --force-reinstall virtualenv virtualenvwrapper
+#     export VIRTUALENVWRAPPER_PYTHON=$(which python3)
+#     export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
+#     export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
+#     export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
+#     # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
+#     # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+#   fi
+#   command -v virtualenvwrapper_lazy.sh >/dev/null  &&
+#     source $(which virtualenvwrapper_lazy.sh)
 
 
 # Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
@@ -120,9 +120,11 @@
     source $HOME/.asdf/asdf.sh
     fpath=($fpath ${ASDF_DIR}/completions)
   # brew --prefix asdf is way slow. hard code the path
-  elif command -v brew >/dev/null && [ -f $(brew --prefix)/opt/asdf/libexec/asdf.sh ]; then
-    source $(brew --prefix)/opt/asdf/libexec/asdf.sh
+  elif command -v brew >/dev/null; then
+    BREW_PREFIX=$(brew --prefix)
+    [ -f $BREW_PREFIX/opt/asdf/libexec/asdf.sh ] && source $BREW_PREFIX/opt/asdf/libexec/asdf.sh
     # zsh completion is installed with brew
+    unset BREW_PREFIX
   fi
 
 
@@ -131,20 +133,26 @@
   export CONDA_AUTO_ACTIVATE_BASE=false
 
 
-# Setup virtualenvwrapper (using asdf/pyenv/conda python)
+# Setup virtualenvwrapper (using asdf python)
 # ---------------------------------------------------------------------------------------
-  if [ ! -e "${VIRTUALENVWRAPPER_PYTHON}" ] && [ -z "${TMUX+x}" ]; then
-    [ ! -x "$(command -v virtualenvwrapper_lazy.sh)" ] && command -v pip3 > /dev/null &&
-      pip3 install --force-reinstall virtualenv virtualenvwrapper
-    export VIRTUALENVWRAPPER_PYTHON=$(which python3)
-    export VIRTUALENVWRAPPER_VIRTUALENV=$(which virtualenv)
-    export VIRTUALENVWRAPPER_SCRIPT=$(which virtualenvwrapper.sh)
-    export VIRTUALENVWRAPPER_LAZY_SCRIPT=$(which virtualenvwrapper_lazy.sh)
-    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--system-site-packages'
-    # export VIRTUALENVWRAPPER_VIRTUALENV_ARGS='--no-site-packages'
+  export WORKON_HOME=$HOME/.virtualenvs
+  export PROJECT_HOME=$HOME/workspace
+  # Inside tmux session, these environment variables are changed
+  # because of the change of PATH during zsh initialisation in non-tmux session
+  # This prevents no module found error in virtualenvwrapper
+  if [ ! -e "${VIRTUALENVWRAPPER_LAZY_SCRIPT}" ] && [ -z "${TMUX+x}" ]; then
+    if command -v asdf > /dev/null; then
+      PATH_TO_PYTHON=$(asdf where python 2>/dev/null)
+      if [ ! -z "${PATH_TO_PYTHON+x}" ] &&
+        [ -x "$(command -v $PATH_TO_PYTHON/bin/virtualenvwrapper_lazy.sh)" ]; then
+        export VIRTUALENVWRAPPER_VIRTUALENV=$PATH_TO_PYTHON/bin/virtualenv
+        export VIRTUALENVWRAPPER_SCRIPT=$PATH_TO_PYTHON/bin/virtualenvwrapper.sh
+        export VIRTUALENVWRAPPER_LAZY_SCRIPT=$PATH_TO_PYTHON/bin/virtualenvwrapper_lazy.sh
+      fi
+      unset PATH_TO_PYTHON
+    fi
   fi
-  command -v virtualenvwrapper_lazy.sh >/dev/null  &&
-    source $(which virtualenvwrapper_lazy.sh)
+  [ -e "${VIRTUALENVWRAPPER_LAZY_SCRIPT}" ] && source ${VIRTUALENVWRAPPER_LAZY_SCRIPT}
 
 
 # Setup building python
