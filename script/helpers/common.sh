@@ -10,6 +10,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 ################################################################
 TARGET=${TARGET:-$(basename -- ${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]})}
 TARGET=$(echo "${TARGET%.*}" | sed -e 's/_/-/g')
+DEPTH_SEP="--"
 
 if [ ! -z "${CONFIG+x}" ] && [ -n "${CONFIG}" ]; then
   # config is given
@@ -17,18 +18,26 @@ if [ ! -z "${CONFIG+x}" ] && [ -n "${CONFIG}" ]; then
 
   DOTFILES_YES="true"
 
-  # underscore to dash
-  _TARGET=${TARGET/-/_}
+  _TARGET=${TARGET}
+  _TARGET=(${_TARGET//${DEPTH_SEP}/ })
+  for i in $(seq $((${#_TARGET[@]}-1)) -1 0); do
+    __TARGET=""
+    for j in $(seq 0 "$i"); do
+      __TARGET="${__TARGET}${DEPTH_SEP}${_TARGET[j]}"
+    done
+    __TARGET=${__TARGET/${DEPTH_SEP}/}${DEPTH_SEP}
+    __TARGET=${__TARGET//-/_}
 
-  _TARGET_MODE_CONFIG="CONFIG_${_TARGET}_mode"
-  if [ ! -z "${!_TARGET_MODE_CONFIG+x}" ]; then
-    DOTFILES_MODE=${!_TARGET_MODE_CONFIG}
-  fi
+    _TARGET_MODE_CONFIG="CONFIG_${__TARGET}mode"
+    if [ ! -z "${!_TARGET_MODE_CONFIG+x}" ]; then
+      DOTFILES_MODE=${!_TARGET_MODE_CONFIG}
+    fi
 
-  _TARGET_VERSION_CONFIG="CONFIG_${_TARGET}_version"
-  if [ ! -z "${!_TARGET_VERSION_CONFIG+x}" ]; then
-    DOTFILES_VERSION=${!_TARGET_VERSION_CONFIG}
-  fi
+    _TARGET_VERSION_CONFIG="CONFIG_${__TARGET}version"
+    if [ ! -z "${!_TARGET_VERSION_CONFIG+x}" ]; then
+      DOTFILES_VERSION=${!_TARGET_VERSION_CONFIG}
+    fi
+  done
 fi
 
 if [ ! -z "${DOTFILES_TARGET+x}" ]; then
@@ -171,9 +180,6 @@ main_script() {
   _TARGET_VERSION="${DOTFILES_VERSION:-${_DEFAULT_VERSION}}"
   _TARGET_YES="${DOTFILES_YES:-}"
 
-  # # underscore to dash
-  # _TARGET=${_TARGET/_/-}
-
   # if _FUNC_VERSION is given, process version checker
   if [ -n "${_FUNC_VERSION}" ]; then
     if [ -x "$(command -v "${_TARGET_CMD}")" ]; then
@@ -266,7 +272,7 @@ main_script() {
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
       _BANNER="[mode=system]"
-      [[ "${PLATFORM}" == "LINUX" && -z "${FAMILY}" ]] && ++ sudo apt-get update
+      [[ "${PLATFORM}" == "LINUX" && "${FAMILY}" == "DEBIAN" ]] && ++ sudo apt-get update
     fi
 
     if [ -z "${_FUNC_SETUP}" ]; then

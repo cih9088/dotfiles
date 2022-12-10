@@ -357,16 +357,41 @@ nodejs: \
 lua:
 	@( $(SCRIPTS_DIR)/environments/lua.sh )
 
-python-env:
-	@( $(SCRIPTS_DIR)/environments/python_env.sh )
+python-env: \
+	python-env--virtualenv python-env--black python-env--isort \
+	python-env--flake8 python-env--debugpy
+
+python-env--virtualenv:
+	@( $(SCRIPTS_DIR)/environments/python_env__virtualenv.sh )
+
+python-env--black:
+	@( $(SCRIPTS_DIR)/environments/python_env__black.sh )
+
+python-env--isort:
+	@( $(SCRIPTS_DIR)/environments/python_env__isort.sh )
+
+python-env--flake8:
+	@( $(SCRIPTS_DIR)/environments/python_env__flake8.sh )
+
+python-env--debugpy:
+	@( $(SCRIPTS_DIR)/environments/python_env__debugpy.sh )
 
 lua-env: \
+	lua-env-stylua
+
+lua-env-stylua: \
 	unzip
-	@( $(SCRIPTS_DIR)/environments/lua_env.sh )
+	@( $(SCRIPTS_DIR)/environments/lua_env__stylua.sh )
 
 sh-env: \
+	sh-env--shellcheck sh-env-shfmt
+
+sh-env--shellcheck: \
 	xz
-	@( $(SCRIPTS_DIR)/environments/sh_env.sh )
+	@( $(SCRIPTS_DIR)/environments/sh_env__shellcheck.sh )
+
+sh-env--shfmt:
+	@( $(SCRIPTS_DIR)/environments/sh_env__shfmt.sh )
 
 nodejs-env:
 	@( $(SCRIPTS_DIR)/environments/nodejs_env.sh )

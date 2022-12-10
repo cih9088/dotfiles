@@ -3,14 +3,13 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
-TARGET=python-env
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
-THIS_HL="${BOLD}${UNDERLINE}${NC}"
-THIS_CMD=black
+THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
+THIS_CMD=debugpy
 
 log_title "Prepare for ${THIS_HL}"
 
@@ -21,7 +20,7 @@ mkdir -p "${WORKON_HOME}" || true
 VENV_NAME=${VENV_NAME:-dev-env}
 ################################################################
 
-setup_func_black_local() {
+setup_func_debugpy_local() {
   local COMMAND="${1:-skip}"
 
   if has -v pip3 python3; then
@@ -40,11 +39,11 @@ setup_func_black_local() {
 
     [ ! -z ${VENV_NAME+x} ] && ++ source "${WORKON_HOME}/${VENV_NAME}/bin/activate"
     if [ "${COMMAND}" == "install" ]; then
-      ++ intelli_pip3 install black
+      ++ intelli_pip3 install debugpy
     elif [ "${COMMAND}" == "update" ]; then
-      ++ intelli_pip3 install black --force-reinstall --upgrade
+      ++ intelli_pip3 install debugpy --force-reinstall --upgrade
     elif [ "${COMMAND}" == "remove" ]; then
-      ++ intelli_pip3 uninstall black
+      ++ intelli_pip3 uninstall debugpy
     fi
     [ ! -z ${VENV_NAME+x} ] && ++ deactivate
   else
@@ -53,9 +52,10 @@ setup_func_black_local() {
   fi
 }
 
-version_func_black() {
-  $1 --version | awk '{print $2}'
-}
-
-main_script "${THIS}" setup_func_black_local setup_func_black_local version_func_black \
+main_script "${THIS}" setup_func_debugpy_local setup_func_debugpy_local "" \
   "latest"
+
+(
+  has asdf && asdf reshim python || true
+  has pyenv && pyenv ++ rehash || true
+) >&3 2>&4

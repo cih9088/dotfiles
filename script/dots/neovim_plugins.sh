@@ -53,11 +53,12 @@ setup_func() {
     rm -rf "${PROJ_HOME}/config/nvim/coc-settings.json" || true
     cp "${PROJ_HOME}/config/nvim/coc-settings-base.json" "${PROJ_HOME}/config/nvim/coc-settings.json"
 
-
     ## fzf
     log_info "Install fzf"
     nvim --headless +'if has_key(g:plugs, "fzf") | call fzf#install() | endif' +qall
 
+    # mason
+    nvim --headless +'if has_key(g:plugs, "mason.nvim") | execute "MasonInstall isort black flake8 debugpy shfmt shellcheck prettier" | endif' +qall
   fi
 }
 

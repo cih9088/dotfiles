@@ -3,7 +3,6 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
-TARGET=python-env
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
@@ -59,3 +58,8 @@ version_func_flake8() {
 
 main_script "${THIS}" setup_func_flake8_local setup_func_flake8_local version_func_flake8 \
   "latest"
+
+(
+  has asdf && asdf reshim python || true
+  has pyenv && pyenv ++ rehash || true
+) >&3 2>&4

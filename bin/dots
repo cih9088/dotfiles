@@ -47,11 +47,15 @@ DOTFILES_LIBS=(
 
 DOTFILES_ENVIRONMENTS=(
   "python" "python-env"
+  "python-env--virtualenv" "python-env--black" "python-env--isort" "python-env--flake8"
+  "python-env--debugpy"
   "golang"
   "rust"
   "nodejs" "nodejs-env"
   "lua" "lua-env"
+  "lua-env-stylua"
   "sh-env"
+  "sh-env-shellcheck" "sh-env-shfmt"
 )
 
 DOTFILES_AVAILABLES=(
@@ -63,7 +67,10 @@ usage() {
   LESS=-FEXR less <<HELP
 
 ${BOLD}${RED}SYNOPSIS${NC}
-    ${BOLD}${RED}$(basename "$0")${NC} ${BOLD}${GREEN}COMMAND${NC} ${BOLD}${GREEN}options${NC}
+    ${BOLD}${RED}$(basename "$0")${NC} ${BOLD}${GREEN}COMMAND${NC} [${BOLD}${RED}-yvs${NC}] \
+[${BOLD}${RED}-m ${GREEN}mode${NC}] [${BOLD}${RED}-c ${GREEN}config${NC}] \
+[${BOLD}${RED}-t ${GREEN}version${NC}] \
+${BOLD}${GREEN}target${NC}...
 
 
 ${BOLD}${RED}DESCRIPTION${NC}
@@ -100,6 +107,9 @@ ${BOLD}${RED}OPTIONS${NC}
         ${BOLD}local${NC}   run without sudo
         ${BOLD}system${NC}  run with sudo
 
+    ${BOLD}${RED}-t, --version${NC} ${BOLD}${GREEN}version_to_install${NC}
+        Specify a version to install. This enables ${BOLD}${RED}--skip-dependencies${NC} as well.
+
     ${BOLD}${RED}-y, --yes${NC}
 
     ${BOLD}${RED}-v, --verbose${NC}
@@ -107,7 +117,7 @@ ${BOLD}${RED}OPTIONS${NC}
     ${BOLD}${RED}-s, --skip-dependencies${NC}
 
     ${BOLD}${RED}-h, --help${NC}
-        show this help message
+        Show this help message
 
 HELP
 }
@@ -118,6 +128,18 @@ while [[ $# -gt 0 ]]; do
   # make it also '=' separated arguments
   [[ $1 == --*=* ]] && set -- "${1%%=*}" "${1#*=}" "${@:2}"
   key="$1"
+
+  if [[ $key != --* ]] && [[ $key == -* ]]; then
+    key=${key/-/}
+    tmp=()
+    while read -N 1 c; do tmp+=(-$c); done <<< "$key"
+    unset tmp[${#tmp[@]}-1]
+    key=${tmp[0]}
+    if [ ${#tmp[@]} -gt 0 ]; then
+      unset tmp[0]
+      set -- "$@" ${tmp[@]}
+    fi
+  fi
 
   case $key in
     -m | --mode)
@@ -138,6 +160,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -t | --version)
       DOTFILES_VERSION="$2"
+      DOTFILES_SKIP_DEPENDENCIES=true
       shift; shift
       ;;
     -v | --verbose)
@@ -225,6 +248,7 @@ if [ -n "${CONFIG}" ]; then
     log_error "$CONFIG not found."
     exit 1
   fi
+  CONFIG=$(readlink -f $CONFIG)
   eval $(${_SCRIPT_DIR}/helpers/parser_yaml ${CONFIG} "CONFIG_")
   DOTFILES_TARGETS=("${CONFIG_TARGETS[@]}")
 else
