@@ -19,7 +19,6 @@
 " Themes
 " ---------------------------------------------------------------------------------------
   Plug 'ryanoasis/vim-devicons'
-  Plug 'junegunn/seoul256.vim'
   Plug 'morhetz/gruvbox'
   Plug 'w0ng/vim-hybrid'
   Plug 'joshdick/onedark.vim'
@@ -265,13 +264,6 @@
       endif
     endif
 
-    " colorscheme specific setting
-    if l:background == "dark"
-      let g:rose_pine_variant = 'moon'
-    else
-      let g:rose_pine_variant = 'dawn'
-    endif
-
     execute "set background=" . l:background
 
     " Change colorscheme
@@ -286,19 +278,21 @@
         else
           if exists('$COLOUR_SCHEME')
             let l:scheme = $COLOUR_SCHEME
-          else
-            let l:scheme = system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
           endif
         endif
-        let l:colour =  matchstr(l:scheme, '[-_]\?\(light\|dark\)[-_]\?')
-        let l:scheme_clenaed = substitute(l:scheme, l:colour, "", "")
-        execute 'colorscheme ' . l:scheme_clenaed
+        if l:scheme =~ 'rose-pine.*'
+          let l:scheme = 'rose-pine'
+          if l:background == "dark"
+            let g:rose_pine_variant = 'moon'
+          else
+            let g:rose_pine_variant = 'dawn'
+          endif
+        endif
+        execute 'colorscheme ' . l:scheme
       endif
     catch
-      colorscheme default
+      colorscheme seoul256
     endtry
-
-    execute "set background=" . l:background
 
   endfunction
 
@@ -308,22 +302,9 @@
     endif
   endfunction
 
-  function! Seoul256Override() abort
-    highlight DiagnosticError ctermfg=168 guifg=#E17899
-    highlight DiagnosticInfo NONE
-    highlight link DiagnosticInfo String
-    highlight DiagnosticHint NONE
-    highlight link DiagnosticHint Pmenu
-    highlight NormalFloat NONE
-    highlight link NormalFloat Pmenu
-    highlight FloatBorder NONE
-    highlight link FloatBorder NormalFloat
-  endfunction
-
   augroup MyColors
     autocmd!
     autocmd ColorScheme rose-pine call RosePineOverride()
-    autocmd ColorScheme seoul256 call Seoul256Override()
   augroup END
 
   call ChangeBackground()
@@ -1105,7 +1086,7 @@
       autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
     augroup END
     " need to set colorscheme after autocmd is defined
-    execute 'colorscheme ' .  get(g:, 'colors_name', 'default')
+    call ChangeBackground()
   endif
 
 

@@ -1,14 +1,13 @@
 # get colour scheme variable
 if [ ! -z "${1+x}" ]; then
-  COLOUR_SCHEME="${1}"
+  _COLOUR_SCHEME="${1}"
 else
-  COLOUR_SCHEME=$(grep -i $( $DOTS/bin/bg-colourscheme ) $HOME/.config/alacritty/colour.yml -B 5 |
-    grep \& | sed 's/.*: *&\(.*\)/\1/')
+  has -v fzf
+  _COLOUR_SCHEME=$( ls $HOME/.config/alacritty/colourschemes | cut -d '.' -f 1 | fzf --height=10% --reverse )
 fi
 
 # default colour scheme
-[ -z "${COLOUR_SCHEME}" ] && COLOUR_SCHEME=default
-export COLOUR_SCHEME
+[ -n "${_COLOUR_SCHEME}" ] && export COLOUR_SCHEME=${_COLOUR_SCHEME}
 
 # change alcritty background
 alacritty-theme "$COLOUR_SCHEME"
@@ -20,14 +19,14 @@ sleep 0.5
 export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
 # renew ls color
-[ -f $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME ] &&
-  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME) ||
-  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
+[ -f $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME ] &&
+  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME) ||
+  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$BG_LUMINANCE)
 
 # renew fzf color
-  [ -f $DOTS/config/zsh/fzf.$COLOUR_SCHEME ] &&
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf.$COLOUR_SCHEME)" ||
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
+[ -f $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME ] &&
+  export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME)" ||
+  export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$BG_LUMINANCE)"
 
 
 if tmux info &> /dev/null; then
@@ -38,7 +37,7 @@ if tmux info &> /dev/null; then
   # source tmux config
   tmux source-file $HOME/.tmux.conf
 
-  # change vim colorscheme in all tmux session
+  # change vim colourscheme in all tmux session
   sessions=($(tmux list-sessions -F '#{session_name}'))
   for session in "${sessions[@]}"; do
     windows=($(tmux list-windows -t ${session} -F '#{session_name}:#{window_index}'))

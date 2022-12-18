@@ -27,9 +27,9 @@
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
   [ -z "${COLOUR_SCHEME+x}" ] && export COLOUR_SCHEME=$(
-    grep -i \"$( $DOTS/bin/bg-colourscheme )\" ${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/colour.yml -B 5 |
-      grep \& | sed 's/.*: *&\(.*\)/\1/')
-  [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=seoul256-dark
+    basename "$(grep -rli "background.*[\"']#$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
+      cut -d '.' -f 1)
+  [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=seoul256
   [ -z "${BG_LUMINANCE+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
   [ -z "${BG_LUMINANCE}" ] && export BG_LUMINANCE="dark"
 
@@ -39,11 +39,11 @@
 # ---------------------------------------------------------------------------------------
   # export CLICOLORS=1
   # export LSCOLORS=exfxcxdxbxGxDxabagacad
-  # [ -x "$(command -v dircolors)" ] &&
-  #   eval "$(dircolors --sh $DOTS/config/zsh/LS_COLORS)"
-  [ -f $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME ] &&
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$COLOUR_SCHEME) ||
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors.$BG_LUMINANCE)
+  # # https://github.com/trapd00r/LS_COLORS
+  # export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors)
+  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME ] &&
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME) ||
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$BG_LUMINANCE)
 
 
 # Setup FZF
@@ -61,9 +61,9 @@
   # show full command below
   export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
   # change fzf color
-  [ -f $DOTS/config/zsh/fzf.$COLOUR_SCHEME ] &&
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf.$COLOUR_SCHEME)" ||
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf.$BG_LUMINANCE)"
+  [ -f $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME ] &&
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME)" ||
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$BG_LUMINANCE)"
   # add fzf path
   [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
     export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
@@ -257,7 +257,7 @@
 # Custom functions
 # ---------------------------------------------------------------------------------------
   alias ws="workspace"
-  alias cb="change-background"
+  alias ct="change-theme"
 
 
 # Rsync with progressbar
