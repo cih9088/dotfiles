@@ -3,7 +3,7 @@ if [ ! -z "${1+x}" ]; then
   _COLOUR_SCHEME="${1}"
 else
   has -v fzf
-  _COLOUR_SCHEME=$( ls $HOME/.config/alacritty/colourschemes | cut -d '.' -f 1 | fzf --height=10% --reverse )
+  _COLOUR_SCHEME=$( ls $DOTS/config/alacritty/colourschemes | cut -d '.' -f 1 | fzf --height=10% --reverse )
 fi
 
 # default colour scheme

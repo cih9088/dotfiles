@@ -356,7 +356,7 @@
 
 " StatusLine
 " ---------------------------------------------------------------------------------------
-  function! s:statusline_expr()
+ function StatusLineActive()
     let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
     let mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
     let ro  = "%{&readonly ? '👀' : ''}"
@@ -365,9 +365,16 @@
     let pos = ' %-12(%l : %c%V%) '
     let format = ' %-7([%{&fileformat}]%) '
     let pct = ' %P'
-    return '[%n] %f '.ft.mod.' '.ro.' %<'.sep.fug.format.pos.'%*'.pct
+    return '[%n] 🌸 %f '.ft.mod.' '.ro.' %<'.sep.fug.format.pos.'%*'.pct
   endfunction
-  let &statusline = s:statusline_expr()
+  function StatusLineInactive()
+    return '[%n] %F'
+  endfunction
+  augroup statusline
+    autocmd!
+    autocmd WinEnter,BufEnter * setlocal statusline=%!StatusLineActive()
+    autocmd WinLeave,BufLeave * setlocal statusline=%!StatusLineInactive()
+  augroup end
 
 
 
