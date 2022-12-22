@@ -4,63 +4,109 @@ set -eu
 
 _DIR="$(cd "$(dirname $(readlink -f "${BASH_SOURCE[0]}"))" >/dev/null && pwd)"
 
-DOTFILES_ROOT="${_DIR}/.."
-_SCRIPT_DIR="${DOTFILES_ROOT}/script"
+DOTS_ROOT="${_DIR}/.."
+_SCRIPT_DIR="${DOTS_ROOT}/script"
 
 . "${_SCRIPT_DIR}/helpers/functions.sh"
 
-DOTFILES_COMMAND=${DOTFILES_COMMAND:-skip}
-DOTFILES_TARGETS=${DOTFILES_TARGETS:-skip}
-DOTFILES_MODE=${DOTFILES_MODE:-}
-DOTFILES_VERSION=${DOTFILES_VERSION:-}
-DOTFILES_YES=${DOTFILES_YES:-}
-DOTFILES_SKIP_DEPENDENCIES=${DOTFILES_SKIP_DEPENDENCIES:-}
+DOTS_COMMAND=${DOTS_COMMAND:-skip}
+DOTS_TARGETS=${DOTS_TARGETS:-skip}
+DOTS_MODE=${DOTS_MODE:-}
+DOTS_VERSION=${DOTS_VERSION:-}
+DOTS_YES=${DOTS_YES:-}
+DOTS_SKIP_DEPENDENCIES=${DOTS_SKIP_DEPENDENCIES:-}
 
 VERBOSE=${VERBOSE:-false}
 CONFIG=${CONFIG:-}
 GH_ACCESS=${GH_ACCESS:-}
 PREFIX=${PREFIX:-$HOME/.local}
 
-
-DOTFILES_APPS=(
-  "zsh" "fish"
-  "prezto"
-  "neovim" "tmux" "tpm"
-  "wget" "tree" "fd" "rg" "thefuck" "tldr" "bash-snippets" "up" "jq" "sox" "tcpdump"
-  "pyenv" "goenv" "asdf"
+PKG_APPS=(
+  "zsh"           "z shell"
+  "fish"          "fish shell"
+  "prezto"        "framework for zsh"
+  "neovim"        "text editor"
+  "tmux"          "terminal multiplexer"
+  "tpm"           "tmux plugin manager"
+  "wget"          "non-interactive network downloader"
+  "tree"          "list contents of directories in an tree-like format"
+  "fd"            "find entries in the filesystem"
+  "rg"            "recursively search"
+  "thefuck"       "command corrector"
+  "tldr"          "too long didnt read"
+  "bash-snippets" "bash utils"
+  "up"            "tool for writing linux pipeline"
+  "jq"            "json parser"
+  "sox"           "sound exchange"
+  "tcpdump"       "dump traffic on a network"
+  "pyenv"         "python version maanger"
+  "goenv"         "golang version manager"
+  "asdf"          "runtime version manager"
 )
 
-DOTFILES_DOTS=(
-  "bins" "configs" "tmux-plugins" "neovim-plugins" "neovim-providers"
+PKG_DOTS=(
+  "bins"             "custom scripts and commands"
+  "configs"          "custom configs"
+  "tmux-plugins"     "tmux plugins"
+  "neovim-plugins"   "neovim plugins"
+  "neovim-providers" "neovim providers"
 )
 
-DOTFILES_LIBS=(
-  "terminfo"
-  "pkg-config" "help2man" "patch" "ncurses" "readline" "gettext"
-  "cmake"
-  "zlib" "bzip2" "unzip" "gzip" "xz"
-  "sqlite3" "libffi" "tcl" "tk"
-  "openssl" "autotools" "gnutls" "gnupg" "libx11"
-  "openldap"
+PKG_LIBS=(
+  "terminfo"   "terminal database"
+  "pkg-config" "package metainformaation"
+  "help2man"   "simple man page generator"
+  "patch"      "diff file applier"
+  "ncurses"    "ncurses"
+  "readline"   "readline"
+  "gettext"    "gettext"
+  "cmake"      "cmake"
+  "zlib"       "zlib"
+  "bzip2"      "bzip"
+  "unzip"      "unzip"
+  "gzip"       "gzip"
+  "xz"         "xz"
+  "sqlite3"    "sqlite3"
+  "libffi"     "libffi"
+  "openssl"    "oepnssl"
+  "autotools"  "auottools"
+  "gnutls"     "gnutls"
+  "gnupg"      "gnupg"
+  "openldap"   "openldap"
+  # "tcl"        "tcl"
+  # "tk"         "tk"
+  # "libx11"     "libx11"
+)
+
+PKG_ENVS=(
+  "python"                 "python"
+  "python-env"             "python environments"
+  "python-env--virtualenv" "virtual environment"
+  "python-env--black"      "python formatter"
+  "python-env--isort"      "impoort formatter"
+  "python-env--flake8"     "python linter"
+  "python-env--debugpy"    "debug adapter protocol for python"
+  "golang"                 "golang"
+  "rust"                   "rust"
+  "nodejs"                 "nodejs"
+  "nodejs-env"             "nodejs environments"
+  "lua"                    "lua"
+  "lua-env"                "lua environments"
+  "lua-env--stylua"        "lua formatter"
+  "sh-env"                 "shell environments"
+  "sh-env--shellcheck"     "shell linter"
+  "sh-env--shfmt"          "shell formatter"
 )
 
 
-DOTFILES_ENVIRONMENTS=(
-  "python" "python-env"
-  "python-env--virtualenv" "python-env--black" "python-env--isort" "python-env--flake8"
-  "python-env--debugpy"
-  "golang"
-  "rust"
-  "nodejs" "nodejs-env"
-  "lua" "lua-env"
-  "lua-env-stylua"
-  "sh-env"
-  "sh-env-shellcheck" "sh-env-shfmt"
-)
-
-DOTFILES_AVAILABLES=(
-  "${DOTFILES_APPS[@]}" "${DOTFILES_DOTS[@]}" "${DOTFILES_LIBS[@]}" "${DOTFILES_ENVIRONMENTS[@]}"
-)
+_PKGS=( "${PKG_APPS[@]}" "${PKG_DOTS[@]}" "${PKG_LIBS[@]}" "${DOTILES_ENVS[@]}")
+PKGS=()
+idx=0
+while [ $idx -lt ${#_PKGS[@]} ]; do
+  PKGS+=("${_PKGS[$idx]}")
+  idx=$(( $idx + 2 ))
+done
+unset _PKGS
 
 
 usage() {
@@ -83,9 +129,6 @@ ${BOLD}${RED}COMMAND${NC}
 
     ${BOLD}${RED}test-prerequisites${NC}
         Test prerequisites
-
-    ${BOLD}${RED}install-prerequisites${NC}
-        Install prerequisites
 
     ${BOLD}${RED}install, i${NC} ${BOLD}${GREEN}target${NC}
         Install ${BOLD}${GREEN}target${NC}
@@ -122,6 +165,134 @@ ${BOLD}${RED}OPTIONS${NC}
 HELP
 }
 
+completion_zsh() {
+  cat <<EOF
+PKG_DOTS=($(printf " %q" "${PKG_DOTS[@]}"))
+PKG_APPS=($(printf " %q" "${PKG_APPS[@]}"))
+PKG_ENVS=($(printf " %q" "${PKG_ENVS[@]}"))
+PKG_LIBS=($(printf " %q" "${PKG_LIBS[@]}"))
+
+to_alternative() {
+  local ARR=("\$@")
+  local start_idx=1 #zsh starts array from index of 1
+
+  out="(("
+  idx=\$start_idx
+  while [ \$idx -lt \${#ARR[@]} ]; do
+    cmd=\${ARR[\$idx]}
+    desc=\${ARR[\$((\$idx + 1))]}
+    out="\$out\$cmd\:\"\$desc\" "
+    idx=\$(( \$idx + 2 ))
+  done
+  out="\$out))"
+  echo "\$out"
+}
+
+packages() {
+  _alternative 'dotfiles:dotfiles:'"\$(to_alternative "\${PKG_DOTS[@]}")"
+  _alternative 'applications:applications:'"\$(to_alternative "\${PKG_APPS[@]}")"
+  _alternative 'envs:environments:'"\$(to_alternative "\${PKG_ENVS[@]}")"
+  _alternative 'libs:libraries:'"\$(to_alternative "\${PKG_LIBS[@]}")"
+}
+
+options() {
+  local command="\$1"
+  local -a options
+
+  options=(
+    {-y,--yes}'[yes]'
+    {-v,--verbose}'[verbose]'
+    {-c,--config}'[yaml configuration file]:filename:_files -g \*.\(yaml\|yml\)'
+    {-m,--mode}'[mode to manage targets]:mode:(system local)'
+  )
+
+  if [[ \$command == "install" || \$command == "update" ]]; then
+    options+=(
+      {-s,--skip-dependencies}'[skip dependencies for local mode]'
+      {-t,--version}'[specify version to install or update]:version:'
+    )
+  fi
+
+  _arguments -s -w "\$options[@]"
+}
+
+_dots() {
+  local state line
+
+  _arguments \
+    {-h,--help}'[show help message]: :->done' \
+    '1:command:->commands' \
+    '*::arg:->args'
+
+  case "\$state" in
+    done)
+      ;;
+    commands)
+      local commands; commands=(
+        'install: install targets'
+        'update: update targets'
+        'remove: remove targets'
+        'list: list targets'
+        'test-prerequisites: test prerequisites'
+        'change-default-shell: change default shell'
+        'completion: auto completion'
+      )
+      _describe -t commands 'command' commands
+      ;;
+    args)
+      case "\$line[1]" in
+        completion)
+          if [ \$#line[@] -le 2 ]; then
+            local -a _shells
+            _shells=('zsh')
+            _describe 'shell' _shells
+          fi
+          ;;
+        install)
+          options "install"
+          _alternative 'specials:special:(prerequisites)'
+          packages
+          ;;
+        update)
+          options "update"
+          packages
+          ;;
+        remove)
+          options "remove"
+          packages
+          ;;
+        *)
+          ;;
+      esac
+      ;;
+  esac
+}
+
+compdef _dots dots
+EOF
+}
+
+show_list() {
+    cat <<EOF
+
+Available list to install
+
+- ${BOLD}${RED}Dots${NC}: ${PKG_DOTS[@]}
+- ${BOLD}${RED}Apps${NC}: ${PKG_APPS[@]}
+- ${BOLD}${RED}Envs${NC}: ${PKG_ENVS[@]}
+- ${BOLD}${RED}Libs${NC}: ${PKG_LIBS[@]}
+
+EOF
+}
+
+
+make_wrapper() {
+  pushd "${DOTS_ROOT}" >/dev/null 2>&1 || exit $?
+  make "$@"
+  popd >/dev/null 2>&1 || exit $?
+}
+
+
 
 POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
@@ -143,15 +314,15 @@ while [[ $# -gt 0 ]]; do
 
   case $key in
     -m | --mode)
-      DOTFILES_MODE="$2"
-      if [[ "local system"  != *"${DOTFILES_MODE}"* ]]; then
+      DOTS_MODE="$2"
+      if [[ "local system"  != *"${DOTS_MODE}"* ]]; then
         log_error "mode must be either 'local' or 'system'"
         exit 1
       fi
       shift; shift
       ;;
     -y | --yes)
-      DOTFILES_YES=true
+      DOTS_YES=true
       shift
       ;;
     -c | --config)
@@ -159,8 +330,8 @@ while [[ $# -gt 0 ]]; do
       shift; shift
       ;;
     -t | --version)
-      DOTFILES_VERSION="$2"
-      DOTFILES_SKIP_DEPENDENCIES=true
+      DOTS_VERSION="$2"
+      DOTS_SKIP_DEPENDENCIES=true
       shift; shift
       ;;
     -v | --verbose)
@@ -168,7 +339,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     -s|--skip-dependencies)
-      DOTFILES_SKIP_DEPENDENCIES=true
+      DOTS_SKIP_DEPENDENCIES=true
       shift
       ;;
     -h | --help)
@@ -177,7 +348,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     -* | --*)
       log_error "Unknown option $1"
-      usage
       exit 1
       ;;
     *)
@@ -189,54 +359,46 @@ done
 
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
-
-make_wrapper() {
-  pushd "${DOTFILES_ROOT}" >/dev/null 2>&1 || exit $?
-  make "$@"
-  popd >/dev/null 2>&1 || exit $?
-}
-
-
 if [ $# -eq 0 ]; then
-  log_error "Command is not provided."
+  log_error "Command is not provided"
   exit 1
 fi
-DOTFILES_COMMAND="${1}"
+DOTS_COMMAND="${1}"
 shift
 
-
 # alias
-[ "$DOTFILES_COMMAND" == "l" ] && DOTFILES_COMMAND=list
-[ "$DOTFILES_COMMAND" == "i" ] && DOTFILES_COMMAND=install
-[ "$DOTFILES_COMMAND" == "r" ] && DOTFILES_COMMAND=remove
-[ "$DOTFILES_COMMAND" == "u" ] && DOTFILES_COMMAND=update
+[ "$DOTS_COMMAND" == "l" ] && DOTS_COMMAND=list
+[ "$DOTS_COMMAND" == "i" ] && DOTS_COMMAND=install
+[ "$DOTS_COMMAND" == "r" ] && DOTS_COMMAND=remove
+[ "$DOTS_COMMAND" == "u" ] && DOTS_COMMAND=update
 
 
-if [ "$DOTFILES_COMMAND" == "list" ]; then
-  cat <<EOF
-
-Available list to install
-
-- ${BOLD}${RED}Apps${NC}: ${DOTFILES_APPS[@]}
-- ${BOLD}${RED}Environments${NC}: ${DOTFILES_ENVIRONMENTS[@]}
-- ${BOLD}${RED}Configs${NC}: ${DOTFILES_DOTS[@]}
-
-EOF
-  exit 0
-elif [ "$DOTFILES_COMMAND" == "test-prerequisites" ]; then
-  make_wrapper prerequisitesTest
-  exit 0
-elif [ "$DOTFILES_COMMAND" == "install-prerequisites" ]; then
-  make_wrapper prerequisites
-  exit 0
-elif [ "$DOTFILES_COMMAND" == "change-default-shell" ]; then
-  make_wrapper changeDefaultShell
-  exit 0
-elif [[ " install remove update " != *" $DOTFILES_COMMAND "* ]]; then
-  log_error "Unknown command $DOTFILES_COMMAND"
-  usage
-  exit 1
-fi
+case $DOTS_COMMAND in
+  list)
+    show_list
+    exit 0
+    ;;
+  completion)
+    _shell="${1:-}"
+    [ "$_shell" = "zsh" ] && completion_zsh && exit 0
+    log_error "$_shell is not a valid option."
+    exit 1
+    ;;
+  test-prerequisites)
+    make_wrapper prerequisitesTest
+    exit 0
+    ;;
+  change-default-shell)
+    make_wrapper changeDefaultShell
+    exit 0
+    ;;
+  install|remove|update)
+    ;;
+  *)
+    log_error "Unknown command $DOTS_COMMAND"
+    exit 1
+    ;;
+esac
 
 # parse config
 if [ -n "${CONFIG}" ]; then
@@ -250,33 +412,33 @@ if [ -n "${CONFIG}" ]; then
   fi
   CONFIG=$(readlink -f $CONFIG)
   eval $(${_SCRIPT_DIR}/helpers/parser_yaml ${CONFIG} "CONFIG_")
-  DOTFILES_TARGETS=("${CONFIG_TARGETS[@]}")
+  DOTS_TARGETS=("${CONFIG_TARGETS[@]}")
 else
-  DOTFILES_TARGETS=($@)
+  DOTS_TARGETS=($@)
 fi
 
 
-if [ ${#DOTFILES_TARGETS[@]} -eq 0 ]; then
+if [ ${#DOTS_TARGETS[@]} -eq 0 ]; then
   log_error "Please provide targets."
   exit 1
 fi
 
-for i in "${!DOTFILES_TARGETS[@]}"; do
-  DOTFILES_TARGET=${DOTFILES_TARGETS[i]}
+for i in "${!DOTS_TARGETS[@]}"; do
+  DOTS_TARGET=${DOTS_TARGETS[i]}
 
-  if [[ "${DOTFILES_AVAILABLES[@]}" != *"${DOTFILES_TARGET}"* ]]; then
-    log_error "Invalid target '$DOTFILES_TARGET' to ${DOTFILES_COMMAND}"
+  if [[ "${PKGS[@]}" != *"${DOTS_TARGET}"* ]]; then
+    log_error "Invalid target '$DOTS_TARGET' to ${DOTS_COMMAND}"
     exit 1
   fi
 done
-DOTFILES_TARGET="${DOTFILES_TARGETS[*]}"
+DOTS_TARGET="${DOTS_TARGETS[*]}"
 
-export DOTFILES_COMMAND
-export DOTFILES_TARGET
-export DOTFILES_MODE
-export DOTFILES_VERSION
-export DOTFILES_YES
-export DOTFILES_SKIP_DEPENDENCIES
+export DOTS_COMMAND
+export DOTS_TARGET
+export DOTS_MODE
+export DOTS_VERSION
+export DOTS_YES
+export DOTS_SKIP_DEPENDENCIES
 
 export VERBOSE
 export CONFIG
@@ -284,4 +446,4 @@ export GH_ACCESS
 export PREFIX
 
 
-make_wrapper "${DOTFILES_TARGETS[@]}"
+make_wrapper "${DOTS_TARGETS[@]}"

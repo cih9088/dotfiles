@@ -16,7 +16,7 @@ if [ ! -z "${CONFIG+x}" ] && [ -n "${CONFIG}" ]; then
   # config is given
   eval $(${PROJ_HOME}/script/helpers/parser_yaml ${CONFIG} "CONFIG_")
 
-  DOTFILES_YES="true"
+  DOTS_YES="true"
 
   _TARGET=${TARGET}
   _TARGET=(${_TARGET//${DEPTH_SEP}/ })
@@ -30,29 +30,29 @@ if [ ! -z "${CONFIG+x}" ] && [ -n "${CONFIG}" ]; then
 
     _TARGET_MODE_CONFIG="CONFIG_${__TARGET}mode"
     if [ ! -z "${!_TARGET_MODE_CONFIG+x}" ]; then
-      DOTFILES_MODE=${!_TARGET_MODE_CONFIG}
+      DOTS_MODE=${!_TARGET_MODE_CONFIG}
     fi
 
     _TARGET_VERSION_CONFIG="CONFIG_${__TARGET}version"
     if [ ! -z "${!_TARGET_VERSION_CONFIG+x}" ]; then
-      DOTFILES_VERSION=${!_TARGET_VERSION_CONFIG}
+      DOTS_VERSION=${!_TARGET_VERSION_CONFIG}
     fi
   done
 fi
 
-if [ ! -z "${DOTFILES_TARGET+x}" ]; then
-  if [ ! -z "${DOTFILES_COMMAND+x}" ]; then
-    if [[ " "${DOTFILES_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTFILES_COMMAND}" != "install" ]; then
+if [ ! -z "${DOTS_TARGET+x}" ]; then
+  if [ ! -z "${DOTS_COMMAND+x}" ]; then
+    if [[ " "${DOTS_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTS_COMMAND}" != "install" ]; then
       exit 0
     fi
   fi
-  # if [ ! -z "${DOTFILES_MODE+x}" ]; then
-  #   if [[ " "${DOTFILES_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTFILES_MODE}" != "local" ]; then
+  # if [ ! -z "${DOTS_MODE+x}" ]; then
+  #   if [[ " "${DOTS_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTS_MODE}" != "local" ]; then
   #     exit 0
   #   fi
   # fi
-  if [ ! -z "${DOTFILES_SKIP_DEPENDENCIES+x}" ] && [ "$DOTFILES_SKIP_DEPENDENCIES" == "true" ]; then
-    if [[ " "${DOTFILES_TARGET}" " != *" ${TARGET} "* ]]; then
+  if [ ! -z "${DOTS_SKIP_DEPENDENCIES+x}" ] && [ "$DOTS_SKIP_DEPENDENCIES" == "true" ]; then
+    if [[ " "${DOTS_TARGET}" " != *" ${TARGET} "* ]]; then
       exit 0
     fi
   fi
@@ -175,10 +175,10 @@ main_script() {
   local _FUNC_SETUP=
   local _BANNER=
 
-  _TARGET_COMMAND="${DOTFILES_COMMAND:-}"
-  _TARGET_MODE="${DOTFILES_MODE:-}"
-  _TARGET_VERSION="${DOTFILES_VERSION:-${_DEFAULT_VERSION}}"
-  _TARGET_YES="${DOTFILES_YES:-}"
+  _TARGET_COMMAND="${DOTS_COMMAND:-}"
+  _TARGET_MODE="${DOTS_MODE:-}"
+  _TARGET_VERSION="${DOTS_VERSION:-${_DEFAULT_VERSION}}"
+  _TARGET_YES="${DOTS_YES:-}"
 
   # if _FUNC_VERSION is given, process version checker
   if [ -n "${_FUNC_VERSION}" ]; then
@@ -255,10 +255,10 @@ main_script() {
     break
   done
 
-  # if [[ " ${DOTFILES_TARGET} " != *" ${_TARGET} "* ]] && [ "${_TARGET_COMMAND}" != "install" ]; then
+  # if [[ " ${DOTS_TARGET} " != *" ${_TARGET} "* ]] && [ "${_TARGET_COMMAND}" != "install" ]; then
   #   log_info "Skipped"
   #   return
-  # elif [[ " ${DOTFILES_TARGET} " != *" ${_TARGET} "* ]] && [ "${_TARGET_MODE}" == "system" ]; then
+  # elif [[ " ${DOTS_TARGET} " != *" ${_TARGET} "* ]] && [ "${_TARGET_MODE}" == "system" ]; then
   #   log_info "Skipped"
   #   return
   # fi

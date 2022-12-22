@@ -1,0 +1,5 @@
+unfunction "$0"
+
+source <(dots completion zsh)
+
+$0 "$@"
