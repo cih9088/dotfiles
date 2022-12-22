@@ -48,5 +48,5 @@ setup_func_system() {
   fi
 }
 
-main_script "${THIS}" setup_func_local "" "" \
+main_script "${THIS}" setup_func_local setup_func_system "" \
   "${DEFAULT_VERSION}"

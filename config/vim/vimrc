@@ -24,8 +24,8 @@
   Plug 'joshdick/onedark.vim'
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'sainnhe/edge'
-  Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
   if has('nvim')
+    Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
     Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
   endif
 
@@ -77,8 +77,6 @@
   Plug 'tpope/vim-vinegar'
   Plug 'liuchengxu/vista.vim'
   Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
-  Plug 'mfussenegger/nvim-dap'
-  Plug 'rcarriga/nvim-dap-ui'
 
 
 " Language Specific
@@ -122,6 +120,12 @@
     Plug 'iamcco/markdown-preview.nvim',
           \ { 'do': ':call mkdp#util#install()', 'for': 'markdown', 'on': 'MarkdownPreview' }
   endif
+
+  if has("nvim-0.8.0")
+    Plug 'mfussenegger/nvim-dap'
+    Plug 'rcarriga/nvim-dap-ui'
+  endif
+
 
 " Etc.
 " ---------------------------------------------------------------------------------------

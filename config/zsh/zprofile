@@ -130,8 +130,10 @@
 # EDITORS
 # =======================================================================================
 
-  export EDITOR=`which nvim`
-  export VISUAL=`which nvim`
+  if command -v nvim &>/dev/null; then
+    export EDITOR=`which nvim`
+    export VISUAL=`which nvim`
+  fi
   export PAGER='less'
 
 

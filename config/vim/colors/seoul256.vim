@@ -203,7 +203,7 @@ if exists("syntax_on")
   syntax reset
 endif
 
-call s:hi('Normal', [s:dark_fg, s:light_fg], [s:dark_bg, s:light_bg])
+call s:hi('Normal', [s:dark_fg, s:light_fg], ['', ''])
 
 call s:hi('LineNr', [101, 101], [s:dark_bg + 1, s:light_bg - 2])
 call s:hi('Visual', ['', ''], [23, 152])
@@ -430,18 +430,20 @@ call s:hi('rubyCurlyBlockDelimiter', [144, 101], ['', ''])
 call s:hi('rubyPredefinedIdentifier', [230, 52], ['', ''])
 " hi rubyRegexpSpecial
 
-" Treesitter
-" ---------
-highlight link @variable Normal
-highlight link @variable.builtin Special
-highlight link @attribute Identifier
+if has("nvim")
+  " Treesitter
+  " ---------
+  highlight link @variable Normal
+  highlight link @variable.builtin Special
+  highlight link @attribute Identifier
 
-" nvim diagnostic
-call s:hi("DiagnosticError", [168, 168], ['', ''])
-highlight link DiagnosticInfo String
-highlight link DiagnosticHint Pmenu
-highlight link NormalFloat Pmenu
-highlight link FloatBorder NormalFloat
+  " nvim diagnostic
+  call s:hi("DiagnosticError", [168, 168], ['', ''])
+  highlight link DiagnosticInfo String
+  highlight link DiagnosticHint Pmenu
+  highlight link NormalFloat Pmenu
+  highlight link FloatBorder NormalFloat
+end
 
 hi CursorLine cterm=NONE
 hi CursorLineNr cterm=NONE

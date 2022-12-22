@@ -327,7 +327,7 @@
 
 # List directory contentes after upon cd
 # ---------------------------------------------------------------------------------------
-  unalias cd
+  unalias cd &>/dev/null
   cd() {
     nocorrect builtin cd "$@" && 
       (
@@ -344,7 +344,7 @@
 
 # Fix man page width for better readability
 # ---------------------------------------------------------------------------------------
-  unalias man
+  unalias man &>/dev/null
   man () {
     local width="${COLUMNS:-100}"
     (( width > 100 )) && width=100
