@@ -75,7 +75,7 @@ PKG_LIBS=(
   "openldap"   "openldap"
   # "tcl"        "tcl"
   # "tk"         "tk"
-  # "libx11"     "libx11"
+  "libx11"     "libx11"
 )
 
 PKG_ENVS=(
@@ -99,8 +99,8 @@ PKG_ENVS=(
 )
 
 
-_PKGS=( "${PKG_APPS[@]}" "${PKG_DOTS[@]}" "${PKG_LIBS[@]}" "${DOTILES_ENVS[@]}")
-PKGS=()
+_PKGS=( "${PKG_APPS[@]}" "${PKG_DOTS[@]}" "${PKG_LIBS[@]}" "${PKG_ENVS[@]}")
+PKGS=("prerequisites")
 idx=0
 while [ $idx -lt ${#_PKGS[@]} ]; do
   PKGS+=("${_PKGS[$idx]}")
@@ -139,7 +139,7 @@ ${BOLD}${RED}COMMAND${NC}
     ${BOLD}${RED}remove, r${NC} ${BOLD}${GREEN}target${NC}
         Remove ${BOLD}${GREEN}target${NC}
 
-    ${BOLD}${RED}change-default-shell${NC}
+    ${BOLD}${RED}change-shell${NC}
         Change default shell to zsh/fish
 
 
@@ -234,7 +234,7 @@ _dots() {
         'remove: remove targets'
         'list: list targets'
         'test-prerequisites: test prerequisites'
-        'change-default-shell: change default shell'
+        'change-shell: change default shell'
         'completion: auto completion'
       )
       _describe -t commands 'command' commands
@@ -331,7 +331,6 @@ while [[ $# -gt 0 ]]; do
       ;;
     -t | --version)
       DOTS_VERSION="$2"
-      DOTS_SKIP_DEPENDENCIES=true
       shift; shift
       ;;
     -v | --verbose)
@@ -384,12 +383,12 @@ case $DOTS_COMMAND in
     log_error "$_shell is not a valid option."
     exit 1
     ;;
-  test-prerequisites)
-    make_wrapper prerequisitesTest
+  change-shell)
+    make_wrapper changeShell
     exit 0
     ;;
-  change-default-shell)
-    make_wrapper changeDefaultShell
+  test-prerequisites)
+    make_wrapper prerequisitesTest
     exit 0
     ;;
   install|remove|update)

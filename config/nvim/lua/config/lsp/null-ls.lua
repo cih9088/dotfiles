@@ -21,7 +21,10 @@ function M.setup()
          null_ls.builtins.formatting.shfmt.with({
             args = { "--case-indent", "--indent", "2", "--simplify", "--binary-next-lint", "--filename", "$FILENAME" },
          }),
-         null_ls.builtins.diagnostics.shellcheck,
+         null_ls.builtins.diagnostics.shellcheck.with({
+            args = { "--format", "json1", "--external-sources", "-" }
+            -- args = { "--format", "json1", "--source-path=$DIRNAME", "--external-sources", "-" }
+         }),
          null_ls.builtins.hover.printenv,
          -- general
          null_ls.builtins.code_actions.gitsigns,

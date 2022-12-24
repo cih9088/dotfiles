@@ -2,31 +2,6 @@
 # apps & libs
 #######################
 
-pkg-config:
-
-patch:
-
-cmake:
-
-zlib:
-
-bzip2:
-
-unzip:
-
-gzip:
-
-xz:
-
-gnutls:
-
-gnupg:
-
-libx11:
-
-terminfo:
-  mode: local
-
 zsh:
 
 prezto:
@@ -54,27 +29,16 @@ sox:
 tcpdump:
 
 #######################
-# dots
-#######################
-
-bins:
-  mode: local
-
-configs:
-  mode: local
-
-tpm:
-  mode: local
-
-#######################
 # envs
 #######################
 
 asdf:
-  mode: local
 
 python:
   version: 3.8.10
+
+python-env:
+  virtualenv:
 
 golang:
   version: 1.17.5
@@ -88,12 +52,19 @@ nodejs:
 lua:
   version: 5.4.3
 
-python-env:
-  virtualenv:
 
 #######################
-# plugins
+# dots
 #######################
+
+bins:
+  mode: local
+
+configs:
+  mode: local
+
+tpm:
+  mode: local
 
 tmux-plugins:
   mode: local

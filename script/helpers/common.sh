@@ -190,7 +190,22 @@ main_script() {
         for com in "${coms[@]}"; do
           printf '%s,%s\n' "${com}" "$( ${_FUNC_VERSION} ${com} )"
         done
-      ) | column -t -s ',' | sed 's/^/    /'
+      ) | awk -F',' '
+        BEGIN { l=0; ctr=0 }
+        {
+          locations[NR]=$1
+          versions[NR]=$2
+          ctr+=1
+          if (length($1) > l) {
+            l=length($1)
+          }
+        }
+        END {
+          for (i = 1; i <= ctr; i++) {
+            printf "%*s  %s\n", l, locations[i], versions[i]
+          }
+        }
+      '
     else
       log_info "${_TARGET_HL} is not found on the machine."
     fi
@@ -214,20 +229,22 @@ main_script() {
     fi
 
     if [ -z "${_TARGET_MODE}" ]; then
-      if [ "${_FUNC_SETUP_LOCAL}" != "${_FUNC_SETUP_SYSTEM}" ]; then
+      if [ "${_FUNC_SETUP_LOCAL}" == "" ]; then
+        _TARGET_MODE="system"
+      elif [ "${_FUNC_SETUP_SYSTEM}" == "" ]; then
+        _TARGET_MODE="local"
+      else
         yn=$(question "$(tr '[:lower:]' '[:upper:]' <<< ${_TARGET_COMMAND:0:1})${_TARGET_COMMAND:1} locally or systemwide?")
         case $yn in
           [Ll]ocal* ) _TARGET_MODE=local; ;;
           [Ss]ystem* ) _TARGET_MODE=system; ;;
           * ) log_error "Please answer 'locally' or 'systemwide'."; continue;;
         esac
-      else
-        _TARGET_MODE="local"
       fi
     fi
 
     if [ -z "${_TARGET_YES}" ] && [[ "install update" ==  *"$_TARGET_COMMAND"* ]]; then
-      if [ $_TARGET_MODE == "local" ]; then
+      if [ "$_TARGET_MODE" == "local" ]; then
         if [ -n "${_DEFAULT_VERSION}" ]; then
           _TARGET_VERSION=${_DEFAULT_VERSION}
           if [ -n "${_AVAILABLE_VERSIONS}" ]; then
@@ -266,13 +283,21 @@ main_script() {
   if [ ${_TARGET_YES} == "true" ]; then
     local _TMP_DIR=$(mktemp -d -t dotfiles.XXXXXXXX)
 
+    if [ "${_TARGET_MODE}" == "local" ] && [ -z "${_FUNC_SETUP_LOCAL}" ]; then
+      log_info "The mode is changed to 'system' since 'local' is not supported for '${_TARGET}'"
+      _TARGET_MODE="system"
+    elif [ "${_TARGET_MODE}" == "system" ] && [ -z "${_FUNC_SETUP_SYSTEM}" ]; then
+      log_info "The mode is changed to 'local' since 'system' is not supported for '${_TARGET}'"
+      _TARGET_MODE="local"
+    fi
+
     if [ "${_TARGET_MODE}" == "local" ]; then
       _FUNC_SETUP="${_FUNC_SETUP_LOCAL}"
       _BANNER="[mode=local, version=${_TARGET_VERSION}]"
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
       _BANNER="[mode=system]"
-      [[ "${PLATFORM}" == "LINUX" && "${FAMILY}" == "DEBIAN" ]] && ++ sudo apt-get update
+      sudo -v
     fi
 
     if [ -z "${_FUNC_SETUP}" ]; then
@@ -298,8 +323,15 @@ main_script() {
       log_info "${_BEGIN_BANNER}" ||
       start_spinner "${_BEGIN_BANNER}"
     (
-      # sudo drops user environment
-      # [ "${VERBOSE}" = "false" ] && DEBIAN_FRONTEND=noninteractive
+      if [[ "${_TARGET_MODE}" == "system" && "${PLATFORM}" == "LINUX" && "${FAMILY}" == "DEBIAN" ]]; then
+        ++ sudo apt-get update
+        # sudo drops user environment
+        # [ "${VERBOSE}" = "false" ] && DEBIAN_FRONTEND=noninteractive
+        sudo() {
+          local _sudo="$(type -ap sudo | head -n1)"
+          "$_sudo" "DEBIAN_FRONTEND=noninteractive" "$@"
+        }
+      fi
       log_info "Temp directory: ${_TMP_DIR}"
       cd "${_TMP_DIR}"
       "${_FUNC_SETUP}" "${_TARGET_COMMAND}" "${_TARGET_VERSION}"

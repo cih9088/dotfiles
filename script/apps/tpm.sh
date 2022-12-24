@@ -16,19 +16,21 @@ log_title "Prepare for ${THIS_HL}"
 setup_func() {
   local COMMAND="${1:-skip}"
 
-  if [[ "remove update"  == *"${COMMAND}"* ]]; then
+  if [ "${COMMAND}" == "update" ]; then
     if [ -d "${HOME}/.tmux/plugins/tpm" ]; then
-      rm -rf "${HOME}/.tmux/plugins/tpm" || true
+      ++ pushd "${HOME}/.tmux/plugins/tpm"
+      ++ git pull
+      ++ popd
     else
-      if [ "${COMMAND}" == "update" ]; then
-        log_error "${THIS_HL} is not installed. Please install it before update it."
-        exit 1
-      fi
+      log_error "${THIS_HL} is not installed. Please install it before update it."
+      exit 1
     fi
-  elif [[ "install update"  == *"${COMMAND}"* ]]; then
+  elif [ "${COMMAND}" == "install" ]; then
     if [ ! -d "${HOME}/.tmux/plugins/tpm" ]; then
-      ++ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+      ++ git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
     fi
+  elif [ "${COMMAND}" == "remove" ]; then
+    rm -rf "${HOME}/.tmux/plugins/tpm" || true
   fi
 }
 

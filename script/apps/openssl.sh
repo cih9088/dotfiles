@@ -54,7 +54,7 @@ setup_func_local() {
       ++ tar -xvzf "openssl-${VERSION}.tar.gz"
 
       ++ pushd "openssl-openssl-${VERSION}"
-      ++ ./Configure --prefix="${PREFIX}" shared zlib
+      ++ ./Configure --prefix="${PREFIX}" shared zlib enable-md2
       ++ make
       ++ make install
       ++ popd

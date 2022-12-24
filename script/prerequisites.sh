@@ -6,7 +6,7 @@ set -e
 # Always verbose output
 VERBOSE=true
 
-# Keep-alive: update existing `sudo` time stamp until `osxprep.sh` has finished
+# Keep-alive: update existing `sudo` time stamp until this script has finished
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
@@ -79,14 +79,12 @@ echo
       sudo apt install -y \
         git make curl gcc g++ \
         bsdmainutils sudo \
-        python3-dev python3-pip \
         tar
     elif [[ $FAMILY == "RHEL" ]]; then
       sudo dnf install -y \
         git make curl gcc gcc-c++ \
         findutils util-linux-user sudo \
         perl-IPC-Cmd perl-Pod-Html perl-Thread-Queue \
-        python3-devel \
         tar
       # # basic
       # sudo dnf install -y python3 python2  \

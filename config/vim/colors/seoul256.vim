@@ -203,7 +203,7 @@ if exists("syntax_on")
   syntax reset
 endif
 
-call s:hi('Normal', [s:dark_fg, s:light_fg], ['', ''])
+call s:hi('Normal', [s:dark_fg, s:light_fg], [s:dark_bg, s:light_bg])
 
 call s:hi('LineNr', [101, 101], [s:dark_bg + 1, s:light_bg - 2])
 call s:hi('Visual', ['', ''], [23, 152])
@@ -368,7 +368,7 @@ call s:hi('Question', [179, 88], ['', ''])
 call s:hi('WarningMsg', [179, 88], ['', ''])
 
 " Sign column
-call s:hi('SignColumn', [173, 173], [s:dark_bg, s:light_bg])
+call s:hi('SignColumn', [173, 173], [s:dark_bg + 1, s:light_bg - 2])
 
 " Diff
 call s:hi('diffAdded',   [108, 65], ['', ''])
@@ -431,18 +431,24 @@ call s:hi('rubyPredefinedIdentifier', [230, 52], ['', ''])
 " hi rubyRegexpSpecial
 
 if has("nvim")
+  " nvim diagnostic
+  call s:hi("DiagnosticError", [161, 161], ['', ''])
+  call s:hi("DiagnosticWarn", [222, 179], ['', ''])
+  call s:hi("DiagnosticInfo", [153, 73], ['', ''])
+  call s:hi("DiagnosticHint", [250, 241], ['', ''])
+  call s:hi("DiagnosticSignError", [161, 161], [s:dark_bg + 1, s:light_bg - 2])
+  call s:hi("DiagnosticSignWarn", [222, 179], [s:dark_bg + 1, s:light_bg - 2])
+  call s:hi("DiagnosticSignInfo", [153, 73], [s:dark_bg + 1, s:light_bg - 2])
+  call s:hi("DiagnosticSignHint", [250, 241], [s:dark_bg + 1, s:light_bg - 2])
+end
+
+
+if has('nvim-0.8.0')
   " Treesitter
   " ---------
   highlight link @variable Normal
   highlight link @variable.builtin Special
   highlight link @attribute Identifier
-
-  " nvim diagnostic
-  call s:hi("DiagnosticError", [168, 168], ['', ''])
-  highlight link DiagnosticInfo String
-  highlight link DiagnosticHint Pmenu
-  highlight link NormalFloat Pmenu
-  highlight link FloatBorder NormalFloat
 end
 
 hi CursorLine cterm=NONE

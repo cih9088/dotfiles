@@ -80,10 +80,12 @@ setup_func_tldr_system() {
         ++ sudo mkdir -p /usr/local/bin
         if [ "${ARCH}" == "x86_64" ]; then
           ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${DEFAULT_VERSION}/tealdeer-linux-x86_64-musl"
-          ++ mv "tealdeer-linux-x86_64-musl" "/usr/local/bin/tldr"
+          ++ sudo mv "tealdeer-linux-x86_64-musl" "/usr/local/bin/tldr"
+          ++ sudo chmod +x /usr/local/bin/tldr
         elif [ "${ARCH}" == "aarch64" ]; then
           ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${DEFAULT_VERSION}/tealdeer-linux-armv7-musleabihf"
           ++ sudo mv "tealdeer-linux-armv7-musleabihf" "/usr/local/bin/tldr"
+          ++ sudo chmod +x /usr/local/bin/tldr
         fi
         ++ sudo chmod +x /usr/local/bin/tldr
         ++ /usr/local/bin/tldr --update

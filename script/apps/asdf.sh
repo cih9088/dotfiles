@@ -66,8 +66,8 @@ setup_func_system() {
       fi
       ;;
     LINUX)
-      log_error "Not able to install systemwide."
-      exit 1
+      log_info "Not able to ${COMMAND} ${THIS} systemwide."
+      setup_func_local "${COMMAND}"
       ;;
   esac
 }

@@ -127,6 +127,7 @@ setup_func_rg_system() {
               ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
               ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
               ++ sudo cp -rf rg /usr/local/bin/
+              ++ sudo chmod +x /usr/local/bin/rg
             else
               ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
               ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
@@ -134,8 +135,9 @@ setup_func_rg_system() {
               ++ pushd "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl"
               ++ sudo mkdir -p /usr/local/bin
               ++ sudo cp rg /usr/local/bin/
+              ++ sudo chmod +x /usr/local/bin/rg
               ++ gzip doc/rg.1
-              ++ chown root:root doc/rg.1.gz
+              ++ sudo chown root:root doc/rg.1.gz
               ++ sudo cp doc/rg.1.gz /usr/local/share/man/man1
               ++ sudo mkdir -p /usr/local/share/bash-completion/completions
               ++ sudo cp complete/rg.bash /usr/local/share/bash-completion/completions/rg

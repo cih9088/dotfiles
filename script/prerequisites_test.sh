@@ -14,39 +14,36 @@ has -v type
 # clean up duplicated path
 PATH=$(printf "%s" "$PATH" | awk -v RS=':' '!a[$1]++ { if (NR > 1) printf RS; printf $1 }')
 
-log_title "Essential to install"
-log_info "sudo"
-type -a sudo 2>/dev/null || echo "${IRED}sudo is not found.${NC}"
-log_info "git"
-type -a git 2>/dev/null || echo "${IRED}git is not found.${NC}"
-log_info "make"
-type -a make 2>/dev/null || echo "${IRED}make is not found.${NC}"
-log_info "gcc"
-type -a gcc 2>/dev/null || echo "${IRED}gcc is not found.${NC}"
-log_info "g++"
-type -a g++ 2>/dev/null || echo "${IRED}g++ is not found.${NC}"
-log_info "curl"
-type -a curl 2>/dev/null || echo "${IRED}curl is not found.${NC}"
-log_info "column"
-type -a column 2>/dev/null || echo "${IRED}column is not found.${NC}"
-log_info "find"
-type -a find 2>/dev/null || echo "${IRED}find is not found.${NC}"
-log_info "tar"
-type -a tar 2>/dev/null || echo "${IRED}tar is not found.${NC}"
-log_info "python3"
-type -a python3 2>/dev/null || echo "${IRED}python3 is not found.${NC}"
 
-log_title "Good to have"
+log_title "Essentials"
+cmds=( sudo git make curl sed awk find )
+for cmd in "${cmds[@]}"; do
+  type -a "$cmd" &>/dev/null \
+    && log_ok "${BOLD}$cmd${NC} is in paths." \
+    || log_error "${IRED}${BOLD}$cmd${NC} is not in paths."
+done
+
+
+log_title "Essentials for local mode"
+cmds=( gcc g++ tar )
+for cmd in "${cmds[@]}"; do
+  type -a "$cmd" &>/dev/null \
+    && log_ok "${BOLD}$cmd${NC} is in paths." \
+    || log_error "${IRED}${BOLD}$cmd${NC} is not in paths."
+done
+
+
 if [[ ${PLATFORM} = "OSX" ]]; then
-  log_info "pbcopy"
-  type -a pbcopy 2>/dev/null || echo "${IYELLOW}pbcopy is not found.${NC}"
-  log_info "pbpaste"
-  type -a pbpaste 2>/dev/null || echo "${IYELLOW}pbpaste is not found.${NC}"
-  log_info "reattach-to-user-namespace"
-  type -a reattach-to-user-namespace 2>/dev/null || echo "${IYELLOW}reattach-to-user-namepsace is not found.${NC}"
-  log_info "xquartz"
-  type -a xquartz 2>/dev/null || echo "${IYELLOW}xquartz is not found.${NC}"
+  log_title "Optionals"
+  cmds=( pbcopy pbpaste xquartz )
 elif [[ ${PLATFORM} = "LINUX" ]]; then
-  log_info "xclip"
-  type -a xclip 2>/dev/null || echo "${IYELLOW}xclip is not found.${NC}"
+  log_title "Optionals"
+  cmds=( xclip )
+else
+  cmds=()
 fi
+for cmd in "${cmds[@]}"; do
+  type -a "$cmd" &>/dev/null \
+    && log_ok "${BOLD}$cmd${NC} is in paths." \
+    || log_error "${IYELLOW}${BOLD}$cmd${NC} is not in paths."
+done

@@ -134,7 +134,7 @@ python_install() {
       fi
     elif [ "${COMMAND}" == "update" ]; then
       log_error "Not supported command 'update'"
-      exit 1
+      exit 0
     fi
 
   elif command -v asdf > /dev/null; then
@@ -148,7 +148,7 @@ python_install() {
       ++ asdf install python "${VERSION}"
     elif [ "${COMMAND}" == "update" ]; then
       log_error "Not supported command 'update'"
-      exit 1
+      exit 0
     fi
 
     update_asdf_global_py_version "${VERSION}"

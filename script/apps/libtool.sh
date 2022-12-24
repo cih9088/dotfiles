@@ -82,11 +82,11 @@ setup_func_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libtool
+            ++ sudo apt-get -y remove libtool libtool-bin
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libtool
+            ++ sudo apt-get -y install libtool libtool-bin
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libtool
+            ++ sudo apt-get -y --only-upgrade install libtool libtool-bin
           fi
           ;;
         RHEL)

@@ -20,8 +20,21 @@ setup_func() {
   local COMMAND="${1:-skip}"
 
   if [ "${COMMAND}" == "remove" ]; then
-    log_error "Not supported command 'remove'"
-    exit 1
+    local configs=(
+      "$HOME/.flake8" "$HOME/.pylintrc" "$HOME/.gitignore" "$HOME/.grip"
+      "$HOME/.config/nvim" "$HOME/.config/alacritty" "$HOME/.config/iterm2"
+      "$HOME/.config/yabai" "$HOME/.config/skhd" "$HOME/.config/bitbar" "$HOME/.config/spacebar"
+      "$HOME/.config/swiftbar" "$HOME/.config/git" "$HOME/.config/flake8" "$HOME/.config/pylintrc"
+      "$HOME/.config/fish" "$HOME/.config/tealdeer" "$HOME/.config/vivid" "$HOME/.config/simplebar"
+      "$HOME/.simplebarrc" "$HOME/.vim" "$HOME/.tmux" "$HOME/.tmux.conf" "$HOME/.zshrc"
+      "$HOME/.zpreztorc" "$HOME/.zshenv" "$HOME/.zprofile" "$HOME/.zlogout" "$HOME/.zlogin"
+      "$HOME/.gnupg/gpg-agent.conf"
+    )
+
+    for config in ${configs[@]}; do
+      backup "$config"    "$BACKUP_PATH"
+      rm -rf "$config"
+    done
   elif [ "${COMMAND}" == "install" ] || [ "${COMMAND}" == "update" ]; then
     mkdir -p "${BACKUP_PATH}/config"
 

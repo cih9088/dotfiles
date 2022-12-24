@@ -16,8 +16,8 @@ prerequisites:
 prerequisitesTest:
 	@( $(SCRIPTS_DIR)/prerequisites_test.sh )
 
-changeDefaultShell:
-	@( $(SCRIPTS_DIR)/change_default_shell.sh )
+changeShell:
+	@( $(SCRIPTS_DIR)/change_shell.sh )
 
 # ====================================================
 # TARGETS
@@ -398,7 +398,7 @@ nodejs-env:
 
 # ====================================================
 
-.PHONY: initMac prerequisites prerequisitesTest changeDefaultShell \
+.PHONY: initMac prerequisites prerequisitesTest changeShell \
 	pkg-config ncurses libevent readline patch help2man gettext sqlite3 libffi \
 	libsodium groff openldap \
 	texinfo bison \

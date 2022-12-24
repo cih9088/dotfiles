@@ -40,7 +40,7 @@ golang_install() {
       ++ asdf global golang "${VERSION}"
     elif [ "${COMMAND}" == "update" ]; then
       log_error "Not supported command 'update'"
-      exit 1
+      exit 0
     fi
   fi
 }

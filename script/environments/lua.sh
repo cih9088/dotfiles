@@ -33,7 +33,7 @@ lua_install() {
       ++ asdf global lua "${VERSION}"
     elif [ "${COMMAND}" == "update" ]; then
       log_error "Not supported command 'update'"
-      exit 1
+      exit 0
     fi
   fi
 

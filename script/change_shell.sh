@@ -38,7 +38,7 @@ local_change() {
   done
 
   if [ ${SHELL##*/} = ${SHELL_FULL_PATH##*/} ]; then
-    log_info "Your default shell is ${SHELL}. No need to change."
+    log_info "Your shell is ${SHELL}. No need to change."
     return 0
   fi
 
@@ -124,17 +124,17 @@ main() {
       is_valid_shell=true
     fi
 
-    yn=$(log_question "Change default shell to ${SHELL_FULL_PATH}? [y/n] ")
+    yn=$(log_question "Change shell to ${SHELL_FULL_PATH}? [y/n] ")
     case $yn in
       [Yy]* )
         if [ $is_valid_shell == true ]; then
           system_change ${SHELL_FULL_PATH} &&
-            log_ok "Changed default shell to ${SHELL_FULL_PATH}." ||
-            log_error "Change default shell to ${SHELL_FULL_PATH} is failed."
+            log_ok "Changed shell to ${SHELL_FULL_PATH}." ||
+            log_error "Change shell to ${SHELL_FULL_PATH} is failed."
         else
           local_change ${SHELL_FULL_PATH} &&
-            log_ok "Changed default shell to ${SHELL_FULL_PATH}." ||
-            log_error "Change default shell to ${SHELL_FULL_PATH} is failed."
+            log_ok "Changed shell to ${SHELL_FULL_PATH}." ||
+            log_error "Change shell to ${SHELL_FULL_PATH} is failed."
         fi
         ;;
       [Nn]* )

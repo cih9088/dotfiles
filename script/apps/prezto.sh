@@ -64,5 +64,5 @@ setup_func() {
   fi
 }
 
-main_script ${THIS} setup_func setup_func "" \
+main_script ${THIS} setup_func "" "" \
   "${DEFAULT_VERSION}"

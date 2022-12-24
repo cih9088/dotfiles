@@ -73,9 +73,9 @@ setup_func_up_system() {
       fi
       if [[ "install update"  == *"${COMMAND}"* ]]; then
         ++ curl -LO "https://github.com/akavel/up/releases/download/${DEFAULT_VERSION}/up"
-        ++ chmod +x up
         ++ sudo mkdir -p /usr/local/bin
         ++ sudo cp up /usr/local/bin
+        ++ sudo chmod +x /usr/local/bin/up
       fi
       ;;
   esac

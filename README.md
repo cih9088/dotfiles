@@ -2,23 +2,22 @@
 tested on macOS, Ubuntu, and Redhat.
 
 ## Get this repository
+
 ```bash
-# clone repository
+# clone the repository
 $ cd ~
 $ git clone --recursive https://github.com/cih9088/dotfiles.git ~/dotfiles
 
-# or pull in case you have cloned already
+# or pull in case you have cloned it already
 $ cd ~/dotfiles
 $ git pull
 $ git submodule update --init --recursive
 
 # make sure that you have following commands `make`, `git`, `sudo`
-$ command -v make
-$ command -v git
-$ command -v sudo
+$ command -V make git sudo
 
 # install them if not exist
-# ubuntu
+# debian
 $ apt update && apt install -y make git sudo
 # redhat
 $ dnf install -y make git sudo
@@ -29,103 +28,82 @@ The following list would be installed in your system. You need privilege (`sudo`
 No need if you have them on your system.
 ```bash
 $ cd ~/dotfiles
-$ make prerequisitesTest    # Verify which commands are installed
-$ make prerequisites        # Install prerequisites (previlege is needed for linux)
+$ ./bin/dots test-prerequisites      # Verify which commands are installed
+$ ./bin/dots install prerequisites   # Install prerequisites (previlege is needed)
 ```
 
 ## Environement Variables
-- `CONFIG`: make script non-interactively. Create your own config based on `config_*.yaml`. \
-ex) `CONFIG=config_linux.yaml make install`
-- `VERBOSE`: make script verbose \
-ex) `VERBOSE=true make install`
 - `GH_ACCESS`: give maximum of 5,000 rate limits to github REST API \
-ex) `GH_ACCESS=client_id:client_secret make install`
-- `PREFIX`: change path to install (default: `$HOME/.local`) \
-ex) `PREFIX=$HOME/custom_path make init`
+ex) `GH_ACCESS=client_id:client_secret dots [...]`
+- `PREFIX`: change path to install locally (default: `$HOME/.local`) \
+ex) `PREFIX=/path/to/install dots [...]`
 
+## `dots` command
 
-## One-liner
-- Non-interactive init for ubuntu, redhat `CONFIG=config_linux.yaml make init`
-- Non-interactive init for macOS `CONFIG=config_osx.yaml make init`
-- Interactive init `make init`
-- Install `make install`
-- Update `make update`
-- Only copy dotfiles `make updateDotfiles`
- 
-
-## Install and update dotfiles (Easy way)
-
-### Install
 - **systemwide**: others could execute those commands (need privilege)
 - **locally**: others could not (All of commands and libraries would be installed in `PREFIX` (deafult: `$HOME/.local`) )
 
-**NOTE**: systemwide install is prefered for macOS.
+**NOTE**: systemwide install is preferred for macOS.
 
+### One-liner
+- Non-interactive install all listed in `config.yaml`
+  - default mode is local: `dots install --mode local --config config.yaml`
+  - default mode is system (prefer way for mac): `dots install --mode system --config config.yaml`
+- Non-interactive update all listed in `config.yaml`
+  - default mode is local: `dots update --mode local --config config.yaml`
+  - default mode is system (prefer way for mac): `dots update --mode system --config config.yaml`
+- Update dotfiles only: `dots update --yes configs bins`
+
+### List
 ```bash
 $ cd ~/dotfiles
-$ make install              # Install all commands and libraries
+$ ./bin/dots list
 ```
 
-### Update
-For update configurations. \
-Note that update does not update any of commands installed but dotfiles, neovimplugin, tmuxplugins, and own commands.
-```bash
-$ cd ~/dotfiles
-$ git pull
-$ git submodule update --init --recursive
-$ make update               # Update all of dotfiles and configurations
-```
-
-### Init
-This includes `install`, `update`, `changeDefaultShell` at once.
-
-```console
-$ cd ~/dotfiles
-$ make init                 # Same as 'make install && make update && make changeDefaultShell'
-```
-
-
-
-## Advanced
 ### Install
+
 ```bash
 $ cd ~/dotfiles
+# Install zsh interactively with dependencies (to install it locally you must install dependencies as well)
+$ ./bin/dots install zsh
+# Install zsh interactively without dependencies
+$ ./bin/dots install --skip-dependencies zsh
+# Install the latest zsh non-interactively
+$ ./bin/dots install --mode local --yes zsh
+# Install zsh version of 5.9 non-interactively
+$ ./bin/dots install --mode local --yes --version 5.9 --skip-dependencies zsh
+```
 
-# Install all commands and libraries
-$ make install
-# Install neovim command only
-$ make installNeovim
-# Install ncurses library only
-$ make installLibraryNcurses
-# Install asdf only
-$ make installAsdf
-# Install python environment only
-$ make environmentPython
-# Please refer `Makefile` for full commands
+### Remove
+
+```bash
+$ cd ~/dotfiles
+# Remove zsh interactively (remove command implicitly applies `--skip-dependencies`)
+$ ./bin/dots remove zsh
+# Remove locally installed zsh non-interactively
+$ ./bin/dots remove--mode local --yes zsh
 ```
 
 ### Update
 ```bash
 $ cd ~/dotfiles
-$ git pull
-$ git submodule update --init --recursive
-
-# you could choose what to update in following list
-# [updatePrezto, updateBins, updateConfigs, updateNeovimPlugins, updateTmuxPlugins, updateDevEnv]
-# For instance,
-$ make updateConfigs        # Update dotfiles and configs only
-$ make update               # Update all
+# Update zsh interactively with dependencies (to install it locally you must install dependencies as well)
+$ ./bin/dots update zsh
+# Update zsh interactively without dependencies
+$ ./bin/dots update --skip-dependencies zsh
+# Update the latest zsh non-interactively
+$ ./bin/dots update --mode local --yes zsh
+# Update zsh version of 5.9 non-interactively
+$ ./bin/dots update --mode local --yes --version 5.9 --skip-dependencies zsh
 ```
 
-### Clean
-Clean up dotfiles, configurations and folder itself.
-**Back up your local changes before clean up.**
+### Change-shell
 ```bash
 $ cd ~/dotfiles
-$ make clean        # delete installed dotfiles and folder itself (installed commands, libraries would be remained)
+$ ./bin/dots change-shell
 ```
 
-### [Initialise macOS](https://github.com/donnemartin/dev-setup#osxprepsh-script)
+## [Initialise macOS](https://github.com/donnemartin/dev-setup#osxprepsh-script)
 Setup macOS development environment with easy. Mostly copied from [here](https://github.com/donnemartin/dev-setup).
 ```bash
 $ cd ~/dotfiles
@@ -307,28 +285,28 @@ $ make initMac
 <!--     - restore tmux environment: <kbd>prefix</kbd> + <kbd>Ctrl</kbd> + <kbd>r</kbd> -->
 <!-- [> - renew environment variables (e.g. DISPLAY): <kbd>prefix</kbd> + <kbd>\$</kbd> <] -->
 
-## Issues
-1. ~~Showing following error message at the top of terminal when the zsh 5.5 +  started \
-    `/var/folders/vp/15xrzrrj4sx0dd3k6gsv1hmw0000gn/T//prezto-fasd-cache.501.zsh:compctl:17: unknown condition code:`~~
-    > [it is now fixed with zsh 5.6.1 + ](https://github.com/sorin-ionescu/prezto/issues/1569)
-
-2. Showing abnormal font like below image
-    > ![abnormal font](https://imgur.com/wSb49GM.png) \
-    > [nerd font](https://github.com/ryanoasis/nerd-fonts) patched font is needed or change `g:lightline#bufferline#enable_devcons` to 0 in `.vimrc`
-
-3. vim colorscheme is somewhat weird
-    > run `truecolour-test` script if your terminal or terminal inside of tmux support truecolor. This should show smooth color transition if supported. [related issue](https://github.com/tmux/tmux/issues/1246)
-
-    - true color supported \
-    ![truecolor supported](https://imgur.com/Fnx9P2Y.png)
-    - true color not supported \
-    ![truecolor not supported](https://imgur.com/vsOcuqx.png)
-
-4. virtualenvwrapper is not installed propely.
-    > `pip install virtualenv` first
-
-5. `make updateTPM` shows an error like `unknown variable: TMUX_PLUGIN_MANAGER_PATH`
-    > Completely quit tmux and try again ([pull](https://github.com/tmux-plugins/tpm/pull/186))
-
-
-## TODO
+<!-- ## Issues -->
+<!-- 1. ~~Showing following error message at the top of terminal when the zsh 5.5 +  started \ -->
+<!--     `/var/folders/vp/15xrzrrj4sx0dd3k6gsv1hmw0000gn/T//prezto-fasd-cache.501.zsh:compctl:17: unknown condition code:`~~ -->
+<!--     > [it is now fixed with zsh 5.6.1 + ](https://github.com/sorin-ionescu/prezto/issues/1569) -->
+<!--  -->
+<!-- 2. Showing abnormal font like below image -->
+<!--     > ![abnormal font](https://imgur.com/wSb49GM.png) \ -->
+<!--     > [nerd font](https://github.com/ryanoasis/nerd-fonts) patched font is needed or change `g:lightline#bufferline#enable_devcons` to 0 in `.vimrc` -->
+<!--  -->
+<!-- 3. vim colorscheme is somewhat weird -->
+<!--     > run `truecolour-test` script if your terminal or terminal inside of tmux support truecolor. This should show smooth color transition if supported. [related issue](https://github.com/tmux/tmux/issues/1246) -->
+<!--  -->
+<!--     - true color supported \ -->
+<!--     ![truecolor supported](https://imgur.com/Fnx9P2Y.png) -->
+<!--     - true color not supported \ -->
+<!--     ![truecolor not supported](https://imgur.com/vsOcuqx.png) -->
+<!--  -->
+<!-- 4. virtualenvwrapper is not installed propely. -->
+<!--     > `pip install virtualenv` first -->
+<!--  -->
+<!-- 5. `make updateTPM` shows an error like `unknown variable: TMUX_PLUGIN_MANAGER_PATH` -->
+<!--     > Completely quit tmux and try again ([pull](https://github.com/tmux-plugins/tpm/pull/186)) -->
+<!--  -->
+<!--  -->
+<!-- ## TODO -->

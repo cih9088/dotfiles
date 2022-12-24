@@ -107,7 +107,7 @@ setup_func_system() {
             ++ sudo mkdir -p /usr/local/bin
             ++ sudo cp fd /usr/local/bin/
             ++ gzip fd.1
-            ++ chown root:root fd.1.gz
+            ++ sudo chown root:root fd.1.gz
             ++ sudo cp fd.1.gz /usr/local/share/man/man1
             ++ sudo mkdir -p /usr/local/share/bash-completion/completions
             ++ sudo cp autocomplete/fd.bash /usr/local/share/bash-completion/completions/fd

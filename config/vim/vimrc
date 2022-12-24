@@ -300,17 +300,6 @@
 
   endfunction
 
-  function! RosePineOverride() abort
-    if g:rose_pine_variant == "moon"
-      highlight StatusLine   cterm=bold,reverse guibg=#2a273f guifg=#e0def4
-    endif
-  endfunction
-
-  augroup MyColors
-    autocmd!
-    autocmd ColorScheme rose-pine call RosePineOverride()
-  augroup END
-
   call ChangeBackground()
 
 
@@ -360,7 +349,7 @@
 
 " StatusLine
 " ---------------------------------------------------------------------------------------
- function StatusLineActive()
+ function! StatusLineActive()
     let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
     let mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
     let ro  = "%{&readonly ? '👀' : ''}"
@@ -371,7 +360,7 @@
     let pct = ' %P'
     return '[%n] 🌸 %f '.ft.mod.' '.ro.' %<'.sep.fug.format.pos.'%*'.pct
   endfunction
-  function StatusLineInactive()
+  function! StatusLineInactive()
     return '[%n] %F'
   endfunction
   augroup statusline
@@ -1013,7 +1002,7 @@
 
     " http://ericnode.info/post/fzf_jump_to_tab_in_vim/
     " tab navigation
-    function TabName(n)
+    function! TabName(n)
       let buflist = tabpagebuflist(a:n)
       let winnr = tabpagewinnr(a:n)
       return fnamemodify(bufname(buflist[winnr - 1]), ':.')
