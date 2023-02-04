@@ -21,7 +21,7 @@ CONFIG=${CONFIG:-}
 GH_ACCESS=${GH_ACCESS:-}
 PREFIX=${PREFIX:-$HOME/.local}
 
-PKG_APPS=(
+PKG_APPS_WITH_HELP=(
   "zsh"           "z shell"
   "fish"          "fish shell"
   "prezto"        "framework for zsh"
@@ -44,7 +44,7 @@ PKG_APPS=(
   "asdf"          "runtime version manager"
 )
 
-PKG_DOTS=(
+PKG_DOTS_WITH_HELP=(
   "bins"             "custom scripts and commands"
   "configs"          "custom configs"
   "tmux-plugins"     "tmux plugins"
@@ -52,7 +52,7 @@ PKG_DOTS=(
   "neovim-providers" "neovim providers"
 )
 
-PKG_LIBS=(
+PKG_LIBS_WITH_HELP=(
   "terminfo"      "terminal database"
   "pkg-config"    "package metainformaation"
   "help2man"      "simple man page generator"
@@ -80,7 +80,7 @@ PKG_LIBS=(
   "opencv"        "opencv"
 )
 
-PKG_ENVS=(
+PKG_ENVS_WITH_HELP=(
   "python"                 "python"
   "python-env"             "python environments"
   "python-env--virtualenv" "virtual environment"
@@ -101,14 +101,32 @@ PKG_ENVS=(
 )
 
 
-_PKGS=( "${PKG_APPS[@]}" "${PKG_DOTS[@]}" "${PKG_LIBS[@]}" "${PKG_ENVS[@]}")
-PKGS=("prerequisites")
+PKG_APPS=()
 idx=0
-while [ $idx -lt ${#_PKGS[@]} ]; do
-  PKGS+=("${_PKGS[$idx]}")
+while [ $idx -lt ${#PKG_APPS_WITH_HELP[@]} ]; do
+  PKG_APPS+=("${PKG_APPS_WITH_HELP[$idx]}")
   idx=$(( $idx + 2 ))
 done
-unset _PKGS
+PKG_DOTS=()
+idx=0
+while [ $idx -lt ${#PKG_DOTS_WITH_HELP[@]} ]; do
+  PKG_DOTS+=("${PKG_DOTS_WITH_HELP[$idx]}")
+  idx=$(( $idx + 2 ))
+done
+PKG_LIBS=()
+idx=0
+while [ $idx -lt ${#PKG_LIBS_WITH_HELP[@]} ]; do
+  PKG_LIBS+=("${PKG_LIBS_WITH_HELP[$idx]}")
+  idx=$(( $idx + 2 ))
+done
+PKG_ENVS=()
+idx=0
+while [ $idx -lt ${#PKG_ENVS_WITH_HELP[@]} ]; do
+  PKG_ENVS+=("${PKG_ENVS_WITH_HELP[$idx]}")
+  idx=$(( $idx + 2 ))
+done
+
+PKGS=( "prerequisites" "${PKG_APPS_WITH_HELP[@]}" "${PKG_DOTS_WITH_HELP[@]}" "${PKG_LIBS_WITH_HELP[@]}" "${PKG_ENVS_WITH_HELP[@]}")
 
 
 usage() {
@@ -169,10 +187,10 @@ HELP
 
 completion_zsh() {
   cat <<EOF
-PKG_DOTS=($(printf " %q" "${PKG_DOTS[@]}"))
-PKG_APPS=($(printf " %q" "${PKG_APPS[@]}"))
-PKG_ENVS=($(printf " %q" "${PKG_ENVS[@]}"))
-PKG_LIBS=($(printf " %q" "${PKG_LIBS[@]}"))
+PKG_DOTS_WITH_HELP=($(printf " %q" "${PKG_DOTS_WITH_HELP[@]}"))
+PKG_APPS_WITH_HELP=($(printf " %q" "${PKG_APPS_WITH_HELP[@]}"))
+PKG_ENVS_WITH_HELP=($(printf " %q" "${PKG_ENVS_WITH_HELP[@]}"))
+PKG_LIBS_WITH_HELP=($(printf " %q" "${PKG_LIBS_WITH_HELP[@]}"))
 
 to_alternative() {
   local ARR=("\$@")
@@ -191,10 +209,10 @@ to_alternative() {
 }
 
 packages() {
-  _alternative 'dotfiles:dotfiles:'"\$(to_alternative "\${PKG_DOTS[@]}")"
-  _alternative 'applications:applications:'"\$(to_alternative "\${PKG_APPS[@]}")"
+  _alternative 'dotfiles:dotfiles:'"\$(to_alternative "\${PKG_DOTS_WITH_HELP[@]}")"
+  _alternative 'applications:applications:'"\$(to_alternative "\${PKG_APPS_WITH_HELP[@]}")"
   _alternative 'envs:environments:'"\$(to_alternative "\${PKG_ENVS[@]}")"
-  _alternative 'libs:libraries:'"\$(to_alternative "\${PKG_LIBS[@]}")"
+  _alternative 'libs:libraries:'"\$(to_alternative "\${PKG_LIBS_WITH_HELP[@]}")"
 }
 
 options() {
@@ -362,6 +380,7 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 if [ $# -eq 0 ]; then
   log_error "Command is not provided"
+  usage
   exit 1
 fi
 DOTS_COMMAND="${1}"
