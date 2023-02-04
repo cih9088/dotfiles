@@ -1,11 +1,11 @@
 temp
 
 config/nvim/coc-settings.json
+config/nvim/undodir
+
+config/vim/undodir
 
 config/git/config.local
-
-config/alacritty/colour.yml
-config/alacritty/colour.yml-e
 
 config/vim/plugged
 

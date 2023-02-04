@@ -1,5 +1,6 @@
 # global gitignore
-#
+
+
 # OS generated files #
 ######################
 *~
@@ -10,6 +11,13 @@
 Icon?
 ehthumbs.db
 Thumbs.db
+
+
+# direnv #
+##########
+.envrc
+.direnv
+
 
 # IntelliJ Stuff #
 ##################

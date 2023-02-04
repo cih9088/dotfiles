@@ -1,19 +1,9 @@
-# export PATH := ${HOME}/.local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:${PATH}
-# export LD_LIBRARY_PATH := ${HOME}/.local/lib:${LD_LIBRARY_PATH}
-# export PKG_CONFIG_PATH := ${HOME}/.local/lib/pkgconfig:${PKG_CONFIG_PATH}
-#
-# export CFLAGS := -I${HOME}/.local/include
-# export CPPFLAGS := -I${HOME}/.local/include
-# export LDFLAGS := -L${HOME}/.local/lib
-#
-# export BIN_DIR := $(PROJ_HOME)/bin
 export PROJ_HOME := $(shell git rev-parse --show-toplevel)
 export SCRIPTS_DIR := $(PROJ_HOME)/script
 
-# ifeq (installNeovim,$(firstword $(MAKECMDGOALS)))
-#   nvim_version := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-#   $(eval $(nvim_version):;@:)
-# endif
+# ====================================================
+# ETC.
+# ====================================================
 
 initMac:
 	@( $(SCRIPTS_DIR)/mac/prepare.sh )
@@ -26,377 +16,417 @@ prerequisites:
 prerequisitesTest:
 	@( $(SCRIPTS_DIR)/prerequisites_test.sh )
 
+changeShell:
+	@( $(SCRIPTS_DIR)/change_shell.sh )
+
 # ====================================================
-# LIBRARIES
+# TARGETS
 # ====================================================
 
-libraryHelp2man:
-	@( $(SCRIPTS_DIR)/library/help2man.sh )
+pkg-config:
+	@( $(SCRIPTS_DIR)/libs/pkg_config.sh )
 
-libraryPkgConfig:
-	@( $(SCRIPTS_DIR)/library/pkg_config.sh )
+ncurses: \
+	pkg-config
+	@( $(SCRIPTS_DIR)/libs/ncurses.sh )
 
-libraryZlib:
-	@( $(SCRIPTS_DIR)/library/zlib.sh )
+libevent: \
+	openssl
+	@( $(SCRIPTS_DIR)/libs/libevent.sh )
 
-libraryBzip2:
-	@( $(SCRIPTS_DIR)/library/bzip2.sh )
+readline: \
+	ncurses
+	@( $(SCRIPTS_DIR)/libs/readline.sh )
 
-libraryUnzip:
-	@( $(SCRIPTS_DIR)/library/unzip.sh )
+patch:
+	@( $(SCRIPTS_DIR)/apps/patch.sh )
 
-libraryGzip:
-	@( $(SCRIPTS_DIR)/library/gzip.sh )
+help2man:
+	@( $(SCRIPTS_DIR)/apps/help2man.sh )
 
-libraryOpenssl: libraryZlib
-	@( $(SCRIPTS_DIR)/library/openssl.sh )
+# libiconv:
+#   @( $(SCRIPTS_DIR)/apps/libiconv.sh )
 
-libraryNcurses:
-	@( $(SCRIPTS_DIR)/library/ncurses.sh )
+gettext: \
+	# libiconv
+	@( $(SCRIPTS_DIR)/apps/gettext.sh )
 
-libraryLibevent:
-	@( $(SCRIPTS_DIR)/library/libevent.sh )
+sqlite3:
+	@( $(SCRIPTS_DIR)/libs/sqlite3.sh )
 
-libraryReadline: libraryNcurses
-	@( $(SCRIPTS_DIR)/library/readline.sh )
+libffi:
+	@( $(SCRIPTS_DIR)/libs/libffi.sh )
+
+# openldap
+# -----------------------------------------------------
+libsodium:
+	@( $(SCRIPTS_DIR)/libs/libsodium.sh )
+
+groff: \
+	texinfo
+	@( $(SCRIPTS_DIR)/libs/groff.sh )
+
+openldap: \
+	groff openssl libevent libsodium
+	@( $(SCRIPTS_DIR)/libs/openldap.sh )
+# -----------------------------------------------------
+
+# glibc
+# -----------------------------------------------------
+texinfo: \
+	ncurses
+	@( $(SCRIPTS_DIR)/libs/texinfo.sh )
+
+bison: \
+	m4 texinfo
+	@( $(SCRIPTS_DIR)/libs/bison.sh )
+
+# glibc: \
+#   bison bzip2 gettext texinfo
+#   @( $(SCRIPTS_DIR)/libs/glibc.sh )
+# -----------------------------------------------------
+
+cmake: \
+	openssl
+	@( $(SCRIPTS_DIR)/libs/cmake.sh )
+
+# compressions
+# -----------------------------------------------------
+zlib:
+	@( $(SCRIPTS_DIR)/libs/zlib.sh )
+
+bzip2:
+	@( $(SCRIPTS_DIR)/apps/bzip2.sh )
+
+unzip:
+	@( $(SCRIPTS_DIR)/apps/unzip.sh )
+
+gzip:
+	@( $(SCRIPTS_DIR)/apps/gzip.sh )
+
+xz: \
+	autotools gettext
+	@( $(SCRIPTS_DIR)/apps/xz.sh )
+# -----------------------------------------------------
+
+openssl: \
+	zlib
+	@( $(SCRIPTS_DIR)/apps/openssl.sh )
 
 # autotools
 # -----------------------------------------------------
-libraryM4:
-	@( $(SCRIPTS_DIR)/library/m4.sh )
+m4:
+	@( $(SCRIPTS_DIR)/apps/m4.sh )
 
-libraryAutoconf: libraryM4
-	@( $(SCRIPTS_DIR)/library/autoconf.sh )
+autoconf: m4
+	@( $(SCRIPTS_DIR)/apps/autoconf.sh )
 
-libraryAutomake: libraryAutoconf
-	@( $(SCRIPTS_DIR)/library/automake.sh )
+automake: autoconf
+	@( $(SCRIPTS_DIR)/apps/automake.sh )
 
-libraryLibtool: libraryAutomake
-	@( $(SCRIPTS_DIR)/library/libtool.sh )
+libtool: automake
+	@( $(SCRIPTS_DIR)/apps/libtool.sh )
 
-libraryAutotools: \
-	libraryM4 libraryAutoconf libraryAutomake libraryLibtool
+autotools: \
+	m4 autoconf automake libtool
 # -----------------------------------------------------
-
-libraryGettext:
-	@( $(SCRIPTS_DIR)/library/gettext.sh )
-
-libraryPatch:
-	@( $(SCRIPTS_DIR)/library/patch.sh )
-
-librarySqlite3:
-	@( $(SCRIPTS_DIR)/library/sqlite3.sh )
-
-libraryLibffi:
-	@( $(SCRIPTS_DIR)/library/libffi.sh )
-
-# # openldap
-# # -----------------------------------------------------
-# libraryCyrusSASL:
-#   @( $(SCRIPTS_DIR)/library/cyrus_sasl.sh )
-#
-# libraryLibsodium:
-#   @( $(SCRIPTS_DIR)/library/libsodium.sh )
-#
-# libraryOpenLDAP: \
-#   libraryCyrusSASL libraryLibsodium libraryLibevent
-#   @( $(SCRIPTS_DIR)/library/openldap.sh )
-# # -----------------------------------------------------
-#
-# libraryTexinfo:
-#   @( $(SCRIPTS_DIR)/library/texinfo.sh )
-#
-# libraryGroff: \
-#   libraryTexinfo
-#   @( $(SCRIPTS_DIR)/library/groff.sh )
 
 # gnutls
 # -----------------------------------------------------
-libraryGMP:
-	@( $(SCRIPTS_DIR)/library/gmp.sh )
+gmp: \
+	xz
+	@( $(SCRIPTS_DIR)/libs/gmp.sh )
 
-libraryLibnettle: \
-	libraryGMP
-	@( $(SCRIPTS_DIR)/library/libnettle.sh )
+libnettle: \
+	gmp
+	@( $(SCRIPTS_DIR)/libs/libnettle.sh )
 
-libraryLibtasn1:
-	@( $(SCRIPTS_DIR)/library/libtasn1.sh )
+libtasn1:
+	@( $(SCRIPTS_DIR)/libs/libtasn1.sh )
 
-libraryP11Kit: \
-	libraryLibtasn1 libraryLibffi
-	@( $(SCRIPTS_DIR)/library/p11_kit.sh )
+p11-kit: \
+	libtasn1 libffi xz
+	@( $(SCRIPTS_DIR)/apps/p11_kit.sh )
 
-libraryGnuTLS: \
-	libraryGMP libraryLibnettle libraryP11Kit
-	@( $(SCRIPTS_DIR)/library/gnutls.sh )
+gnutls: \
+	gmp libnettle p11-kit
+	@( $(SCRIPTS_DIR)/apps/gnutls.sh )
 # -----------------------------------------------------
 
 # gnupg
 # -----------------------------------------------------
-libraryLibgpgError:
-	@( $(SCRIPTS_DIR)/library/libgpg_error.sh )
+libgpg-error: \
+	bzip2
+	@( $(SCRIPTS_DIR)/libs/libgpg_error.sh )
 
-libraryLibgcrypt:
-	@( $(SCRIPTS_DIR)/library/libgcrypt.sh )
+libgcrypt: \
+	bzip2
+	@( $(SCRIPTS_DIR)/libs/libgcrypt.sh )
 
-libraryLibassuan:
-	@( $(SCRIPTS_DIR)/library/libassuan.sh )
+libassuan: \
+	bzip2
+	@( $(SCRIPTS_DIR)/libs/libassuan.sh )
 
-libraryLibksba:
-	@( $(SCRIPTS_DIR)/library/libksba.sh )
+libksba: \
+	bzip2
+	@( $(SCRIPTS_DIR)/libs/libksba.sh )
 
-libraryNpth:
-	@( $(SCRIPTS_DIR)/library/npth.sh )
+npth: \
+	bzip2
+	@( $(SCRIPTS_DIR)/apps/npth.sh )
 
-libraryGnuPG: \
-	libraryLibgpgError libraryLibgcrypt libraryLibassuan \
-	libraryLibksba libraryNpth libraryGnuTLS
-	@( $(SCRIPTS_DIR)/library/gnupg.sh )
+gnupg: \
+	libgpg-error libgcrypt libassuan \
+	libksba readline openldap npth bzip2 gnutls
+	@( $(SCRIPTS_DIR)/apps/gnupg.sh )
 # -----------------------------------------------------
 
 # x11
 # -----------------------------------------------------
-libraryXorgproto:
-	@( $(SCRIPTS_DIR)/library/X11/xorgproto.sh )
+xorgproto:
+	@( $(SCRIPTS_DIR)/libs/X11/xorgproto.sh )
 
-libraryXtrans:
-	@( $(SCRIPTS_DIR)/library/X11/xtrans.sh )
+xtrans:
+	@( $(SCRIPTS_DIR)/libs/X11/xtrans.sh )
 
-libraryLibxau:
-	@( $(SCRIPTS_DIR)/library/X11/libxau.sh )
+libxau:
+	@( $(SCRIPTS_DIR)/libs/X11/libxau.sh )
 
-# need python interpreter
-libraryXcbProto:
-	@( $(SCRIPTS_DIR)/library/X11/xcb_proto.sh )
+# # need python interpreter
+xcb-proto:
+	@( $(SCRIPTS_DIR)/libs/X11/xcb_proto.sh )
 
-libraryLibxcb: libraryLibxau libraryXcbProto
-	@( $(SCRIPTS_DIR)/library/X11/libxcb.sh )
+libxcb: \
+	libxau xcb-proto
+	@( $(SCRIPTS_DIR)/libs/X11/libxcb.sh )
 
 # (xproto >= 7.0.25 xextproto xtrans xcb >= 1.11.1 kbproto inputproto
-libraryLibx11: \
-	libraryPkgConfig libraryXorgproto libraryXtrans libraryLibxcb
-	@( $(SCRIPTS_DIR)/library/X11/libx11.sh )
+libx11: \
+	pkg-config xorgproto xtrans libxcb
+	@( $(SCRIPTS_DIR)/libs/X11/libx11.sh )
 # -----------------------------------------------------
 
-libraryTcl:
-	@( $(SCRIPTS_DIR)/library/tcl.sh )
+tcl:
+	@( $(SCRIPTS_DIR)/libs/tcl.sh )
 
-libraryTk: \
-	libraryTcl libraryLibx11
-	@( $(SCRIPTS_DIR)/library/tk.sh )
+tk: \
+	tcl libx11
+	@( $(SCRIPTS_DIR)/libs/tk.sh )
 
-# libraryBoost:
-#   @( $(SCRIPTS_DIR)/library/boost.sh )
+nasm:
+	@( $(SCRIPTS_DIR)/libs/nasm.sh )
 
-libraryLzma:
-	@( $(SCRIPTS_DIR)/library/liblzma.sh )
+libjpeg-turbo: \
+	nasm cmake
+	@( $(SCRIPTS_DIR)/libs/libjpeg_turbo.sh )
+
+opencv: \
+	cmake
+	@( $(SCRIPTS_DIR)/libs/opencv.sh )
+
+# sox
+# -----------------------------------------------------
+libogg:
+	@( $(SCRIPTS_DIR)/libs/libogg.sh )
+
+libsndfile: \
+	libogg
+	@( $(SCRIPTS_DIR)/libs/libsndfile.sh )
+
+flac: \
+	libogg xz
+	@( $(SCRIPTS_DIR)/libs/flac.sh )
+
+sox: \
+	flac libogg libsndfile
+	@( $(SCRIPTS_DIR)/apps/sox.sh )
+# -----------------------------------------------------
+
+# tcptump
+# -----------------------------------------------------
+flex: \
+	autotools gettext help2man
+	@( $(SCRIPTS_DIR)/libs/flex.sh )
+
+libpcap: \
+	flex bison
+	@( $(SCRIPTS_DIR)/libs/libpcap.sh )
+
+tcpdump: \
+	libpcap
+	@( $(SCRIPTS_DIR)/apps/tcpdump.sh )
+# -----------------------------------------------------
+
+terminfo:
+	@( $(SCRIPTS_DIR)/libs/terminfo.sh )
+
+zsh: \
+	ncurses xz
+	@( $(SCRIPTS_DIR)/apps/zsh.sh )
+
+fish: \
+	ncurses gettext xz cmake
+	@( $(SCRIPTS_DIR)/apps/fish.sh )
+
+prezto:
+	@( $(SCRIPTS_DIR)/apps/prezto.sh )
+
+neovim: \
+	patch pkg-config cmake autotools unzip gettext
+	@( $(SCRIPTS_DIR)/apps/neovim.sh )
+
+tmux: \
+	ncurses libevent terminfo
+	@( $(SCRIPTS_DIR)/apps/tmux.sh )
+
+wget: \
+	pkg-config gnutls gzip
+	@( $(SCRIPTS_DIR)/apps/wget.sh )
+
+tree:
+	@( $(SCRIPTS_DIR)/apps/tree.sh )
+
+fd:
+	@( $(SCRIPTS_DIR)/apps/fd.sh )
+
+rg:
+	@( $(SCRIPTS_DIR)/apps/rg.sh )
+
+thefuck:
+	@( $(SCRIPTS_DIR)/apps/thefuck.sh )
+
+tldr:
+	@( $(SCRIPTS_DIR)/apps/tldr.sh )
+
+bash-snippets:
+	@( $(SCRIPTS_DIR)/apps/bash_snippets.sh )
+
+up:
+	@( $(SCRIPTS_DIR)/apps/up.sh )
+
+# jq
+# -----------------------------------------------------
+oniguruma:
+	@( $(SCRIPTS_DIR)/libs/oniguruma.sh )
+
+jq: \
+	oniguruma
+	@( $(SCRIPTS_DIR)/apps/jq.sh )
+# -----------------------------------------------------
+
+pyenv: \
+	openssl readline zlib bzip2 sqlite3 libffi tcl tk
+	@ ( $(SCRIPTS_DIR)/apps/pyenv.sh )
+
+goenv:
+	@( $(SCRIPTS_DIR)/apps/goenv.sh )
+
+asdf:
+	@ ( $(SCRIPTS_DIR)/apps/asdf.sh )
+
+tpm: \
+	tmux
+	@( $(SCRIPTS_DIR)/apps/tpm.sh )
 
 # ====================================================
-# APPS
+# DOTS
 # ====================================================
 
-installTermInfo:
-	@( $(SCRIPTS_DIR)/install/terminfo.sh )
+bins:
+	@( $(SCRIPTS_DIR)/dots/bins.sh )
 
-# libraryNcurses
-installZsh:
-	@( $(SCRIPTS_DIR)/install/zsh.sh )
+configs:
+	@( $(SCRIPTS_DIR)/dots/configs.sh )
 
-# libraryNcurses
-installFish:
-	@( $(SCRIPTS_DIR)/install/fish.sh )
+tmux-plugins:
+	@( $(SCRIPTS_DIR)/dots/tmux_plugins.sh )
 
-installPrezto:
-	@( $(SCRIPTS_DIR)/install/prezto.sh )
+neovim-plugins:
+	@( $(SCRIPTS_DIR)/dots/neovim_plugins.sh )
 
-installNeovim:
-	@( $(SCRIPTS_DIR)/install/neovim.sh )
-
-# libraryNcurses libraryLibevent
-installTmux:
-	@( $(SCRIPTS_DIR)/install/tmux.sh )
-
-installTree:
-	@( $(SCRIPTS_DIR)/install/tree.sh )
-
-installFd:
-	@( $(SCRIPTS_DIR)/install/fd.sh )
-
-installRg:
-	@( $(SCRIPTS_DIR)/install/rg.sh )
-
-installThefuck:
-	@( $(SCRIPTS_DIR)/install/thefuck.sh )
-
-installRanger:
-	@( $(SCRIPTS_DIR)/install/ranger.sh )
-
-installTldr:
-	@( $(SCRIPTS_DIR)/install/tldr.sh )
-
-installBashSnippets:
-	@( $(SCRIPTS_DIR)/install/bash_snippets.sh )
-
-installBpytop:
-	@( $(SCRIPTS_DIR)/install/bpytop.sh )
-
-installUp:
-	@( $(SCRIPTS_DIR)/install/up.sh )
-
-# # libraryBoost
-# installHighlight:
-#   @( $(SCRIPTS_DIR)/install/highlight.sh )
-
-installPyenv:
-	@ ( $(SCRIPTS_DIR)/install/pyenv.sh )
-
-installGoenv:
-	@( $(SCRIPTS_DIR)/install/goenv.sh )
-
-installAsdf:
-	@ ( $(SCRIPTS_DIR)/install/asdf.sh )
-
-updatePrezto:
-	@( $(SCRIPTS_DIR)/update/prezto.sh )
-
-updateBins:
-	@( $(SCRIPTS_DIR)/update/bins.sh )
-
-updateConfigs:
-	@( $(SCRIPTS_DIR)/update/configs.sh )
-
-updateNeovimPlugins:
-	@( $(SCRIPTS_DIR)/update/neovim_plugins.sh )
-
-updateTPM:
-	@( $(SCRIPTS_DIR)/update/tpm.sh )
-
-updateTmuxPlugins: updateTPM
-	@( $(SCRIPTS_DIR)/update/tmux_plugins.sh )
-
-updateDevEnv:
-	@( $(SCRIPTS_DIR)/update/dev_env.sh )
+neovim-providers:
+	@( $(SCRIPTS_DIR)/dots/neovim_providers.sh )
 
 # ====================================================
-# ENVIRONMENT
+# ENVIRONMENTS
 # ====================================================
 
-# libraryOpenssl libraryReadline libraryZlib libraryBzip2 librarySqlite3 libraryLibffi libraryTcl libraryTk
-environmentPython:
-	@( $(SCRIPTS_DIR)/environment/python.sh )
+python: \
+	patch openssl readline zlib bzip2 sqlite3 libffi tcl tk xz ncurses
+	@( $(SCRIPTS_DIR)/environments/python.sh )
 
-environmentGolang:
-	@( $(SCRIPTS_DIR)/environment/golang.sh )
+golang:
+	@( $(SCRIPTS_DIR)/environments/golang.sh )
 
-environmentRust:
-	@( $(SCRIPTS_DIR)/environment/rust.sh )
+rust:
+	@( $(SCRIPTS_DIR)/environments/rust.sh )
 
-# libraryGnuPG
-environmentNodejs:
-	@( $(SCRIPTS_DIR)/environment/nodejs.sh )
+nodejs: \
+	gnupg
+	@( $(SCRIPTS_DIR)/environments/nodejs.sh )
 
-environmentLua:
-	@( $(SCRIPTS_DIR)/environment/lua.sh )
+lua:
+	@( $(SCRIPTS_DIR)/environments/lua.sh )
 
-environmentSh:
-	@( $(SCRIPTS_DIR)/environment/sh.sh )
+python-env: \
+	python-env--virtualenv python-env--black python-env--isort \
+	python-env--flake8 python-env--debugpy
 
-changeDefaultShell:
-	@( $(SCRIPTS_DIR)/change_default_shell.sh )
+python-env--virtualenv:
+	@( $(SCRIPTS_DIR)/environments/python_env__virtualenv.sh )
 
-clean:
-	@( sed -i -e '/# added from andys dotfiles/,/^fi$$/d' ${HOME}/.bashrc )
-	@( rm -rf \
-		${HOME}/.vimrc ${HOME}/.vim \
-		${HOME}/.tmux ${HOME}/.tmux.conf \
-		${HOME}/.zlogin ${HOME}/.zlogout ${HOME}/.zpreztorc ${HOME}/.zprofile \
-		${HOME}/.zshenv ${HOME}/.zshrc ${HOME}/.zprezto \
-		${HOME}/.fzf ${HOME}/.fzf.bash ${HOME}/.fzf.zsh \
-		${HOME}/.config/nvim ${HOME}/.config/alacritty ${HOME}/.config/iterm2 \
-		${HOME}/.config/yabai ${HOME}/.config/skhd \
-		${HOME}/.config/spacebar ${HOME}/.config/swiftbar ${HOME}/.config/bitbar \
-		${HOME}/.config/git ${HOME}/.config/flake8 ${HOME}/.config/pylintrc \
-		${HOME}/.config/fish ${HOME}/.config/tealdeer ${HOME}/.config/vivid \
-		${HOME}/.config/simplebar ${HOME}/.simplebarrc \
-		|| true )
-	@rm -rf $(PROJ_HOME)
-	@find ${HOME}/.local/bin -type l -exec test ! -e {} \; -print | xargs rm -rf
-	@echo "[0;92m[*][0m Remove all configurations files and custom functions"
+python-env--black:
+	@( $(SCRIPTS_DIR)/environments/python_env__black.sh )
 
-installLibraries: \
-	libraryHelp2man libraryPkgConfig \
-	libraryZlib libraryBzip2 \
-	libraryUnzip libraryGzip \
-	libraryOpenssl \
-	libraryNcurses libraryLibevent libraryReadline \
-	libraryAutotools \
-	libraryGettext libraryPatch \
-	librarySqlite3 libraryLibffi \
-	libraryGnuTLS libraryGnuPG \
-	libraryLibx11 \
-	libraryTcl libraryTk \
-	libraryLzma \
+python-env--isort:
+	@( $(SCRIPTS_DIR)/environments/python_env__isort.sh )
 
-installEnvironmentUtilities: \
-	installPyenv installGoenv installAsdf \
-	updateDevEnv
+python-env--flake8:
+	@( $(SCRIPTS_DIR)/environments/python_env__flake8.sh )
 
-installEnvironment: \
-	environmentPython environmentGolang environmentRust environmentNodejs environmentLua \
-	environmentSh
+python-env--debugpy:
+	@( $(SCRIPTS_DIR)/environments/python_env__debugpy.sh )
 
-installEssentials: \
-	installTermInfo installZsh installFish installPrezto \
-	installNeovim installTmux
+lua-env: \
+	lua-env-stylua
 
-installUtilities: \
-	installTree installFd installRg installRanger \
-	installThefuck installTldr installBashSnippets installBpytop installUp
+lua-env-stylua: \
+	unzip
+	@( $(SCRIPTS_DIR)/environments/lua_env__stylua.sh )
 
-update: \
-	updatePrezto \
-	updateBins updateConfigs \
-	updateNeovimPlugins \
-	updateTPM \
-	updateTmuxPlugins \
-	updateDevEnv
-	@echo
-	@echo "[42m[30m[*] Update has been finished.[0m"
+sh-env: \
+	sh-env--shellcheck sh-env-shfmt
 
-install: \
-	installLibraries \
-	installEnvironmentUtilities installEnvironment \
-	installEssentials installUtilities
-	@echo
-	@echo "[42m[30m[*] Install has been finished.[0m"
+sh-env--shellcheck: \
+	xz
+	@( $(SCRIPTS_DIR)/environments/sh_env__shellcheck.sh )
 
-init: \
-	install \
-	update \
-	changeDefaultShell
-	@echo
-	@echo "[42m[30m[*] Init has been finished.[0m"
+sh-env--shfmt:
+	@( $(SCRIPTS_DIR)/environments/sh_env__shfmt.sh )
 
-.PHONY: prerequisites prerequisitesTest \
-	libraryHelp2man libraryHelp2man libraryNcurses \
-	libraryOpenssl libraryLibevent \
-	libraryUnzip libraryGzip \
-	libraryM4 libraryAutoconf libraryAutomake libraryLibtool libraryAutotools \
-	libraryGettext libraryPatch libraryReadline libraryZlib \
-	libraryBzip2  librarySqlite3 libraryLibffi\
-	libraryGMP libraryLibnettle libraryLibtasn1 libraryP11Kit libraryGnuTLS \
-	libraryLibgpgError libraryLibgcrypt libraryLibassuan libraryLibksba libraryNpth libraryGnuPG \
-	libraryPth libraryDirmngr \
-	libraryXorgproto libraryXtrans libraryLibxau libraryXcbProto libraryLibxcb libraryLibx11 \
-	libraryTcl libraryTk \
-	installTermInfo installZsh installFish installPrezto \
-	installNeovim installTmux \
-	installTree installFd installRg installThefuck installRanger installTldr \
-	installBashSnippets installBpytop installUp \
-	installPyenv installGoenv installAsdf \
-	updatePrezto updateBins updateConfigs updateNeovimPlugins updateTPM updateTmuxPlugins updateDevEnv \
-	environmentPython environmentGo environmentRust environmentNodejs environmentLua environmentSh\
-	changeDefaultShell \
-	clean installLibraries installEnvironmentUtilities installEnvironment \
-	installEssentials installUtilities \
-	update install init
+nodejs-env:
+	@( $(SCRIPTS_DIR)/environments/nodejs_env.sh )
+
+# ====================================================
+
+.PHONY: initMac prerequisites prerequisitesTest changeShell \
+	pkg-config ncurses libevent readline patch help2man gettext sqlite3 libffi \
+	libsodium groff openldap \
+	texinfo bison \
+	cmake  \
+	zlib bzip2 unzip gzip xz \
+	openssl \
+	m4 autoconf automake libtool autotools \
+	gmp libnettle libtasn1 p11-kit gnutls \
+	libgpg-error libgcrypt libassuan libksba npth gnupg \
+	xorgproto xtrans libxau xcb-proto libxcb libx11 \
+	tcl tk \
+	nasm libjpeg-turbo opencv \
+	libogg libsndfile flac sox \
+	flex libpcap tcpdump \
+	terminfo zsh fish prezto neovim tmux \
+	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq \
+	pyenv goenv asdf tpm \
+	bins configs tmux-plugins neovim-plugins neovim-providers \
+	python golang rust nodejs lua \
+	python-env lua-env sh-env nodejs-env

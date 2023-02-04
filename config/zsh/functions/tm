@@ -4,7 +4,7 @@
 
 has -v tmux fzf
 
-if tmux ls > /dev/null 2>&1; then
+if tmux ls >/dev/null 2>&1; then
   _CUR_COLOUR_SCHEME=$(tmux show-environment COLOUR_SCHEME | awk -F'=' '{print $2}')
   _CUR_BG_LUMINANCE=$(tmux show-environment BG_LUMINANCE | awk -F'=' '{print $2}')
 
@@ -17,7 +17,7 @@ if tmux ls > /dev/null 2>&1; then
     # source tmux config
     tmux source-file $HOME/.tmux.conf
 
-    # change vim colorscheme in all tmux session
+    # change vim colourscheme in all tmux session
     sessions=($(tmux list-sessions -F '#{session_name}'))
     for session in "${sessions[@]}"; do
       windows=($(tmux list-windows -t ${session} -F '#{session_name}:#{window_index}'))
@@ -26,10 +26,10 @@ if tmux ls > /dev/null 2>&1; then
         panes=($(tmux list-panes -F '#{session_name}:#{window_index}.#{pane_index}' -t $window))
         for pane in "${panes[@]}"; do
           (
-          nohup bash -c "\
-            tmux if-shell -t \"$pane\" \"$is_vim\" 'send-keys -t \"$pane ESCAPE ENTER';\
-            tmux if-shell -t \"$pane\" \"$is_vim\" 'send-keys -t \"$pane \":call ChangeBackground()\" ENTER'" \
-            >/dev/null 2>&1 &
+            nohup bash -c "\
+              tmux if-shell -t '$pane' \"$is_vim\" 'send-keys -t \"$pane\" ESCAPE ENTER';\
+              tmux if-shell -t '$pane' \"$is_vim\" 'send-keys -t \"$pane\" \":call ChangeBackground()\" ENTER'" \
+              >/dev/null 2>&1 &
           )
         done
       done
@@ -37,15 +37,15 @@ if tmux ls > /dev/null 2>&1; then
 
   fi
 
-  [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-  if [ $1 ]; then
-    tmux $change -t "$1" 2>/dev/null ||
-      (tmux new-session -d -s $1 && tmux $change -t "$1");
+  [[ -n $TMUX ]] && change="switch-client" || change="attach-session"
+  if [ "$1" ]; then
+    tmux $change -t "$1" 2>/dev/null \
+      || (tmux new-session -d -s "$1" && tmux $change -t "$1")
     return
   fi
-  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --select-1 --exit-0) &&
-    tmux $change -t "$session" ||
-    echo "No sessions found."
+  session=$(tmux list-sessions -F "#{session_name}" 2>/dev/null | fzf --select-1 --exit-0) \
+    && tmux $change -t "$session" \
+    || echo "No sessions found."
 else
   tmux
 fi

@@ -1,21 +1,57 @@
 #!/usr/bin/env bash
 # from https://stackoverflow.com/a/21189044
 
+DEPTH_SEP="--"
+
 function parse_yaml {
   local prefix=$2
-  local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+  echo "${prefix}TARGETS=()"
+  local s='[[:space:]]*' w='[a-zA-Z0-9_-]*' fs=$(echo @|tr @ '\034')
   sed -ne "s|^\($s\):|\1|" \
        -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
-       -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
-  awk -F$fs '{
+       -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
+  awk -F$fs 'BEGINN {
+  }
+  {
+     vname["dummy"] = "dummy"
+     delete vname["dummy"]
      indent = length($1)/2;
-     vname[indent] = $2;
-     for (i in vname) {if (i > indent) {delete vname[i]}}
-     if (length($3) > 0) {
-        vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
-        printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+     target="";
+     if (indent < length(vname)) {
+       dict_length = length(vname);
+       for (i=0; i < dict_length; i++) {
+         target=(target)(vname[i])("'$DEPTH_SEP'");
+         if (i >= indent) {
+           delete vname[i];
+         }
+       }
      }
-  }'
+     sub("'$DEPTH_SEP'$", "", target)
+     vname[indent] = $2;
+     if (length($3) > 0) {
+       vn=""; for (i=0; i<=indent; i++) {vn=(vn)(vname[i])("'$DEPTH_SEP'")}
+       sub("'$DEPTH_SEP'$", "", vn)
+       gsub("-", "_", vn)
+       printf("%s%s=\"%s\"\n", "'$prefix'", vn, $3);
+       delete vname[length(vname)-1]
+     } else if (length(target) > 0) {
+       printf("%sTARGETS+=(\"%s\")\n", "'$prefix'", target);
+     }
+  }
+  END {
+   dict_length = length(vname)
+   target=""
+   for (i=0; i < dict_length; i++) {
+     target=(target)(vname[i])("'$DEPTH_SEP'");
+     delete vname[i];
+   }
+   vname[indent] = $2;
+   sub("'$DEPTH_SEP'$", "", target)
+   printf("%sTARGETS+=(\"%s\")\n", "'$prefix'", target);
+  }
+  '
+
+  echo "${prefix}TARGETS=(\$(for v in \"\${${prefix}TARGETS[@]}\"; do echo \"\$v\";done | uniq))"
 }
 
 parse_yaml "$@"

@@ -8,6 +8,11 @@
 # XTerm Operating System Commands
 #     "ESC ] Ps;Pt ST"
 
+
+if ! command -v ps >/dev/null; then
+  exit 1
+fi
+
 parent_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
 target_tty="${SSH_TTY:-$parent_tty}"
 

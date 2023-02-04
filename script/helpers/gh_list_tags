@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# https://gist.github.com/mbohun/b161521b2440b9f08b59#file-githubapi-get-sh
+
+set -euo pipefail
+
+GH_REPO="${1}"
+GH_ACCESS="${2:-${GH_ACCESS:-}}"
+
+[ ! -z $GH_ACCESS ] && GH_ACCESS="--user $GH_ACCESS"
+
+# Get latest release from GitHub api
+_BODY=$(
+  curl --silent --show-error -w "%{http_code}" $GH_ACCESS \
+    "https://api.github.com/repos/$GH_REPO/tags"
+)
+_STATUS_CODE=$(echo "$_BODY" | tail -n 1)
+_BODY=$(echo "$_BODY" | sed \$d)
+
+if [ "$_STATUS_CODE" == "200" ]; then
+  echo "$_BODY" |
+    grep '"name":' |         # Get tag line
+    sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
+else
+  echo "$_BODY" >&2
+  exit "$_STATUS_CODE"
+fi

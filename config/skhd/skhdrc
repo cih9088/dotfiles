@@ -1,22 +1,17 @@
 # the default mode
-:: default : echo "" > $TMPDIR/current_skhd_mode;\
-             open -g "swiftbar://refreshPlugin?name=yabai_skhd"
+:: default : echo "" > $TMPDIR/current_skhd_mode
 
 # a mode for focus operations
-:: focus @ : echo "focus" > $TMPDIR/current_skhd_mode;\
-             open -g "swiftbar://refreshPlugin?name=yabai_skhd"
+:: focus @ : echo "focus" > $TMPDIR/current_skhd_mode
 
 # a mode for warp operations
-:: warp @ : echo "warp" > $TMPDIR/current_skhd_mode;\
-            open -g "swiftbar://refreshPlugin?name=yabai_skhd"
+:: warp @ : echo "warp" > $TMPDIR/current_skhd_mode
 
 # a mode for resizing operations
-:: resize @ : echo "resize" > $TMPDIR/current_skhd_mode;\
-              open -g "swiftbar://refreshPlugin?name=yabai_skhd"
+:: resize @ : echo "resize" > $TMPDIR/current_skhd_mode
 
 # a mode for instance command
-:: prefix @ : echo "prefix" > $TMPDIR/current_skhd_mode;\
-              open -g "swiftbar://refreshPlugin?name=yabai_skhd"
+:: prefix @ : echo "prefix" > $TMPDIR/current_skhd_mode
 
 # enter and exit modes
 default                      < ctrl - s         ; prefix

@@ -4,6 +4,7 @@
 " PLUGINS {{{
 " =======================================================================================
 
+
 " vim-plugin
 " ---------------------------------------------------------------------------------------
   let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
@@ -14,27 +15,27 @@
 
   call plug#begin(has('nvim') ? stdpath('data') . '/plugged' : '~/.vim/plugged')
 
-" Prettier
+
+" Themes
 " ---------------------------------------------------------------------------------------
   Plug 'ryanoasis/vim-devicons'
-  Plug 'junegunn/seoul256.vim'
   Plug 'morhetz/gruvbox'
   Plug 'w0ng/vim-hybrid'
   Plug 'joshdick/onedark.vim'
   Plug 'dracula/vim', { 'as': 'dracula' }
   Plug 'sainnhe/edge'
-  Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
   if has('nvim')
+    Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
     Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
   endif
 
 
-" Convenient Universally
+" Convenient
 " ---------------------------------------------------------------------------------------
   Plug 'scrooloose/nerdcommenter'
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
-  Plug 'junegunn/gv.vim', { 'on': ['GV', 'GV!'] }
+  Plug 'junegunn/gv.vim', { 'on': [ 'GV', 'GV!' ] }
   Plug 'junegunn/vim-peekaboo'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
@@ -46,21 +47,33 @@
   Plug 'tpope/vim-unimpaired'
   " Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-abolish'
-  Plug 'mhinz/vim-signify'
+  Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+  Plug 'chrisbra/csv.vim', { 'for': 'csv' }
+
+  if has("nvim-0.5")
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'lewis6991/gitsigns.nvim'
+  else
+    Plug 'mhinz/vim-signify'
+  endif
+
   if has('nvim-0.4.0') && exists('*nvim_open_win')
     Plug 'rhysd/git-messenger.vim'
   endif
-  Plug 'AndrewRadev/splitjoin.vim'
+
   if has("nvim-0.5")
     Plug 'lukas-reineke/indent-blankline.nvim'
   else
     Plug 'Yggdroot/indentLine'
   endif
+
   if has("nvim-0.5")
     Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
   elseif has('nvim')
-  " Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': 'python' }
+    Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': 'python' }
   endif
+
+  Plug 'AndrewRadev/splitjoin.vim'
   " Plug 'preservim/nerdtree'
   Plug 'tpope/vim-vinegar'
   Plug 'liuchengxu/vista.vim'
@@ -69,24 +82,55 @@
 
 " Language Specific
 " ---------------------------------------------------------------------------------------
-  Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+  " Plug 'SirVer/ultisnips'
+
+  if has("nvim-0.7")
+    Plug 'williamboman/mason.nvim'
+    Plug 'williamboman/mason-lspconfig.nvim'
+    Plug 'jose-elias-alvarez/null-ls.nvim'
+    Plug 'nvim-lua/lsp-status.nvim'
+    Plug 'neovim/nvim-lspconfig'
+
+    Plug 'hrsh7th/nvim-cmp'
+    Plug 'hrsh7th/cmp-nvim-lsp'
+    Plug 'hrsh7th/cmp-buffer'
+    Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-cmdline'
+    " Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+    Plug 'andersevenrud/cmp-tmux'
+    Plug 'L3MON4D3/LuaSnip'
+    Plug 'saadparwaiz1/cmp_luasnip'
+
+    Plug 'ray-x/lsp_signature.nvim'
+    " Plug 'nvim-lualine/lualine.nvim'
+    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+  else
+    Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+    Plug 'dag/vim-fish', { 'for': 'fish' }
+    Plug 'lervag/vimtex', { 'for': 'tex' }
+    Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }
+    Plug 'wellle/tmux-complete.vim'
+  endif
+    " Plug 'rafamadriz/friendly-snippets'
   Plug 'honza/vim-snippets'
-  Plug 'dag/vim-fish', { 'for': 'fish' }
-  Plug 'Vimjas/vim-python-pep8-indent', { 'for': 'python' }
-  Plug 'lervag/vimtex', { 'for': 'tex' }
+  " Plug 'Vimjas/vim-python-pep8-indent', { 'for': 'python' }
   Plug 'pearofducks/ansible-vim'
-  Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+  Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }    " no treesitter parser
   Plug 'mzlogin/vim-markdown-toc', { 'for': 'markdown' }
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }
   if has('nvim') || v:version >= 800
     Plug 'iamcco/markdown-preview.nvim',
           \ { 'do': ':call mkdp#util#install()', 'for': 'markdown', 'on': 'MarkdownPreview' }
   endif
 
+  if has("nvim-0.8.0")
+    Plug 'mfussenegger/nvim-dap'
+    Plug 'rcarriga/nvim-dap-ui'
+  endif
+
+
 " Etc.
 " ---------------------------------------------------------------------------------------
   Plug 'mhinz/vim-startify'
-  Plug 'wellle/tmux-complete.vim'
   Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 
@@ -121,7 +165,11 @@
   set history=1000                      " remember more commands and search history
   set undofile                          " Maintain undo history between sessions
   set undolevels=1000                   " use many muchos levels of undo
-  set undodir=~/.vim/undodir
+  if has('nvim')
+    set undodir=~/.config/nvim/undodir
+  else
+    set undodir=~/.vim/undodir
+  endif
   set laststatus=2                      " status bar is always on
   set showtabline=2                     " tab bar is always on
   set signcolumn=yes                    " always draw the sign column
@@ -135,6 +183,7 @@
   set updatetime=300                    " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
                                         " delays and poor user experience.
   set shortmess+=c                      " Don't pass messages to ins-completion-menu.
+  set mouse=                            " Disable mouse support
 
   " Always show the signcolumn, otherwise it would shift the text each time
   " diagnostics appear/become resolved.
@@ -207,25 +256,20 @@
     if !empty($TMUX)
       if system('tmux show-env BG_LUMINANCE') !~# '^-.*'
         if split(trim(system('tmux show-env BG_LUMINANCE')), '=')[1] == "light"
-          set background=light
+          let l:background = "light"
         else
-          set background=dark
+          let l:background = "dark"
         endif
       endif
     else
       if exists('$BG_LUMINANCE') && $BG_LUMINANCE == 'light'
-        set background=light
+          let l:background = "light"
       else
-        set background=dark
+          let l:background = "dark"
       endif
     endif
 
-    " colorscheme specific setting
-    if &background == "dark"
-      let g:rose_pine_variant = 'moon'
-    else
-      let g:rose_pine_variant = 'dawn'
-    endif
+    execute "set background=" . l:background
 
     " Change colorscheme
     try
@@ -239,46 +283,25 @@
         else
           if exists('$COLOUR_SCHEME')
             let l:scheme = $COLOUR_SCHEME
-          else
-            let l:scheme = system('sed -En "s/^colors: \*(.*)/\1/p" ~/.config/alacritty/colour.yml')
           endif
         endif
+        if l:scheme =~ 'rose-pine.*'
+          let l:scheme = 'rose-pine'
+          if l:background == "dark"
+            let g:rose_pine_variant = 'moon'
+          else
+            let g:rose_pine_variant = 'dawn'
+          endif
+        endif
+        execute 'colorscheme ' . l:scheme
       endif
-      let l:colour =  matchstr(l:scheme, '[-_]\?\(light\|dark\)[-_]\?')
-      let l:scheme_clenaed = substitute(l:scheme, l:colour, "", "")
-      execute 'colorscheme ' . l:scheme_clenaed
     catch
-      colorscheme default
+      colorscheme seoul256
     endtry
 
   endfunction
 
   call ChangeBackground()
-
-  " if has('nvim')
-  "   let g:terminal_color_0  = '#4e4e4e'
-  "   let g:terminal_color_1  = '#d68787'
-  "   let g:terminal_color_2  = '#5f865f'
-  "   let g:terminal_color_3  = '#d8af5f'
-  "   let g:terminal_color_4  = '#85add4'
-  "   let g:terminal_color_5  = '#d7afaf'
-  "   let g:terminal_color_6  = '#87afaf'
-  "   let g:terminal_color_7  = '#d0d0d0'
-  "   let g:terminal_color_8  = '#626262'
-  "   let g:terminal_color_9  = '#d75f87'
-  "   let g:terminal_color_10 = '#87af87'
-  "   let g:terminal_color_11 = '#ffd787'
-  "   let g:terminal_color_12 = '#add4fb'
-  "   let g:terminal_color_13 = '#ffafaf'
-  "   let g:terminal_color_14 = '#87d7d7'
-  "   let g:terminal_color_15 = '#e4e4e4'
-  " else
-  "   let g:terminal_ansi_colors = [
-  "         \ '#4e4e4e', '#d68787', '#5f865f', '#d8af5f',
-  "         \ '#85add4', '#d7afaf', '#87afaf', '#d0d0d0',
-  "         \ '#626262', '#d75f87', '#87af87', '#ffd787',
-  "         \ '#add4fb', '#ffafaf', '#87d7d7', '#e4e4e4']
-  " endif
 
 
 " Spaces & Tabs
@@ -327,38 +350,25 @@
 
 " StatusLine
 " ---------------------------------------------------------------------------------------
-  function! CocStatus() abort
-    let info = get(g:, 'coc_status', '')
-    if empty(info)
-      return ''
-    else
-      return winwidth(0) > 100 ? (info): ''
-    endif
-  endfunction
-
-  function! CocDiagnostics(kind, sign) abort
-    let info = get(b:, 'coc_diagnostic_info', 0)
-    if empty(info) || get(info, a:kind, 0) == 0
-      return ''
-    endif
-    return printf('%s %d', a:sign, info[a:kind])
-  endfunction
-
-  function! s:statusline_expr()
-    let mod = "%{&modified ? '[+] ' : !&modifiable ? '[x] ' : ''}"
-    let ro  = "%{&readonly ? '[RO] ' : ''}"
+ function! StatusLineActive()
     let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+    let mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
+    let ro  = "%{&readonly ? '👀' : ''}"
     let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
     let sep = ' %= '
     let pos = ' %-12(%l : %c%V%) '
+    let format = ' %-7([%{&fileformat}]%) '
     let pct = ' %P'
-    let coc_status = '%{CocStatus()}'
-    let coc_warn = '%#WarningMsg#%{CocDiagnostics("warning", "•")}' . '%*'
-    let coc_err = '%#WarningMsg#%{CocDiagnostics("error", "•")}' . '%*'
-    let diag = coc_warn . coc_err
-    return '[%n] %f '.ft.mod.ro.coc_status.diag.' %<'.sep.fug.pos.'%*'.pct
+    return '[%n] 🌸 %f '.ft.mod.' '.ro.' %<'.sep.fug.format.pos.'%*'.pct
   endfunction
-  let &statusline = s:statusline_expr()
+  function! StatusLineInactive()
+    return '[%n] %F'
+  endfunction
+  augroup statusline
+    autocmd!
+    autocmd WinEnter,BufEnter * setlocal statusline=%!StatusLineActive()
+    autocmd WinLeave,BufLeave * setlocal statusline=%!StatusLineInactive()
+  augroup end
 
 
 
@@ -736,6 +746,7 @@
     for elem in a:000
       let l:expands += ['"' . expand(elem) . '"']
     endfor
+    echo join([&grepprg] + l:expands)
     return system(join([&grepprg] + l:expands))
   endfunction
   command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
@@ -842,12 +853,17 @@
 
 " copy the current file's full absolute path.
 " ---------------------------------------------------------------------------------------
-  command! CopyFilePath let @+ = expand(has('win32') ? '%:p:gs?/?\\?' : '%:p')
+  command! CopyFilePath call s:yank(expand(has('win32') ? '%:p:gs?/?\\?' : '%:p'))
+
+
+" copy the current file's name.
+" ---------------------------------------------------------------------------------------
+  command! CopyFileName call s:yank(expand(has('win32') ? '%:t:gs?/?\\?' : '%:t'))
 
 
 " copy the directory where current file is in.
 " ---------------------------------------------------------------------------------------
-  command! CopyFileDir let @+ = expand(has('win32') ? '%:p:h:gs?/?\\?' : '%:p:h')
+  command! CopyFileDir call s:yank(expand(has('win32') ? '%:p:h:gs?/?\\?' : '%:p:h'))
 
 
 " go to current file directory
@@ -865,7 +881,7 @@
 
 " Custom location for quickfix and loclist
 " ---------------------------------------------------------------------------------------
-  function! CustomiseLocation()
+  function! s:customiseLocation()
     " if loclist, put it below the current window
     if getwininfo(win_getid())[0]['loclist'] == 1
     " if quickfix, put it bellow the whole window
@@ -873,7 +889,18 @@
       wincmd J
     endif
   endfunction
-  autocmd FileType qf call CustomiseLocation()
+  autocmd FileType qf call s:customiseLocation()
+
+
+" plugin install check
+" ---------------------------------------------------------------------------------------
+  function! HasPlug(name) abort
+    return has_key(g:plugs, a:name)
+  endfunction
+
+  function! IsPlugInstalled(name) abort
+    return has_key(g:plugs, a:name) && isdirectory(g:plugs[a:name].dir)
+  endfunction
 
 
 " }}}
@@ -884,15 +911,15 @@
 
 " tpope/vim-fugitive
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vim-fugitive')
+  if IsPlugInstalled('vim-fugitive')
     nnoremap <leader>gs :Git<CR>
-    nnoremap <leader>gd :Gdiff<CR>
+    nnoremap <leader>gd :Gvdiffsplit<CR>
   endif
 
 
 " rhysd/git-messenger.vim
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'git-messenger.vim')
+  if IsPlugInstalled('git-messenger.vim')
     let g:git_messenger_no_default_mappings = v:true
     let g:git_messenger_include_diff = "current"
     nmap <leader>gm <Plug>(git-messenger)
@@ -908,13 +935,14 @@
 
 " preservim/nerdtree
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'nerdtree')
+  if IsPlugInstalled('nerdtree')
     nmap <leader>N :NERDTreeToggle<CR>
   endif
 
+
 " scrooloose/nerdcommenter
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'nerdcommenter')
+  if IsPlugInstalled('nerdcommenter')
     " Add spaces after comment delimiters by default
     let g:NERDSpaceDelims = 1
     " Use compact syntax for prettified multi-line comments
@@ -936,7 +964,7 @@
 
 " junegunn/fzf.vim
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'fzf.vim')
+  if IsPlugInstalled('fzf.vim')
     nnoremap <leader>F :Files<CR>
     nnoremap <leader>B :Buffers<CR>
     nnoremap <leader>P :ProjectFiles<CR>
@@ -948,8 +976,7 @@
     command! ProjectFiles execute 'Files' s:find_git_root()
 
     " Customize fzf colors to match your color scheme
-    let g:fzf_colors =
-          \ {
+    let g:fzf_colors = {
           \ 'fg':      ['fg', 'Normal'],
           \ 'bg':      ['bg', 'Normal'],
           \ 'hl':      ['fg', 'Comment'],
@@ -962,22 +989,41 @@
           \ 'pointer': ['fg', 'Exception'],
           \ 'marker':  ['fg', 'Keyword'],
           \ 'spinner': ['fg', 'Label'],
-          \ 'header':  ['fg', 'Comment'] }
+          \ 'header':  ['fg', 'Comment'],
+          \ }
 
     " Rg: start fzf
     " Rg!: start fzf with preview window
     command! -bang -nargs=* Rg
-     \ call fzf#vim#grep(
-     \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-     \   <bang>0 ? fzf#vim#with_preview('up:60%')
-     \           : fzf#vim#with_preview('right:50%:hidden', '?'),
-     \   <bang>0)
+          \ call fzf#vim#grep(
+          \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
+          \   <bang>0 ? fzf#vim#with_preview('up:60%')
+          \           : fzf#vim#with_preview('right:50%:hidden', '?'),
+          \   <bang>0)
+
+    " http://ericnode.info/post/fzf_jump_to_tab_in_vim/
+    " tab navigation
+    function! TabName(n)
+      let buflist = tabpagebuflist(a:n)
+      let winnr = tabpagewinnr(a:n)
+      return fnamemodify(bufname(buflist[winnr - 1]), ':.')
+    endfunction
+    function! s:jumpToTab(line)
+      let pair = split(a:line, ' ')
+      let cmd = pair[0].'gt'
+      execute 'normal' cmd
+    endfunction
+    nnoremap <silent> <Leader>T :call fzf#run(fzf#wrap({
+    \   'source':  reverse(map(range(1, tabpagenr('$')), 'v:val." "." ".TabName(v:val)')),
+    \   'sink':    function('<sid>jumpToTab')
+    \ }))<CR>
+
   endif
 
 
 " christoomey/vim-tmux-navigator
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vim-tmux-navigator')
+  if IsPlugInstalled('vim-tmux-navigator')
     let g:tmux_navigator_no_mappings = 1
 
     nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
@@ -992,7 +1038,7 @@
 
 " junegunn/vim-easy-align
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vim-easy-align')
+  if IsPlugInstalled('vim-easy-align')
     " Start interactive EasyAlign in visual mode (e.g. vipga)
     xmap ga <Plug>(EasyAlign)
     " Start interactive EasyAlign for a motion/text object (e.g. gaip)
@@ -1002,7 +1048,7 @@
 
 " junegunn/gv.vim
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'gv.vim')
+  if IsPlugInstalled('gv.vim')
     function! s:gv_expand()
       let line = getline('.')
       GV --name-status
@@ -1012,9 +1058,10 @@
     autocmd! FileType GV nnoremap <buffer> <silent> + :call <sid>gv_expand()<cr>
   endif
 
+
 " mhinz/vim-startify
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vim-startify')
+  if IsPlugInstalled('vim-startify')
     nnoremap <leader>S :Startify<CR>
 
     let s:dotfiles_path = fnamemodify(resolve($MYVIMRC), ':h:h')
@@ -1032,7 +1079,7 @@
 
 " unblevable/quick-scope
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'quick-scope')
+  if IsPlugInstalled('quick-scope')
     let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
     augroup qs_colors
       autocmd!
@@ -1040,20 +1087,20 @@
       autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
     augroup END
     " need to set colorscheme after autocmd is defined
-    execute 'colorscheme ' .  get(g:, 'colors_name', 'default')
+    call ChangeBackground()
   endif
 
 
 " tpope/vim-unimpaired
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vim-unimpaired')
+  if IsPlugInstalled('vim-unimpaired')
     let g:nremap = {"[t": "", "]t": "", "[T": "", "]T": ""}
   endif
 
 
 " Yggdroot/indentLine
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'indentLine')
+  if IsPlugInstalled('indentLine')
     let g:indentLine_enabled = 1
     let g:indentLine_faster = 1
     " let g:indentLine_setColors = 0
@@ -1066,17 +1113,18 @@
 
 " lukas-reineke/indent-blankline.nvim
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'indent-blankline.nvim')
+  if IsPlugInstalled('indent-blankline.nvim')
     let g:indent_blankline_show_first_indent_level = v:false
     let g:indent_blankline_show_end_of_line = v:true
-    " let g:indent_blankline_show_current_context = v:true
+    let g:indent_blankline_show_current_context = v:false
+    let g:indent_blankline_show_current_context_start = v:false
     let g:indent_blankline_filetype_exclude = ['help', 'checkhealth', 'startify']
   endif
 
 
 " neoclide/coc.nvim
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'coc.nvim')
+  if IsPlugInstalled('coc.nvim')
     let g:coc_global_extensions = [
           \ 'coc-emoji', 'coc-snippets', 'coc-highlight', 'coc-json', 'coc-tsserver',
           \ 'coc-html', 'coc-css', 'coc-yaml', 'coc-vimtex', 'coc-pyright', 'coc-go',
@@ -1194,14 +1242,14 @@
 
 " fatih/vim-go
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vim-go')
+  if IsPlugInstalled('vim-go')
     " disable mapping
     let g:go_def_mapping_enabled = 0
     let g:go_doc_keywordprg_enabled = 0
     " disable completion
     let g:go_code_completion_enabled = 0
     " diable all syntax highlight
-    if !has_key(g:plugs, 'nvim-treesitter')
+    if !IsPlugInstalled('nvim-treesitter')
       let g:go_highlight_fields = 1
       let g:go_highlight_structs = 1
       let g:go_highlight_methods = 1
@@ -1217,8 +1265,8 @@
 
 " liuchengxu/vista.vim
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vista.vim')
-    nmap <leader>T :Vista!!<CR>
+  if IsPlugInstalled('vista.vim')
+    nmap <leader>V :Vista!!<CR>
 
     let g:vista_icon_indent = ["▸ ", ""]
 
@@ -1231,19 +1279,19 @@
     let g:vista_default_executive = 'ctags'
 
     let g:vista_executive_for = {
-          \ 'vim': 'coc',
-          \ 'sh': 'coc',
-          \ 'python': 'coc',
-          \ 'yaml': 'coc',
-          \ 'tex': 'coc',
-          \ 'go': 'coc',
+          \ 'vim': 'nvim_lsp',
+          \ 'sh': 'nvim_lsp',
+          \ 'python': 'nvim_lsp',
+          \ 'yaml': 'nvim_lsp',
+          \ 'tex': 'nvim_lsp',
+          \ 'go': 'nvim_lsp',
           \ }
   endif
 
 
 " iamcco/markdown-preview.nvim
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'markdown-preview.nvim')
+  if IsPlugInstalled('markdown-preview.nvim')
     let g:mkdp_echo_preview_url = 1
     let g:mkdp_open_to_the_world = 1
     let g:mkdp_port = '40100'
@@ -1260,41 +1308,83 @@
 
 " liuchengxu/vim-which-key
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'vim-which-key')
+  if IsPlugInstalled('vim-which-key')
     nnoremap <silent> <leader> :<c-u>WhichKey '\'<CR>
-    highlight default link WhichKeyFloating CocFloating
   endif
 
 
 " tpope/vim-vinegar
 " ---------------------------------------------------------------------------------------
-  " https://github.com/tpope/vim-vinegar/issues/13#issuecomment-489440040
-  let g:netrw_fastbrowse = 0
+  if IsPlugInstalled('vim-vinegar')
+    " https://github.com/tpope/vim-vinegar/issues/13#issuecomment-489440040
+    let g:netrw_fastbrowse = 0
+  endif
 
 
 " kkoomen/vim-doge
 " ---------------------------------------------------------------------------------------
-  let g:doge_mapping = '<Leader>D'
-  let g:doge_doc_standard_python = 'google'
+  if IsPlugInstalled('vim-doge')
+    let g:doge_mapping = '<Leader>D'
+    let g:doge_doc_standard_python = 'google'
+  endif
 
 
 " AndrewRadev/splitjoin.vim
 " ---------------------------------------------------------------------------------------
-  let g:splitjoin_python_brackets_on_separate_lines = 1
+  if IsPlugInstalled('splitjoin.vim')
+    let g:splitjoin_python_brackets_on_separate_lines = 1
+  endif
 
 
 " nvim-treesitter/nvim-treesitter
 " ---------------------------------------------------------------------------------------
-  if has_key(g:plugs, 'nvim-treesitter')
-    lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",
-  highlight = {
-    enable = true,
-    use_languagetree = false,
-  },
-}
-EOF
+  if IsPlugInstalled('nvim-treesitter')
+    lua require('config.nvim-treesitter')
   endif
+
+
+" neovim/nvim-lspconfig
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('nvim-lspconfig')
+    lua require('config.lsp')
+  endif
+
+
+" lewis6991/gitsigns.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('gitsigns.nvim')
+    lua require('config.gitsigns')
+  endif
+
+
+" nvim-lualine/lualine.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('lualine.nvim')
+    lua require('config.lualine')
+  endif
+
+
+" mfussenegger/nvim-dap
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('nvim-dap')
+    lua require('config.dap')
+    nnoremap <silent> <leader>dc <Cmd>lua require'dap'.continue()<CR>
+    nnoremap <silent> <leader>dn <Cmd>lua require'dap'.step_over()<CR>
+    nnoremap <silent> <leader>di <Cmd>lua require'dap'.step_into()<CR>
+    nnoremap <silent> <leader>do <Cmd>lua require'dap'.step_out()<CR>
+    nnoremap <silent> <Leader>db <Cmd>lua require'dap'.toggle_breakpoint()<CR>
+    nnoremap <silent> <Leader>dB <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+    nnoremap <silent> <Leader>dlp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
+    nnoremap <silent> <Leader>ddr <Cmd>lua require'dap'.repl.open()<CR>
+    nnoremap <silent> <Leader>ddl <Cmd>lua require'dap'.run_last()<CR>
+  endif
+
+
+" " statusline
+" " ---------------------------------------------------------------------------------------
+"   if has("nvim-0.5")
+"     lua require("config.statusline")
+"   endif
+
 
 " }}}

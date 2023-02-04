@@ -5,14 +5,56 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/platform.sh
 ################################################################
 
+
+get_cursor_position() {
+  # based on a script from http://invisible-island.net/xterm/xterm.faq.html
+  exec < /dev/tty
+  oldstty=$(stty -g)
+  stty raw -echo min 0
+  # on my system, the following line can be replaced by the line below it
+  echo -en "\033[6n" > /dev/tty
+  # tput u7 > /dev/tty    # when TERM=xterm (and relatives)
+  IFS=';' read -r -d R -a pos
+  stty $oldstty
+  # change from one-based to zero based so they work with: tput cup $row $col
+  row=$((${pos[0]:2} - 1))    # strip off the esc-[
+  col=$((${pos[1]} - 1))
+  echo ${row}:${col}
+}
+
 log() {
   local TITLE="$1"; shift
   local CONTENT="$1"; shift
   local CODE=""
-  for i in $@; do
+  for i in "$@"; do
     CODE="${CODE}${!i}"
   done
-  printf "${CODE}${TITLE}${NC} ${CONTENT}\n" 1>&2
+
+  if [[ "$(get_cursor_position)" != *":0" ]]; then
+    echo "" >&2
+  fi
+  printf "${CODE}${TITLE}${NC} ${CONTENT}\n" >&2
+}
+
+log_verbose() {
+  local TITLE="$1"; shift
+  local CONTENT="$1"; shift
+  local CODE=""
+  for i in "$@"; do
+    CODE="${CODE}${!i}"
+  done
+
+  if ( exec 1>&5 ) 2>&-; then
+    if [[ "$(get_cursor_position)" != *":0" ]]; then
+      echo "" >&5
+    fi
+    printf "${CODE}${TITLE}${NC} ${CONTENT}\n" >&5
+  else
+    if [[ "$(get_cursor_position)" != *":0" ]]; then
+      echo "" >&2
+    fi
+    printf "${CODE}${TITLE}${NC} ${CONTENT}\n" >&2
+  fi
 }
 
 log_info() {
@@ -24,7 +66,7 @@ log_ok() {
 }
 
 log_error() {
-  log "[!]" "$1" "BOLD" "RED"
+  log_verbose "[!]" "$1" "BOLD" "RED"
 }
 
 log_question() {
@@ -80,6 +122,7 @@ backup-and-link() {
   mkdir -p $(dirname $BACKUP_PATH)
 
   backup ${TGT} ${BACKUP_PATH}
+  log_info "Update symbolic link '${SRC}' -> '${TGT}'"
   ln -snf ${SRC} ${TGT}
 }
 
@@ -120,7 +163,7 @@ else:
 EOF
   )
 
-  if [ $_PY_ORIGIN == "system" ]; then
+  if [ $_PY_ORIGIN == "system" ] && [[ "$@" = "uninstall"* ]]; then
     pip3 $_COMMAND --user $@
   else
     pip3 $_COMMAND $@
@@ -128,4 +171,9 @@ EOF
 
   command -v asdf >/dev/null 2>&1 && asdf reshim || true
   command -v pyenv >/dev/null 2>&1 && pyenv rehash || true
+}
+
+++() {
+  # set -f  # no double expand
+  eval "$@" || exit $?
 }

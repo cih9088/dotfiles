@@ -2,8 +2,8 @@
 # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
 
 if [ ${PLATFORM} != "OSX" ]; then
-    echo "${PLATFORM} is not supported" >&2
-    return 1
+  echo "${PLATFORM} is not supported" >&2
+  return 1
 fi
 
 has -v brew fzf
@@ -11,6 +11,6 @@ has -v brew fzf
 local uninst=$(brew leaves | fzf -m)
 
 if [[ $uninst ]]; then
-    for prog in $(echo $uninst);
-    do; brew uninstall $prog; done;
+  for prog in $(echo $uninst);
+  do; brew uninstall $prog; done;
 fi

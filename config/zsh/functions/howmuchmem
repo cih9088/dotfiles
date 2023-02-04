@@ -1,8 +1,8 @@
 # https://www.commandlinefu.com/commands/view/4968/print-memory-utilization-percentage-for-a-specific-process-and-its-children#comment
 
 if [ ${PLATFORM} != "LINUX" ]; then
-    echo "${PLATFORM} is not supported" >&2
-    return 1
+  echo "${PLATFORM} is not supported" >&2
+  return 1
 fi
 
 PROCNAME="$@"
