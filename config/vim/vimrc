@@ -48,6 +48,7 @@
   " Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-abolish'
   Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+  Plug 'chrisbra/csv.vim', { 'for': 'csv' }
 
   if has("nvim-0.5")
     Plug 'nvim-lua/plenary.nvim'

@@ -30,8 +30,6 @@ setup_func_local() {
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libgpg-error-*")"
 
   # remove
-
-  # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
     if [ -n "${SRC_PATH}" ]; then
       ++ pushd "${SRC_PATH}"

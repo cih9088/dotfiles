@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# https://gist.github.com/mbohun/b161521b2440b9f08b59#file-githubapi-get-sh
+
 set -euo pipefail
 
 GH_REPO="${1}"
@@ -23,4 +25,3 @@ else
   echo "$_BODY" >&2
   exit "$_STATUS_CODE"
 fi
-
