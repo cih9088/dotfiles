@@ -213,6 +213,13 @@ tk: \
 	tcl libx11
 	@( $(SCRIPTS_DIR)/libs/tk.sh )
 
+nasm:
+	@( $(SCRIPTS_DIR)/libs/nasm.sh )
+
+libjpeg-turbo: \
+	nasm cmake
+	@( $(SCRIPTS_DIR)/libs/libjpeg_turbo.sh )
+
 # sox
 # -----------------------------------------------------
 libogg:
