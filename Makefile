@@ -220,6 +220,10 @@ libjpeg-turbo: \
 	nasm cmake
 	@( $(SCRIPTS_DIR)/libs/libjpeg_turbo.sh )
 
+opencv: \
+	cmake
+	@( $(SCRIPTS_DIR)/libs/opencv.sh )
+
 # sox
 # -----------------------------------------------------
 libogg:
@@ -417,6 +421,7 @@ nodejs-env:
 	libgpg-error libgcrypt libassuan libksba npth gnupg \
 	xorgproto xtrans libxau xcb-proto libxcb libx11 \
 	tcl tk \
+	nasm libjpeg-turbo opencv \
 	libogg libsndfile flac sox \
 	flex libpcap tcpdump \
 	terminfo zsh fish prezto neovim tmux \
