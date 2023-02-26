@@ -22,7 +22,7 @@ function M.setup()
          "vimls",
          "yamlls",
          "jsonls",
-         "sumneko_lua",
+         "lua_ls",
          "ansiblels",
          "tsserver",
       }

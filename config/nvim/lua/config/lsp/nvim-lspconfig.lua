@@ -79,7 +79,7 @@ local server_configs = {
    --    root_dir = lspconfig.util.root_pattern({ ".git/", "." }),
    --    settings = { languages = efm_config },
    -- },
-   -- sumneko_lua = {
+   -- lua_ls = {
    --    settings = {
    --       Lua = {
    --          diagnostics = {
@@ -122,7 +122,7 @@ function M.setup()
       "vimls",
       "yamlls",
       "jsonls",
-      "sumneko_lua",
+      "lua_ls",
       "ansiblels",
       "tsserver",
    }

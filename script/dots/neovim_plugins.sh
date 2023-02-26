@@ -64,7 +64,7 @@ setup_func() {
 
     ## mason
     nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
-      `'| execute "MasonInstall pyright gopls rust_analyzer bashls vimls yamlls jsonls sumneko_lua ansiblels tsserver" '`
+      `'| execute "MasonInstall pyright gopls rust_analyzer bashls vimls yamlls jsonls lua_ls ansiblels tsserver" '`
       `'| endif' +qall
     nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
       `'| execute "MasonInstall isort black flake8 debugpy shfmt shellcheck prettier node-debug2-adapter" '`
