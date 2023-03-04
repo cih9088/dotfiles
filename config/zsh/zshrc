@@ -27,7 +27,7 @@
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
   [ -z "${COLOUR_SCHEME+x}" ] && export COLOUR_SCHEME=$(
-    basename "$(grep -rli "background.*[\"']#$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
+    basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
       cut -d '.' -f 1)
   [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=seoul256
   [ -z "${BG_LUMINANCE+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
