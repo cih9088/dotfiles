@@ -281,14 +281,14 @@
             let l:scheme = $COLOUR_SCHEME
           endif
         endif
+
         if l:scheme =~ 'rose-pine.*'
+          let g:rose_pine_variant = split(l:scheme, "-")[-1]
           let l:scheme = 'rose-pine'
-          if l:background == "dark"
-            let g:rose_pine_variant = 'moon'
-          else
-            let g:rose_pine_variant = 'dawn'
-          endif
+          lua require("rose-pine").setup({dark_variant = vim.g.rose_pine_variant})
+          unlet g:rose_pine_variant
         endif
+
         execute 'colorscheme ' . l:scheme
       endif
     catch
