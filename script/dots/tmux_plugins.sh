@@ -24,7 +24,10 @@ setup_func() {
   if [ "${COMMAND}" == "remove" ]; then
     ++ "${HOME}/.tmux/plugins/tpm/scripts/clean_plugins.sh"
   elif [ "${COMMAND}" == "install" ]; then
-    "${HOME}/.tmux/plugins/tpm/scripts/clean_plugins.sh" || true
+    for plugin in $HOME/.tmux/plugins/*; do
+      [ "$plugin" == "$HOME/.tmux/plugins/tpm" ] && continue
+      ++ rm -rf "$plugin"
+    done
     ++ "${HOME}/.tmux/plugins/tpm/scripts/install_plugins.sh"
   elif [ "${COMMAND}" == "update" ]; then
     ++ "${HOME}/.tmux/plugins/tpm/scripts/update_plugin.sh" "" all

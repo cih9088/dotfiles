@@ -29,7 +29,7 @@ lua_install() {
     if [ "${COMMAND}" == "remove" ]; then
       ++ asdf uninstall lua "${VERSION}"
     elif [ "${COMMAND}" == "install" ]; then
-      ++ asdf install lua "${VERSION}"
+      ++ ASDF_LUA_LINUX_READLINE=1 asdf install lua "${VERSION}"
       ++ asdf global lua "${VERSION}"
     elif [ "${COMMAND}" == "update" ]; then
       log_error "Not supported command 'update'"

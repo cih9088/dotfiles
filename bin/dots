@@ -130,7 +130,12 @@ PKGS=( "prerequisites" "${PKG_APPS_WITH_HELP[@]}" "${PKG_DOTS_WITH_HELP[@]}" "${
 
 
 usage() {
-  LESS=-FEXR less <<HELP
+  local CMD=cat
+  if has less; then
+    CMD=less
+  fi
+
+  LESS=-FEXR $CMD <<HELP
 
 ${BOLD}${RED}SYNOPSIS${NC}
     ${BOLD}${RED}$(basename "$0")${NC} ${BOLD}${GREEN}COMMAND${NC} [${BOLD}${RED}-yvs${NC}] \

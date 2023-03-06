@@ -63,12 +63,13 @@ setup_func() {
     nvim --headless +'if has_key(g:plugs, "fzf") | call fzf#install() | endif' +qall
 
     ## mason
+    log_info "Install LSPs"
     nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
       `'| execute "MasonInstall pyright gopls rust_analyzer bashls vimls yamlls jsonls lua_ls ansiblels tsserver" '`
-      `'| endif' +qall
+      `'| endif' +qall || true
     nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
       `'| execute "MasonInstall isort black flake8 debugpy shfmt shellcheck prettier node-debug2-adapter" '`
-      `'| endif' +qall
+      `'| endif' +qall || true
   fi
 }
 
