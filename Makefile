@@ -365,7 +365,8 @@ nodejs: \
 	gnupg
 	@( $(SCRIPTS_DIR)/environments/nodejs.sh )
 
-lua:
+lua: \
+	unzip
 	@( $(SCRIPTS_DIR)/environments/lua.sh )
 
 perl:
