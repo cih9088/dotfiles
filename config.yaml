@@ -5,24 +5,30 @@
 asdf:
 
 perl:
+  mode: local
   version: 5.36.0
 
 python:
+  mode: local
   version: 3.8.10
 
 python-env:
   virtualenv:
 
 golang:
+  mode: local
   version: 1.17.5
 
 rust:
+  mode: local
   version: 1.65.0
 
 nodejs:
+  mode: local
   version: 19.0.0
 
 lua:
+  mode: local
   version: 5.4.3
 
 

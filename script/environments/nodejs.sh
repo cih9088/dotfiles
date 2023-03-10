@@ -57,7 +57,7 @@ setup_for_local() {
 from_source() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove"  == *"${COMMAND}"* ]]; then

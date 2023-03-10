@@ -16,7 +16,7 @@ log_title "Prepare for ${THIS_HL}"
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="latest"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="latest"
 
   if [ "${COMMAND}" == "remove" ]; then
     rm -f "${PREFIX}/share/man/man1/bash-snippets.1" || true

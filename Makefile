@@ -51,7 +51,8 @@ gettext: \
 	# libiconv
 	@( $(SCRIPTS_DIR)/apps/gettext.sh )
 
-sqlite3:
+sqlite3: \
+	tcl libtool
 	@( $(SCRIPTS_DIR)/libs/sqlite3.sh )
 
 libffi:
@@ -366,7 +367,7 @@ nodejs: \
 	@( $(SCRIPTS_DIR)/environments/nodejs.sh )
 
 lua: \
-	unzip
+	unzip readline
 	@( $(SCRIPTS_DIR)/environments/lua.sh )
 
 perl:

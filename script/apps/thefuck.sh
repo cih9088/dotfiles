@@ -32,7 +32,7 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
   if [ "${COMMAND}" == "remove" ]; then
     intelli_pip3 uninstall --yes thefuck || exit $?

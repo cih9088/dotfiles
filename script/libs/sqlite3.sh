@@ -33,7 +33,7 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "sqlite-autoconf-*")"
 
   # removehttps://github.com/sqlite/sqlite/archive/refs/tags/version-3.41.0.tar.gz

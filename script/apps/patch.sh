@@ -23,7 +23,7 @@ list_versions() {
 }
 
 version_func() {
-  $1 --version | grep '^GNU' | awk '{print $3}'
+  $1 --version | head -n 1 | awk '{print $3}'
 }
 
 verify_version() {
@@ -37,7 +37,7 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "patch-*")"
 
   # remove

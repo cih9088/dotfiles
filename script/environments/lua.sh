@@ -8,11 +8,11 @@ CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . "${CUR_DIR}/../helpers/common.sh"
 ################################################################
 
-has -v asdf
-
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 
 log_title "Prepare for ${THIS_HL}"
+
+export MYLDFLAGS="$LDFLAGS"
 ################################################################
 
 list_versions() {

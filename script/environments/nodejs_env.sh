@@ -13,14 +13,12 @@ has -v npm
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
 ################################################################
 
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION=$DEFAULT_VERSION
+  [ -z "${VERSION}" ] && VERSION=latest
 
   if [ "${COMMAND}" == "remove" ]; then
     ++ npm uninstall --global prettier

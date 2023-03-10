@@ -8,15 +8,10 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
-has -v asdf
-
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 THIS_CMD="rustc"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
-VERSION=""
 ################################################################
 
 list_versions() {

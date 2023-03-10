@@ -28,7 +28,7 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
   # uninstall slow tldr client
   has pip2 && pip2 uninstall --yes tldr >/dev/null 2>&1 || true

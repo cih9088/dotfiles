@@ -34,7 +34,7 @@ setup_for_local() {
   local VERSION="${2:-}"
   local SRC_PATH=""
   local SRC_PATH_2=""
-  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncurses-*")"
   SRC_PATH_2="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncursesw-*")"
 
