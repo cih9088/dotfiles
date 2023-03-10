@@ -4,6 +4,9 @@
 
 asdf:
 
+perl:
+  version: 5.36.0
+
 python:
   version: 3.8.10
 

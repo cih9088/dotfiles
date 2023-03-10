@@ -368,6 +368,9 @@ nodejs: \
 lua:
 	@( $(SCRIPTS_DIR)/environments/lua.sh )
 
+perl:
+	@( $(SCRIPTS_DIR)/environments/perl.sh )
+
 python-env: \
 	python-env--virtualenv python-env--black python-env--isort \
 	python-env--flake8 python-env--debugpy
@@ -428,5 +431,5 @@ nodejs-env:
 	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq \
 	pyenv goenv asdf tpm \
 	bins configs tmux-plugins neovim-plugins neovim-providers \
-	python golang rust nodejs lua \
+	python golang rust nodejs lua perl \
 	python-env lua-env sh-env nodejs-env

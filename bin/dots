@@ -98,6 +98,7 @@ PKG_ENVS_WITH_HELP=(
   "sh-env"                 "shell environments"
   "sh-env--shellcheck"     "shell linter"
   "sh-env--shfmt"          "shell formatter"
+  "perl"                   "perl"
 )
 
 
