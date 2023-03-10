@@ -12,7 +12,8 @@ THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 
 log_title "Prepare for ${THIS_HL}"
 
-export MYLDFLAGS="$LDFLAGS"
+export MYLDFLAGS="${LDFLAGS}"
+export MYCFLAGS="${CFLAGS}"
 ################################################################
 
 list_versions() {
@@ -60,7 +61,8 @@ from_asdf() {
   if [ "${COMMAND}" == "remove" ]; then
     ++ asdf uninstall lua "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
-    ++ ASDF_LUA_LINUX_READLINE=1 asdf install lua "${VERSION}"
+    # ++ ASDF_LUA_LINUX_READLINE=1 asdf install lua "${VERSION}"
+    ++ asdf install lua "${VERSION}"
     ++ asdf global lua "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"

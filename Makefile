@@ -44,8 +44,8 @@ patch:
 help2man:
 	@( $(SCRIPTS_DIR)/apps/help2man.sh )
 
-# libiconv:
-#   @( $(SCRIPTS_DIR)/apps/libiconv.sh )
+libiconv:
+	@( $(SCRIPTS_DIR)/apps/libiconv.sh )
 
 gettext: \
 	# libiconv
@@ -177,7 +177,7 @@ npth: \
 	@( $(SCRIPTS_DIR)/apps/npth.sh )
 
 gnupg: \
-	libgpg-error libgcrypt libassuan \
+	libiconv libgpg-error libgcrypt libassuan \
 	libksba readline openldap npth bzip2 gnutls
 	@( $(SCRIPTS_DIR)/apps/gnupg.sh )
 # -----------------------------------------------------
@@ -367,7 +367,7 @@ nodejs: \
 	@( $(SCRIPTS_DIR)/environments/nodejs.sh )
 
 lua: \
-	unzip readline
+	unzip
 	@( $(SCRIPTS_DIR)/environments/lua.sh )
 
 perl:

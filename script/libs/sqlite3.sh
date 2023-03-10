@@ -43,6 +43,11 @@ setup_for_local() {
       make uninstall || true
       make clean || true
       ++ popd
+      rm -rf "$PREFIX/bin/sqlite3" || true
+      rm -rf "$PREFIX/include/sqlite3.h" || true
+      rm -rf "$PREFIX/include/sqlite3ext.h" || true
+      rm -rf "$PREFIX/lib/libsqlite3*" || true
+      rm -rf "$PREFIX/lib/pkgconfig/sqlite3.pc" || true
       rm -rf "${SRC_PATH}"
       SRC_PATH=""
     else
@@ -57,16 +62,18 @@ setup_for_local() {
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
 
-      ++ curl -LO "https://github.com/sqlite/sqlite/archive/refs/tags/${VERSION}.tar.gz"
-      ++ tar -xvzf "${VERSION}.tar.gz"
+      ++ curl -L "https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=${VERSION}" -o sqlite-${VERSION}.tar.gz
+      ++ tar -xvzf "sqlite-${VERSION}.tar.gz"
 
-      ++ pushd "sqlite-${VERSION}"
-      ++ ./configure --prefix="${PREFIX}"
+      ++ pushd "sqlite"
+      ++ mkdir build && ++ cd build
+      ++ ../configure --prefix="${PREFIX}"
       ++ make
+      ++ make sqlite3.c
       ++ make install
       ++ popd
 
-      ++ mv "sqlite-${VERSION}" "${PREFIX}/src"
+      ++ mv "sqlite" "${PREFIX}/src/sqlite-${VERSION}"
     fi
   fi
 }
