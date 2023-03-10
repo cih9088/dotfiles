@@ -79,13 +79,12 @@ echo
       sudo apt install -y \
         git make curl gcc g++ \
         bsdmainutils sudo \
-        tar
+        tar python3 python3-pip
     elif [[ $FAMILY == "RHEL" ]]; then
       sudo dnf install -y \
         git make curl gcc gcc-c++ \
         findutils util-linux-user sudo \
-        perl-IPC-Cmd perl-Pod-Html perl-Thread-Queue \
-        tar
+        tar python3 python3-pip python3-devel
       # # basic
       # sudo dnf install -y python3 python2  \
       #   xclip wget git cmake curl

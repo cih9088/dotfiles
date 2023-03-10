@@ -25,7 +25,7 @@ done
 
 
 log_title "Essentials for local mode"
-cmds=( gcc g++ tar )
+cmds=( gcc g++ tar python3 pip3 )
 for cmd in "${cmds[@]}"; do
   type -a "$cmd" &>/dev/null \
     && log_ok "${BOLD}$cmd${NC} is in paths." \
