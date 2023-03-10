@@ -12,10 +12,13 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 THIS_CMD=virtualenv
 
 log_title "Prepare for ${THIS_HL}"
-
 ################################################################
 
-setup_func_local() {
+version_funcn() {
+  $1 --version | awk '{print $2}'
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if [ "${COMMAND}" == "install" ]; then
@@ -27,12 +30,9 @@ setup_func_local() {
   fi
 }
 
-version_funcn() {
-  $1 --version | awk '{print $2}'
-}
-
-main_script "${THIS}" setup_func_local setup_func_local version_funcn \
-  "latest"
+main_script "${THIS}" \
+  setup_for_local "" \
+  "" "" version_funcn
 
 (
   has asdf && asdf reshim python || true

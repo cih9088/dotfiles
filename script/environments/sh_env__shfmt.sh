@@ -14,15 +14,27 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 THIS_CMD=shfmt
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
-AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 ################################################################
 
-setup_func_shfmt_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_releases" "${GH}")"
+}
+
+version_func() {
+  $1 -version
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION=$DEFAULT_VERSION
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -60,8 +72,9 @@ setup_func_shfmt_local() {
   fi
 }
 
-setup_func_shfmt_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
+  local VERSION="$(list_versions | head -n 1)"
 
   case "${PLATFORM}" in
     OSX)
@@ -83,24 +96,15 @@ setup_func_shfmt_system() {
         elif [ "${ARCH}" == "aarch64" ]; then
           _ARCH=arm64
         fi
-        ++ curl -LO "https://github.com/mvdan/sh/releases/download/${DEFAULT_VERSION}/shfmt_${DEFAULT_VERSION}_linux_${_ARCH}"
-        ++ chmod +x "shfmt_${DEFAULT_VERSION}_linux_${_ARCH}"
+        ++ curl -LO "https://github.com/mvdan/sh/releases/download/${VERSION}/shfmt_${VERSION}_linux_${_ARCH}"
+        ++ chmod +x "shfmt_${VERSION}_linux_${_ARCH}"
         ++ sudo mkdir -p /usr/local/bin
-        ++ sudo cp "shfmt_${DEFAULT_VERSION}_linux_${_ARCH}" /usr/local/bin/shfmt
+        ++ sudo cp "shfmt_${VERSION}_linux_${_ARCH}" /usr/local/bin/shfmt
       fi
       ;;
   esac
-
 }
 
-version_func_shfmt() {
-  $1 -version
-}
-
-verify_version() {
-  $(${DIR}/../helpers/gh_check_release ${GH} ${1})
-}
-
-main_script ${THIS} setup_func_shfmt_local setup_func_shfmt_system version_func_shfmt \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
-
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version version_func

@@ -11,16 +11,17 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION=1.8.0
 ################################################################
 
+version_func() {
+  $1 --version | awk '{print $2}'
+}
 
-setup_func_tree_local() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="1.8.0"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "tree-*")"
 
   # remove
@@ -59,7 +60,7 @@ setup_func_tree_local() {
   fi
 }
 
-setup_func_tree_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -98,9 +99,6 @@ setup_func_tree_system() {
 
 }
 
-version_func_tree() {
-  $1 --version | awk '{print $2}'
-}
-
-main_script ${THIS} setup_func_tree_local setup_func_tree_system version_func_tree \
-  "${DEFAULT_VERSION}"
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  "" "" version_func

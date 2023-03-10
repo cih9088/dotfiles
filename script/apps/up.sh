@@ -12,15 +12,23 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
-AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 ################################################################
 
-setup_func_up_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_releases" "${GH}")"
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -54,8 +62,9 @@ setup_func_up_local() {
   fi
 }
 
-setup_func_up_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
+  local VERSION="$(list_versions | head -n 1)"
 
   case "${PLATFORM}" in
     OSX)
@@ -72,7 +81,7 @@ setup_func_up_system() {
         ++ sudo rm -f /usr/local/bin/up
       fi
       if [[ "install update"  == *"${COMMAND}"* ]]; then
-        ++ curl -LO "https://github.com/akavel/up/releases/download/${DEFAULT_VERSION}/up"
+        ++ curl -LO "https://github.com/akavel/up/releases/download/${VERSION}/up"
         ++ sudo mkdir -p /usr/local/bin
         ++ sudo cp up /usr/local/bin
         ++ sudo chmod +x /usr/local/bin/up
@@ -81,9 +90,6 @@ setup_func_up_system() {
   esac
 }
 
-verify_version() {
-  $(${DIR}/../helpers/gh_check_release ${GH} ${1})
-}
-
-main_script ${THIS} setup_func_up_local setup_func_up_system "" \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version ""

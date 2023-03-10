@@ -4,6 +4,7 @@
 THIS=$(basename "$0")
 THIS=${THIS%.*}
 TARGET=lua-env
+GH="JohnnyMorganz/StyLua"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
@@ -16,9 +17,25 @@ log_title "Prepare for ${THIS_HL}"
 
 ################################################################
 
-setup_func_stylua_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_releases" "${GH}")"
+}
+
+version_func() {
+  $1 --version | awk '{print $2}'
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
-  local STYLUA_VERSION="$(${DIR}/../helpers/gh_get_latest_release JohnnyMorganz/StyLua)"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -35,11 +52,11 @@ setup_func_stylua_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ ! -f "${PREFIX}/bin/stylua" ]; then
-      if [[ ${PLATFORM} == "OSX" ]]; then
-        ++ curl -LO "https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-macos.zip"
+     if [[ ${PLATFORM} == "OSX" ]]; then
+        ++ curl -LO "https://github.com/JohnnyMorganz/StyLua/releases/download/${VERSION}/stylua-macos.zip"
         ++ unzip stylua-macos.zip
       elif [[ ${PLATFORM} == "LINUX" ]]; then
-        ++ curl -LO "https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-linux.zip"
+        ++ curl -LO "https://github.com/JohnnyMorganz/StyLua/releases/download/${VERSION}/stylua-linux.zip"
         ++ unzip stylua-linux.zip
       fi
       ++ chmod +x stylua
@@ -48,8 +65,9 @@ setup_func_stylua_local() {
   fi
 }
 
-setup_func_stylua_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
+  local VERSION="$(list_versions | head -n 1)"
 
   case "${PLATFORM}" in
     OSX)
@@ -66,7 +84,7 @@ setup_func_stylua_system() {
         ++ sudo rm -f /usr/local/bin/stylua
       fi
       if [[ "install update"  == *"${COMMAND}"* ]]; then
-        ++ curl -LO "https://github.com/JohnnyMorganz/StyLua/releases/download/${STYLUA_VERSION}/stylua-linux.zip"
+        ++ curl -LO "https://github.com/JohnnyMorganz/StyLua/releases/download/${VERSION}/stylua-linux.zip"
         ++ unzip stylua-linux.zip
         ++ chmod +x stylua
         ++ sudo mkdir -p /usr/local/bin
@@ -76,8 +94,6 @@ setup_func_stylua_system() {
   esac
 }
 
-version_func_stylua() {
-  $1 --version | awk '{print $2}'
-}
-
-main_script ${THIS} setup_func_stylua_local setup_func_stylua_local version_func_stylua
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version version_func

@@ -8,69 +8,98 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 . ${DIR}/../helpers/common.sh
 ################################################################
 
-has -v asdf gpg
+has -v gpg
 
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 THIS_CMD="node"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
 ################################################################
 
-nodejs_install() {
-  local COMMAND="${1:-skip}"
-  local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION=$DEFAULT_VERSION
-
-  # curl -sL install-node.now.sh/lts | bash -s -- --prefix=${HOME}/.local --yes
-  # Remove installed node
-  rm -rf "$HOME/.local/bin/node" || true
-  rm -rf "$HOME/.local/bin/corepack" || true
-  rm -rf "$HOME/.local/bin/npm" || true
-  rm -rf "$HOME/.local/bin/npx" || true
-  rm -rf "$HOME/.local/include/node" || true
-  rm -rf "$HOME/.local/lib/node_modules" || true
-  rm -rf "$HOME/.local/lib/dtrace" || true
-  rm -rf "$HOME/.local/share/doc/node" || true
-  rm -rf "$HOME/.local/share/man/man1/node.1" || true
-  rm -rf "$HOME/.local/share/systemtap" || true
-
-  if command -v asdf >/dev/null; then
-    if [ "${VERSION}" == "latest" ]; then
-      VERSION=$(asdf latest nodejs)
-    fi
-
-    if [ "${COMMAND}" == "remove" ]; then
-      ++ asdf uninstall nodejs "${VERSION}"
-    elif [ "${COMMAND}" == "install" ]; then
-      ++ asdf install nodejs "${VERSION}"
-      ++ asdf global nodejs "${VERSION}"
-    elif [ "${COMMAND}" == "update" ]; then
-      log_error "Not supported command 'update'"
-      exit 0
-    fi
-
+list_versions() {
+  if command -v asdf > /dev/null; then
+    asdf plugin list 2>/dev/null | grep -q nodejs || asdf plugin add nodejs >&3 2>&4
+    asdf list all nodejs | sort -Vr
+  else
+    echo lts
+    curl --silent https://nodejs.org/download/release/ |
+      ${DIR}/../helpers/parser_html 'a' |
+      awk '{print $NF}' |
+      grep '^v' | sed 's|/||' |
+      sort -Vr
   fi
 }
 
-nodejs_version_func() {
+version_func() {
   $1 --version
 }
 
 verify_version() {
-  [[ "$AVAILABLE_VERSIONS latest" == *"${1}"* ]]
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
 }
 
-if command -v asdf >/dev/null; then
+setup_for_local() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+
+  if command -v asdf >/dev/null; then
+    log_info "Note that ${THIS_HL} would be installed using asdf."
+    from_asdf "$COMMAND" "$VERSION"
+  else
+    log_info "Note that ${THIS_HL} would be installed from source."
+    from_source "$COMMAND" "$VERSION"
+  fi
+}
+
+from_source() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
+
+  # remove
+  if [[ "remove"  == *"${COMMAND}"* ]]; then
+    rm -rf "$PREFIX/bin/node" || true
+    rm -rf "$PREFIX/bin/npm" || true
+    rm -rf "$PREFIX/bin/npx" || true
+    rm -rf "$PREFIX/bin/corepack" || true
+    rm -rf "$PREFIX/include/node" || true
+    rm -rf "$PREFIX/lib/node_modules" || true
+    rm -rf "$PREFIX/share/doc/node" || true
+    rm -rf "$PREFIX/share/man/man1/node.1" || true
+    rm -rf "$PREFIX/share/systemtap/tapset/node.stp" || true
+  fi
+
+  # install
+  if [[ "install update"  == *"${COMMAND}"* ]]; then
+    curl -sL install-node.now.sh/${VERSION} | bash -s -- --prefix=${PREFIX} --yes
+  fi
+}
+
+from_asdf() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION=latest
+
   asdf plugin list 2>/dev/null | grep -q nodejs || asdf plugin add nodejs >&3 2>&4
 
-  log_info "Note that ${THIS_HL} would be installed using asdf"
-  AVAILABLE_VERSIONS="$(asdf list all nodejs)"
-  main_script "${THIS}" nodejs_install nodejs_install nodejs_version_func \
-    "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+  if [ "${VERSION}" == "latest" ]; then
+    VERSION=$(asdf latest nodejs)
+  fi
 
-else
-  log_error "asdf not found. Please install it then try again."
-  exit 1
-fi
+  if [ "${COMMAND}" == "remove" ]; then
+    ++ asdf uninstall nodejs "${VERSION}"
+  elif [ "${COMMAND}" == "install" ]; then
+    ++ asdf install nodejs "${VERSION}"
+    ++ asdf global nodejs "${VERSION}"
+  elif [ "${COMMAND}" == "update" ]; then
+    log_error "Not supported command 'update'"
+    exit 0
+  fi
+}
+
+main_script "${THIS}" \
+  setup_for_local "" \
+  list_versions verify_version version_func

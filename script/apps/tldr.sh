@@ -12,15 +12,23 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
-AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 ################################################################
 
-setup_func_tldr_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_releases" "${GH}")"
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
 
   # uninstall slow tldr client
   has pip2 && pip2 uninstall --yes tldr >/dev/null 2>&1 || true
@@ -59,8 +67,9 @@ setup_func_tldr_local() {
   fi
 }
 
-setup_func_tldr_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
+  local VERSION="$(list_versions | head -n 1)"
 
   case "${PLATFORM}" in
     OSX)
@@ -79,11 +88,11 @@ setup_func_tldr_system() {
       if [[ "install update"  == *"${COMMAND}"* ]]; then
         ++ sudo mkdir -p /usr/local/bin
         if [ "${ARCH}" == "x86_64" ]; then
-          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${DEFAULT_VERSION}/tealdeer-linux-x86_64-musl"
+          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tealdeer-linux-x86_64-musl"
           ++ sudo mv "tealdeer-linux-x86_64-musl" "/usr/local/bin/tldr"
           ++ sudo chmod +x /usr/local/bin/tldr
         elif [ "${ARCH}" == "aarch64" ]; then
-          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${DEFAULT_VERSION}/tealdeer-linux-armv7-musleabihf"
+          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tealdeer-linux-armv7-musleabihf"
           ++ sudo mv "tealdeer-linux-armv7-musleabihf" "/usr/local/bin/tldr"
           ++ sudo chmod +x /usr/local/bin/tldr
         fi
@@ -94,9 +103,6 @@ setup_func_tldr_system() {
   esac
 }
 
-verify_version() {
-  $(${DIR}/../helpers/gh_check_release ${GH} ${1})
-}
-
-main_script ${THIS} setup_func_tldr_local setup_func_tldr_system "" \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version ""

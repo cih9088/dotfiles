@@ -13,7 +13,11 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 log_title "Prepare for ${THIS_HL}"
 ################################################################
 
-setup_func_local() {
+version_func() {
+  $1 --version | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
 
@@ -32,7 +36,7 @@ setup_func_local() {
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -59,15 +63,13 @@ setup_func_system() {
       fi
       ;;
     LINUX)
-      log_error "Not able to install systemwide."
-      exit 1
+      log_info "Not able to ${COMMAND} ${THIS} systemwide."
+      setup_for_local "${COMMAND}"
       ;;
   esac
 
 }
 
-version_func() {
-  $1 --version | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
-}
-
-main_script ${THIS} setup_func_local setup_func_system version_func
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  "" "" version_func

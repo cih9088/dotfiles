@@ -19,45 +19,62 @@ DEFAULT_VERSION="latest"
 VERSION=""
 ################################################################
 
-rust_install() {
-  local COMMAND="${1:-skip}"
-  local VERSION="${2:-}"
-
+list_versions() {
   if command -v asdf > /dev/null; then
-    if [ "${VERSION}" == "latest" ]; then
-      VERSION=$(asdf latest rust)
-    fi
-
-    if [ "${COMMAND}" == "remove" ]; then
-      ++ asdf uninstall rust "${VERSION}"
-    elif [ "${COMMAND}" == "install" ]; then
-      ++ asdf install rust "${VERSION}"
-      ++ asdf global rust "${VERSION}"
-    elif [ "${COMMAND}" == "update" ]; then
-      log_error "Not supported command 'update'"
-      exit 0
-    fi
+    asdf plugin list 2>/dev/null | grep -q rust || asdf plugin add rust >&3 2>&4
+    asdf list all rust | sort -Vr
+  else
+    log_error "Install from source is not implemented."
+    exit 1
   fi
 }
 
-rust_version_func() {
+version_func() {
   $1 --version | awk '{print $2}'
 }
 
 verify_version() {
-  [[ "$AVAILABLE_VERSIONS latest" == *"${1}"* ]]
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
 }
 
-if command -v asdf > /dev/null; then
+setup_for_local() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+
+  if command -v asdf > /dev/null; then
+    log_info "Note that ${THIS_HL} would be installed using asdf."
+    from_asdf "$COMMAND" "$VERSION"
+  else
+    log_error "Install from source is not implemented."
+    exit 1
+  fi
+}
+
+from_asdf() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION="latest"
+
   asdf plugin list 2>/dev/null | grep -q rust || asdf plugin add rust >&3 2>&4
 
-  log_info "Note that ${THIS_HL} would be installed using asdf"
-  AVAILABLE_VERSIONS="$(asdf list all rust)"
-  main_script ${THIS} rust_install rust_install rust_version_func \
-    "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+  if [ "${VERSION}" == "latest" ]; then
+    VERSION=$(asdf latest rust)
+  fi
 
-else
-  log_error "asdf not found. Please install it then try again."
-  exit 1
-fi
+  if [ "${COMMAND}" == "remove" ]; then
+    ++ asdf uninstall rust "${VERSION}"
+  elif [ "${COMMAND}" == "install" ]; then
+    ++ asdf install rust "${VERSION}"
+    ++ asdf global rust "${VERSION}"
+  elif [ "${COMMAND}" == "update" ]; then
+    log_error "Not supported command 'update'"
+    exit 0
+  fi
+}
 
+main_script "${THIS}" \
+  setup_for_local "" \
+  list_versions verify_version version_func

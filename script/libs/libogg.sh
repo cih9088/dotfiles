@@ -11,15 +11,31 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="1.3.5"
 ################################################################
 
-setup_func_local() {
+list_versions() {
+  curl --silent https://ftp.osuosl.org/pub/xiph/releases/ogg/ |
+    ${DIR}/../helpers/parser_html 'a' |
+    grep 'tar.gz' |
+    awk '{print $NF}' |
+    grep -v 'rc' |
+    grep -v 'beta' |
+    sed -e 's/libogg-//' -e 's/.tar.gz//' |
+    sort -Vr
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libogg-*")"
 
 
@@ -58,7 +74,7 @@ setup_func_local() {
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -98,5 +114,6 @@ setup_func_system() {
 }
 
 
-main_script "${THIS}" setup_func_local setup_func_system "" \
-  "${DEFAULT_VERSION}" "" ""
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version ""

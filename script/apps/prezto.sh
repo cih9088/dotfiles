@@ -10,11 +10,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
 ###############################################################
 
-setup_func() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if [ "${COMMAND}" == "remove" ]; then
@@ -64,5 +62,6 @@ setup_func() {
   fi
 }
 
-main_script ${THIS} setup_func "" "" \
-  "${DEFAULT_VERSION}"
+main_script "${THIS}" \
+  setup_for_local "" \
+  "" "" ""

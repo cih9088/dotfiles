@@ -1,4 +1,29 @@
 #######################
+# envs
+#######################
+
+asdf:
+
+python:
+  version: 3.8.10
+
+python-env:
+  virtualenv:
+
+golang:
+  version: 1.17.5
+
+rust:
+  version: 1.65.0
+
+nodejs:
+  version: 19.0.0
+
+lua:
+  version: 5.4.3
+
+
+#######################
 # apps & libs
 #######################
 
@@ -27,31 +52,6 @@ jq:
 sox:
 
 tcpdump:
-
-#######################
-# envs
-#######################
-
-asdf:
-
-python:
-  version: 3.8.10
-
-python-env:
-  virtualenv:
-
-golang:
-  version: 1.17.5
-
-rust:
-  version: 1.65.0
-
-nodejs:
-  version: 19.0.0
-
-lua:
-  version: 5.4.3
-
 
 #######################
 # dots

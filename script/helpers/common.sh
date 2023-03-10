@@ -100,9 +100,11 @@ elif command -v brew >/dev/null && [ -f $(brew --prefix asdf)/libexec/asdf.sh ];
 fi
 # pyenv
 export PYENV_ROOT=$HOME/.pyenv
+export PATH="$PYENV_ROOT/bin${PATH+:$PATH}"
 command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
 # goenv
 export GOENV_ROOT=$HOME/.goenv
+export PATH="$GOENV_ROOT/bin${PATH+:$PATH}"
 command -v goenv > /dev/null && eval "$(goenv init -)" || true
 # build python with shared object
 # (https://github.com/pyenv/pyenv/tree/master/plugins/python-build#building-with---enable-shared)
@@ -161,10 +163,10 @@ main_script() {
   local _TARGET="$1"
   local _FUNC_SETUP_LOCAL="$2"
   local _FUNC_SETUP_SYSTEM="$3"
-  local _FUNC_VERSION="${4:-}"
-  local _DEFAULT_VERSION="${5:-}"
-  local _AVAILABLE_VERSIONS="${6:-}"
-  local _FUNC_VERIFY_VERSION="${7:-}"
+  local _FUNC_LIST_VERSIONS="${4:-}"
+  local _FUNC_VERIFY_VERSION="${5:-}"
+  local _FUNC_VERSION="${6:-}"
+  local _AVAILABLE_VERSIONS=""
 
   local _TARGET_HL="${BOLD}${UNDERLINE}${_TARGET}${NC}"
   local _TARGET_CMD="${THIS_CMD:-${_TARGET}}"
@@ -177,7 +179,7 @@ main_script() {
 
   _TARGET_COMMAND="${DOTS_COMMAND:-}"
   _TARGET_MODE="${DOTS_MODE:-}"
-  _TARGET_VERSION="${DOTS_VERSION:-${_DEFAULT_VERSION}}"
+  _TARGET_VERSION="${DOTS_VERSION:-latest}"
   _TARGET_YES="${DOTS_YES:-}"
 
   # if _FUNC_VERSION is given, process version checker
@@ -245,17 +247,19 @@ main_script() {
 
     if [ -z "${_TARGET_YES}" ] && [[ "install update" ==  *"$_TARGET_COMMAND"* ]]; then
       if [ "$_TARGET_MODE" == "local" ]; then
-        if [ -n "${_DEFAULT_VERSION}" ]; then
-          _TARGET_VERSION=${_DEFAULT_VERSION}
-          if [ -n "${_AVAILABLE_VERSIONS}" ]; then
-            log_info "List of available versions"
-            echo "${_AVAILABLE_VERSIONS}"
-          fi
-          if [ -n "${_FUNC_VERIFY_VERSION}" ]; then
-            _TARGET_VERSION=$(question "Which version to install?" ${_DEFAULT_VERSION})
-            if ! ${_FUNC_VERIFY_VERSION} ${_TARGET_VERSION}; then
-              log_error "Invalid version ${_TARGET_VERSION}"; continue;
-            fi
+        if [ -n "${_FUNC_LIST_VERSIONS}" ] && [ -z "${_AVAILABLE_VERSIONS}" ]; then
+          _AVAILABLE_VERSIONS="$(${_FUNC_LIST_VERSIONS})"
+        fi
+
+        if [ -n "${_AVAILABLE_VERSIONS}" ]; then
+          log_info "List of available versions"
+          echo "${_AVAILABLE_VERSIONS}"
+          _TARGET_VERSION=$(echo ${_AVAILABLE_VERSIONS} | head -n 1)
+        fi
+        if [ -n "${_FUNC_VERIFY_VERSION}" ]; then
+          _TARGET_VERSION=$(question "Which version to install?" ${_TARGET_VERSION})
+          if ! ${_FUNC_VERIFY_VERSION} ${_TARGET_VERSION} "${_AVAILABLE_VERSIONS}"; then
+            log_error "Invalid version ${_TARGET_VERSION}"; continue;
           fi
         fi
       fi

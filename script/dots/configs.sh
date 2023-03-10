@@ -16,7 +16,7 @@ log_title "Prepare for ${THIS_HL}"
 
 BACKUP_PATH="${HOME}/dotfiles.$(date '+%y%m%d%H%M%S').bak"
 
-setup_func() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if [ "${COMMAND}" == "remove" ]; then
@@ -90,7 +90,8 @@ setup_func() {
   fi
 }
 
-main_script ${THIS} setup_func "" "" "NONE"
+main_script "${THIS}" \
+  setup_for_local ""
 
 if [ -d "${BACKUP_PATH}" ]; then
   log_info "Your configs have been backed up to ${BACKUP_PATH} "

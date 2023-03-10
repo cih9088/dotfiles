@@ -3,25 +3,47 @@
 # https://gist.github.com/mbohun/b161521b2440b9f08b59#file-githubapi-get-sh
 
 set -euo pipefail
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 GH_REPO="${1}"
-GH_ACCESS="${2:-${GH_ACCESS:-}}"
+GH_MAX_PAGES="${2:-5}"
+GH_ACCESS="${3:-${GH_ACCESS:-}}"
 
-[ ! -z $GH_ACCESS ] && GH_ACCESS="--user $GH_ACCESS"
-
-# Get latest release from GitHub api
-_BODY=$(
-  curl --silent --show-error -w "%{http_code}" $GH_ACCESS \
-    "https://api.github.com/repos/$GH_REPO/tags"
-)
-_STATUS_CODE=$(echo "$_BODY" | tail -n 1)
-_BODY=$(echo "$_BODY" | sed \$d)
-
-if [ "$_STATUS_CODE" == "200" ]; then
-  echo "$_BODY" |
-    grep '"name":' |         # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
+if [ -z "$GH_ACCESS" ]; then
+  OUT=""
+  QUERY=""
+  for i in $(seq 1 "${GH_MAX_PAGES}"); do
+    OUT="$OUT$(curl --silent --show-error -w "%{http_code}" \
+      "https://github.com/$GH_REPO/tags$QUERY" |
+      ${DIR}/parser_html 'a' |
+      grep 'releases/tag' |
+      {
+        grep 'a href'  |
+        grep -v 'sign up' |
+        awk '{print $2}' |
+        sed 's|href="/'${GH_REPO}'/releases/tag/\(.*\)"|\1|' || true
+      }
+    )\n"
+    QUERY="?after=$(echo "$OUT" | tail -n 1)"
+  done
+  echo -e "${OUT::-2}"
 else
-  echo "$_BODY" >&2
-  exit "$_STATUS_CODE"
+  GH_ACCESS="--user $GH_ACCESS"
+
+  # Get latest release from GitHub api
+  _BODY=$(
+    curl --silent --show-error -w "%{http_code}" $GH_ACCESS \
+      "https://api.github.com/repos/$GH_REPO/tags?page=[1-${GH_MAX_PAGES}]"
+  )
+  _STATUS_CODE=$(echo "$_BODY" | tail -n 1)
+  _BODY=$(echo "$_BODY" | sed \$d)
+
+  if [ "$_STATUS_CODE" == "200" ]; then
+    echo "$_BODY" |
+      grep '"name":' |         # Get tag line
+      sed -E 's/.*"([^"]+)".*/\1/' # Pluck JSON value
+  else
+    echo "$_BODY" >&2
+    exit "$_STATUS_CODE"
+  fi
 fi

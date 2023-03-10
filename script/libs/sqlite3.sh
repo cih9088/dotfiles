@@ -3,6 +3,7 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
+GH="sqlite/sqlite"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
@@ -11,18 +12,31 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="3.37.0"
 ################################################################
 
-setup_func_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_tags" "${GH}")" | grep '[0-9]'
+}
+
+version_func() {
+  $1  --version | awk '{print $1}'
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "sqlite-autoconf-*")"
 
-  # remove
+  # removehttps://github.com/sqlite/sqlite/archive/refs/tags/version-3.41.0.tar.gz
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
     if [ -n "${SRC_PATH}" ]; then
       ++ pushd "${SRC_PATH}"
@@ -43,21 +57,21 @@ setup_func_local() {
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
 
-      ++ curl -LO https://www.sqlite.org/2021/sqlite-autoconf-3370000.tar.gz
-      ++ tar -xvzf sqlite-autoconf-3370000.tar.gz
+      ++ curl -LO "https://github.com/sqlite/sqlite/archive/refs/tags/${VERSION}.tar.gz"
+      ++ tar -xvzf "${VERSION}.tar.gz"
 
-      ++ pushd sqlite-autoconf-3370000
+      ++ pushd "sqlite-${VERSION}"
       ++ ./configure --prefix="${PREFIX}"
       ++ make
       ++ make install
       ++ popd
 
-      ++ mv sqlite-autoconf-3370000 "${PREFIX}/src"
+      ++ mv "sqlite-${VERSION}" "${PREFIX}/src"
     fi
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -94,10 +108,6 @@ setup_func_system() {
       ;;
   esac
 }
-
-version_func() {
-  $1  --version | awk '{print $1}'
-}
-
-main_script "${THIS}" setup_func_local setup_func_system version_func \
-  "${DEFAULT_VERSION}"
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version version_func

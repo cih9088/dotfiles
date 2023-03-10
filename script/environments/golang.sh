@@ -12,64 +12,89 @@ THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 THIS_CMD="go"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
-VERSION=""
 ################################################################
 
-golang_install() {
+list_versions() {
+  if command -v asdf > /dev/null; then
+    asdf plugin list 2>/dev/null | grep -q golang || asdf plugin add golang >&3 2>&4
+    asdf list all golang | grep -v '[a-zA-Z]' | sort -Vr
+  fi
+}
+
+version_func() {
+  $1 version | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}'
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
 
   # prefer goenv
   if command -v goenv > /dev/null; then
-    if [ "${VERSION}" == "latest" ]; then
-      goenv latest install -s
-    else
-      goenv install "${VERSION}"
-    fi
+    eval "$(goenv init -)"
+    log_info "Note that ${THIS_HL} would be installed using goenv."
+    from_goenv "$COMMAND" "$VERSION"
   elif command -v asdf > /dev/null; then
-    if [ "${VERSION}" == "latest" ]; then
-      VERSION=$(asdf latest golang)
-    fi
-
-    if [ "${COMMAND}" == "remove" ]; then
-      ++ asdf uninstall golang "${VERSION}"
-    elif [ "${COMMAND}" == "install" ]; then
-      ++ asdf install golang "${VERSION}"
-      ++ asdf global golang "${VERSION}"
-    elif [ "${COMMAND}" == "update" ]; then
-      log_error "Not supported command 'update'"
-      exit 0
-    fi
+    log_info "Note that ${THIS_HL} would be installed using asdf."
+    from_asdf "$COMMAND" "$VERSION"
+  else
+    log_error "Install from source is not implemented."
+    exit 1
   fi
 }
 
-golang_version_func() {
-  $1 version | awk '{for (i=3; i<NF; i++) printf $i " "; print $NF}'
-}
+from_goenv() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION=latest
 
-verify_version() {
-  [[ "$AVAILABLE_VERSIONS latest" == *"${1}"* ]]
-}
+  if [ "${COMMAND}" == "remove" ]; then
+    ++ goenv uninstall "${VERSION}"
+  elif [ "${COMMAND}" == "install" ]; then
+    if [ "${VERSION}" == "latest" ]; then
+      ++ goenv latest install -s
+    else
+      ++ goenv install "${VERSION}"
+    fi
+  elif [ "${COMMAND}" == "update" ]; then
+    log_error "Not supported command 'update'"
+    exit 0
+  fi
 
-if command -v goenv > /dev/null; then
-  eval "$(goenv init -)"
-  log_info "Note that ${THIS_HL} would be installed using goenv"
-  AVAILABLE_VERSIONS="$(goenv install --list | grep -v 'dev')"
-  main_script ${THIS} golang_install golang_install golang_version_func \
-    "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
   goenv global $(goenv versions --bare | grep '^[0-9.]\+$' | sort -rV | head)
   goenv global | grep '[0-9.]' -q || goenv global \
     $(goenv versions | sed 's/[[:space:]]//g' | sort -V -r | head -n 1)
-elif command -v asdf > /dev/null; then
+}
+
+from_asdf() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION=latest
+
   asdf plugin list 2>/dev/null | grep -q golang || asdf plugin add golang >&3 2>&4
 
-  log_info "Note that ${THIS_HL} would be installed using asdf"
-  AVAILABLE_VERSIONS="$(asdf list all golang | grep -v 'rc\|beta')"
-  main_script ${THIS} golang_install golang_install golang_version_func \
-    "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
-else
-  log_error "asdf not found. Please install it then try again."
-  exit 1
-fi
+  if [ "${VERSION}" == "latest" ]; then
+    VERSION=$(asdf latest golang)
+  fi
+
+  if [ "${COMMAND}" == "remove" ]; then
+    ++ asdf uninstall golang "${VERSION}"
+  elif [ "${COMMAND}" == "install" ]; then
+    ++ asdf install golang "${VERSION}"
+    ++ asdf global golang "${VERSION}"
+  elif [ "${COMMAND}" == "update" ]; then
+    log_error "Not supported command 'update'"
+    exit 0
+  fi
+}
+
+main_script "${THIS}" \
+  setup_for_local "" \
+  list_versions verify_version version_func

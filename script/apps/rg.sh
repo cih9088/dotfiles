@@ -18,17 +18,28 @@ if [ "${ARCH}" = "aarch64" ]; then
   GH="microsoft/ripgrep-prebuilt"
 fi
 
-
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
-AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 ################################################################
 
-setup_func_rg_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_releases" "${GH}")"
+}
+
+version_func_rg() {
+  $1 --version | head -1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -90,9 +101,9 @@ setup_func_rg_local() {
   fi
 }
 
-setup_func_rg_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
-
+  local VERSION="$(list_versions | head -n 1)"
 
   case "${PLATFORM}" in
     OSX)
@@ -124,15 +135,15 @@ setup_func_rg_system() {
           if [[ "install update"  == *"${COMMAND}"* ]]; then
             if [ "${ARCH}" = "aarch64" ]; then
               # prebuilt ripgrep from microsoft repository
-              ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
-              ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
               ++ sudo cp -rf rg /usr/local/bin/
               ++ sudo chmod +x /usr/local/bin/rg
             else
-              ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
-              ++ tar -xvzf "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
+              ++ tar -xvzf "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl.tar.gz"
 
-              ++ pushd "ripgrep-${DEFAULT_VERSION}-${ARCH}-unknown-linux-musl"
+              ++ pushd "ripgrep-${VERSION}-${ARCH}-unknown-linux-musl"
               ++ sudo mkdir -p /usr/local/bin
               ++ sudo cp rg /usr/local/bin/
               ++ sudo chmod +x /usr/local/bin/rg
@@ -148,16 +159,8 @@ setup_func_rg_system() {
       esac
       ;;
   esac
-
 }
 
-version_func_rg() {
-  $1 --version | head -1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
-}
-
-verify_version() {
-  $(${DIR}/../helpers/gh_check_release ${GH} ${1})
-}
-
-main_script ${THIS} setup_func_rg_local setup_func_rg_system version_func_rg \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version version_func

@@ -11,24 +11,30 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
+################################################################
 
-AVAILABLE_VERSIONS="$(
+list_versions() {
   curl --silent --show-error https://ftp.gnu.org/pub/gnu/ncurses/ \
     | ${DIR}/../helpers/parser_html 'a' \
     | grep 'ncurses' | grep 'tar.gz\"' \
     | awk '{print $4}' \
     | sed -e 's/.tar.gz//' -e 's/ncurses-//' \
     | sort -Vr
-)"
-DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1)
-################################################################
+}
 
-setup_func_local() {
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
   local SRC_PATH_2=""
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncurses-*")"
   SRC_PATH_2="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncursesw-*")"
 
@@ -105,7 +111,7 @@ setup_func_local() {
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -143,9 +149,6 @@ setup_func_system() {
   esac
 }
 
-verify_version() {
-  [[ $AVAILABLE_VERSIONS == *"${1}"* ]]
-}
-
-main_script "${THIS}" setup_func_local setup_func_system "" \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version ""

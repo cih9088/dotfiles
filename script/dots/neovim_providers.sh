@@ -20,7 +20,7 @@ mkdir -p "${WORKON_HOME}" || true
 NEOVIM3_VIRENV_NAME='neovim3'
 ################################################################
 
-setup_func_python_provider() {
+setup_for_python() {
   local COMMAND="${1:-skip}"
 
   if has -v pip3 python3; then
@@ -50,7 +50,7 @@ setup_func_python_provider() {
   fi
 }
 
-setup_func_nodejs_provider() {
+setup_for_nodejs() {
   local COMMAND="${1:-skip}"
 
   if has -v npm; then
@@ -61,10 +61,10 @@ setup_func_nodejs_provider() {
     elif [ "${COMMAND}" == "update" ]; then
       ++ npm update --global neovim
     fi
-    has asdf && asdf reshim
+    has asdf && asdf reshim || true
   fi
 }
 
-main_script "neovim-python-provider" setup_func_python_provider "" "" "NONE"
+main_script "neovim-python-provider" setup_for_python ""
 echo ""
-main_script "neovim-nodejs-provider" setup_func_nodejs_provider "" "" "NONE"
+main_script "neovim-nodejs-provider" setup_for_nodejs ""

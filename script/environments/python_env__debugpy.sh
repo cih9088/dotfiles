@@ -20,7 +20,7 @@ mkdir -p "${WORKON_HOME}" || true
 VENV_NAME=${VENV_NAME:-dev-env}
 ################################################################
 
-setup_func_debugpy_local() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if has -v pip3 python3; then
@@ -52,10 +52,7 @@ setup_func_debugpy_local() {
   fi
 }
 
-main_script "${THIS}" setup_func_debugpy_local setup_func_debugpy_local "" \
-  "latest"
+main_script "${THIS}" \
+  setup_for_local "" \
+  "" "" ""
 
-(
-  has asdf && asdf reshim python || true
-  has pyenv && pyenv ++ rehash || true
-) >&3 2>&4

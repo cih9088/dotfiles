@@ -13,7 +13,7 @@ THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 log_title "Prepare for ${THIS_HL}"
 ################################################################
 
-setup_func() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   # remove broken symlink
@@ -46,4 +46,5 @@ setup_func() {
   fi
 }
 
-main_script ${THIS} setup_func "" "" "NONE"
+main_script "${THIS}" \
+  setup_for_local ""

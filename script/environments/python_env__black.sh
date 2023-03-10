@@ -20,7 +20,11 @@ mkdir -p "${WORKON_HOME}" || true
 VENV_NAME=${VENV_NAME:-dev-env}
 ################################################################
 
-setup_func_black_local() {
+version_func() {
+  $1 --version | awk '{print $2}'
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if has -v pip3 python3; then
@@ -52,9 +56,6 @@ setup_func_black_local() {
   fi
 }
 
-version_func_black() {
-  $1 --version | awk '{print $2}'
-}
-
-main_script "${THIS}" setup_func_black_local setup_func_black_local version_func_black \
-  "latest"
+main_script "${THIS}" \
+  setup_for_local "" \
+  "" "" version_func

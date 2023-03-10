@@ -11,14 +11,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
 ################################################################
 
-setup_func_local() {
+version_func() {
+  $1 version
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="latest"
 
   if [ "${COMMAND}" == "remove" ]; then
     if [ -f "${HOME}/.asdf/asdf.sh" ]; then
@@ -52,7 +54,7 @@ setup_func_local() {
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -67,14 +69,11 @@ setup_func_system() {
       ;;
     LINUX)
       log_info "Not able to ${COMMAND} ${THIS} systemwide."
-      setup_func_local "${COMMAND}"
+      setup_for_local "${COMMAND}"
       ;;
   esac
 }
 
-version_func() {
-  $1 version
-}
-
-main_script "${THIS}" setup_func_local setup_func_system version_func \
-  "${DEFAULT_VERSION}"
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  "" "" version_func

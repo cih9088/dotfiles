@@ -11,11 +11,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
 ################################################################
 
-setup_func_local() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if [[ "remove update" == *"${COMMAND}"* ]]; then
@@ -35,7 +33,7 @@ setup_func_local() {
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   if [[ "install update"  == *"${COMMAND}"* ]]; then
@@ -48,5 +46,6 @@ setup_func_system() {
   fi
 }
 
-main_script "${THIS}" setup_func_local setup_func_system "" \
-  "${DEFAULT_VERSION}"
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  "" "" ""

@@ -12,15 +12,27 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
-DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
 ################################################################
 
-setup_func_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_releases" "${GH}")"
+}
+
+version_func() {
+  $1 --version | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -69,8 +81,9 @@ setup_func_local() {
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
+  local VERSION="$(list_versions | head -n 1)"
 
   case "${PLATFORM}" in
     OSX)
@@ -100,10 +113,10 @@ setup_func_system() {
             ++ sudo rm -f /usr/local/share/bash-completion/completions/fd
           fi
           if [[ "install update"  == *"${COMMAND}"* ]]; then
-            ++ curl -LO "https://github.com/${GH}/releases/download/${DEFAULT_VERSION}/fd-${DEFAULT_VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
-            ++ tar -xvzf "fd-${DEFAULT_VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
+            ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
+            ++ tar -xvzf "fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
 
-            ++ pushd "fd-${DEFAULT_VERSION}-${ARCH}-unknown-linux-gnu"
+            ++ pushd "fd-${VERSION}-${ARCH}-unknown-linux-gnu"
             ++ sudo mkdir -p /usr/local/bin
             ++ sudo cp fd /usr/local/bin/
             ++ gzip fd.1
@@ -117,16 +130,8 @@ setup_func_system() {
       esac
       ;;
   esac
-
 }
 
-version_func() {
-  $1 --version | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
-}
-
-verify_version() {
-  $(${DIR}/../helpers/gh_check_release ${GH} ${1})
-}
-
-main_script "${THIS}" setup_func_local setup_func_system version_func \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version version_func

@@ -11,14 +11,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="latest"
 ################################################################
 
-setup_func_bash_snippets_local() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="latest"
 
   if [ "${COMMAND}" == "remove" ]; then
     rm -f "${PREFIX}/share/man/man1/bash-snippets.1" || true
@@ -31,7 +29,7 @@ setup_func_bash_snippets_local() {
   fi
 }
 
-setup_func_bash_snippets_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -45,35 +43,47 @@ setup_func_bash_snippets_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
-          if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove bash-snippets
-          elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install software-properties-common
-            ++ sudo add-apt-repository ppa:navanchauhan/bash-snippets
-            ++ sudo apt-get update
-            ++ sudo apt-get -y install bash-snippets
-          elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install bash-snippets
-          fi
-          ;;
-        RHEL)
-          if [[ "remove update"  == *"${COMMAND}"* ]]; then
-            ++ sudo rm -f "/usr/local/share/man/man1/bash-snippets.1"
-            ++ sudo rm -f "/usr/local/bin/transfer"
-          fi
-          if [[ "install update"  == *"${COMMAND}"* ]]; then
-            ++ git clone https://github.com/alexanderepstein/Bash-Snippets
-            ++ pushd Bash-Snippets
-            ++ sudo ./install.sh transfer
-            ++ popd
-          fi
-          ;;
-      esac
+      if [[ "remove update"  == *"${COMMAND}"* ]]; then
+        ++ sudo rm -f "/usr/local/share/man/man1/bash-snippets.1"
+        ++ sudo rm -f "/usr/local/bin/transfer"
+      fi
+      if [[ "install update"  == *"${COMMAND}"* ]]; then
+        ++ git clone https://github.com/alexanderepstein/Bash-Snippets
+        ++ pushd Bash-Snippets
+        ++ sudo ./install.sh transfer
+        ++ popd
+      fi
       ;;
+      # case "${FAMILY}" in
+      #   DEBIAN)
+      #     if [ "${COMMAND}" == "remove" ]; then
+      #       ++ sudo apt-get -y remove bash-snippets
+      #     elif [ "${COMMAND}" == "install" ]; then
+      #       ++ sudo apt-get -y install software-properties-common
+      #       ++ sudo add-apt-repository -y ppa:navanchauhan/bash-snippets
+      #       ++ sudo apt-get update
+      #       ++ sudo apt-get -y install bash-snippets
+      #     elif [ "${COMMAND}" == "update" ]; then
+      #       ++ sudo apt-get -y --only-upgrade install bash-snippets
+      #     fi
+      #     ;;
+      #   RHEL)
+      #     if [[ "remove update"  == *"${COMMAND}"* ]]; then
+      #       ++ sudo rm -f "/usr/local/share/man/man1/bash-snippets.1"
+      #       ++ sudo rm -f "/usr/local/bin/transfer"
+      #     fi
+      #     if [[ "install update"  == *"${COMMAND}"* ]]; then
+      #       ++ git clone https://github.com/alexanderepstein/Bash-Snippets
+      #       ++ pushd Bash-Snippets
+      #       ++ sudo ./install.sh transfer
+      #       ++ popd
+      #     fi
+      #     ;;
+      # esac
+      # ;;
   esac
 }
 
-main_script ${THIS} setup_func_bash_snippets_local setup_func_bash_snippets_system "" \
-  "${DEFAULT_VERSION}"
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  "" "" ""

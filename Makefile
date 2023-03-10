@@ -395,7 +395,7 @@ lua-env-stylua: \
 	@( $(SCRIPTS_DIR)/environments/lua_env__stylua.sh )
 
 sh-env: \
-	sh-env--shellcheck sh-env-shfmt
+	sh-env--shellcheck sh-env--shfmt
 
 sh-env--shellcheck: \
 	xz

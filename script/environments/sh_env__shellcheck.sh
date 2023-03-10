@@ -14,15 +14,27 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 THIS_CMD=shellcheck
 
 log_title "Prepare for ${THIS_HL}"
-
-DEFAULT_VERSION="$(${DIR}/../helpers/gh_get_latest_release ${GH})"
-AVAILABLE_VERSIONS="$(${DIR}/../helpers/gh_list_releases ${GH})"
 ################################################################
 
-setup_func_shellcheck_local() {
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_releases" "${GH}")"
+}
+
+version_func() {
+  $1 --version | head -2 | tail -1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION=$DEFAULT_VERSION
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -61,8 +73,9 @@ setup_func_shellcheck_local() {
   fi
 }
 
-setup_func_shellcheck_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
+  local VERSION="$(list_versions | head -n 1)"
 
   case "${PLATFORM}" in
     OSX)
@@ -79,10 +92,10 @@ setup_func_shellcheck_system() {
         ++ sudo rm -f /usr/local/bin/shellcheck
       fi
       if [[ "install update"  == *"${COMMAND}"* ]]; then
-        ++ curl -LO "https://github.com/koalaman/shellcheck/releases/download/${DEFAULT_VERSION}/shellcheck-${DEFAULT_VERSION}.linux.${ARCH}.tar.xz"
-        ++ tar -xvJf "shellcheck-${DEFAULT_VERSION}.linux.${ARCH}.tar.xz"
+        ++ curl -LO "https://github.com/koalaman/shellcheck/releases/download/${VERSION}/shellcheck-${VERSION}.linux.${ARCH}.tar.xz"
+        ++ tar -xvJf "shellcheck-${VERSION}.linux.${ARCH}.tar.xz"
 
-        ++ pushd "shellcheck-${DEFAULT_VERSION}"
+        ++ pushd "shellcheck-${VERSION}"
         ++ sudo mkdir -p /usr/local/bin
         ++ sudo cp shellcheck /usr/local/bin
         ++ popd
@@ -91,13 +104,6 @@ setup_func_shellcheck_system() {
   esac
 }
 
-version_func_shellcheck() {
-  $1 --version | head -2 | tail -1 | awk '{for (i=2; i<NF; i++) printf $i " "; print $NF}'
-}
-
-verify_version() {
-  $(${DIR}/../helpers/gh_check_release ${GH} ${1})
-}
-
-main_script ${THIS} setup_func_shellcheck_local setup_func_shellcheck_system version_func_shellcheck \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version version_func

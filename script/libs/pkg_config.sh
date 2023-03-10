@@ -12,23 +12,33 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 THIS_CMD="pkg-config"
 
 log_title "Prepare for ${THIS_HL}"
+################################################################
 
-AVAILABLE_VERSIONS="$(
+list_versions() {
   curl --silent --show-error https://pkgconfig.freedesktop.org/releases/ \
     | ${DIR}/../helpers/parser_html 'a' \
     | grep 'pkg-config' | grep 'tar.gz\"' \
     | awk '{print $4}' \
     | sed -e 's/.tar.gz//' -e 's/pkg-config-//' \
     | sort -Vr
-)"
-DEFAULT_VERSION=$(echo "$AVAILABLE_VERSIONS" | head -n 1)
-################################################################
+}
 
-setup_func_local() {
+version_func() {
+  $1 --version
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [ -z "${VERSION}" ] && VERSION="${DEFAULT_VERSION}"
+  [ -z "${VERSION}" ] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "pkg-config-*")"
 
   # remove
@@ -66,7 +76,7 @@ setup_func_local() {
   fi
 }
 
-setup_func_system() {
+setup_for_system() {
   local COMMAND="${1:-skip}"
 
   case "${PLATFORM}" in
@@ -102,16 +112,8 @@ setup_func_system() {
       esac
       ;;
   esac
-
 }
 
-version_func() {
-  $1 --version
-}
-
-verify_version() {
-  [[ $AVAILABLE_VERSIONS == *"${1}"* ]]
-}
-
-main_script ${THIS} setup_func_local setup_func_system version_func \
-  "${DEFAULT_VERSION}" "${AVAILABLE_VERSIONS}" verify_version
+main_script "${THIS}" \
+  setup_for_local setup_for_system \
+  list_versions verify_version version_func

@@ -15,7 +15,7 @@ log_title "Prepare for ${THIS_HL}"
 has -v npm pip
 ################################################################
 
-setup_func() {
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if [ "${COMMAND}" == "remove" ]; then
@@ -73,4 +73,5 @@ setup_func() {
   fi
 }
 
-main_script ${THIS} setup_func "" "" "NONE"
+main_script "${THIS}" \
+  setup_for_local ""

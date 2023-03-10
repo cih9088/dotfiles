@@ -20,7 +20,11 @@ mkdir -p "${WORKON_HOME}" || true
 VENV_NAME=${VENV_NAME:-dev-env}
 ################################################################
 
-setup_func_isort_local() {
+version_func() {
+  $1 --version | tail -n 2 | awk '{print $2}'
+}
+
+setup_for_local() {
   local COMMAND="${1:-skip}"
 
   if has -v pip3 python3; then
@@ -52,14 +56,6 @@ setup_func_isort_local() {
   fi
 }
 
-version_func_isort() {
-  $1 --version | tail -n 2 | awk '{print $2}'
-}
-
-main_script "${THIS}" setup_func_isort_local setup_func_isort_local version_func_isort \
-  "latest"
-
-(
-  has asdf && asdf reshim python || true
-  has pyenv && pyenv ++ rehash || true
-) >&3 2>&4
+main_script "${THIS}" \
+  setup_for_local "" \
+  "" "" version_func
