@@ -6,4 +6,4 @@ _THEME=${1:-default}
 [ ! -f $_CONFIG_PATH ] && \
   echo "file $_CONFIG_PATH doesn't exist" >&1 && return 1
 
-sed -i -e "s#alacritty/colourschemes.*#alacritty/colourschemes/$_THEME.yml#" $_CONFIG_PATH
+sed -i "" -e "s#alacritty/colourschemes.*#alacritty/colourschemes/$_THEME.yml#" $_CONFIG_PATH
