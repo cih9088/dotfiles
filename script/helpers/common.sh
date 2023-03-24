@@ -16,8 +16,6 @@ if [ ! -z "${CONFIG+x}" ] && [ -n "${CONFIG}" ]; then
   # config is given
   eval $(${PROJ_HOME}/script/helpers/parser_yaml ${CONFIG} "CONFIG_")
 
-  DOTS_YES="true"
-
   _TARGET=${TARGET}
   _TARGET=(${_TARGET//${DEPTH_SEP}/ })
   for i in $(seq $((${#_TARGET[@]}-1)) -1 0); do
@@ -46,7 +44,7 @@ if [ ! -z "${DOTS_TARGET+x}" ]; then
       exit 0
     fi
   fi
-  # if [ ! -z "${DOTS_MODE+x}" ]; then
+  # if [ ! -z "${DOTS_MODE+x}" ] && [ "${DOTS_MODE}" == "debug" ]; then
   #   if [[ " "${DOTS_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTS_MODE}" != "local" ]; then
   #     exit 0
   #   fi
@@ -181,6 +179,15 @@ main_script() {
   _TARGET_MODE="${DOTS_MODE:-}"
   _TARGET_VERSION="${DOTS_VERSION:-latest}"
   _TARGET_YES="${DOTS_YES:-}"
+
+  # debug mode
+  if [ "${_TARGET_MODE}" = "debug" ]; then
+    if [[ " "${DOTS_TARGET}" " == *" ${_TARGET} "* ]]; then
+      _TARGET_MODE=local
+    else
+      _TARGET_MODE=system
+    fi
+  fi
 
   # if _FUNC_VERSION is given, process version checker
   if [ -n "${_FUNC_VERSION}" ]; then

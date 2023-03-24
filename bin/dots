@@ -22,6 +22,7 @@ GH_ACCESS=${GH_ACCESS:-}
 PREFIX=${PREFIX:-$HOME/.local}
 
 PKG_APPS_WITH_HELP=(
+  "libiconv" " "
   "zsh"           "z shell"
   "fish"          "fish shell"
   "prezto"        "framework for zsh"
@@ -341,7 +342,7 @@ while [[ $# -gt 0 ]]; do
   case $key in
     -m | --mode)
       DOTS_MODE="$2"
-      if [[ "local system"  != *"${DOTS_MODE}"* ]]; then
+      if [[ "local system debug"  != *"${DOTS_MODE}"* ]]; then
         log_error "mode must be either 'local' or 'system'"
         exit 1
       fi
@@ -353,6 +354,7 @@ while [[ $# -gt 0 ]]; do
       ;;
     -c | --config)
       CONFIG="$2"
+      DOTS_YES=true
       shift; shift
       ;;
     -t | --version)
