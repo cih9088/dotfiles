@@ -90,8 +90,11 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      log_error "Not supported."
-      exit 1
+      PREFIX=/usr/local
+      wrap_sudo make rm mv
+      setup_for_local "${COMMAND}"
+      unwrap make rm mv
+      ;;
   esac
 }
 

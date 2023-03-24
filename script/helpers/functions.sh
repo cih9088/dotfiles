@@ -177,3 +177,20 @@ EOF
   # set -f  # no double expand
   eval "$@" || exit $?
 }
+
+
+wrap() {
+  eval "$1() { $2 }"
+}
+
+unwrap() {
+  for i in "$@"; do
+    unset -f "$i"
+  done
+}
+
+wrap_sudo() {
+  for i in "$@"; do
+    eval "$i"'() { sudo $(type -ap ${FUNCNAME[0]}) "$@"; }'
+  done
+}
