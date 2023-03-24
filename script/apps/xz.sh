@@ -90,11 +90,11 @@ setup_for_system() {
       case "${FAMILY}" in
         DEBIAN)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove liblzma-dev
+            ++ sudo apt-get -y remove liblzma-dev xz-utils
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install liblzma-dev
+            ++ sudo apt-get -y install liblzma-dev xz-utils
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install liblzma-dev
+            ++ sudo apt-get -y --only-upgrade install liblzma-dev xz-utils
           fi
           ;;
         RHEL)
