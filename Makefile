@@ -315,8 +315,7 @@ jq: \
 	@( $(SCRIPTS_DIR)/apps/jq.sh )
 # -----------------------------------------------------
 
-pyenv: \
-	openssl readline zlib bzip2 sqlite3 libffi tcl tk
+pyenv:
 	@ ( $(SCRIPTS_DIR)/apps/pyenv.sh )
 
 goenv:

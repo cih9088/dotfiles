@@ -39,10 +39,10 @@ setup_for_local() {
   # prefer goenv
   if command -v goenv > /dev/null; then
     eval "$(goenv init -)"
-    log_info "Note that ${THIS_HL} would be installed using goenv."
+    log_info "Note that ${THIS_HL} would be handled by goenv."
     from_goenv "$COMMAND" "$VERSION"
   elif command -v asdf > /dev/null; then
-    log_info "Note that ${THIS_HL} would be installed using asdf."
+    log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
   else
     log_error "Install from source is not implemented."

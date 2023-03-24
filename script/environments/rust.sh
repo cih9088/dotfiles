@@ -40,13 +40,38 @@ setup_for_local() {
   local VERSION="${2:-}"
 
   if command -v asdf > /dev/null; then
-    log_info "Note that ${THIS_HL} would be installed using asdf."
+    log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
   else
     log_error "Install from source is not implemented."
     exit 1
   fi
 }
+
+# setup_for_system() {
+#   local COMMAND="${1:-skip}"
+#
+#   case "${PLATFORM}" in
+#     OSX)
+#       if [ "${COMMAND}" == "remove" ]; then
+#         brew list rust >/dev/null 2>&1 && ++ brew uninstall rust
+#       elif [ "${COMMAND}" == "install" ]; then
+#         brew list rust >/dev/null 2>&1 || ++ brew install rust
+#       elif [ "${COMMAND}" == "update" ]; then
+#         ++ brew upgrade rust
+#       fi
+#       ;;
+#     LINUX)
+#       ;;
+#   esac
+# }
+#
+# from_source() {
+#   if [ "${COMMAND}" == "remove" ]; then
+#   elif [ "${COMMAND}" == "install" ]; then
+#     ++ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+#   elif [ "${COMMAND}" == "update" ]; then
+# }
 
 from_asdf() {
   local COMMAND="${1:-skip}"

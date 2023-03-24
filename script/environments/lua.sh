@@ -40,7 +40,7 @@ setup_for_local() {
   [ -z "${VERSION}" ] && VERSION=latest
 
   if command -v asdf > /dev/null; then
-    log_info "Note that ${THIS_HL} would be installed using asdf."
+    log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
   else
     log_error "Install from source is not implemented."

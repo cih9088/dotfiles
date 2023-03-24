@@ -46,10 +46,10 @@ setup_for_local() {
   local VERSION="${2:-}"
 
   if command -v asdf >/dev/null; then
-    log_info "Note that ${THIS_HL} would be installed using asdf."
+    log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
   else
-    log_info "Note that ${THIS_HL} would be installed from source."
+    log_info "Note that ${THIS_HL} would be handled by source."
     from_source "$COMMAND" "$VERSION"
   fi
 }

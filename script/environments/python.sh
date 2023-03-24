@@ -46,10 +46,10 @@ setup_for_local() {
       git clone https://github.com/momo-lab/xxenv-latest.git ${PYENV_ROOT}/plugins/xxenv-latest
     eval "$(pyenv init -)"
 
-    log_info "Note that ${THIS_HL} would be installed using pyenv."
+    log_info "Note that ${THIS_HL} would be handled by pyenv."
     from_pyenv "$COMMAND" "$VERSION"
   elif command -v asdf > /dev/null; then
-    log_info "Note that ${THIS_HL} would be installed using asdf."
+    log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
   else
     log_error "Install from source is not implemented."
@@ -198,23 +198,29 @@ update_asdf_global_py_version() {
 from_pyenv() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   
   if [ "${COMMAND}" == "remove" ]; then
-    ++ pyenv uninstall "${VERSION}"
+    ++ pyenv uninstall -f "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
     if [ "${VERSION}" == "latest" ]; then
       ++ pyenv latest install -s 3
     else
       ++ pyenv install "${VERSION}"
     fi
+
+    # upgrade pip
+    command -v python2 >/dev/null && python2 -m pip install --upgrade pip >&3 2>&4 || true
+    command -v python3 >/dev/null && python3 -m pip install --upgrade pip >&3 2>&4 || true
+
+    pyenv global | grep '[0-9.]' -q || pyenv global \
+      "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1)" \
+      "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)"
+
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0
   fi
-
-  pyenv global | grep '[0-9.]' -q || pyenv global \
-    "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^3' | sort -V -r | head -n 1)" \
-    "$(pyenv versions | sed 's/[[:space:]]//g' | grep '^2' | sort -V -r | head -n 1)"
 }
 
 from_asdf() {
@@ -232,56 +238,19 @@ from_asdf() {
     ++ asdf uninstall python "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
     ++ asdf install python "${VERSION}"
+
+    # upgrade pip
+    command -v python2 >/dev/null && python2 -m pip install --upgrade pip >&3 2>&4 || true
+    command -v python3 >/dev/null && python3 -m pip install --upgrade pip >&3 2>&4 || true
+
+    update_asdf_global_py_version "${VERSION}"
+
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0
-  fi
-
-  update_asdf_global_py_version "${VERSION}"
-}
-
-python_install() {
-  local COMMAND="${1:-skip}"
-  local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION=latest
-
-  # prefer pyenv
-  if command -v pyenv > /dev/null; then
-    if [ "${COMMAND}" == "remove" ]; then
-      ++ pyenv uninstall "${VERSION}"
-    elif [ "${COMMAND}" == "install" ]; then
-      if [ ${VERSION} == "latest" ]; then
-        ++ pyenv latest install -s 3
-      else
-        ++ pyenv install "${VERSION}"
-      fi
-    elif [ "${COMMAND}" == "update" ]; then
-      log_error "Not supported command 'update'"
-      exit 0
-    fi
-
-  elif command -v asdf > /dev/null; then
-    if [ "${VERSION}" == "latest" ]; then
-      VERSION=$(asdf latest python 3)
-    fi
-
-    if [ "${COMMAND}" == "remove" ]; then
-      ++ asdf uninstall python "${VERSION}"
-    elif [ "${COMMAND}" == "install" ]; then
-      ++ asdf install python "${VERSION}"
-    elif [ "${COMMAND}" == "update" ]; then
-      log_error "Not supported command 'update'"
-      exit 0
-    fi
-
-    update_asdf_global_py_version "${VERSION}"
   fi
 }
 
 main_script "${THIS}" \
   setup_for_local setup_for_system \
   list_versions verify_version version_func
-
-# upgrade pip
-command -v python2 >/dev/null && python2 -m pip install --upgrade pip >&3 2>&4 || true
-command -v python3 >/dev/null && python3 -m pip install --upgrade pip >&3 2>&4 || true
