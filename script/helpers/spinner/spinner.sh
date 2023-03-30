@@ -23,20 +23,24 @@ trap "clean_stdin; reveal_stdin" SIGINT SIGTERM EXIT
 # Also see: test.sh
 
 function hide_stdin() {
-  stty -echo
-  # if [ -t 0 ]; then
-  #    stty -echo -icanon time 0 min 0
-  # fi
+  if [ -t 0 ]; then
+    stty -echo
+    # stty -echo -icanon time 0 min 0
+  fi
 }
 
 function reveal_stdin() {
-  stty echo
+  if [ -t 0 ]; then
+    stty echo
+  fi
 }
 
 function clean_stdin() {
-  # while read -e -t 0.1; do : ; done
-  # while read -e -t 1; do : ; done
-  while read -r -t 0; do read -r; done
+  if [ -t 0 ]; then
+    # while read -e -t 0.1; do : ; done
+    # while read -e -t 1; do : ; done
+    while read -r -t 0; do read -r; done
+  fi
 }
 
 function _spinner() {

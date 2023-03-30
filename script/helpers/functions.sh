@@ -8,52 +8,74 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 get_cursor_position() {
   # based on a script from http://invisible-island.net/xterm/xterm.faq.html
-  exec < /dev/tty
-  oldstty=$(stty -g)
-  stty raw -echo min 0
-  # on my system, the following line can be replaced by the line below it
-  echo -en "\033[6n" > /dev/tty
-  # tput u7 > /dev/tty    # when TERM=xterm (and relatives)
-  IFS=';' read -r -d R -a pos
-  stty $oldstty
-  # change from one-based to zero based so they work with: tput cup $row $col
-  row=$((${pos[0]:2} - 1))    # strip off the esc-[
-  col=$((${pos[1]} - 1))
-  echo ${row}:${col}
+  if [ -t 0 ]; then
+    exec < /dev/tty
+    oldstty=$(stty -g)
+    stty raw -echo min 0
+    # on my system, the following line can be replaced by the line below it
+    echo -en "\033[6n" > /dev/tty
+    # tput u7 > /dev/tty    # when TERM=xterm (and relatives)
+    IFS=';' read -r -d R -a pos
+    stty $oldstty
+    # change from one-based to zero based so they work with: tput cup $row $col
+    row=$((${pos[0]:2} - 1))    # strip off the esc-[
+    col=$((${pos[1]} - 1))
+    echo ${row}:${col}
+  fi
+}
+
+strip_ansi() {
+  echo "$1" | sed "s/\x1B\[[0-9;]*[JKmsu]//g"
 }
 
 log() {
   local TITLE="$1"; shift
   local CONTENT="$1"; shift
   local CODE=""
+  local MESSAGE
   for i in "$@"; do
     CODE="${CODE}${!i}"
   done
 
+  MESSAGE="${CODE}${TITLE}${NC} ${CONTENT}\n"
+
   if [[ "$(get_cursor_position)" != *":0" ]]; then
     echo "" >&2
   fi
-  printf "${CODE}${TITLE}${NC} ${CONTENT}\n" >&2
+  if [ ! -t 2 ]; then
+    MESSAGE="$(strip_ansi "$MESSAGE")"
+  fi
+
+  printf "$MESSAGE" >&2
 }
 
 log_verbose() {
   local TITLE="$1"; shift
   local CONTENT="$1"; shift
   local CODE=""
+  local MESSAGE=""
   for i in "$@"; do
     CODE="${CODE}${!i}"
   done
+
+  MESSAGE="${CODE}${TITLE}${NC} ${CONTENT}\n"
 
   if ( exec 1>&5 ) 2>&-; then
     if [[ "$(get_cursor_position)" != *":0" ]]; then
       echo "" >&5
     fi
-    printf "${CODE}${TITLE}${NC} ${CONTENT}\n" >&5
+    if [ ! -t 5 ]; then
+      MESSAGE="$(strip_ansi "$MESSAGE")"
+    fi
+    printf "$MESSAGE" >&5
   else
     if [[ "$(get_cursor_position)" != *":0" ]]; then
       echo "" >&2
     fi
-    printf "${CODE}${TITLE}${NC} ${CONTENT}\n" >&2
+    if [ ! -t 2 ]; then
+      MESSAGE="$(strip_ansi "$MESSAGE")"
+    fi
+    printf "$MESSAGE" >&2
   fi
 }
 
