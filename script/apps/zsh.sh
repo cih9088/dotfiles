@@ -75,7 +75,9 @@ setup_for_local() {
       fi
 
       ++ pushd "zsh-${VERSION}"
-      ++ ./configure --prefix="${PREFIX}"
+      ++ ./configure \
+        --prefix="${PREFIX}" \
+        --with-tcsetpgrp  # build even without tty
       ++ make
       ++ make install
       ++ popd
