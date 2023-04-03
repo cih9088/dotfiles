@@ -15,9 +15,21 @@ log_title "Prepare for ${THIS_HL}"
 ################################################################
 
 list_versions() {
-  if command -v asdf > /dev/null; then
+  local COMMAND=${1:-install}
+
+  if command -v goenv > /dev/null; then
+    if [ "$COMMAND" == "remove" ]; then
+      goenv versions --bare | sort -Vr
+    else
+      goenv install -l | grep -v '[a-zA-Z]' | sort -Vr
+    fi
+  elif command -v asdf > /dev/null; then
     asdf plugin list 2>/dev/null | grep -q golang || asdf plugin add golang >&3 2>&4
-    asdf list all golang | grep -v '[a-zA-Z]' | sort -Vr
+    if [ "$COMMAND" == "remove" ]; then
+      asdf list golang | sed -e 's/ //g' -e 's/*//g' | sort -Vr
+    else
+      asdf list all golang | grep -v '[a-zA-Z]' | sort -Vr
+    fi
   fi
 }
 
@@ -53,16 +65,16 @@ setup_for_local() {
 from_goenv() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [ -z "${VERSION}" ] && VERSION=latest
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions $COMMAND | head -n 1)"
+
+  if [ "${VERSION}" == "latest" ]; then
+    VERSION=$(goenv latest -p)
+  fi
 
   if [ "${COMMAND}" == "remove" ]; then
-    ++ goenv uninstall "${VERSION}"
+    ++ goenv uninstall -f "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
-    if [ "${VERSION}" == "latest" ]; then
-      ++ goenv latest install -s
-    else
-      ++ goenv install "${VERSION}"
-    fi
+    ++ goenv install "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

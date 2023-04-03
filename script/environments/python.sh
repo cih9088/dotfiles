@@ -17,11 +17,21 @@ export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include/ncurses"
 ################################################################
 
 list_versions() {
+  local COMMAND=${1:-install}
+
   if command -v pyenv > /dev/null; then
-    pyenv install -l | grep -v '[a-zA-Z]' | sed 's/ //' | sort -Vr
+    if [ "$COMMAND" == "remove" ]; then
+      pyenv versions --bare | sort -Vr
+    else
+      pyenv install -l | grep -v '[a-zA-Z]' | sed 's/ //' | sort -Vr
+    fi
   elif command -v asdf > /dev/null; then
     asdf plugin list 2>/dev/null | grep -q python || asdf plugin add python >&3 2>&4
-    asdf list all python | grep -v '[a-zA-Z]' | sort -Vr
+    if [ "$COMMAND" == "remove" ]; then
+      asdf list python | sed -e 's/ //g' -e 's/*//g' | sort -Vr
+    else
+      asdf list all python | grep -v '[a-zA-Z]' | sort -Vr
+    fi
   fi
 }
 
@@ -198,8 +208,8 @@ update_asdf_global_py_version() {
 from_pyenv() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
-  
+  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions "$COMMAND" | head -n 1)"
+
   if [ "${COMMAND}" == "remove" ]; then
     ++ pyenv uninstall -f "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
