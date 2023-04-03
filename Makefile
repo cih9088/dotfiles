@@ -177,7 +177,7 @@ npth: \
 	@( $(SCRIPTS_DIR)/apps/npth.sh )
 
 gnupg: \
-	libiconv libgpg-error libgcrypt libassuan \
+	libgpg-error libgcrypt libassuan \
 	libksba readline openldap npth bzip2 gnutls
 	@( $(SCRIPTS_DIR)/apps/gnupg.sh )
 # -----------------------------------------------------

@@ -39,9 +39,9 @@ log() {
 
   MESSAGE="${CODE}${TITLE}${NC} ${CONTENT}\n"
 
-  if [[ "$(get_cursor_position)" != *":0" ]]; then
-    echo "" >&2
-  fi
+  # if [[ "$(get_cursor_position)" != *":0" ]]; then
+  #   echo "" >&2
+  # fi
   if [ ! -t 2 ]; then
     MESSAGE="$(strip_ansi "$MESSAGE")"
   fi
@@ -61,17 +61,17 @@ log_verbose() {
   MESSAGE="${CODE}${TITLE}${NC} ${CONTENT}\n"
 
   if ( exec 1>&5 ) 2>&-; then
-    if [[ "$(get_cursor_position)" != *":0" ]]; then
-      echo "" >&5
-    fi
+    # if [[ "$(get_cursor_position)" != *":0" ]]; then
+    #   echo "" >&5
+    # fi
     if [ ! -t 5 ]; then
       MESSAGE="$(strip_ansi "$MESSAGE")"
     fi
     printf "$MESSAGE" >&5
   else
-    if [[ "$(get_cursor_position)" != *":0" ]]; then
-      echo "" >&2
-    fi
+    # if [[ "$(get_cursor_position)" != *":0" ]]; then
+    #   echo "" >&2
+    # fi
     if [ ! -t 2 ]; then
       MESSAGE="$(strip_ansi "$MESSAGE")"
     fi
