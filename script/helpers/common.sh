@@ -38,21 +38,26 @@ if [ ! -z "${CONFIG+x}" ] && [ -n "${CONFIG}" ]; then
   done
 fi
 
-if [ ! -z "${DOTS_TARGET+x}" ]; then
-  if [ ! -z "${DOTS_COMMAND+x}" ]; then
-    if [[ " "${DOTS_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTS_COMMAND}" != "install" ]; then
-      exit 0
+
+is_target_found() {
+  local _TMP_TARGET=$TARGET
+  local _FOUND=1
+
+  while [ ! -z "${_TMP_TARGET}" ] && [ $_FOUND = 1 ]; do
+    if [[ " "${DOTS_TARGET}" " == *" ${_TMP_TARGET} "* ]]; then
+      _FOUND=0
     fi
-  fi
-  # if [ ! -z "${DOTS_MODE+x}" ] && [ "${DOTS_MODE}" == "debug" ]; then
-  #   if [[ " "${DOTS_TARGET}" " != *" ${TARGET} "* ]] && [ "${DOTS_MODE}" != "local" ]; then
-  #     exit 0
-  #   fi
-  # fi
+    _TMP_TARGET=(${_TMP_TARGET//${DEPTH_SEP}/ })
+    _TMP_TARGET=${_TMP_TARGET[@]:0:$((${#_TMP_TARGET[@]} - 1))}
+  done
+
+  return $_FOUND
+}
+
+if [ ! -z "${DOTS_TARGET+x}" ] && ! is_target_found; then
+  [ "${DOTS_COMMAND}" = "remove" ] && exit 0
   if [ ! -z "${DOTS_SKIP_DEPENDENCIES+x}" ] && [ "$DOTS_SKIP_DEPENDENCIES" == "true" ]; then
-    if [[ " "${DOTS_TARGET}" " != *" ${TARGET} "* ]]; then
-      exit 0
-    fi
+    exit 0
   fi
 fi
 ################################################################
@@ -182,7 +187,7 @@ main_script() {
 
   # debug mode
   if [ "${_TARGET_MODE}" = "debug" ]; then
-    if [[ " "${DOTS_TARGET}" " == *" ${_TARGET} "* ]]; then
+    if is_target_found; then
       _TARGET_MODE=local
     else
       _TARGET_MODE=system

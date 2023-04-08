@@ -47,7 +47,7 @@ setup_for_local() {
     elif [ "${COMMAND}" == "update" ]; then
       ++ intelli_pip3 install black --force-reinstall --upgrade
     elif [ "${COMMAND}" == "remove" ]; then
-      ++ intelli_pip3 uninstall black
+      ++ intelli_pip3 uninstall --yes black
     fi
     [ ! -z ${VENV_NAME+x} ] && ++ deactivate
   else

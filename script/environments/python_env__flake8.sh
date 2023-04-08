@@ -47,7 +47,7 @@ setup_for_local() {
     elif [ "${COMMAND}" == "update" ]; then
       ++ intelli_pip3 install flake8 --force-reinstall --upgrade
     elif [ "${COMMAND}" == "remove" ]; then
-      ++ intelli_pip3 uninstall flake8
+      ++ intelli_pip3 uninstall --yes flake8
     fi
     [ ! -z ${VENV_NAME+x} ] && ++ deactivate
   else

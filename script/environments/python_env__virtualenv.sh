@@ -26,7 +26,7 @@ setup_for_local() {
   elif [ "${COMMAND}" == "update" ]; then
     ++ intelli_pip3 install virtualenv virtualenvwrapper --force-reinstall --upgrade
   elif [ "${COMMAND}" == "remove" ]; then
-    ++ intelli_pip3 uninstall virtualenv virtualenvwrapper
+    ++ intelli_pip3 uninstall --yes virtualenv virtualenvwrapper
   fi
 }
 

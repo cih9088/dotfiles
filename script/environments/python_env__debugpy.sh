@@ -43,7 +43,7 @@ setup_for_local() {
     elif [ "${COMMAND}" == "update" ]; then
       ++ intelli_pip3 install debugpy --force-reinstall --upgrade
     elif [ "${COMMAND}" == "remove" ]; then
-      ++ intelli_pip3 uninstall debugpy
+      ++ intelli_pip3 uninstall --yes debugpy
     fi
     [ ! -z ${VENV_NAME+x} ] && ++ deactivate
   else
