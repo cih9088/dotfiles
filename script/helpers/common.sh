@@ -196,9 +196,9 @@ main_script() {
 
   # if _FUNC_VERSION is given, process version checker
   if [ -n "${_FUNC_VERSION}" ]; then
-    if [ -x "$(command -v "${_TARGET_CMD}")" ]; then
+    if command -v "${_TARGET_CMD}" &> /dev/null; then
       log_info "The Following list is ${_TARGET_HL} installed on the machine."
-      coms=($(type -a ${_TARGET_CMD} | awk '{print $3}' | uniq))
+      coms=($(type -a -p ${_TARGET_CMD} | awk '{print $NF}' | uniq))
       (
         printf 'LOCATION,VERSION\n'
         for com in "${coms[@]}"; do
