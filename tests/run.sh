@@ -23,12 +23,11 @@ WORK_DIR=""
 
 if [ "${N_WORKERS}" -gt 1 ]; then
   WORK_DIR=$(mktemp -d)
-  echo "${WORK_DIR}"
 fi
 
 FAILED=()
 
-IMAGES=("rockylinux:dot" "ubuntu:dot")
+IMAGES=("rockylinux_dots:8" "rockylinux_dots:9" "ubuntu_dots:20" "ubuntu_dots:22")
 MODES=("local" "system")
 ITEMS=(
   perl "asdf perl"
@@ -119,6 +118,12 @@ task() {
   return $exit_code
 }
 
+# build image
+for image in "${IMAGES[@]}"; do
+  "${DEFAULT_CMD}" build -t "${image}" -f "${DIR}/images/${image/dots:/}.Dockerfile" .
+done
+
+[ -n "${WORK_DIR}" ] && echo "WORK DIR: ${WORK_DIR}" || true
 open_sem "${N_WORKERS}"
 for image in "${IMAGES[@]}"; do
   for items in "${ITEMS[@]}"; do
