@@ -243,6 +243,10 @@ sox: \
 	@( $(SCRIPTS_DIR)/apps/sox.sh )
 # -----------------------------------------------------
 
+pandoc: \
+	unzip
+	@( $(SCRIPTS_DIR)/apps/pandoc.sh )
+
 # tcptump
 # -----------------------------------------------------
 flex: \
@@ -427,6 +431,7 @@ nodejs-env:
 	tcl tk \
 	nasm libjpeg-turbo opencv \
 	libogg libsndfile flac sox \
+	pandoc \
 	flex libpcap tcpdump \
 	terminfo zsh fish prezto neovim tmux \
 	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq \

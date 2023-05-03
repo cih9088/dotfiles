@@ -41,7 +41,7 @@ ITEMS=(
 
   terminfo cmake zlib bzip2 unzip gzip xz libjpeg-turbo opencv ncurses
   "zsh prezto" neovim "tmux tpm"
-  wget tree fd rg thefuck tldr bash-snippets up jq sox tcpdump
+  wget tree fd rg thefuck tldr bash-snippets up jq sox pandoc tcpdump
 
   bin configs
 )

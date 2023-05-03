@@ -22,7 +22,6 @@ GH_ACCESS=${GH_ACCESS:-}
 PREFIX=${PREFIX:-$HOME/.local}
 
 PKG_APPS_WITH_HELP=(
-  "libiconv" " "
   "zsh"           "z shell"
   "fish"          "fish shell"
   "prezto"        "framework for zsh"
@@ -43,6 +42,7 @@ PKG_APPS_WITH_HELP=(
   "pyenv"         "python version maanger"
   "goenv"         "golang version manager"
   "asdf"          "runtime version manager"
+  "pandoc"        "universal document converter"
 )
 
 PKG_DOTS_WITH_HELP=(
@@ -76,7 +76,7 @@ PKG_LIBS_WITH_HELP=(
   "openldap"      "openldap"
   # "tcl"           "tcl"
   # "tk"            "tk"
-  "libx11"        "libx11"
+  # "libx11"        "libx11"
   "libjpeg-turbo" "libjpeg-turbo"
   "opencv"        "opencv"
 )
