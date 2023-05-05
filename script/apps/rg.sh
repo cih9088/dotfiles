@@ -116,8 +116,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove ripgrep
           elif [ "${COMMAND}" == "install" ]; then
@@ -126,7 +126,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install ripgrep
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [[ "remove update"  == *"${COMMAND}"* ]]; then
             sudo rm -f /usr/local/bin/rg || true
             sudo rm -f /usr/local/share/man/man1/rg.1.gz || true

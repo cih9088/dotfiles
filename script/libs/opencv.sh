@@ -88,8 +88,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove libopencv-dev python3-opencv
           elif [ "${COMMAND}" == "install" ]; then
@@ -98,7 +98,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install libopencv-dev python3-opencv
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove opencv-core opencv-devel
           elif [ "${COMMAND}" == "install" ]; then

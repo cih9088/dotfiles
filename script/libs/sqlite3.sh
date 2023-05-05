@@ -92,8 +92,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove libsqlite3-dev libsqlite3-0
           elif [ "${COMMAND}" == "install" ]; then
@@ -102,7 +102,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install libsqlite3-dev libsqlite3-0
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove sqlite-devel sqlite
           elif [ "${COMMAND}" == "install" ]; then

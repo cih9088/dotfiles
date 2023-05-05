@@ -85,8 +85,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove libtasn1-6-dev libtasn1-6
           elif [ "${COMMAND}" == "install" ]; then
@@ -95,7 +95,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install libtasn1-6-dev libtasn1-6
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove libtasn1-devel libtasn1
           elif [ "${COMMAND}" == "install" ]; then

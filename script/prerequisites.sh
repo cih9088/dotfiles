@@ -65,26 +65,29 @@ echo
     # brew install --cask xquartz
 
   elif [[ ${PLATFORM} == "LINUX" ]]; then
-    if [[ $FAMILY == "DEBIAN" ]]; then
-      # # basic
-      # sudo apt-get -y install python-dev python-pip python3-dev python3-pip  \
-      #   xclip wget git cmake bsdmainutils curl
-      # # zsh, tmux
-      # sudo apt-get -y install libncurses5-dev libncursesw5-dev
-      # # pyenv
-      # sudo apt-get -y install make build-essential libssl-dev zlib1g-dev libbz2-dev \
-      #   libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
-      #   xz-utils tk-dev libffi-dev liblzma-dev python-openssl
-      sudo apt update
-      sudo apt install -y \
-        git make curl gcc g++ \
-        bsdmainutils sudo \
-        tar python3 python3-pip
-    elif [[ $FAMILY == "RHEL" ]]; then
-      sudo dnf install -y \
-        git make curl gcc gcc-c++ \
-        findutils util-linux-user sudo \
-        tar python3 python3-pip python3-devel
+    case "${PLATFORM_ID}" in
+      debian|ubuntu)
+        # # basic
+        # sudo apt-get -y install python-dev python-pip python3-dev python3-pip  \
+        #   xclip wget git cmake bsdmainutils curl
+        # # zsh, tmux
+        # sudo apt-get -y install libncurses5-dev libncursesw5-dev
+        # # pyenv
+        # sudo apt-get -y install make build-essential libssl-dev zlib1g-dev libbz2-dev \
+        #   libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
+        #   xz-utils tk-dev libffi-dev liblzma-dev python-openssl
+        sudo apt update
+        sudo apt install -y \
+          git make curl gcc g++ \
+          bsdmainutils sudo \
+          tar python3 python3-pip
+        ;;
+      centos|rocky)
+        sudo dnf install -y \
+          git make curl gcc gcc-c++ \
+          findutils util-linux-user sudo \
+          tar python3 python3-pip python3-devel
+        ;;
       # # basic
       # sudo dnf install -y python3 python2  \
       #   xclip wget git cmake curl
@@ -98,7 +101,7 @@ echo
 
       # sudo alternatives --set python /usr/bin/python3
       # sudo alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
-    fi
+    esac
   else
     echo 'not defined'; exit 1
   fi

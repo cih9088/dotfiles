@@ -118,13 +118,13 @@ export PYTHON_CONFIGURE_OPTS="--enable-shared"
 # set verbose
 # 3: stdout, 4: stderr, 5: logger
 [[ "${VERBOSE}" == "true" ]] && exec 3>&1 4>&2 5>&2 || exec 3>/dev/null 4>/dev/null 5>&2
-# check platform and family
+# check platform and linux
 if [[ ${PLATFORM} != OSX && ${PLATFORM} != LINUX ]]; then
   log_error "${PLATFORM} is not supported."
   exit 1
 fi
-if [[ "${PLATFORM}" == "LINUX" && -z "${FAMILY}" ]]; then
-  log_error "linux family '${FAMILY}' is not supported."
+if [[ "${PLATFORM}" == "LINUX" && " ubuntu debian centos rocky " != *" ${PLATFORM_ID} "* ]]; then
+  log_error "linux '${PLATFORM_ID}' is not supported."
   exit 1;
 fi
 
@@ -339,8 +339,8 @@ main_script() {
       log_info "${_BEGIN_BANNER}" ||
       start_spinner "${_BEGIN_BANNER}"
     (
-      if [[ "${_TARGET_MODE}" == "system" && "${PLATFORM}" == "LINUX" && "${FAMILY}" == "DEBIAN" ]]; then
-        ++ sudo apt-get update
+      if [[ "${_TARGET_MODE}" == "system" && "${PLATFORM}" == "LINUX" && " ubuntu debian " == *" ${PLATFORM_ID} "* ]]; then
+        ++ sudo apt update
         # sudo drops user environment
         # [ "${VERBOSE}" = "false" ] && DEBIAN_FRONTEND=noninteractive
         sudo() {

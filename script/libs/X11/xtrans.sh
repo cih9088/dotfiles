@@ -83,8 +83,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove xtrans-dev
           elif [ "${COMMAND}" == "install" ]; then
@@ -93,7 +93,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install xtrans-dev
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove xorg-x11-xtrans-devel
           elif [ "${COMMAND}" == "install" ]; then

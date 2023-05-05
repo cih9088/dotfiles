@@ -69,8 +69,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove perl
           elif [ "${COMMAND}" == "install" ]; then
@@ -79,7 +79,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install perl
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove perl
           elif [ "${COMMAND}" == "install" ]; then

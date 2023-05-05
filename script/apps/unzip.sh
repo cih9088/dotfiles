@@ -89,8 +89,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove unzip
           elif [ "${COMMAND}" == "install" ]; then
@@ -99,7 +99,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install unzip
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove unzip
           elif [ "${COMMAND}" == "install" ]; then

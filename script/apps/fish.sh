@@ -96,8 +96,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove fish
           elif [ "${COMMAND}" == "install" ]; then
@@ -109,7 +109,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install fish
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [[ "remove update"  == *"${COMMAND}"* ]]; then
             # https://fishshell.com/docs/current/faq.html#uninstalling-fish
             ++ sudo rm -Rf /usr/local/etc/fish /usr/local/share/fish

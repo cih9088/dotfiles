@@ -54,8 +54,8 @@ setup_for_system() {
         ++ popd
       fi
       ;;
-      # case "${FAMILY}" in
-      #   DEBIAN)
+      # case "${PLATFORM_ID}" in
+      #   debian|ubuntu)
       #     if [ "${COMMAND}" == "remove" ]; then
       #       ++ sudo apt-get -y remove bash-snippets
       #     elif [ "${COMMAND}" == "install" ]; then
@@ -67,7 +67,7 @@ setup_for_system() {
       #       ++ sudo apt-get -y --only-upgrade install bash-snippets
       #     fi
       #     ;;
-      #   RHEL)
+      #   centos|rocky)
       #     if [[ "remove update"  == *"${COMMAND}"* ]]; then
       #       ++ sudo rm -f "/usr/local/share/man/man1/bash-snippets.1"
       #       ++ sudo rm -f "/usr/local/bin/transfer"

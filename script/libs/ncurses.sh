@@ -125,8 +125,8 @@ setup_for_system() {
       fi
       ;;
     LINUX)
-      case "${FAMILY}" in
-        DEBIAN)
+      case "${PLATFORM_ID}" in
+        debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo apt-get -y remove libncurses-dev
           elif [ "${COMMAND}" == "install" ]; then
@@ -135,7 +135,7 @@ setup_for_system() {
             ++ sudo apt-get -y --only-upgrade install libncurses-dev
           fi
           ;;
-        RHEL)
+        centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove ncurses-devel ncurses
           elif [ "${COMMAND}" == "install" ]; then

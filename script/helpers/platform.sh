@@ -10,15 +10,17 @@ case "$OSTYPE" in
   *)        PLATFORM="unknown: $OSTYPE" ;;
 esac
 
-# ID, ID_LIKE, FAMILY
+# PLATFORM_ID="rocky"
+# PLATFORM_ID_LIKE="rhel centos fedora"
+# PLATFORM_VERSION="8.7"
 if [[ $PLATFORM == LINUX ]]; then
   source <(grep ID /etc/os-release)
-  FAMILY=""
-  if [[ " rhel centos fedora rocky " =~ " ${ID} " ]]; then
-    FAMILY="RHEL"
-  elif [[ " ubuntu debian " =~ " ${ID} " ]]; then
-    FAMILY="DEBIAN"
-  fi
+  PLATFORM_ID=$ID
+  PLATFORM_ID_LIKE=$ID_LIKE
+  PLATFORM_VERSION=$VERSION_ID
+  unset ID
+  unset ID_LIKE
+  unset VERSION_ID
 fi
 
 # ARCH
