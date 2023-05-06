@@ -85,10 +85,11 @@ setup_for_system() {
       fi
       ;;
     LINUX)
+      # sudo depends on zlib so we do not remove zlib but zlib-devel only
       case "${PLATFORM_ID}" in
         debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove zlib1g-dev zlib1g
+            ++ sudo apt-get -y remove zlib1g-dev
           elif [ "${COMMAND}" == "install" ]; then
             ++ sudo apt-get -y install zlib1g-dev zlib1g
           elif [ "${COMMAND}" == "update" ]; then
@@ -97,7 +98,7 @@ setup_for_system() {
           ;;
         centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo dnf -y remove zlib-devel zlib
+            ++ sudo dnf -y remove zlib-devel
           elif [ "${COMMAND}" == "install" ]; then
             ++ sudo dnf -y install zlib-devel zlib
           elif [ "${COMMAND}" == "update" ]; then
