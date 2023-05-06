@@ -4,7 +4,7 @@ from ubuntu:22.04
 RUN echo "Acquire::Check-Valid-Until \"false\";\nAcquire::Check-Date \"false\";" | \
       cat > /etc/apt/apt.conf.d/10no--check-valid-until
 RUN apt update \
-  && apt install -y --no-install-recommends sudo git make passwd curl ca-certificates gcc g++ python3 python3-pip \
+  && apt install -y --no-install-recommends sudo git make passwd curl ca-certificates gcc g++ python3 python3-dev python3-pip \
   && apt-get autoremove -y \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/*
