@@ -30,6 +30,10 @@ setup_for_local() {
     ++ curl -LO --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz
     ++ gzip -d terminfo.src.gz
     ++ tic -x -o "${HOME}/.terminfo" terminfo.src
+
+    # https://github.com/htop-dev/htop/issues/251#issuecomment-719080271
+    ++ curl -LO https://gist.githubusercontent.com/nicm/ea9cf3c93f22e0246ec858122d9abea1/raw/37ae29fc86e88b48dbc8a674478ad3e7a009f357/tmux-256color
+    ++ tic -x -o "${HOME}/.terminfo" tmux-256color
   fi
 }
 
@@ -40,6 +44,10 @@ setup_for_system() {
     ++ curl -LO --show-error https://invisible-island.net/datafiles/current/terminfo.src.gz
     ++ gzip -d terminfo.src.gz
     ++ tic -x -o /usr/share/terminfo terminfo.src
+
+    # https://github.com/htop-dev/htop/issues/251#issuecomment-719080271
+    ++ curl -LO https://gist.githubusercontent.com/nicm/ea9cf3c93f22e0246ec858122d9abea1/raw/37ae29fc86e88b48dbc8a674478ad3e7a009f357/tmux-256color
+    ++ tic -x -o /usr/share/terminfo tmux-256color
   elif [ "${COMMAND}" == "remove" ]; then
     log_error "${THIS_HL} is not removable."
     exit 1
