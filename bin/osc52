@@ -24,7 +24,7 @@
 # Written in 2014 by Suraj N. Kurapati <https://github.com/sunaku>
 # Also documented at https://sunaku.github.io/tmux-yank-osc52.html
 #
-# Modified by Andy Cho <cih9088@gmail.com>
+# Modified by Inhyuk Andy Cho <cih9088@gmail.com>
 
 # The maximum length of an OSC 52 escape sequence is 100_000 bytes, of which
 # 7 bytes are occupied by a "\033]52;c;" header, 1 byte by a "\a" footer, and
@@ -53,8 +53,17 @@ build_osc_52 () {
 # resolve target terminal to send escape sequence
 # if we are on remote machine, send directly to SSH_TTY to transport escape sequence
 # to terminal on local machine, so data lands in clipboard on our local machine
-parent_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
-target_tty="${SSH_TTY:-$parent_tty}"
+target_tty="${SSH_TTY}"
+_PID=$$
+echo $target_tty
+while [ -z "$target_tty" ]; do
+  # traverse to parent of it until finding tty
+  target_tty="$(ps hotty $_PID | sed -n -E '/[0-9]+/p' | xargs)"
+  ps aux | grep $_PID
+  echo $target_tty
+  _PID=$(ps -o ppid= $_PID)
+done
+[ "$target_tty" != "/dev"* ] && target_tty="/dev/$target_tty"
 
 # KiTTY always appends to the clipboard, so clear it first
 # https://sw.kovidgoyal.net/kitty/protocol-extensions.html#pasting-to-clipboard
