@@ -100,7 +100,11 @@ setup_for_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove groff
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install groff
+            local crb_name="crb"
+            if [ "$(echo "${PLATFORM_VERSION}" | awk -F . '{print $1}')" -lt 9 ]; then
+              crb_name="powertools"
+            fi
+            ++ sudo dnf -y --enablerepo=$crb_name install groff
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update groff
           fi

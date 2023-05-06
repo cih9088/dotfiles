@@ -102,12 +102,12 @@ setup_for_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove opencv-core opencv-devel
           elif [ "${COMMAND}" == "install" ]; then
+            ++ sudo dnf -y install epel-release
+            local crb_name="crb"
             if [ "$(echo "${PLATFORM_VERSION}" | awk -F . '{print $1}')" -lt 9 ]; then
-              ++ sudo dnf --enablerepo=powertools -y install opencv-core opencv-devel
-            else
-              ++ sudo dnf -y install epel-release
-              ++ sudo dnf -y install opencv-core opencv-devel
+              crb_name="powertools"
             fi
+            ++ sudo dnf -y --enablerepo=$crb_name install opencv-devel opencv-core
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update opencv-core opencv-devel
           fi

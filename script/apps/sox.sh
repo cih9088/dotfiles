@@ -102,7 +102,11 @@ setup_for_system() {
             ++ sudo dnf -y remove sox-devel sox
           elif [ "${COMMAND}" == "install" ]; then
             ++ sudo dnf -y install epel-release
-            ++ sudo dnf -y install sox-devel sox
+            local crb_name="crb"
+            if [ "$(echo "${PLATFORM_VERSION}" | awk -F . '{print $1}')" -lt 9 ]; then
+              crb_name="powertools"
+            fi
+            ++ sudo dnf -y --enablerepo=$crb_name install sox-devel sox
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update sox-devel sox
           fi
