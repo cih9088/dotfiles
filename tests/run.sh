@@ -78,8 +78,6 @@ test_return() {
 run_with_lock(){
   local x
 
-  echo "$@"
-
   read -u 3 -r x
   test_return "$x"
   (
@@ -119,20 +117,28 @@ task() {
 }
 
 # build image
+BUILT_IMAGES=$(docker image ls --format '{{.Repository}}:{{.Tag}}' | tr '\n' ' ')
 for image in "${IMAGES[@]}"; do
-  "${DEFAULT_CMD}" build -t "${image}" -f "${DIR}/images/${image/dots:/}.Dockerfile" .
+  [[ " $BUILT_IMAGES " = *" ${image} "* ]] || "${DEFAULT_CMD}" build -t "${image}" -f "${DIR}/images/${image/dots:/}.Dockerfile" .
 done
+unset BUILT_IMAGES
 
 [ -n "${WORK_DIR}" ] && echo "WORK DIR: ${WORK_DIR}" || true
+N_TOTAL=$(( ${#IMAGES[@]} * ${#ITEMS[@]} * ${#MODES[@]} ))
+CTR=1
 open_sem "${N_WORKERS}"
 for image in "${IMAGES[@]}"; do
   for items in "${ITEMS[@]}"; do
     for mode in "${MODES[@]}"; do
+      printf "[%${#N_TOTAL}d/%d] %-30s || %s\n" "$CTR" "$N_TOTAL" "$image - $mode" "$items"
       run_with_lock task "${image}" "${mode}" "${items}"
+      CTR=$(( $CTR + 1 ))
     done
   done
 done
 wait
+unset N_TOTAL
+unset CTR
 
 for((i=$N_WORKERS;i>0;i--)); do
   read -u 3 -t 1 -r x
