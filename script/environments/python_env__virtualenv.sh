@@ -33,8 +33,3 @@ setup_for_local() {
 main_script "${THIS}" \
   setup_for_local "" \
   "" "" version_funcn
-
-(
-  has asdf && asdf reshim python || true
-  has pyenv && pyenv ++ rehash || true
-) >&3 2>&4

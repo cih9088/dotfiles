@@ -185,14 +185,16 @@ else:
 EOF
   )
 
-  if [ $_PY_ORIGIN == "system" ] && [[ "$@" = "uninstall"* ]]; then
-    pip3 $_COMMAND --user $@
+  if [ "$_PY_ORIGIN" == "system" ] && [ "$_COMMAND" != "uninstall" ]; then
+    python3 -m pip "$_COMMAND" --user $@
   else
-    pip3 $_COMMAND $@
+    python3 -m pip "$_COMMAND" $@
   fi
 
-  command -v asdf >/dev/null 2>&1 && asdf reshim || true
-  command -v pyenv >/dev/null 2>&1 && pyenv rehash || true
+  if has asdf && asdf plugin list | grep -q python; then
+    asdf reshim python
+  fi
+  has pyenv && pyenv rehash || true
 }
 
 ++() {
