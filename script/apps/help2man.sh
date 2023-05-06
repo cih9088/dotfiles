@@ -103,13 +103,11 @@ setup_for_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove help2man
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install dnf-plugins-core
-            if dnf repolist --all | grep -q -i crb; then
-              ++ sudo dnf config-manager --set-enabled crb
-            elif dnf repolist --all | grep -q -i powertools; then
-              ++ sudo dnf config-manager --set-enabled powertools
+            local crb_name="crb"
+            if [ "$(echo "${PLATFORM_VERSION}" | awk -F . '{print $1}')" -lt 9 ]; then
+              crb_name="powertools"
             fi
-            ++ sudo dnf -y install help2man
+            ++ sudo dnf --enablerepo=$crb_name -y install help2man
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update help2man
           fi

@@ -102,7 +102,7 @@ setup_for_system() {
             ++ sudo dnf -y remove sox-devel sox
           elif [ "${COMMAND}" == "install" ]; then
             ++ sudo dnf -y install epel-release
-            ++ sudo dnf --enablerepo=crb -y install sox-devel sox
+            ++ sudo dnf -y install sox-devel sox
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update sox-devel sox
           fi

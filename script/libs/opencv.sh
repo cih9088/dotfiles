@@ -91,19 +91,23 @@ setup_for_system() {
       case "${PLATFORM_ID}" in
         debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then
-            ++ sudo apt-get -y remove libopencv-dev python3-opencv
+            ++ sudo apt-get -y remove libopencv-dev
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo apt-get -y install libopencv-dev python3-opencv
+            ++ sudo apt-get -y install libopencv-dev
           elif [ "${COMMAND}" == "update" ]; then
-            ++ sudo apt-get -y --only-upgrade install libopencv-dev python3-opencv
+            ++ sudo apt-get -y --only-upgrade install libopencv-dev
           fi
           ;;
         centos|rocky)
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove opencv-core opencv-devel
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install epel-release
-            ++ sudo dnf -y install opencv-core opencv-devel
+            if [ "$(echo "${PLATFORM_VERSION}" | awk -F . '{print $1}')" -lt 9 ]; then
+              ++ sudo dnf --enablerepo=powertools -y install opencv-core opencv-devel
+            else
+              ++ sudo dnf -y install epel-release
+              ++ sudo dnf -y install opencv-core opencv-devel
+            fi
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update opencv-core opencv-devel
           fi

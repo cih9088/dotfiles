@@ -98,7 +98,11 @@ setup_for_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove bison-devel bison
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install bison-devel bison
+            local crb_name="crb"
+            if [ "$(echo "${PLATFORM_VERSION}" | awk -F . '{print $1}')" -lt 9 ]; then
+              crb_name="powertools"
+            fi
+            ++ sudo dnf --enablerepo=$crb_name -y install bison-devel bison
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update bison-devel bison
           fi

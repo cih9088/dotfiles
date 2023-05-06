@@ -110,14 +110,12 @@ setup_for_system() {
           if [ "${COMMAND}" == "remove" ]; then
             ++ sudo dnf -y remove pandoc
           elif [ "${COMMAND}" == "install" ]; then
-            ++ sudo dnf -y install dnf-plugins-core
-            if dnf repolist --all | grep -q -i crb; then
+            if [ "$(echo "${PLATFORM_VERSION}" | awk -F . '{print $1}')" -lt 9 ]; then
+              ++ sudo dnf --enablerepo=powertools -y install pandoc
+            else
               ++ sudo dnf -y install epel-release
-              # ++ sudo dnf config-manager --set-enabled crb
-            elif dnf repolist --all | grep -q -i powertools; then
-              ++ sudo dnf config-manager --set-enabled powertools
+              ++ sudo dnf --enablerepo=crb -y install pandoc
             fi
-            ++ sudo dnf -y install pandoc
           elif [ "${COMMAND}" == "update" ]; then
             ++ sudo dnf -y update pandoc
           fi
