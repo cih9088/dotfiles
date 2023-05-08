@@ -24,7 +24,7 @@ if [ -z "$GH_ACCESS" ]; then
         sed 's|href="/'${GH_REPO}'/releases/tag/\(.*\)"|\1|' || true
       }
     )\n"
-    QUERY="?after=$(echo "$OUT" | tail -n 1)"
+    QUERY="?after=$(echo "$OUT" | tail -n 1 | tr -d '\\n')"
   done
   echo -e "${OUT::-2}"
 else
