@@ -55,7 +55,6 @@ build_osc_52 () {
 # to terminal on local machine, so data lands in clipboard on our local machine
 target_tty="${SSH_TTY}"
 _PID=$$
-echo $target_tty
 while [ -z "$target_tty" ]; do
   # traverse to parent of it until finding tty
   target_tty="$(ps hotty $_PID | sed -n -E '/[0-9]+/p' | xargs)"
@@ -63,7 +62,7 @@ while [ -z "$target_tty" ]; do
   echo $target_tty
   _PID=$(ps -o ppid= $_PID)
 done
-[ "$target_tty" != "/dev"* ] && target_tty="/dev/$target_tty"
+target_tty="/dev/${target_tty#/dev/}"
 
 # KiTTY always appends to the clipboard, so clear it first
 # https://sw.kovidgoyal.net/kitty/protocol-extensions.html#pasting-to-clipboard
