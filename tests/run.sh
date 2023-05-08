@@ -117,13 +117,15 @@ task() {
 }
 
 # build image
-BUILT_IMAGES=$(docker image ls --format '{{.Repository}}:{{.Tag}}' | tr '\n' ' ')
+BUILT_IMAGES=$(${DEFAULT_CMD} image ls --format '{{.Repository}}:{{.Tag}}' | sed -e 's/localhost\///' | tr '\n' ' ')
 for image in "${IMAGES[@]}"; do
   [[ " $BUILT_IMAGES " = *" ${image} "* ]] || "${DEFAULT_CMD}" build -t "${image}" -f "${DIR}/images/${image/dots:/}.Dockerfile" .
 done
 unset BUILT_IMAGES
 
-[ -n "${WORK_DIR}" ] && echo "WORK DIR: ${WORK_DIR}" || true
+[ -n "${WORK_DIR}" ] && echo "WORK_DIR: ${WORK_DIR}" || true
+echo "N_WORKERS: ${N_WORKERS}" || true
+
 N_TOTAL=$(( ${#IMAGES[@]} * ${#ITEMS[@]} * ${#MODES[@]} ))
 CTR=1
 open_sem "${N_WORKERS}"
