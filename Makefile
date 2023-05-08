@@ -225,6 +225,9 @@ opencv: \
 	cmake
 	@( $(SCRIPTS_DIR)/libs/opencv.sh )
 
+openmpi:
+	@( $(SCRIPTS_DIR)/apps/openmpi.sh )
+
 # sox
 # -----------------------------------------------------
 libogg:
@@ -429,7 +432,7 @@ nodejs-env:
 	libgpg-error libgcrypt libassuan libksba npth gnupg \
 	xorgproto xtrans libxau xcb-proto libxcb libx11 \
 	tcl tk \
-	nasm libjpeg-turbo opencv \
+	nasm libjpeg-turbo opencv openmpi \
 	libogg libsndfile flac sox \
 	pandoc \
 	flex libpcap tcpdump \

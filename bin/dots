@@ -42,6 +42,7 @@ PKG_APPS_WITH_HELP=(
   "pyenv"         "python version maanger"
   "goenv"         "golang version manager"
   "asdf"          "runtime version manager"
+  "openmpi"       "high performance message passing implementation"
   "pandoc"        "universal document converter"
 )
 
