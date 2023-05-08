@@ -38,8 +38,8 @@ setup_for_local() {
       . $HOME/.asdf/asdf.sh
       ++ asdf plugin add direnv
       ++ asdf direnv setup --shell zsh --version latest
-      ++ asdf direnv setup --shell bash --version latest
-      ++ asdf direnv setup --shell fish --version latest
+      # ++ asdf direnv setup --shell bash --version latest
+      # ++ asdf direnv setup --shell fish --version latest
       ++ asdf global direnv latest
     fi
   elif [ "${COMMAND}" == "update" ]; then

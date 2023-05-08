@@ -127,6 +127,12 @@
     unset BREW_PREFIX
   fi
 
+  # direnv
+  if command -v asdf >/dev/null; then
+    [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ] &&
+      source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+  fi
+
 
 # Setup conda
 # ---------------------------------------------------------------------------------------
@@ -275,7 +281,8 @@
     function trash () { command mv "$@" ~/.Trash ; }        # trash: Moves a file to the MacOS trash
     function ql () { qlmanage -p "$*" >& /dev/null; }       # ql:    Opens any file in MacOS Quicklook Preview
   elif [[ ${PLATFORM} == "LINUX" ]]; then
-    alias clear-swap="sudo sh -c 'swapoff -a && swapon -a'" # clear-swap:   clear swap memory
+    alias drop-swap="sudo sh -c 'swapoff -a && swapon -a'"  # drop-swap:   clear swap memory
+    alias drop-cache="sudo sh -c '/usr/bin/sync; /usr/bin/echo 3 > /proc/sys/vm/drop_caches'" # drop-cache: clear cache
   fi
 
 
