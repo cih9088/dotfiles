@@ -108,28 +108,29 @@ setup_for_system() {
 update_asdf_global_py_version() {
   local VERSION="$1"
 
-  if asdf current python >/dev/null 2>&1; then
-    local _PY3_VERSION=
-    local _PY2_VERSION=
+  local _VERSIONS=
+  local _PY3_VERSION=
+  local _PY2_VERSION=
 
-    for i in $(asdf current python | awk '{for (i=2; i<NF; i++) printf "%s ", $i}'); do
-      if [[ $i == 3* ]]; then
-        _PY3_VERSION=$i
-      elif [[ $i == 2* ]]; then
-        _PY2_VERSION=$i
-      fi
-    done
-
-    if [[ $VERSION == 3* ]]; then
-      _PY3_VERSION=$VERSION
-    elif [[ $VERSION == 2* ]]; then
-      _PY2_VERSION=$VERSION
-    fi
-
-    ++ asdf global python "$_PY3_VERSION" "$_PY2_VERSION"
-  else
-    ++ asdf global python "${VERSION}"
+  if [ -e $HOME/.tool-versions ]; then
+    _VERSIONS=$(grep python $HOME/.tool-versions || true)
   fi
+
+  for i in $(echo $_VERSIONS | awk '{for (i=2; i<=NF; i++) printf "%s ", $i}'); do
+    if [[ $i == 3* ]]; then
+      _PY3_VERSION=$i
+    elif [[ $i == 2* ]]; then
+      _PY2_VERSION=$i
+    fi
+  done
+
+  if [[ $VERSION == 3* ]]; then
+    _PY3_VERSION=$VERSION
+  elif [[ $VERSION == 2* ]]; then
+    _PY2_VERSION=$VERSION
+  fi
+
+  ++ asdf global python "$_PY3_VERSION" "$_PY2_VERSION"
 }
 
 # python2_install() {
