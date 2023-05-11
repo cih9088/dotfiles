@@ -211,13 +211,14 @@ echo "$(whoami) ALL = (root) NOPASSWD: $(brew --prefix)/bin/yabai --load-sa" | \
 # reinstall the scripting addition
 sudo yabai --uninstall-sa || true
 sudo yabai --install-sa || true
+yabai --start-service
 brew services start yabai
 # load the scripting addition
 killall Dock || true
 
 # install skhd
 brew install koekeishiya/formulae/skhd
-brew services start skhd
+skhd --start-service
 
 # install uebersicht
 brew install --cask ubersicht

@@ -123,7 +123,7 @@ defaults write NSGlobalDomain AppleKeyboardUIMode -int 3
 defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 
 # normal minimum is 15 (225 ms)
-defaults write NSGlobalDomain InitialKeyRepeat -int 12
+defaults write NSGlobalDomain InitialKeyRepeat -int 15
 
 # normal minimum is 2 (30 ms)
 defaults write NSGlobalDomain KeyRepeat -int 2
@@ -576,7 +576,7 @@ if [[ -e "/Applications/iTerm.app" ]]; then
 
   # copy script
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-  cp -r $DIR/../config/iterm2/AutoLaunch ~/Library/Application\ Support/iterm2/Scripts
+  cp -r $DIR/../../config/iterm2/AutoLaunch ~/Library/Application\ Support/iterm2/Scripts
 fi
 
 

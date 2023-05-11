@@ -331,12 +331,12 @@ while [[ $# -gt 0 ]]; do
   if [[ $key != --* ]] && [[ $key == -* ]]; then
     key=${key/-/}
     tmp=()
-    while read -N 1 c; do tmp+=(-$c); done <<< "$key"
+    while read -n 1 c; do tmp+=(-$c); done <<< "$key"
     unset tmp[${#tmp[@]}-1]
     key=${tmp[0]}
     if [ ${#tmp[@]} -gt 0 ]; then
       unset tmp[0]
-      set -- "$@" ${tmp[@]}
+      set -- "$@" ${tmp[@]:-}
     fi
   fi
 
