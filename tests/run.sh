@@ -38,7 +38,7 @@ ITEMS=(
   "asdf lua lua-env"
   sh-env
 
-  terminfo cmake zlib bzip2 unzip gzip xz libjpeg-turbo opencv ncurses
+  terminfo cmake zlib bzip2 unzip gzip xz libjpeg-turbo opencv ncurses openmpi
   "zsh prezto" neovim "tmux tpm"
   wget tree fd rg thefuck tldr bash-snippets up jq sox pandoc tcpdump
 
