@@ -54,11 +54,11 @@ space_layout_change() {
 }
 
 mouse_entered() {
-  sketchybar --set $NAME background.color=0xff97b5cf
+  sketchybar --set $NAME background.drawing=on
 }
 
 mouse_exited() {
-  sketchybar --set $NAME background.color=0xff79A6CB
+  sketchybar --set $NAME background.drawing=off
 }
 
 case "$SENDER" in

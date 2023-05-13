@@ -7,20 +7,27 @@ update() {
 }
 
 mouse_clicked() {
-  if [ "$BUTTON" = "right" ]; then
-    yabai -m space --destroy $SID
-    sketchybar --trigger windows_on_spaces --trigger space_change
-  else
-    yabai -m space --focus $SID 2>/dev/null
-  fi
+  case "$NAME" in
+    "separator" )
+      yabai -m space --create && sketchybar --trigger space_change
+      ;;
+    * )
+      if [ "$BUTTON" = "right" ]; then
+        yabai -m space --destroy $SID
+        sketchybar --trigger windows_on_spaces --trigger space_change
+      else
+        yabai -m space --focus $SID 2>/dev/null
+      fi
+      ;;
+  esac
 }
 
 mouse_entered() {
-  sketchybar --set $NAME background.drawing=on background.color=0xffa18aa8
+  sketchybar --set $NAME background.drawing=on
 }
 
 mouse_exited() {
-  sketchybar --set $NAME background.drawing=off background.color=0xffE5B370
+  sketchybar --set $NAME background.drawing=off
 }
 
 case "$SENDER" in
@@ -38,3 +45,5 @@ case "$SENDER" in
     update
     ;;
 esac
+
+echo $NAME >> $HOME/dotfiles/results

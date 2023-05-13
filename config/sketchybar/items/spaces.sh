@@ -37,21 +37,28 @@ spaces_bracket=(
   background.border_color=0xffffffff
   background.border_width=2
   background.corner_radius=5
-  background.height=26
+  background.height=25
 )
 
 separator=(
   icon=
+  icon.align=center
+  icon.width=20
   icon.font="$FONT:Heavy:12.0"
   icon.y_offset=1
-  padding_left=5
-  padding_right=5
   label.drawing=off
+  background.drawing=off
+  background.color=0xffE5B370
+  background.corner_radius=5
+  background.height=18
+  script="$PLUGIN_DIR/spaces.sh"
   associated_display=active
-  click_script='yabai -m space --create && sketchybar --trigger space_change'
 )
 
-sketchybar --add item separator left                   \
-           --set separator "${separator[@]}" \
+sketchybar --add item separator left                             \
+           --set separator "${separator[@]}"                     \
+           --subscribe separator mouse.clicked                   \
+                                 mouse.entered                   \
+                                 mouse.exited                    \
            --add bracket spaces_bracket '/space\..*/' separator  \
-           --set spaces_bracket "${spaces_bracket[@]}" \
+           --set spaces_bracket "${spaces_bracket[@]}"
