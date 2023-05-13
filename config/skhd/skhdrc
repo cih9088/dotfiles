@@ -1,17 +1,17 @@
 # the default mode
-:: default : echo "" > $TMPDIR/current_skhd_mode
+:: default : sketchybar --trigger skhd_mode_change MODE=default
 
 # a mode for focus operations
-:: focus @ : echo "focus" > $TMPDIR/current_skhd_mode
+:: focus @ : sketchybar --trigger skhd_mode_change MODE=focus
 
 # a mode for warp operations
-:: warp @ : echo "warp" > $TMPDIR/current_skhd_mode
+:: warp @ : sketchybar --trigger skhd_mode_change MODE=warp
 
 # a mode for resizing operations
-:: resize @ : echo "resize" > $TMPDIR/current_skhd_mode
+:: resize @ : sketchybar --trigger skhd_mode_change MODE=resize
 
 # a mode for instance command
-:: prefix @ : echo "prefix" > $TMPDIR/current_skhd_mode
+:: prefix @ : sketchybar --trigger skhd_mode_change MODE=prefix
 
 # enter and exit modes
 default                      < ctrl - s         ; prefix
@@ -28,21 +28,17 @@ focus, resize, warp, prefix  < escape           ; default
 # default, focus, resize, warp < alt - l          :  yabai -m window --focus east \
 #   || (yabai -m display --focus first && yabai -m window --focus first)
 default, focus, resize, warp < alt - h          :  yabai -m window --focus west \
-  || (yabai -m display --focus first && yabai -m window --focus last)
+  || (yabai -m display --focus west && yabai -m window --focus last)
 default, focus, resize, warp < alt - l          :  yabai -m window --focus east \
-  || (yabai -m display --focus last && yabai -m window --focus last)
+  || (yabai -m display --focus east && yabai -m window --focus last)
 default, focus, resize, warp < alt - j          :  yabai -m window --focus south
 default, focus, resize, warp < alt - k          :  yabai -m window --focus north
 
 # focus monitor cycle around
-# default, focus, resize, warp < shift + alt - h  :  yabai -m display --focus prev \
-#   || (yabai -m display --focus last || yabai -m display --focus first)
-# default, focus, resize, warp < shift + alt - l  :  yabai -m display --focus next \
-#   || (yabai -m display --focus first || yabai -m display --focus last)
 default, focus, resize, warp < shift + alt - h  :  yabai -m display --focus prev \
-  || (yabai -m display --focus first || yabai -m display --focus last)
+  || (yabai -m display --focus west || yabai -m display --focus last)
 default, focus, resize, warp < shift + alt - l  :  yabai -m display --focus next \
-  || (yabai -m display --focus last || yabai -m display --focus first)
+  || (yabai -m display --focus east || yabai -m display --focus last)
 
 focus, resize, warp < space                 :  yabai -m space --rotate 90                 # rotate tree
 focus, resize, warp < shift - space         :  yabai -m space --rotate 270                # rotate tree
@@ -54,13 +50,6 @@ focus, resize, warp < s                     :  yabai -m window --toggle split   
 focus, resize, warp < t                     :  yabai -m window --toggle float;\
                                                yabai -m window --grid 6:6:1:1:4:4         # Float a centered window
 focus, resize, warp < q                     :  yabai -m space --balance                   # equalize size of windows
-
-# change layout of desktop: m ,
-focus, resize, warp < m                     :  yabai -m space --layout \
-        $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end');\
-                                               open -g "swiftbar://refreshPlugin?name=yabai_skhd"
-# focus, resize, warp < 0x2B                  :  yabai -m space --layout float;\
-#                                                open -g "swiftbar://refreshPlugin?name=yabai_skhd"
 
 # move window
 warp < h                                    :  yabai -m window --warp west
@@ -113,15 +102,15 @@ prefix < l : yabai -m space --focus next; skhd -k "ctrl - s"
 
 # float / unfloat window and center on screen
 prefix < t : yabai -m window --toggle float;\
-           yabai -m window --grid 6:6:1:1:4:4;\
-           skhd -k "ctrl - s"
+  yabai -m window --grid 6:6:1:1:4:4;\
+  skhd -k "ctrl - s"
 
 prefix < z : yabai -m window --toggle zoom-fullscreen; skhd -k "ctrl - s"
 
 # change layout of desktop with m
 prefix < m                                  :  yabai -m space --layout \
-                                                   $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" else "bsp" end');\
-                                               open -g "swiftbar://refreshPlugin?name=yabai_skhd"; skhd -k "ctrl - s"
+    $(yabai -m query --spaces --space | jq -r 'if .type == "bsp" then "float" elif .type == "float" then "stack" elif .type == "stack" then "bsp" else empty end');\
+  sketchybar --trigger layout_change; skhd -k "ctrl - s"
 # equalize size of windows with =
 prefix < 0x18                               :  yabai -m space --balance; skhd -k "ctrl - s"
 # toggle window split type with s

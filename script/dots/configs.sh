@@ -23,10 +23,10 @@ setup_for_local() {
     local configs=(
       "$HOME/.flake8" "$HOME/.pylintrc" "$HOME/.gitignore" "$HOME/.grip"
       "$HOME/.config/nvim" "$HOME/.config/alacritty" "$HOME/.config/iterm2"
-      "$HOME/.config/yabai" "$HOME/.config/skhd" "$HOME/.config/bitbar" "$HOME/.config/spacebar"
-      "$HOME/.config/swiftbar" "$HOME/.config/git" "$HOME/.config/flake8" "$HOME/.config/pylintrc"
-      "$HOME/.config/fish" "$HOME/.config/tealdeer" "$HOME/.config/vivid" "$HOME/.config/simplebar"
-      "$HOME/.simplebarrc" "$HOME/.vim" "$HOME/.tmux" "$HOME/.tmux.conf" "$HOME/.zshrc"
+      "$HOME/.config/yabai" "$HOME/.config/skhd" "$HOME/.config/sketchybar"
+      "$HOME/.config/git" "$HOME/.config/flake8" "$HOME/.config/pylintrc"
+      "$HOME/.config/fish" "$HOME/.config/tealdeer" "$HOME/.config/vivid"
+      "$HOME/.vim" "$HOME/.tmux" "$HOME/.tmux.conf" "$HOME/.zshrc"
       "$HOME/.zpreztorc" "$HOME/.zshenv" "$HOME/.zprofile" "$HOME/.zlogout" "$HOME/.zlogin"
       "$HOME/.gnupg/gpg-agent.conf"
     )
@@ -45,32 +45,38 @@ setup_for_local() {
     GNUPG_DIR=${CONFIG_DIR}/gnupg
 
     # legacy configurations to remove broken configs
-    backup "$HOME/.flake8"    "$BACKUP_PATH"
-    backup "$HOME/.pylintrc"  "$BACKUP_PATH"
-    backup "$HOME/.gitignore" "$BACKUP_PATH"
-    backup "$HOME/.grip"      "$BACKUP_PATH"
+    backup "$HOME/.flake8"           "$BACKUP_PATH"
+    backup "$HOME/.pylintrc"         "$BACKUP_PATH"
+    backup "$HOME/.gitignore"        "$BACKUP_PATH"
+    backup "$HOME/.grip"             "$BACKUP_PATH"
+    backup "$HOME/.grip"             "$BACKUP_PATH"
+    backup "$HOME/.config/bitbar"    "$BACKUP_PATH"
+    backup "$HOME/.config/spacebar"  "$BACKUP_PATH"
+    backup "$HOME/.config/swiftbar"  "$BACKUP_PATH"
+    backup "$HOME/.config/simplebar" "$BACKUP_PATH"
+    backup "$HOME/.simplebarrc"      "$BACKUP_PATH"
 
     # backup old files and replace it with mine
     backup-and-link "${CONFIG_DIR}/nvim"                   "$HOME/.config/nvim"          "$BACKUP_PATH/config"
+    backup-and-link "${VIM_DIR}"                           "$HOME/.vim"                  "$BACKUP_PATH"
+    # backup-and-link "${VIM_DIR}/vimrc"                     "$HOME/.vimrc"                "$BACKUP_PATH"
+
     backup-and-link "${CONFIG_DIR}/alacritty"              "$HOME/.config/alacritty"     "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/iterm2"                 "$HOME/.config/iterm2"        "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/yabai"                  "$HOME/.config/yabai"         "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/skhd"                   "$HOME/.config/skhd"          "$BACKUP_PATH/config"
-    backup-and-link "${CONFIG_DIR}/bitbar"                 "$HOME/.config/bitbar"        "$BACKUP_PATH/config"
-    backup-and-link "${CONFIG_DIR}/spacebar"               "$HOME/.config/spacebar"      "$BACKUP_PATH/config"
-    backup-and-link "${CONFIG_DIR}/swiftbar"               "$HOME/.config/swiftbar"      "$BACKUP_PATH/config"
+    backup-and-link "${CONFIG_DIR}/sketchybar"             "$HOME/.config/sketchybar"    "$BACKUP_PATH/config"
+    # backup-and-link "${CONFIG_DIR}/bitbar"                 "$HOME/.config/bitbar"        "$BACKUP_PATH/config"
+    # backup-and-link "${CONFIG_DIR}/spacebar"               "$HOME/.config/spacebar"      "$BACKUP_PATH/config"
+    # backup-and-link "${CONFIG_DIR}/swiftbar"               "$HOME/.config/swiftbar"      "$BACKUP_PATH/config"
+    # backup-and-link "${CONFIG_DIR}/simplebar"              "$HOME/.config/simplebar"     "$BACKUP_PATH/config"
+    # backup-and-link "${CONFIG_DIR}/simplebar/.simplebarrc" "$HOME/.simplebarrc"          "$BACKUP_PATH"
     backup-and-link "${CONFIG_DIR}/git"                    "$HOME/.config/git"           "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/flake8"                 "$HOME/.config/flake8"        "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/pylintrc"               "$HOME/.config/pylintrc"      "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/fish"                   "$HOME/.config/fish"          "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/tealdeer"               "$HOME/.config/tealdeer"      "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/vivid"                  "$HOME/.config/vivid"         "$BACKUP_PATH/config"
-
-    backup-and-link "${CONFIG_DIR}/simplebar"              "$HOME/.config/simplebar"     "$BACKUP_PATH/config"
-    backup-and-link "${CONFIG_DIR}/simplebar/.simplebarrc" "$HOME/.simplebarrc"          "$BACKUP_PATH"
-
-    backup-and-link "${VIM_DIR}"                           "$HOME/.vim"                  "$BACKUP_PATH"
-    # backup-and-link "${VIM_DIR}/vimrc"                     "$HOME/.vimrc"                "$BACKUP_PATH"
 
     backup-and-link "${TMUX_DIR}"                          "$HOME/.tmux"                 "$BACKUP_PATH"
     backup-and-link "${TMUX_DIR}/tmux.conf"                "$HOME/.tmux.conf"            "$BACKUP_PATH"

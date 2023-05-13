@@ -212,7 +212,6 @@ echo "$(whoami) ALL = (root) NOPASSWD: $(brew --prefix)/bin/yabai --load-sa" | \
 sudo yabai --uninstall-sa || true
 sudo yabai --install-sa || true
 yabai --start-service
-brew services start yabai
 # load the scripting addition
 killall Dock || true
 
@@ -220,10 +219,23 @@ killall Dock || true
 brew install koekeishiya/formulae/skhd
 skhd --start-service
 
-# install uebersicht
-brew install --cask ubersicht
-# install simplebar
-git clone https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
+# # install uebersicht
+# brew install --cask ubersicht
+# # install simplebar
+# git clone https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
+
+# install sketchybar
+brew tap FelixKratz/formulae
+brew install sketchybar
+brew services start sketchybar
+
+# install app font
+app_font_version=$($DIR/../helpers/gh_get_latest_release "kvndrsslr/sketchybar-app-font")
+curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/${app_font_version}/sketchybar-app-font.ttf \
+  -o $HOME/Library/Fonts/sketchybar-app-font.ttf
+curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/${app_font_version}/icon_map_fn.sh \
+  -o $DIR/../../config/sketchybar/plugins/icon_map_fn.sh
+
 
 ## free stuff
 # mas install 1018899653  # HeliumLift -> Download it manually

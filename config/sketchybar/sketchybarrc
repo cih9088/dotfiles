@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+FONT="SFMono Nerd Font"
+CONFIG_DIR="$HOME/.config/sketchybar"
+ITEM_DIR="$CONFIG_DIR/items"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+
+source "$CONFIG_DIR/colours.sh" # Loads all defined colors
+
+bar=(
+  height=30
+  position=bottom
+  sticky=off
+  padding_left=10
+  padding_right=5
+  color=$TRANSPARENT
+)
+sketchybar --bar "${bar[@]}"
+
+default=(
+  icon.font="$FONT:Heavy:12.0"
+  icon.color="$WHITE"
+  label.font="$FONT:Heavy:12.0"
+  label.color="$WHITE"
+  padding_left=5
+  padding_right=5
+  label.padding_left=2
+  label.padding_right=2
+  icon.padding_left=2
+  icon.padding_right=2
+)
+
+sketchybar --default "${default[@]}"
+
+# left
+source "$ITEM_DIR/spaces.sh"
+source "$ITEM_DIR/yabai.sh"
+source "$ITEM_DIR/skhd.sh"
+
+# centre
+source "$ITEM_DIR/front_app.sh"
+
+# right
+# source "$ITEM_DIR/clock.sh"
+source "$ITEM_DIR/wifi.sh"
+
+sketchybar --update
