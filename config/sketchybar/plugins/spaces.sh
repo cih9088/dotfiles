@@ -45,5 +45,3 @@ case "$SENDER" in
     update
     ;;
 esac
-
-echo $NAME >> $HOME/dotfiles/results

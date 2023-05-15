@@ -71,5 +71,6 @@ yabai -m rule --add app=".*" manage=off
 # yabai -m signal --add event=window_created action='yabai -m query --windows --window $YABAI_WINDOW_ID | jq -er ".resizable == 0 and .floating == 0" && yabai -m window $YABAI_WINDOW_ID --toggle float'
 
 yabai -m signal --add event=window_title_changed action="sketchybar --trigger window_title_changed"
+yabai -m signal --add event=window_focused action="sketchybar --trigger window_focused"
 
 echo "yabai configuration loaded.."

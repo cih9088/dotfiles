@@ -16,7 +16,7 @@ space_layout() {
 }
 
 windows_on_spaces () {
-  CURRENT_SPACES="$(yabai -m query --displays | jq -r '.[].spaces | @sh')"
+  CURRENT_SPACES="${1:-$(yabai -m query --displays | jq -r '.[].spaces | @sh')}"
   source $CONFIG_DIR/plugins/icon_map_fn.sh
 
   args=()
@@ -72,14 +72,15 @@ case "$SENDER" in
   "mouse.exited")
     mouse_exited
     ;;
-  "space_change" | "display_change" )
-    space_layout
-    windows_on_spaces
-    ;;
   "layout_change" )
     space_layout
     ;;
-  "front_app_switched" )
+  "window_focused" )
+    windows_on_spaces $(yabai -m query --spaces --space recent | jq -r '.index')
+    windows_on_spaces $(yabai -m query --spaces --space | jq -r '.index')
+    ;;
+  "yabai_init" )
+    space_layout
     windows_on_spaces
     ;;
 esac

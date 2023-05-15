@@ -24,17 +24,19 @@ yabai_bracket=(
 )
 
 sketchybar --add event layout_change                     \
+           --add event window_focused                    \
+           --add event yabai_init                        \
            --add item padding_yabai left                 \
            --set padding_yabai "${padding[@]}"           \
                                associated_display=active \
            --add item yabai left                         \
            --set yabai "${yabai[@]}"                     \
-           --subscribe yabai space_change                \
-                             display_change              \
+           --subscribe yabai yabai_init                  \
+                             window_focused              \
                              mouse.clicked               \
                              mouse.entered               \
                              mouse.exited                \
-                             front_app_switched          \
-                             layout_change               \
            --add bracket yabai_bracket yabai             \
            --set yabai_bracket "${yabai_bracket[@]}"
+
+sketchybar --trigger yabai_init
