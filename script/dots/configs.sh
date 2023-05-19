@@ -49,7 +49,7 @@ setup_for_local() {
     backup "$HOME/.pylintrc"         "$BACKUP_PATH"
     backup "$HOME/.gitignore"        "$BACKUP_PATH"
     backup "$HOME/.grip"             "$BACKUP_PATH"
-    backup "$HOME/.grip"             "$BACKUP_PATH"
+    backup "$HOME/.config/flake8" "$BACKUP_PATH"
     backup "$HOME/.config/bitbar"    "$BACKUP_PATH"
     backup "$HOME/.config/spacebar"  "$BACKUP_PATH"
     backup "$HOME/.config/swiftbar"  "$BACKUP_PATH"
@@ -74,7 +74,8 @@ setup_for_local() {
       # backup-and-link "${CONFIG_DIR}/simplebar/.simplebarrc" "$HOME/.simplebarrc"          "$BACKUP_PATH"
     fi
     backup-and-link "${CONFIG_DIR}/git"                    "$HOME/.config/git"           "$BACKUP_PATH/config"
-    backup-and-link "${CONFIG_DIR}/flake8"                 "$HOME/.config/flake8"        "$BACKUP_PATH/config"
+    # user-level flake8 config file support dropped
+    # backup-and-link "${CONFIG_DIR}/flake8"                 "$HOME/.config/flake8"        "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/pylintrc"               "$HOME/.config/pylintrc"      "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/fish"                   "$HOME/.config/fish"          "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/tealdeer"               "$HOME/.config/tealdeer"      "$BACKUP_PATH/config"
