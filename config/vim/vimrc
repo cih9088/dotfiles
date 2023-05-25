@@ -85,7 +85,7 @@
   " Plug 'SirVer/ultisnips'
 
   if has("nvim-0.7")
-    Plug 'williamboman/mason.nvim'
+    Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
     Plug 'williamboman/mason-lspconfig.nvim'
     Plug 'jose-elias-alvarez/null-ls.nvim'
     Plug 'nvim-lua/lsp-status.nvim'
