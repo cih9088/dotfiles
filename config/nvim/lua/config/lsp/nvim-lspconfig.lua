@@ -59,30 +59,10 @@ local on_attach = function(client, bufnr)
    --       augroup END
    --    ]])
    -- end
-
-   ---- So that the only client with format capabilities is efm
-   -- if client.name ~= 'efm' then
-   --  client.resolved_capabilities.document_formatting = false
-   -- end
-
-   -- if client.resolved_capabilities.document_formatting then
-   --  vim.cmd [[
-   --      augroup Format
-   --        au! * <buffer>
-   --        au BufWritePre <buffer> lua vim.lsp.buf.formatting_sync(nil, 1000)
-   --      augroup END
-   --    ]]
-   -- end
 end
 
 
 local server_configs = {
-   -- efm = {
-   --    filetypes = vim.tbl_keys(efm_config),
-   --    init_options = { documentFormatting = true },
-   --    root_dir = lspconfig.util.root_pattern({ ".git/", "." }),
-   --    settings = { languages = efm_config },
-   -- },
    lua_ls = {
       settings = {
          Lua = {
@@ -113,12 +93,6 @@ local function get_config(server_name)
    config.capabilities = capabilities
    return config
 end
-
---
--- require("nvim-lsp-installer").on_server_ready(function(server)
---    server:setup(get_config(server.name))
---    -- vim.cmd [[ do User LspAttachBuffers ]]
--- end)
 
 
 function M.setup()

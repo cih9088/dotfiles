@@ -1,6 +1,7 @@
 local this = (...):match("(.-)[^%.]+$")
 local M = {}
 
+
 local function luasnip_setup()
    local ls = require("luasnip")
    ls.filetype_extend("all", { "_" })
@@ -8,17 +9,6 @@ local function luasnip_setup()
    -- require("luasnip.loaders.from_vscode").lazy_load()
 end
 
-local function tabnine_setup()
-   local tabnine = require("cmp_tabnine.config")
-
-   tabnine:setup({
-      max_lines = 1000,
-      max_num_results = 20,
-      sort = true,
-      run_on_every_keystroke = true,
-      snippet_placeholder = "..",
-   })
-end
 
 local function cmp_setup()
    local has_words_before = function()
@@ -39,9 +29,8 @@ local function cmp_setup()
             vim_item.menu = ({
                nvim_lsp = "[LSP]",
                luasnip = "[LuaSnip]",
-               -- cmp_tabnine = "[TabNine]",
                buffer = "[Buffer]",
-               path = "[Path]",
+               async_path = "[Path]",
                tmux = "[Tmux]",
             })[entry.source.name]
             return vim_item
@@ -89,10 +78,9 @@ local function cmp_setup()
          { name = "nvim_lsp" },
          { name = "luasnip" },
          -- { name = 'ultisnips' },
-         -- { name = "cmp_tabnine" },
-         { name = "buffer", keyword_length = 3 },
-         { name = "path" },
-         { name = "tmux", max_item_count = 3 },
+         { name = "async_path" },
+         { name = "buffer",    keyword_length = 3 },
+         { name = "tmux",      max_item_count = 3 },
       },
    })
 
@@ -114,7 +102,6 @@ end
 
 function M.setup()
    luasnip_setup()
-   -- tabnine_setup()
    cmp_setup()
 end
 
