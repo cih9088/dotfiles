@@ -131,7 +131,12 @@
 " Etc.
 " ---------------------------------------------------------------------------------------
   Plug 'mhinz/vim-startify'
-  Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+  if has("nvim-0.5")
+    Plug 'folke/which-key.nvim'
+  else
+    Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+  endif
+  
 
 
 " Initialize plugin system
@@ -1338,6 +1343,13 @@
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('vim-which-key')
     nnoremap <silent> <leader> :<c-u>WhichKey '\'<CR>
+  endif
+
+
+" folke/which-key.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('which-key.nvim')
+    lua require('config.which-key')
   endif
 
 
