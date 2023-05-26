@@ -1396,15 +1396,6 @@
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-dap')
     lua require('config.dap')
-    nnoremap <silent> <leader>dc <Cmd>lua require'dap'.continue()<CR>
-    nnoremap <silent> <leader>dn <Cmd>lua require'dap'.step_over()<CR>
-    nnoremap <silent> <leader>di <Cmd>lua require'dap'.step_into()<CR>
-    nnoremap <silent> <leader>do <Cmd>lua require'dap'.step_out()<CR>
-    nnoremap <silent> <Leader>db <Cmd>lua require'dap'.toggle_breakpoint()<CR>
-    nnoremap <silent> <Leader>dB <Cmd>lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
-    nnoremap <silent> <Leader>dlp <Cmd>lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>
-    nnoremap <silent> <Leader>ddr <Cmd>lua require'dap'.repl.open()<CR>
-    nnoremap <silent> <Leader>ddl <Cmd>lua require'dap'.run_last()<CR>
   endif
 
 

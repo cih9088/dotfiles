@@ -8,36 +8,35 @@ end
 
 local function bashdb_setup()
    dap.adapters.bashdb = {
-      type = 'executable';
-      command = 'bash-debug-adapter';
-      name = 'bashdb';
+      type = 'executable',
+      command = 'bash-debug-adapter',
+      name = 'bashdb',
    }
 
    dap.configurations.sh = {
       {
-         type = 'bashdb';
-         request = 'launch';
-         name = "Launch file";
-         showDebugOutput = true;
-         pathBashdb = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb';
-         pathBashdbLib = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir';
-         trace = true;
-         file = "${file}";
-         program = "${file}";
-         cwd = '${workspaceFolder}';
-         pathCat = "cat";
-         pathBash = "/bin/bash";
-         pathMkfifo = "mkfifo";
-         pathPkill = "pkill";
-         args = {};
-         env = {};
-         terminalKind = "integrated";
+         type = 'bashdb',
+         request = 'launch',
+         name = "Launch file",
+         showDebugOutput = true,
+         pathBashdb = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb',
+         pathBashdbLib = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir',
+         trace = true,
+         file = "${file}",
+         program = "${file}",
+         cwd = '${workspaceFolder}',
+         pathCat = "cat",
+         pathBash = "/bin/bash",
+         pathMkfifo = "mkfifo",
+         pathPkill = "pkill",
+         args = {},
+         env = {},
+         terminalKind = "integrated",
       }
    }
 end
 
 local function python_setup()
-
    local get_python_path = function()
       local venv_path = os.getenv('VIRTUAL_ENV') or os.getenv('CONDA_PREFIX')
       if venv_path then
@@ -61,9 +60,9 @@ local function python_setup()
 
    dap.configurations.python = {
       {
-         type = 'python';
-         request = 'launch';
-         name = "Launch file with arguments";
+         type = 'python',
+         request = 'launch',
+         name = "Launch file with arguments",
          pythonPath = get_python_path,
          program = function()
             local value = vim.fn.input("File to execute: ", vim.fn.expand('%:p'))
@@ -72,15 +71,15 @@ local function python_setup()
          args = function()
             local args_string = vim.fn.input('Arguments: ')
             return vim.split(args_string, " +")
-         end;
+         end,
          justMyCode = function()
             return vim.fn.input('Enable JustMyCode? [y/n]: ', 'n') == 'y'
          end,
       },
       {
-         type = 'python';
-         request = 'launch';
-         name = "Launch pytest";
+         type = 'python',
+         request = 'launch',
+         name = "Launch pytest",
          module = "pytest",
          pythonPath = get_python_path,
          args = function()
@@ -88,7 +87,7 @@ local function python_setup()
             local args = { "-v", "-s" }
             for k, v in pairs(vim.split(args_string, " +")) do table.insert(args, v) end
             return args
-         end;
+         end,
          justMyCode = function()
             return vim.fn.input('Enable JustMyCode? [y/n]: ', 'n') == 'y'
          end,
@@ -97,8 +96,6 @@ local function python_setup()
 end
 
 local function node2_setup()
-   local dap = require('dap')
-
    dap.adapters.node2 = {
       type = 'executable',
       command = 'node-debug2-adapter',
@@ -124,10 +121,38 @@ local function node2_setup()
    }
 end
 
+
+local function codelldb_setup()
+   dap.adapters.codelldb = {
+      type = 'server',
+      port = '${port}',
+      executable = {
+         command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
+         args = { '--port', '${port}' }
+      }
+   }
+
+   dap.configurations.cpp = {
+      {
+         name = "Launch",
+         type = "codelldb",
+         request = "launch",
+         program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+         end,
+         cwd = '${workspaceFolder}',
+         stopOnEntry = false,
+      },
+   }
+   dap.configurations.c = dap.configurations.cpp
+   dap.configurations.rust = dap.configurations.cpp
+end
+
 function M.setup()
    bashdb_setup()
    python_setup()
    node2_setup()
+   codelldb_setup()
 end
 
 return M
