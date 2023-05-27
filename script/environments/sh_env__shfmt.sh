@@ -3,7 +3,6 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
-TARGET=sh-env
 GH="mvdan/sh"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"

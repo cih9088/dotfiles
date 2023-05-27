@@ -10,7 +10,7 @@ _SCRIPT_DIR="${DOTS_ROOT}/script"
 . "${_SCRIPT_DIR}/helpers/functions.sh"
 
 DOTS_COMMAND=${DOTS_COMMAND:-skip}
-DOTS_TARGETS=${DOTS_TARGETS:-skip}
+DOTS_TARGETS=${DOTS_TARGETS:-}
 DOTS_MODE=${DOTS_MODE:-}
 DOTS_VERSION=${DOTS_VERSION:-}
 DOTS_YES=${DOTS_YES:-}
@@ -129,7 +129,7 @@ while [ $idx -lt ${#PKG_ENVS_WITH_HELP[@]} ]; do
   idx=$(( $idx + 2 ))
 done
 
-PKGS=( "prerequisites" "${PKG_APPS[@]}" "${PKG_DOTS[@]}" "${PKG_ENVS[@]}" "${PKG_LIBS[@]}")
+PKGS=( "${PKG_APPS[@]}" "${PKG_DOTS[@]}" "${PKG_ENVS[@]}" "${PKG_LIBS[@]}")
 
 
 simple_usage() {
@@ -175,24 +175,29 @@ ${BOLD}${RED}DESCRIPTION${NC}
     dotfile management tool
 
 
-${BOLD}${RED}COMMAND${NC}
-    ${BOLD}${RED}list, l${NC}
-        List available targets.
+${BOLD}${RED}COMMANDS${NC}
+    ${BOLD}${RED}Management Commands:${NC}
+        ${BOLD}${RED}list, l${NC}
+            List available targets.
 
-    ${BOLD}${RED}install, i${NC} ${BOLD}${GREEN}target${NC}
-        Install ${BOLD}${GREEN}target${NC}.
+        ${BOLD}${RED}install, i${NC} ${BOLD}${GREEN}target${NC}
+            Install ${BOLD}${GREEN}target${NC}.
 
-    ${BOLD}${RED}update, u${NC} ${BOLD}${GREEN}target${NC}
-        Update ${BOLD}${GREEN}target${NC}.
+        ${BOLD}${RED}update, u${NC} ${BOLD}${GREEN}target${NC}
+            Update ${BOLD}${GREEN}target${NC}.
 
-    ${BOLD}${RED}remove, r${NC} ${BOLD}${GREEN}target${NC}
-        Remove ${BOLD}${GREEN}target${NC}.
+        ${BOLD}${RED}remove, r${NC} ${BOLD}${GREEN}target${NC}
+            Remove ${BOLD}${GREEN}target${NC}.
 
-    ${BOLD}${RED}test-prerequisites${NC}
-        Test prerequisites.
+    ${BOLD}${RED}Utility Commands:${NC}
+        ${BOLD}${RED}test-prerequisites${NC}
+            Test prerequisites.
 
-    ${BOLD}${RED}change-shell${NC}
-        Change default shell to zsh/fish.
+        ${BOLD}${RED}init-prerequisites${NC}
+            Initialise prerequisites. This command requires privilege.
+
+        ${BOLD}${RED}change-shell${NC}
+            Change default shell to zsh/fish.
 
 
 ${BOLD}${RED}OPTIONS${NC}
@@ -296,6 +301,7 @@ _dots() {
         'remove: remove targets'
         'list: list targets'
         'test-prerequisites: test prerequisites'
+        'init-prerequisites: init prerequisites'
         'change-shell: change default shell'
         'completion: auto completion'
       )
@@ -312,7 +318,6 @@ _dots() {
           ;;
         install)
           options "install"
-          _alternative 'specials:special:(prerequisites)'
           packages
           ;;
         update)
@@ -456,7 +461,7 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 if [ $# -eq 0 ]; then
   simple_usage
-  exit 0
+  exit 1
 fi
 DOTS_COMMAND="${1}"
 shift
@@ -485,6 +490,10 @@ case $DOTS_COMMAND in
     ;;
   test-prerequisites)
     make_wrapper prerequisitesTest
+    exit 0
+    ;;
+  init-prerequisites)
+    make_wrapper prerequisites
     exit 0
     ;;
   install|remove|update)
@@ -519,17 +528,16 @@ if [ ${#DOTS_TARGETS[@]} -eq 0 ]; then
   exit 1
 fi
 
-for i in "${!DOTS_TARGETS[@]}"; do
-  DOTS_TARGET=${DOTS_TARGETS[i]}
-  if [[ " ${PKGS[@]} " != *" ${DOTS_TARGET} "* ]]; then
-    log_error "Invalid target '$DOTS_TARGET' to ${DOTS_COMMAND}. List targets by 'dots list'"
+for target in "${DOTS_TARGETS[@]}"; do
+  if [[ " ${PKGS[@]} " != *" ${target} "* ]]; then
+    log_error "Invalid target '$target' to ${DOTS_COMMAND}. List targets by 'dots list'"
     exit 1
   fi
 done
-DOTS_TARGET="${DOTS_TARGETS[*]}"
 
 export DOTS_COMMAND
-export DOTS_TARGET
+# convert array into string since array is not exportable
+export DOTS_TARGET="${DOTS_TARGETS[*]}"
 export DOTS_MODE
 export DOTS_VERSION
 export DOTS_YES

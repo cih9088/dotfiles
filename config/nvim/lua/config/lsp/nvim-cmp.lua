@@ -78,7 +78,7 @@ local function cmp_setup()
          { name = "nvim_lsp" },
          { name = "luasnip" },
          -- { name = 'ultisnips' },
-         { name = "async_path" },
+         { name = "path" },
          { name = "buffer",    keyword_length = 3 },
          { name = "tmux",      max_item_count = 3 },
       },

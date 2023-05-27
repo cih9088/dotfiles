@@ -43,6 +43,8 @@ is_target_found() {
   local _TMP_TARGET=$TARGET
   local _FOUND=1
 
+  [ -z "${DOTS_TARGET+x}" ] && return 0
+
   while [ ! -z "${_TMP_TARGET}" ] && [ $_FOUND = 1 ]; do
     if [[ " "${DOTS_TARGET}" " == *" ${_TMP_TARGET} "* ]]; then
       _FOUND=0
@@ -54,7 +56,7 @@ is_target_found() {
   return $_FOUND
 }
 
-if [ ! -z "${DOTS_TARGET+x}" ] && ! is_target_found; then
+if ! is_target_found; then
   [ "${DOTS_COMMAND}" = "remove" ] && exit 0
   if [ ! -z "${DOTS_SKIP_DEPENDENCIES+x}" ] && [ "$DOTS_SKIP_DEPENDENCIES" == "true" ]; then
     exit 0
@@ -173,8 +175,8 @@ main_script() {
 
   local _TARGET_HL="${BOLD}${UNDERLINE}${_TARGET}${NC}"
   local _TARGET_CMD="${THIS_CMD:-${_TARGET}}"
-  local _TARGET_COMMAND=
-  local _TARGET_MODE=
+  local _TARGET_COMMAND="${DOTS_COMMAND:-}"
+  local _TARGET_MODE="${DOTS_MODE:-}"
   local _TARGET_VERSION=
   local _TARGET_YES=
   local _FUNC_SETUP=
@@ -232,7 +234,7 @@ main_script() {
   # interactively
   while true; do
     if [ -z "${_TARGET_COMMAND}" ]; then
-      yn=$(log_question "Do you want to install or remove ${_TARGET_HL}? [install/update/remove/skip]")
+      yn=$(log_question "What do you want for ${_TARGET_HL}? [install/update/remove/skip]")
       case $yn in
         [Ii]nstall* ) _TARGET_COMMAND="install"; ;;
         [Uu]pdate* ) _TARGET_COMMAND="update"; ;;
@@ -243,6 +245,7 @@ main_script() {
     fi
 
     if [ "${_TARGET_COMMAND}" == "skip" ]; then
+      log_ok "Skipping ${_TARGET_HL}."
       return
     fi
 
@@ -275,30 +278,23 @@ main_script() {
         if [ -n "${_FUNC_VERIFY_VERSION}" ]; then
           _TARGET_VERSION=$(question "Which version to install?" ${_TARGET_VERSION})
           if ! ${_FUNC_VERIFY_VERSION} ${_TARGET_VERSION} "${_AVAILABLE_VERSIONS}"; then
-            log_error "Invalid version ${_TARGET_VERSION}"; continue;
+            log_error "Invalid version '${_TARGET_VERSION}'."; continue;
           fi
         fi
       fi
     fi
 
     if [ -z "${_TARGET_YES}" ]; then
-      yn=$(log_question "Do you want to ${_TARGET_COMMAND} ${_TARGET_HL}?  [y/n]")
+      yn=$(log_question "Do you want to ${_TARGET_COMMAND} ${_TARGET_HL}=${_TARGET_VERSION} in ${_TARGET_MODE} mode?  [y/n]")
       case $yn in
         [Yy]* ) _TARGET_YES="true"; ;;
-        [Nn]* ) log_info "Aborting install ${_TARGET_HL}."; _TARGET_YES="false"; break;;
+        [Nn]* ) log_info "Aborting ${_TARGET_COMMAND} ${_TARGET_HL}."; _TARGET_YES="false"; break;;
         * ) log_error "Please answer 'yes' or 'no'."; continue;;
       esac
     fi
+
     break
   done
-
-  # if [[ " ${DOTS_TARGET} " != *" ${_TARGET} "* ]] && [ "${_TARGET_COMMAND}" != "install" ]; then
-  #   log_info "Skipped"
-  #   return
-  # elif [[ " ${DOTS_TARGET} " != *" ${_TARGET} "* ]] && [ "${_TARGET_MODE}" == "system" ]; then
-  #   log_info "Skipped"
-  #   return
-  # fi
 
   if [ ${_TARGET_YES} == "true" ]; then
     local _TMP_DIR=$(mktemp -d -t dotfiles.XXXXXXXX)
@@ -316,7 +312,7 @@ main_script() {
       _BANNER="[mode=local, version=${_TARGET_VERSION}]"
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
-      _BANNER="[mode=system]"
+      _BANNER="[mode=system, version=${_TARGET_VERSION}]"
       sudo -v
     fi
 
@@ -362,7 +358,7 @@ main_script() {
       exit "$exit_code"
     fi
 
-    # clean up
+    # clean up if it succeeded
     rm -rf "${_TMP_DIR}"
   else
     log_ok "Skipping ${_TARGET_HL}."
