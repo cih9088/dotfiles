@@ -39,7 +39,7 @@ ITEMS=(
   sh-env
 
   terminfo cmake zlib bzip2 unzip gzip xz libjpeg-turbo opencv ncurses openmpi
-  "zsh prezto" neovim "tmux tpm"
+  fish "zsh prezto" neovim "tmux tpm"
   wget tree fd rg thefuck tldr bash-snippets up jq sox pandoc tcpdump
 
   bin configs

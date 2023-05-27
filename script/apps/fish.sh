@@ -65,13 +65,11 @@ setup_for_local() {
       ++ tar -xvJf "fish-${VERSION}.tar.xz"
 
       ++ pushd "fish-${VERSION}"
-      ++ mkdir build && ++ cd build
-      # headers for test are not properly set
       # https://github.com/fish-shell/fish-shell/issues/9032#issuecomment-1173243686
+      sed -i -e '/^#include <curses.h>/{N; s/^#include <curses.h>\n#include <term.h>/${TPARM_INCLUDES}/}' cmake/ConfigureChecks.cmake
+      ++ mkdir build && ++ cd build
       ++ cmake .. \
-        -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-        -DWITH_GETTEXT=ON \
-        -DCMAKE_CXX_FLAGS="-I ${PREFIX}/include/ncurses"
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}"
       ++ make
       ++ make install
       ++ popd

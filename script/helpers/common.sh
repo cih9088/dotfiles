@@ -348,11 +348,11 @@ main_script() {
           "$_sudo" "DEBIAN_FRONTEND=noninteractive" "$@"
         }
       fi
-      log_info "Temp directory: ${_TMP_DIR}"
       cd "${_TMP_DIR}"
       "${_FUNC_SETUP}" "${_TARGET_COMMAND}" "${_TARGET_VERSION}"
     ) >&3 2>&4 && exit_code="0" || exit_code="$?"
     stop_spinner "${exit_code}" "$_END_BANNER_PASS" "$_END_BANNER_FAIL"
+    log_info "Temp directory: ${_TMP_DIR}"
 
     if [ "$exit_code" -ne 0 ]; then
       exit "$exit_code"
