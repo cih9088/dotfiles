@@ -25,7 +25,7 @@ PKG_APPS_WITH_HELP=(
   "zsh"           "z shell"
   "fish"          "fish shell"
   "prezto"        "framework for zsh"
-  "neovim"        "text editor"
+  "neovim"        "hyperextensible Vim-based text editor"
   "tmux"          "terminal multiplexer"
   "tpm"           "tmux plugin manager"
   "wget"          "non-interactive network downloader"
@@ -42,7 +42,6 @@ PKG_APPS_WITH_HELP=(
   "pyenv"         "python version maanger"
   "goenv"         "golang version manager"
   "asdf"          "runtime version manager"
-  "openmpi"       "high performance message passing implementation"
   "pandoc"        "universal document converter"
 )
 
@@ -56,38 +55,39 @@ PKG_DOTS_WITH_HELP=(
 
 PKG_LIBS_WITH_HELP=(
   "terminfo"      "terminal database"
-  "pkg-config"    "package metainformaation"
+  "pkg-config"    "package metainformation"
   "help2man"      "simple man page generator"
   "patch"         "diff file applier"
-  "ncurses"       "ncurses"
-  "readline"      "readline"
-  "gettext"       "gettext"
-  "cmake"         "cmake"
-  "zlib"          "zlib"
-  "bzip2"         "bzip"
-  "unzip"         "unzip"
-  "gzip"          "gzip"
-  "xz"            "xz"
-  "sqlite3"       "sqlite3"
-  "libffi"        "libffi"
-  "openssl"       "oepnssl"
-  "autotools"     "auottools"
-  "gnutls"        "gnutls"
-  "gnupg"         "gnupg"
-  "openldap"      "openldap"
+  "ncurses"       "library to write text-based user interface"
+  "readline"      "library providing inline editing and history for interactive programs"
+  "gettext"       "internationalization and localization system"
+  "cmake"         "cross-platform program for build automation, etc"
+  "zlib"          "library for data compression"
+  "bzip2"         "compression based on Burrows-Wheeler algorithm"
+  "unzip"         "decompress zip file"
+  "gzip"          "compression"
+  "xz"            "lossless compression based on the LZMA algorithm"
+  "sqlite3"       "database engine written in the C"
+  "libffi"        "foreign function interface library"
+  "openssl"       "secure communications library"
+  "autotools"     "GNU build system"
+  "gnutls"        "implementation of the TLS, SSL, and DTLS protocols"
+  "gnupg"         "GNU privacy guard"
+  "openldap"      "open-source implementation of the LDAP protocol"
   # "tcl"           "tcl"
   # "tk"            "tk"
   # "libx11"        "libx11"
-  "libjpeg-turbo" "libjpeg-turbo"
-  "opencv"        "opencv"
+  "libjpeg-turbo" "JPEG codec using SIMD instructions"
+  "opencv"        "real-time computer vision library"
+  "openmpi"       "high performance message passing implementation"
 )
 
 PKG_ENVS_WITH_HELP=(
   "python"                 "python"
   "python-env"             "python environments"
-  "python-env--virtualenv" "virtual environment"
+  "python-env--virtualenv" "python virtual environment"
   "python-env--black"      "python formatter"
-  "python-env--isort"      "impoort formatter"
+  "python-env--isort"      "import formatter"
   "python-env--flake8"     "python linter"
   "python-env--debugpy"    "debug adapter protocol for python"
   "golang"                 "golang"
@@ -129,7 +129,31 @@ while [ $idx -lt ${#PKG_ENVS_WITH_HELP[@]} ]; do
   idx=$(( $idx + 2 ))
 done
 
-PKGS=( "prerequisites" "${PKG_APPS_WITH_HELP[@]}" "${PKG_DOTS_WITH_HELP[@]}" "${PKG_LIBS_WITH_HELP[@]}" "${PKG_ENVS_WITH_HELP[@]}")
+PKGS=( "prerequisites" "${PKG_APPS[@]}" "${PKG_DOTS[@]}" "${PKG_ENVS[@]}" "${PKG_LIBS[@]}")
+
+
+simple_usage() {
+  cat <<EOF
+
+Usage:
+  $(basename "$0") {COMMAND} [OPTIONS] [TARGET...]
+
+Commands:
+  list      List available targets
+  install   Install targets
+  update    Update targets
+  remove    Remove targets
+
+Options:
+  -m, --mode                 Specify mode
+  -t, --version              Specify version to install
+  -y, --yes                  Do not prompt for confirmation
+  -s, --skip-dependencies    Skip dependencies
+  -v, --verbose              Verbose output
+  -h, --help                 Show help message
+
+EOF
+}
 
 
 usage() {
@@ -144,7 +168,7 @@ ${BOLD}${RED}SYNOPSIS${NC}
     ${BOLD}${RED}$(basename "$0")${NC} ${BOLD}${GREEN}COMMAND${NC} [${BOLD}${RED}-yvs${NC}] \
 [${BOLD}${RED}-m ${GREEN}mode${NC}] [${BOLD}${RED}-c ${GREEN}config${NC}] \
 [${BOLD}${RED}-t ${GREEN}version${NC}] \
-${BOLD}${GREEN}target${NC}...
+[${BOLD}${GREEN}target${NC}...]
 
 
 ${BOLD}${RED}DESCRIPTION${NC}
@@ -153,42 +177,52 @@ ${BOLD}${RED}DESCRIPTION${NC}
 
 ${BOLD}${RED}COMMAND${NC}
     ${BOLD}${RED}list, l${NC}
-        List available libraries, applications and environments
-
-    ${BOLD}${RED}test-prerequisites${NC}
-        Test prerequisites
+        List available targets.
 
     ${BOLD}${RED}install, i${NC} ${BOLD}${GREEN}target${NC}
-        Install ${BOLD}${GREEN}target${NC}
+        Install ${BOLD}${GREEN}target${NC}.
 
     ${BOLD}${RED}update, u${NC} ${BOLD}${GREEN}target${NC}
-        Update ${BOLD}${GREEN}target${NC}
+        Update ${BOLD}${GREEN}target${NC}.
 
     ${BOLD}${RED}remove, r${NC} ${BOLD}${GREEN}target${NC}
-        Remove ${BOLD}${GREEN}target${NC}
+        Remove ${BOLD}${GREEN}target${NC}.
+
+    ${BOLD}${RED}test-prerequisites${NC}
+        Test prerequisites.
 
     ${BOLD}${RED}change-shell${NC}
-        Change default shell to zsh/fish
+        Change default shell to zsh/fish.
 
 
 ${BOLD}${RED}OPTIONS${NC}
     ${BOLD}${RED}-m, --mode${NC} ${BOLD}${GREEN}mode${NC}
-        Specify mode for ${BOLD}${GREEN}target${NC} and do not prompt for it.
+        Specify mode for ${BOLD}target${NC} and do not prompt for it.
 
-        ${BOLD}local${NC}   run without sudo
-        ${BOLD}system${NC}  run with sudo
+        ${BOLD}local${NC}   manage target without sudo
+        ${BOLD}system${NC}  manage target with sudo
 
     ${BOLD}${RED}-t, --version${NC} ${BOLD}${GREEN}version_to_install${NC}
-        Specify a version to install. This enables ${BOLD}${RED}--skip-dependencies${NC} as well.
+        Specify a version to install. It supports ${BOLD}local${NC} mode only.
+        If not specified and --yes option is not given, it will list available versions to choose.
+        If not specified and --yes option is given, version will be set to ${BOLD}latest${NC}.
 
     ${BOLD}${RED}-y, --yes${NC}
-
-    ${BOLD}${RED}-v, --verbose${NC}
+        Do not prompt for confirmation
+        If the command is ${BOLD}install${NC} or ${BOLD}update${NC} and mode is ${BOLD}local${NC},
+        target with version ${BOLD}latest${NC} would be installed.
 
     ${BOLD}${RED}-s, --skip-dependencies${NC}
+        Skip all dependencies ${BOLD}target${NC} depends on.
+
+    ${BOLD}${RED}-v, --verbose${NC}
+        Verbose output.
+
+    ${BOLD}${RED}-c, --config${NC} ${BOLD}${GREEN}yaml_file${NC}
+        Configuration file in yaml.
 
     ${BOLD}${RED}-h, --help${NC}
-        Show this help message
+        Show this help message.
 
 HELP
 }
@@ -217,10 +251,10 @@ to_alternative() {
 }
 
 packages() {
-  _alternative 'dotfiles:dotfiles:'"\$(to_alternative "\${PKG_DOTS_WITH_HELP[@]}")"
-  _alternative 'applications:applications:'"\$(to_alternative "\${PKG_APPS_WITH_HELP[@]}")"
-  _alternative 'envs:environments:'"\$(to_alternative "\${PKG_ENVS[@]}")"
+  _alternative 'dots:dotfiles:'"\$(to_alternative "\${PKG_DOTS_WITH_HELP[@]}")"
+  _alternative 'apps:applications:'"\$(to_alternative "\${PKG_APPS_WITH_HELP[@]}")"
   _alternative 'libs:libraries:'"\$(to_alternative "\${PKG_LIBS_WITH_HELP[@]}")"
+  _alternative 'envs:environments:'"\$(to_alternative "\${PKG_ENVS_WITH_HELP[@]}")"
 }
 
 options() {
@@ -228,16 +262,16 @@ options() {
   local -a options
 
   options=(
-    {-y,--yes}'[yes]'
-    {-v,--verbose}'[verbose]'
-    {-c,--config}'[yaml configuration file]:filename:_files -g \*.\(yaml\|yml\)'
-    {-m,--mode}'[mode to manage targets]:mode:(system local)'
+    --yes'[do not prompt for confirmation]'
+    --verbose'[verbose output]'
+    --config'[configuration file]:filename:_files -g \*.\(yaml\|yml\)'
+    --mode'[mode to manage targets]:mode:(system local)'
   )
 
   if [[ \$command == "install" || \$command == "update" ]]; then
     options+=(
-      {-s,--skip-dependencies}'[skip dependencies for local mode]'
-      {-t,--version}'[specify version to install or update]:version:'
+      --skip-dependencies'[skip dependencies for local mode]'
+      --version'[specify version to install or update]:version:'
     )
   fi
 
@@ -248,7 +282,7 @@ _dots() {
   local state line
 
   _arguments \
-    {-h,--help}'[show help message]: :->done' \
+    --help'[show help message]: :->done' \
     '1:command:->commands' \
     '*::arg:->args'
 
@@ -301,16 +335,49 @@ EOF
 }
 
 show_list() {
-    cat <<EOF
+  local group="${1:-}"
 
-Available list to install
+  if [[ " apps libs envs dots " != *" $group "* ]]; then
+    group=""
+  fi
 
-- ${BOLD}${RED}Dots${NC}: ${PKG_DOTS[@]}
-- ${BOLD}${RED}Apps${NC}: ${PKG_APPS[@]}
-- ${BOLD}${RED}Envs${NC}: ${PKG_ENVS[@]}
-- ${BOLD}${RED}Libs${NC}: ${PKG_LIBS[@]}
+  if [ -z "$group" ] || [ "$group" = "dots" ]; then
+    echo
+    echo "Available ${BOLD}${RED}dots${NC} to manage:"
+    idx=0
+    while [ $idx -lt ${#PKG_DOTS_WITH_HELP[@]} ]; do
+      echo "- ${PURPLE}${PKG_DOTS_WITH_HELP[$idx]}${NC}: ${PKG_DOTS_WITH_HELP[$(($idx + 1))]}"
+      idx=$(( $idx + 2 ))
+    done
+  fi
+  if [ -z "$group" ] || [ "$group" = "apps" ]; then
+    echo
+    echo "Available ${BOLD}${RED}apps${NC} to manage:"
+    idx=0
+    while [ $idx -lt ${#PKG_APPS_WITH_HELP[@]} ]; do
+      echo "- ${PURPLE}${PKG_APPS_WITH_HELP[$idx]}${NC}: ${PKG_APPS_WITH_HELP[$(($idx + 1))]}"
+      idx=$(( $idx + 2 ))
+    done
+  fi
+  if [ -z "$group" ] || [ "$group" = "libs" ]; then
+    echo
+    echo "Available ${BOLD}${RED}libs${NC} to manage:"
+    idx=0
+    while [ $idx -lt ${#PKG_LIBS_WITH_HELP[@]} ]; do
+      echo "- ${PURPLE}${PKG_LIBS_WITH_HELP[$idx]}${NC}: ${PKG_LIBS_WITH_HELP[$(($idx + 1))]}"
+      idx=$(( $idx + 2 ))
+    done
+  fi
+  if [ -z "$group" ] || [ "$group" = "envs" ]; then
+    echo
+    echo "Available ${BOLD}${RED}envs${NC} to manage:"
+    idx=0
+    while [ $idx -lt ${#PKG_ENVS_WITH_HELP[@]} ]; do
+      echo "- ${PURPLE}${PKG_ENVS_WITH_HELP[$idx]}${NC}: ${PKG_ENVS_WITH_HELP[$(($idx + 1))]}"
+      idx=$(( $idx + 2 ))
+    done
+  fi
 
-EOF
 }
 
 
@@ -388,9 +455,8 @@ done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 if [ $# -eq 0 ]; then
-  log_error "Command is not provided"
-  usage
-  exit 1
+  simple_usage
+  exit 0
 fi
 DOTS_COMMAND="${1}"
 shift
@@ -404,7 +470,7 @@ shift
 
 case $DOTS_COMMAND in
   list)
-    show_list
+    show_list "${1:-}"
     exit 0
     ;;
   completion)
@@ -424,7 +490,8 @@ case $DOTS_COMMAND in
   install|remove|update)
     ;;
   *)
-    log_error "Unknown command $DOTS_COMMAND"
+    log_error "Unknown command '$DOTS_COMMAND'"
+    simple_usage
     exit 1
     ;;
 esac
@@ -454,9 +521,8 @@ fi
 
 for i in "${!DOTS_TARGETS[@]}"; do
   DOTS_TARGET=${DOTS_TARGETS[i]}
-
-  if [[ "${PKGS[@]}" != *"${DOTS_TARGET}"* ]]; then
-    log_error "Invalid target '$DOTS_TARGET' to ${DOTS_COMMAND}"
+  if [[ " ${PKGS[@]} " != *" ${DOTS_TARGET} "* ]]; then
+    log_error "Invalid target '$DOTS_TARGET' to ${DOTS_COMMAND}. List targets by 'dots list'"
     exit 1
   fi
 done

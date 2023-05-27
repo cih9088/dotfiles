@@ -185,6 +185,10 @@ main_script() {
   _TARGET_VERSION="${DOTS_VERSION:-latest}"
   _TARGET_YES="${DOTS_YES:-}"
 
+  if ! is_target_found; then
+    _TARGET_VERSION="latest"
+  fi
+
   # debug mode
   if [ "${_TARGET_MODE}" = "debug" ]; then
     if is_target_found; then

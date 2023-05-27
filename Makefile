@@ -226,7 +226,7 @@ opencv: \
 	@( $(SCRIPTS_DIR)/libs/opencv.sh )
 
 openmpi:
-	@( $(SCRIPTS_DIR)/apps/openmpi.sh )
+	@( $(SCRIPTS_DIR)/libs/openmpi.sh )
 
 # sox
 # -----------------------------------------------------
