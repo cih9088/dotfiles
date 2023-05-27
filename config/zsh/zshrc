@@ -10,18 +10,6 @@
 # ENVIRONMENT CONFIGURATION
 # =======================================================================================
 
-# Identify platform
-# ---------------------------------------------------------------------------------------
-  case "$OSTYPE" in
-    solaris*) PLATFORM="SOLARIS" ;;
-    darwin*)  PLATFORM="OSX" ;;
-    linux*)   PLATFORM="LINUX" ;;
-    bsd*)     PLATFORM="BSD" ;;
-    msys*)    PLATFORM="WINDOWS" ;;
-    *)        PLATFORM="unknown: $OSTYPE" ;;
-  esac
-  export PLATFORM
-
 
 # Get terminal colour scheme and background luminance
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
@@ -274,13 +262,13 @@
 
 # plarform specific
 # ---------------------------------------------------------------------------------------
-  if [[ ${PLATFORM} == "OSX" ]]; then
+  if [[ "$OSTYPE" == darwin* ]]; then
     alias f='open -a Finder ./'                             # f:     Opens current directory in MacOS Finder
     alias DT='tee ~/Desktop/terminalOut.txt'                # DT:    Pipe content to file on MacOS Desktop
     alias cleanupDS="find . -type f -name '*.DS_Store' -ls -delete"
     function trash () { command mv "$@" ~/.Trash ; }        # trash: Moves a file to the MacOS trash
     function ql () { qlmanage -p "$*" >& /dev/null; }       # ql:    Opens any file in MacOS Quicklook Preview
-  elif [[ ${PLATFORM} == "LINUX" ]]; then
+  elif [[ "$OSTYPE" == linux* ]]; then
     alias drop-swap="sudo sh -c 'swapoff -a && swapon -a'"  # drop-swap:   clear swap memory
     alias drop-cache="sudo sh -c '/usr/bin/sync; /usr/bin/echo 3 > /proc/sys/vm/drop_caches'" # drop-cache: clear cache
   fi

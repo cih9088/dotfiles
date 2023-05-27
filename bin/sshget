@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # copied from https://github.com/DanielFGray/fzf-scripts/blob/master/sshget
-# modified by Andy <cih9088@gmail.com>
+# modified by Inhyuk Andy Cho <cih9088@gmail.com>
 
 trap cleanup SIGHUP SIGINT SIGTERM
 

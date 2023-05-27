@@ -1,6 +1,6 @@
 " =============================================================================
 " Filename: autoload/lightline/colorscheme/honghong.vim
-" Author: Andy Cho
+" Author: Inhyuk Andy Cho
 " License: MIT License
 " Last Change: 2020/06/08 11:34:11.
 " =============================================================================

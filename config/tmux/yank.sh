@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Copied from https://github.com/samoshkin/tmux-config
-# Modified by Andy <cih9088@gmail.com>
+# Modified by Inhyuk Andy Cho <cih9088@gmail.com>
 
 
 set -eu

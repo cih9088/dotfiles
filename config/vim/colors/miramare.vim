@@ -2,7 +2,7 @@
 " Name:            Miramare
 " Description:     Comfortable & Pleasant Color Scheme for Vim
 " OriginalAuthor:  Francisco Bach <franciscobach@gmail.com>
-" Author:          Andy Cho <cih9088@gmail.com>
+" Author:          Inhuuk Andy Cho <cih9088@gmail.com>
 " Website:         https://github.com/h9088/dotfiles
 " License:         MIT
 " -----------------------------------------------------------------------------

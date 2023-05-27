@@ -3,7 +3,7 @@
 trap "clean_stdin; reveal_stdin" SIGINT SIGTERM EXIT
 
 # Author: Tasos Latsas
-# Modified: Andy <cih9088@gmail.com>
+# Modified: Inhyuk Andy Cho <cih9088@gmail.com>
 
 # spinner.sh
 #

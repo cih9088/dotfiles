@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # copied from http://www.cyberciti.biz/faq/linux-list-users-command
-# modified by Andy <cih9088@gmail.com>
+# modified by Inhyuk Andy Cho <cih9088@gmail.com>
 
 set -euo pipefail
 trap "echo 'error: Script failed: see failed command above'" ERR
