@@ -47,6 +47,7 @@
   Plug 'tpope/vim-unimpaired'
   " Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-abolish'
+  Plug 'tpope/vim-dispatch'
   Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
   Plug 'chrisbra/csv.vim', { 'for': 'csv' }
 
@@ -1128,6 +1129,13 @@
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('vim-unimpaired')
     let g:nremap = {"[t": "", "]t": "", "[T": "", "]T": ""}
+  endif
+
+
+" tpope/vim-dispatch
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('vim-dispatch')
+    let g:dispatch_no_maps = 1
   endif
 
 
