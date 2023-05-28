@@ -55,8 +55,7 @@ declare -r esc=$'\033'
 declare -r c_reset="${esc}[0m"
 declare -r c_red="${esc}[31m"
 
-# declare -r fifo='/tmp/sshget.fifo'
-declare -r fifo="$(mktemp -d --suffix sshget_fifo)/fifo"
+declare -r fifo="$(mktemp -d)/fifo"
 declare -A domains=()
 declare -A paths=()
 declare -a files=()
