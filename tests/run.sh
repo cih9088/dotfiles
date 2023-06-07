@@ -42,7 +42,7 @@ ITEMS=(
   fish "zsh prezto" neovim "tmux tpm"
   wget tree fd rg thefuck tldr bash-snippets up jq sox pandoc tcpdump
 
-  bin configs
+  bins configs
 )
 
 
