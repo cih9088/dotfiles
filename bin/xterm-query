@@ -23,7 +23,7 @@ Ps=${1:-11}
 stty -icanon -echo min 0 time 1
 seq="\033]$Ps;?\007"
 test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" &&
-  seq="\033Ptmux;${seq/\\033/\\033\\033}\0\033\\"
+  seq="\033Ptmux;$(printf "%s\n" $seq | sed 's/\\033/\\033\\033/')\0\033\\"
 printf $seq > $target_tty
 read -r answer
 result=${answer#*;}
