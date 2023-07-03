@@ -205,8 +205,8 @@ brew install --cask zotero
 
 
 # install yabai
-brew install koekeishiya/formulae/yabai --HEAD
-echo "$(whoami) ALL = (root) NOPASSWD: $(brew --prefix)/bin/yabai --load-sa" | \
+brew install koekeishiya/formulae/yabai
+echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(brew --prefix)/bin/yabai) --load-sa" | \
     sudo tee -a /private/etc/sudoers.d/yabai >/dev/null
 # reinstall the scripting addition
 sudo yabai --uninstall-sa || true
