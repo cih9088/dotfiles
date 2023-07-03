@@ -3,7 +3,7 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
-GH="stedolan/jq"
+GH="jqlang/jq"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
