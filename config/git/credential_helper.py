@@ -136,7 +136,7 @@ def main():
         protocol = host = username = None
         if not sys.stdin.isatty():
             for line in sys.stdin:
-                k, v = line.split("=")
+                k, v = line.split("=", 1)
                 if k == "protocol":
                     protocol = v.strip()
                 elif k == "host":
