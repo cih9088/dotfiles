@@ -34,7 +34,6 @@ setup_for_local() {
   local VERSION="${2:-}"
   local SRC_PATH=""
   local SRC_PATH_2=""
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncurses-*")"
   SRC_PATH_2="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "ncursesw-*")"
 
@@ -69,6 +68,8 @@ setup_for_local() {
   # install
   if [[ "install update" == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ] || [ -z "${SRC_PATH_2}" ] ; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
+
       ++ curl -LO "https://ftp.gnu.org/pub/gnu/ncurses/ncurses-${VERSION}.tar.gz"
 
       if [ -z "${SRC_PATH}" ]; then

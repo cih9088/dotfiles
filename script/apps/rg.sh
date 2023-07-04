@@ -39,7 +39,6 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -58,6 +57,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ ! -f "${PREFIX}/bin/rg" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       case ${PLATFORM} in
         OSX )

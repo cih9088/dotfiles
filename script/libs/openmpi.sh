@@ -32,7 +32,7 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
+  local SRC_PATH=""
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "openmpi-*")"
 
   # remove
@@ -55,6 +55,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       ++ curl -LO "https://download.open-mpi.org/release/open-mpi/$(echo $VERSION | grep -o 'v[0-9]\+\.[0-9]\+')/openmpi-${VERSION#v}.tar.gz"
       ++ tar -xvf "openmpi-${VERSION#v}.tar.gz"

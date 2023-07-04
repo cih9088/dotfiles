@@ -33,7 +33,6 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "sqlite-autoconf-*")"
 
   # removehttps://github.com/sqlite/sqlite/archive/refs/tags/version-3.41.0.tar.gz
@@ -61,6 +60,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       ++ curl -L "https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=${VERSION}" -o sqlite-${VERSION}.tar.gz
       ++ tar -xvzf "sqlite-${VERSION}.tar.gz"

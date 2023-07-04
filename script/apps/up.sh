@@ -28,7 +28,6 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -45,6 +44,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ ! -f "${PREFIX}/bin/up" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       case ${PLATFORM} in
         OSX )
@@ -64,7 +64,7 @@ setup_for_local() {
 
 setup_for_system() {
   local COMMAND="${1:-skip}"
-  local VERSION="$(list_versions | head -n 1)"
+  local VERSION=""
 
   case "${PLATFORM}" in
     OSX)
@@ -81,6 +81,7 @@ setup_for_system() {
         ++ sudo rm -f /usr/local/bin/up
       fi
       if [[ "install update"  == *"${COMMAND}"* ]]; then
+        VERSION="$(list_versions | head -n 1)"
         ++ curl -LO "https://github.com/akavel/up/releases/download/${VERSION}/up"
         ++ sudo mkdir -p /usr/local/bin
         ++ sudo cp up /usr/local/bin

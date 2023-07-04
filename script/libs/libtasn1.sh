@@ -33,7 +33,6 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libtasn1-*")"
 
   # remove
@@ -56,6 +55,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       ++ curl -LO "https://ftp.gnu.org/gnu/libtasn1/libtasn1-${VERSION}.tar.gz"
       ++ tar -xvzf "libtasn1-${VERSION}.tar.gz"

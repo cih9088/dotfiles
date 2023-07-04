@@ -19,8 +19,6 @@ version_func() {
 
 setup_for_local() {
   local COMMAND="${1:-skip}"
-  local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="latest"
 
   if [ "${COMMAND}" == "remove" ]; then
     if [ -f "${HOME}/.asdf/asdf.sh" ]; then

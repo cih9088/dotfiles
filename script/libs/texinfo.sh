@@ -37,7 +37,7 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
+  local SRC_PATH=""
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "texinfo-*")"
 
   # remove
@@ -60,6 +60,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       ++ curl -LO "https://ftp.gnu.org/gnu/texinfo/texinfo-${VERSION}.tar.gz"
       ++ tar -xvzf "texinfo-${VERSION}.tar.gz"

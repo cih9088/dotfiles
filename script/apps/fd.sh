@@ -32,7 +32,6 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
@@ -51,6 +50,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ ! -f "${PREFIX}/bin/fd" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       case ${PLATFORM} in
         OSX )
@@ -83,7 +83,7 @@ setup_for_local() {
 
 setup_for_system() {
   local COMMAND="${1:-skip}"
-  local VERSION="$(list_versions | head -n 1)"
+  local VERSION=""
 
   case "${PLATFORM}" in
     OSX)
@@ -113,6 +113,8 @@ setup_for_system() {
             ++ sudo rm -f /usr/local/share/bash-completion/completions/fd
           fi
           if [[ "install update"  == *"${COMMAND}"* ]]; then
+             VERSION="$(list_versions | head -n 1)"
+
             ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
             ++ tar -xvzf "fd-${VERSION}-${ARCH}-unknown-linux-gnu.tar.gz"
 

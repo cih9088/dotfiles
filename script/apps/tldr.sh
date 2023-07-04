@@ -28,7 +28,6 @@ verify_version() {
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
   # uninstall slow tldr client
   has pip2 && pip2 uninstall --yes tldr >/dev/null 2>&1 || true
@@ -42,6 +41,7 @@ setup_for_local() {
 
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ ! -f ${PREFIX}/bin/tldr ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       # name is changed after version v1.5.0
       _name="tldr"
@@ -69,7 +69,7 @@ setup_for_local() {
 
 setup_for_system() {
   local COMMAND="${1:-skip}"
-  local VERSION="$(list_versions | head -n 1)"
+  local VERSION=""
 
   case "${PLATFORM}" in
     OSX)
@@ -86,6 +86,7 @@ setup_for_system() {
         ++ sudo rm -rf /usr/local/bin/tldr
       fi
       if [[ "install update"  == *"${COMMAND}"* ]]; then
+        VERSION="$(list_versions | head -n 1)"
         ++ sudo mkdir -p /usr/local/bin
         if [ "${ARCH}" == "x86_64" ]; then
           ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tealdeer-linux-x86_64-musl"

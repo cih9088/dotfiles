@@ -29,7 +29,6 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "libevent-*")"
 
   # remove
@@ -52,6 +51,7 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       ++ curl -LO "https://github.com/libevent/libevent/releases/download/${VERSION}/${VERSION/release/libevent}.tar.gz"
       ++ tar -xvzf "${VERSION/release/libevent}.tar.gz"
