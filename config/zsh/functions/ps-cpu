@@ -1,11 +1,16 @@
-if [ ${PLATFORM} = "OSX" ]; then
-  local cmd='ps -r -axo user,pid,ppid,pcpu,pmem,state,time,command'
-elif [ ${PLATFORM} = "LINUX" ]; then
-  local cmd='ps --sort -pcpu -axo user,pid,ppid,pcpu,pmem,nlwp,state,time,command'
-else
-  echo "${PLATFORM} is not supported" >&2
-  return 1
-fi
+local cmd
+
+case "$OSTYPE" in
+  darwin*)
+    cmd='ps -r -axo user,pid,ppid,pcpu,pmem,state,time,command'
+    ;;
+  linux*)
+    cmd='ps --sort -pcpu -axo user,pid,ppid,pcpu,pmem,nlwp,state,time,command'
+    ;;
+  *)
+    echo "'${OSTYPE}' is not supported OS type." >&2; return 1
+    ;;
+esac
 
 if [ "$1" = "-l" ]; then
   eval ${cmd} | head -n 16

@@ -1,6 +1,9 @@
-if [ ${PLATFORM} != "LINUX" ]; then
-  echo "${PLATFORM} is not supported" >&2
-  return 1
-fi
+case "$OSTYPE" in
+  linux*)
+    ;;
+  *)
+    echo "'${OSTYPE}' is not supported OS type." >&2; return 1
+    ;;
+esac
 
 cat /proc/"$1"/cmdline | tr '\000' ' '

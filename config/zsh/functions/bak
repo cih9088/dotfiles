@@ -22,13 +22,16 @@ else
   return 1
 fi
 
-if [ "${PLATFORM}" = "OSX" ]; then
-  # eval $bak_cmd "$bak_target" "$bak_target".$(date -r $(stat -f '%m' "$bak_target") "+%y%m%d%H%M").bak
-  eval "$bak_cmd" "$bak_target" "$bak_target.$(date "+%y%m%d%H%M").bak"
-elif [ "${PLATFORM}" = "LINUX" ]; then
-  # eval $bak_cmd "$bak_target" "$bak_target".$(date -d @$(stat -c '%Y' "$bak_target") "+%y%m%d%H%M").bak
-  eval "$bak_cmd" "$bak_target" "$bak_target.$(date "+%y%m%d%H%M").bak"
-else
-  echo "${PLATFORM} is not supported" >&2
-  return 1
-fi
+case "$OSTYPE" in
+  darwin*)
+    # eval $bak_cmd "$bak_target" "$bak_target".$(date -r $(stat -f '%m' "$bak_target") "+%y%m%d%H%M").bak
+    eval "$bak_cmd" "$bak_target" "$bak_target.$(date "+%y%m%d%H%M").bak"
+    ;;
+  linux*)
+    # eval $bak_cmd "$bak_target" "$bak_target".$(date -d @$(stat -c '%Y' "$bak_target") "+%y%m%d%H%M").bak
+    eval "$bak_cmd" "$bak_target" "$bak_target.$(date "+%y%m%d%H%M").bak"
+    ;;
+  *)
+    echo "'${OSTYPE}' is not supported OS type." >&2; return 1
+    ;;
+esac

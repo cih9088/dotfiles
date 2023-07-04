@@ -14,15 +14,6 @@ INLINE=false
 ASKPASS=''
 
 
-case "$OSTYPE" in
-  solaris*) platform="SOLARIS" ;;
-  darwin*)  platform="OSX" ;;
-  linux*)   platform="LINUX" ;;
-  bsd*)     platform="BSD" ;;
-  msys*)    platform="WINDOWS" ;;
-  *)        platform="unknown: $OSTYPE" ;;
-esac
-
 usage() {
   LESS=-FEXR less <<HELP
 

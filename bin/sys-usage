@@ -11,18 +11,12 @@ BIWhite='[1;97m'      # White
 ##################################################
 
 case "$OSTYPE" in
-  solaris*) platform="SOLARIS" ;;
-  darwin*)  platform="OSX" ;;
-  linux*)   platform="LINUX" ;;
-  bsd*)     platform="BSD" ;;
-  msys*)    platform="WINDOWS" ;;
-  *)        platform="unknown: $OSTYPE" ;;
+  linux*)
+    ;;
+  *)
+    echo "'${OSTYPE}' is not supported OS type." >&2; exit 1
+    ;;
 esac
-
-if [[ $platform != LINUX ]]; then
-  echo "This script dose not support $platform." >&2
-  exit 1
-fi
 
 if [ ${#@} == 0 ]; then
   args="-c"

@@ -1,7 +1,10 @@
-if [ ${PLATFORM} != "LINUX" ]; then
-  echo "${PLATFORM} is not supported" >&2
-  return 1
-fi
+case "$OSTYPE" in
+  linux*)
+    ;;
+  *)
+    echo "'${OSTYPE}' is not supported OS type." >&2; return 1
+    ;;
+esac
 
 pid="$1"
 sudo strace -e write=1,2 -p $pid 2>&1 | sed -un "/^ |/p" | sed -ue "s/^.\{9\}\(.\{50\}\).\+/\1/g" -e 's/ //g' | xxd -r -p
