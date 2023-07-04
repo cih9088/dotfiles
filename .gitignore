@@ -1,15 +1,18 @@
-temp
-
-config/nvim/coc-settings.json
 config/nvim/undodir
+config/nvim/coc-settings.json
 
 config/vim/undodir
+config/vim/autoload/plug.vim
+config/vim/plugged
+
+config/tmux/plugins
+config/tmux/resurrect
 
 config/git/config.local
 
-config/vim/plugged
-
 config/sketchybar/plugins/icon_map_fn.sh
+
+bin/dircnt
 
 **/.netrwhist
 **/.netrwbook
