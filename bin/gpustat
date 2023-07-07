@@ -211,8 +211,8 @@ while true; do
       memory=$(cut -d ',' -f 3 <(echo ${line}) | tr -d '[:space:]')
       user=$(stat -c "%U" /proc/${pid} 2>/dev/null || echo "Anonymous")
       comm=$(strings /proc/${pid}/cmdline || echo "Unkonwn")
-      comm=$(basename "/Unkonwn$(echo $comm | awk '{print $1}')")
-      if [ $user == "Anonymous" ] || [ $comm == "Unkonwn" ]; then
+      [ ! -z "$comm" ] && comm=$(echo "$comm" | head -n 1) || comm="Unkonwn"
+      if [ "$user" == "Anonymous" ] || [ "$comm" == "Unkonwn" ]; then
         re_parse=true
         break
       fi
