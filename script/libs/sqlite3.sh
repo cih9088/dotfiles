@@ -33,7 +33,7 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "sqlite-autoconf-*")"
+  SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "sqlite-*")"
 
   # removehttps://github.com/sqlite/sqlite/archive/refs/tags/version-3.41.0.tar.gz
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
