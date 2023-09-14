@@ -54,7 +54,9 @@ setup_for_local() {
       [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
       ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/libsodium-${VERSION/-RELEASE/}.tar.gz"
-      ++ tar -xvzf "libsodium-${VERSION/-RELEASE/}.tar.gz"
+      # libsodium 1.0.19 files have different top level directory name
+      ++ mkdir "libsodium-${VERSION/-RELEASE/}"
+      ++ tar -xvzf "libsodium-${VERSION/-RELEASE/}.tar.gz" -C "libsodium-${VERSION/-RELEASE/}" --strip-components 1
 
       ++ pushd "libsodium-${VERSION/-RELEASE/}"
       ++ ./configure --prefix="${PREFIX}"
