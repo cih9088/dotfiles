@@ -20,12 +20,22 @@ target_tty="${SSH_TTY:-$parent_tty}"
 # 11: text background
 Ps=${1:-11}
 
-stty -icanon -echo min 0 time 1
+# wait 1 second max by default
+t=${2:-0.001}
+max_ctr=${3:-1000}
+
+stty -icanon -echo min 0 time 0
 seq="\033]$Ps;?\007"
 test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" &&
   seq="\033Ptmux;$(printf "%s\n" $seq | sed 's/\\033/\\033\\033/')\0\033\\"
+
 printf $seq > $target_tty
-read -r answer
+ctr=0
+while [ ${#answer} -eq 0 ] && [ $ctr -lt $max_ctr  ]; do
+  sleep $t
+  read -r answer
+  ctr=$(( $ctr + 1 ))
+done
 result=${answer#*;}
 # Remove escape at the end.
 echo $result
