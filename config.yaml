@@ -21,7 +21,7 @@ golang:
 
 rust:
   mode: local
-  version: 1.65.0
+  version: 1.70.0
 
 nodejs:
   mode: local
