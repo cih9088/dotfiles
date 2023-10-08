@@ -27,7 +27,7 @@ local on_attach = function(client, bufnr)
    -- end, bufopts)
    vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
    vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
-   vim.keymap.set("n", "<space>ca", vim.lsp.buf.code_action, bufopts)
+   vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, bufopts)
    vim.keymap.set('n', '<space>f', function()
       vim.lsp.buf.format { async = true }
    end, bufopts)
@@ -55,6 +55,11 @@ local on_attach = function(client, bufnr)
             autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
          augroup END
       ]])
+   end
+
+   -- Inlay hints
+   if client.server_capabilities.inlayHintProvider then
+      vim.lsp.buf.inlay_hint(bufnr, true)
    end
 end
 

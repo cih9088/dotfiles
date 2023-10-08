@@ -13,14 +13,14 @@ function M.setup()
    vim.keymap.set('n', '<Plug>DAPreplOpen', function() require('dap').repl.open() end, { noremap = true, silent = true })
    vim.keymap.set('n', '<Plug>DAPRunLast', function() require('dap').run_last() end, { noremap = true, silent = true })
 
-   vim.keymap.set('n', '<leader>dc', '<Plug>DAPContinue')
-   vim.keymap.set('n', '<leader>dn', '<Plug>DAPStepOver')
-   vim.keymap.set('n', '<leader>di', '<Plug>DAPStepInto')
-   vim.keymap.set('n', '<leader>do', '<Plug>DAPStepOut')
-   vim.keymap.set('n', '<Leader>db', '<Plug>DAPToggleBreakPoint')
-   vim.keymap.set('n', '<Leader>dB', '<Plug>DAPSetBreakPoint')
-   vim.keymap.set('n', '<Leader>dr', '<Plug>DAPreplOpen')
-   vim.keymap.set('n', '<Leader>dl', '<Plug>DAPRunLast')
+   vim.keymap.set('n', '<space>dc', '<Plug>DAPContinue')
+   vim.keymap.set('n', '<space>dn', '<Plug>DAPStepOver')
+   vim.keymap.set('n', '<space>di', '<Plug>DAPStepInto')
+   vim.keymap.set('n', '<space>do', '<Plug>DAPStepOut')
+   vim.keymap.set('n', '<space>db', '<Plug>DAPToggleBreakPoint')
+   vim.keymap.set('n', '<space>dB', '<Plug>DAPSetBreakPoint')
+   vim.keymap.set('n', '<space>dr', '<Plug>DAPreplOpen')
+   vim.keymap.set('n', '<space>dl', '<Plug>DAPRunLast')
 end
 
 return M

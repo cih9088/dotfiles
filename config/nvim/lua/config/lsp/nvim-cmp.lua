@@ -74,29 +74,24 @@ local function cmp_setup()
             end
          end, { "i", "s" }),
       },
-      sources = {
+      sources = cmp.config.sources({
          { name = "nvim_lsp" },
          { name = "luasnip" },
-         -- { name = 'ultisnips' },
-         { name = "path" },
-         { name = "buffer",    keyword_length = 3 },
-         { name = "tmux",      max_item_count = 3 },
-      },
-   })
-
-   -- cmp.setup.cmdline('/', {
-   --    sources = {
-   --       { name = 'buffer' }
-   --    }
-   -- })
-
-   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-   cmp.setup.cmdline(":", {
-      sources = cmp.config.sources({
          { name = "path" },
       }, {
-         { name = "cmdline" },
+         { name = "buffer", keyword_length = 3 },
+         { name = "tmux",   max_item_count = 3 },
       }),
+   })
+
+   -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+   cmp.setup.cmdline(':', {
+      mapping = cmp.mapping.preset.cmdline(),
+      sources = cmp.config.sources({
+         { name = 'path' }
+      }, {
+         { name = 'cmdline' }
+      })
    })
 end
 

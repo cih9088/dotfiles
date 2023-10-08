@@ -18,7 +18,12 @@
 
 " Themes
 " ---------------------------------------------------------------------------------------
-  Plug 'ryanoasis/vim-devicons'
+  if has("nvim-0.7")
+    Plug 'nvim-tree/nvim-web-devicons'
+  else
+    Plug 'ryanoasis/vim-devicons'
+  endif
+
   Plug 'morhetz/gruvbox'
   Plug 'w0ng/vim-hybrid'
   Plug 'joshdick/onedark.vim'
@@ -48,6 +53,8 @@
   " Plug 'tpope/vim-obsession'
   Plug 'tpope/vim-abolish'
   Plug 'tpope/vim-dispatch'
+  Plug 'tpope/vim-endwise'
+  Plug 'tpope/vim-vinegar'
   Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
   Plug 'chrisbra/csv.vim', { 'for': 'csv' }
 
@@ -74,9 +81,8 @@
     Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': 'python' }
   endif
 
+  Plug 'LunarWatcher/auto-pairs'
   Plug 'AndrewRadev/splitjoin.vim'
-  " Plug 'preservim/nerdtree'
-  Plug 'tpope/vim-vinegar'
   Plug 'liuchengxu/vista.vim'
   Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 
@@ -88,22 +94,22 @@
   if has("nvim-0.7")
     Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
     Plug 'williamboman/mason-lspconfig.nvim'
-    Plug 'jose-elias-alvarez/null-ls.nvim'
-    Plug 'nvim-lua/lsp-status.nvim'
+    Plug 'jay-babu/mason-null-ls.nvim'
     Plug 'neovim/nvim-lspconfig'
+    Plug 'nvim-lua/lsp-status.nvim'
+    Plug 'nvimtools/none-ls.nvim'
 
     Plug 'hrsh7th/nvim-cmp'
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
     Plug 'hrsh7th/cmp-path'
     Plug 'hrsh7th/cmp-cmdline'
-    " Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
     Plug 'andersevenrud/cmp-tmux'
     Plug 'L3MON4D3/LuaSnip'
     Plug 'saadparwaiz1/cmp_luasnip'
 
     Plug 'ray-x/lsp_signature.nvim'
-    " Plug 'nvim-lualine/lualine.nvim'
+    " Plug 'hood/popui.nvim'
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
   else
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
@@ -352,25 +358,30 @@
 
 " StatusLine
 " ---------------------------------------------------------------------------------------
- function! StatusLineActive()
-    let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
-    let mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
-    let ro  = "%{&readonly ? '👀' : ''}"
-    let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
-    let sep = ' %= '
-    let pos = ' %-12(%l : %c%V%) '
-    let format = ' %-7([%{&fileformat}]%) '
-    let pct = ' %P'
-    return '[%n] 🌸 %f '.ft.mod.' '.ro.' %<'.sep.fug.format.pos.'%*'.pct
-  endfunction
-  function! StatusLineInactive()
-    return '[%n] %F'
-  endfunction
-  augroup statusline
-    autocmd!
-    autocmd WinEnter,BufEnter * setlocal statusline=%!StatusLineActive()
-    autocmd WinLeave,BufLeave * setlocal statusline=%!StatusLineInactive()
-  augroup end
+
+  if has("nvim-0.5")
+    lua require("config.statusline")
+  else
+    function! StatusLineActive()
+      let ft  = "%{len(&filetype) ? '['.&filetype.'] ' : ''}"
+      let mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
+      let ro  = "%{&readonly ? '👀' : ''}"
+      let fug = "%{exists('g:loaded_fugitive') ? fugitive#statusline() : ''}"
+      let sep = ' %= '
+      let pos = ' %-12(%l : %c%V%) '
+      let format = ' %-7([%{&fileformat}]%) '
+      let pct = ' %P'
+      return '[%n] 🌸 %f '.ft.mod.' '.ro.' %<'.sep.fug.format.pos.'%*'.pct
+    endfunction
+    function! StatusLineInactive()
+      return '[%n] %F'
+    endfunction
+    augroup statusline
+      autocmd!
+      autocmd WinEnter,BufEnter * setlocal statusline=%!StatusLineActive()
+      autocmd WinLeave,BufLeave * setlocal statusline=%!StatusLineInactive()
+    augroup end
+  endif
 
 
 
@@ -967,13 +978,6 @@
   endif
 
 
-" preservim/nerdtree
-" ---------------------------------------------------------------------------------------
-  if IsPlugInstalled('nerdtree')
-    nmap <leader>N :NERDTreeToggle<CR>
-  endif
-
-
 " scrooloose/nerdcommenter
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nerdcommenter')
@@ -1115,13 +1119,6 @@
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('quick-scope')
     let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-    augroup qs_colors
-      autocmd!
-      autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
-      autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
-    augroup END
-    " need to set colorscheme after autocmd is defined
-    call ChangeBackground()
   endif
 
 
@@ -1354,13 +1351,6 @@
   endif
 
 
-" folke/which-key.nvim
-" ---------------------------------------------------------------------------------------
-  if IsPlugInstalled('which-key.nvim')
-    lua require('config.which-key')
-  endif
-
-
 " tpope/vim-vinegar
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('vim-vinegar')
@@ -1377,6 +1367,14 @@
   endif
 
 
+" LunarWatcher/auto-pairs
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('auto-pairs')
+    let g:AutoPairsMapBS = 1
+    let g:AutoPairsMultilineBackspace = 1
+  endif
+
+
 " AndrewRadev/splitjoin.vim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('splitjoin.vim')
@@ -1384,46 +1382,53 @@
   endif
 
 
+" nvim-tree/nvim-web-devicons
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('nvim-web-devicons')
+    lua require('config.nvim-web-devicons').setup({})
+  endif
+
+
+" folke/which-key.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('which-key.nvim')
+    lua require('config.which-key').setup({})
+  endif
+
+
 " nvim-treesitter/nvim-treesitter
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-treesitter')
-    lua require('config.nvim-treesitter')
+    lua require('config.nvim-treesitter').setup({})
   endif
 
 
 " neovim/nvim-lspconfig
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-lspconfig')
-    lua require('config.lsp')
-  endif
-
-
-" lewis6991/gitsigns.nvim
-" ---------------------------------------------------------------------------------------
-  if IsPlugInstalled('gitsigns.nvim')
-    lua require('config.gitsigns')
-  endif
-
-
-" nvim-lualine/lualine.nvim
-" ---------------------------------------------------------------------------------------
-  if IsPlugInstalled('lualine.nvim')
-    lua require('config.lualine')
+    lua require('config.lsp').setup({})
   endif
 
 
 " mfussenegger/nvim-dap
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-dap')
-    lua require('config.dap')
+    lua require('config.dap').setup({})
   endif
 
 
-" " statusline
-" " ---------------------------------------------------------------------------------------
-"   if has("nvim-0.5")
-"     lua require("config.statusline")
-"   endif
+" lewis6991/gitsigns.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('gitsigns.nvim')
+    lua require('config.gitsigns').setup({})
+  endif
+
+
+" hood/popui.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('popui.nvim')
+    lua require('config.popui').setup({})
+  endif
 
 
 " }}}

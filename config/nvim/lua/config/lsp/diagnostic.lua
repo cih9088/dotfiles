@@ -2,7 +2,6 @@ local M = {}
 
 local function symbols_override()
    local signs = { Error = "", Warn = " ", Hint = " ", Info = " " }
-   -- local signs = { Error = "", Warn = " ", Hint = " ", Info = " " }
    -- local signs = { Error = "•", Warn = "•", Hint = "•", Info = "•" }
    for type, icon in pairs(signs) do
       local hl = "DiagnosticSign" .. type
@@ -16,6 +15,7 @@ local function diagnostic_override()
          severity = vim.diagnostic.severity.ERROR,
       },
       float = {
+         severity_sort = true,
          source = "always",
          focusable = false, -- See neovim#16425
          border = "single",

@@ -12,7 +12,6 @@ function M.setup()
             args = { "--stdout", "--profile", "black", "--lines-after-imports", "2", "--filename", "$FILENAME", "-" },
          }),
          null_ls.builtins.diagnostics.ruff,
-         null_ls.builtins.diagnostics.flake8,
 
          -- lua
          -- null_ls.builtins.formatting.stylua,
