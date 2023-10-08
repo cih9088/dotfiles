@@ -3,6 +3,59 @@ local api = vim.api
 
 local M = {}
 
+-- TODO
+vim.cmd([[
+  function! StatuslineColor()
+
+    let guibg = synIDattr(synIDtrans(hlID('StatusLine')), 'bg')
+    if synIDattr(synIDtrans(hlID('StatusLine')), 'reverse') == 1
+       let guibg = synIDattr(synIDtrans(hlID('StatusLine')), 'fg')
+    endif
+
+    let git_add_fg = synIDattr(synIDtrans(hlID('GitSignsAdd')), 'fg', 'gui')
+    if !git_add_fg
+      let git_add_fg = synIDattr(synIDtrans(hlID('GitGutterAdd')), 'fg', 'gui')
+    end
+
+    let git_change_fg = synIDattr(synIDtrans(hlID('GitSignsChange')), 'fg', 'gui')
+    if !git_change_fg
+      let git_change_fg = synIDattr(synIDtrans(hlID('GitGutterChange')), 'fg', 'gui')
+    end
+
+    let git_delete_fg = synIDattr(synIDtrans(hlID('GitSignsDelete')), 'fg', 'gui')
+    if !git_delete_fg
+      let git_delete_fg = synIDattr(synIDtrans(hlID('GitGutterDelete')), 'fg', 'gui')
+    end
+
+    exec 'highlight StatusGitSignsAdd' .
+        \' guibg=' . guibg .
+        \' guifg=' . git_add_fg
+    exec 'highlight StatusGitSignsChange' .
+        \' guibg=' . guibg .
+        \' guifg=' . git_change_fg
+    exec 'highlight StatusGitSignsDelete' .
+        \' guibg=' . guibg .
+        \' guifg=' . git_delete_fg
+    exec 'highlight StatusDiagnosticSignError' .
+        \' guibg=' . guibg .
+        \' guifg=' . synIDattr(synIDtrans(hlID('DiagnosticSignError')), 'fg', 'gui')
+    exec 'highlight StatusDiagnosticSignWarn' .
+        \' guibg=' . guibg .
+        \' guifg=' . synIDattr(synIDtrans(hlID('DiagnosticSignWarn')), 'fg', 'gui')
+    exec 'highlight StatusDiagnosticSignHint' .
+        \' guibg=' . guibg .
+        \' guifg=' . synIDattr(synIDtrans(hlID('DiagnosticSignHint')), 'fg', 'gui')
+    exec 'highlight StatusDiagnosticSignInfo' .
+        \' guibg=' . guibg .
+        \' guifg=' . synIDattr(synIDtrans(hlID('DiagnosticSignInfo')), 'fg', 'gui')
+  endfunction
+
+  augroup StatuslineColor
+     autocmd!
+     autocmd VimEnter,ColorScheme * call StatuslineColor()
+  augroup END
+]])
+
 M.trunc_width = setmetatable({
    git_status = 100,
    git_branch = 140,
@@ -71,15 +124,15 @@ M.get_git_status = function(self)
       local removed = string.format("%s", signs.removed)
 
       if added ~= "0" and added ~= "nil" then
-         output = output .. " %#GitSignsAdd#" .. string.format(" %s", added) .. "%0*"
+         output = output .. " %#StatusGitSignsAdd#" .. string.format(" %s", added) .. "%0*"
          -- output = output .. " " .. string.format(" %s", added)
       end
       if changed ~= "0" and changed ~= "nil" then
-         output = output .. " %#GitSignsChange#" .. string.format(" %s", changed) .. "%0*"
+         output = output .. " %#StatusGitSignsChange#" .. string.format(" %s", changed) .. "%0*"
          -- output = output .. " " .. string.format(" %s", changed)
       end
       if removed ~= "0" and removed ~= "nil" then
-         output = output .. " %#GitSignsDelete#" .. string.format(" %s", removed) .. "%0*"
+         output = output .. " %#StatusGitSignsDelete#" .. string.format(" %s", removed) .. "%0*"
          -- output = output .. " " .. string.format(" %s", removed)
       end
    end
@@ -99,29 +152,34 @@ end
 
 M.get_filename = function()
    local filename = fn.expand("%:t")
-   return filename == "" and "" or filename
+   return filename == "" and " " or filename .. " "
 end
 
 M.get_fileflag = function()
    local mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
    local ro  = "%{&readonly ? '👀' : ''}"
 
-   return mod .. " " .. ro
+   return mod .. ro .. " "
 end
 
 M.get_filetype = function()
+   local icon
    local filetype = vim.bo.filetype
 
    if vim.fn.exists("*WebDevIconsGetFileTypeSymbol") == 1 then
-      filetype = vim.fn.WebDevIconsGetFileTypeSymbol()
+      icon = vim.fn.WebDevIconsGetFileTypeSymbol()
    elseif package.loaded['nvim-web-devicons'] ~= nil then
-      filetype = require('nvim-web-devicons').get_icon_by_filetype(filetype)
+      icon = require('nvim-web-devicons').get_icon_by_filetype(filetype)
+   end
+
+   if icon then
+      filetype = icon .. " " .. filetype
    end
 
   -- stylua: ignore
   return filetype == ""
     and " No FT "
-    or string.format("%s", filetype):lower()
+    or string.format("[%s] ", filetype):lower()
 end
 
 M.get_fileformat = function(self)
@@ -193,19 +251,19 @@ M.lsp_diagnostic = function(self)
    local info_sign = vim.fn.sign_getdefined("DiagnosticSignInfo")
 
    if err_ctr > 0 then
-      output = output .. "%#" .. err_sign[1].texthl .. "#" .. err_sign[1].text .. err_ctr .. " %0*"
+      output = output .. "%#Status" .. err_sign[1].texthl .. "#" .. err_sign[1].text .. err_ctr .. " %0*"
       -- output = output .. err_sign[1].text .. err_ctr .. " "
    end
    if warn_ctr > 0 then
-      output = output .. "%#" .. warn_sign[1].texthl .. "#" .. warn_sign[1].text .. warn_ctr .. " %0*"
+      output = output .. "%#Status" .. warn_sign[1].texthl .. "#" .. warn_sign[1].text .. warn_ctr .. " %0*"
       -- output = output .. warn_sign[1].text .. warn_ctr .. " "
    end
    if hint_ctr > 0 then
-      output = output .. "%#" .. hint_sign[1].texthl .. "#" .. hint_sign[1].text .. hint_ctr .. " %0*"
+      output = output .. "%#Status" .. hint_sign[1].texthl .. "#" .. hint_sign[1].text .. hint_ctr .. " %0*"
       -- output = output .. hint_sign[1].text .. hint_ctr .. " "
    end
    if info_ctr > 0 then
-      output = output .. "%#" .. info_sign[1].texthl .. "#" .. info_sign[1].text .. info_ctr .. " %0*"
+      output = output .. "%#Status" .. info_sign[1].texthl .. "#" .. info_sign[1].text .. info_ctr .. " %0*"
       -- output = output .. info_sign[1].text .. info_ctr .. " "
    end
 
@@ -243,7 +301,6 @@ Statusline = setmetatable(M, {
 })
 
 -- set statusline
--- TODO(elianiva): replace this once we can define autocmd using lua
 vim.cmd([[
   augroup Statusline
      autocmd!
@@ -251,5 +308,3 @@ vim.cmd([[
      autocmd WinLeave,BufLeave * setlocal statusline=%!v:lua.Statusline('inactive')
   augroup END
 ]])
-
--- au WinEnter,BufEnter,FileType NvimTree setlocal statusline=%!v:lua.Statusline('netrw')
