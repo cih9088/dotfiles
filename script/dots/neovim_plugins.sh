@@ -68,7 +68,7 @@ setup_for_local() {
       `'| execute "MasonInstall pyright gopls rust_analyzer bashls vimls yamlls jsonls lua_ls ansiblels tsserver" '`
       `'| endif' +qall || true
     nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
-      `'| execute "MasonInstall isort black ruff debugpy shfmt prettier node-debug2-adapter codelldb" '`
+      `'| execute "MasonInstall isort black ruff debugpy shfmt prettier node-debug2-adapter codelldb delve" '`
       `'| endif' +qall || true
   fi
 }

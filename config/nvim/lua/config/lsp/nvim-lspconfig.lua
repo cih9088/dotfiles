@@ -81,6 +81,14 @@ local server_configs = {
          },
       },
    },
+   gopls = {
+      settings = {
+         analyses = {
+            unusedparams = true,
+         },
+         staticcheck = true,
+      }
+   }
 }
 
 local function get_config(server_name)

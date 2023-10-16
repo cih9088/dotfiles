@@ -13,17 +13,17 @@ vim.cmd([[
     endif
 
     let git_add_fg = synIDattr(synIDtrans(hlID('GitSignsAdd')), 'fg', 'gui')
-    if !git_add_fg
+    if len(git_add_fg) == 0
       let git_add_fg = synIDattr(synIDtrans(hlID('GitGutterAdd')), 'fg', 'gui')
     end
 
     let git_change_fg = synIDattr(synIDtrans(hlID('GitSignsChange')), 'fg', 'gui')
-    if !git_change_fg
+    if len(git_change_fg) == 0
       let git_change_fg = synIDattr(synIDtrans(hlID('GitGutterChange')), 'fg', 'gui')
     end
 
     let git_delete_fg = synIDattr(synIDtrans(hlID('GitSignsDelete')), 'fg', 'gui')
-    if !git_delete_fg
+    if len(git_delete_fg) == 0
       let git_delete_fg = synIDattr(synIDtrans(hlID('GitGutterDelete')), 'fg', 'gui')
     end
 
@@ -176,10 +176,10 @@ M.get_filetype = function()
       filetype = icon .. " " .. filetype
    end
 
-  -- stylua: ignore
-  return filetype == ""
-    and " No FT "
-    or string.format("[%s] ", filetype):lower()
+   -- stylua: ignore
+   return filetype == ""
+       and "[No FT] "
+       or string.format("[%s] ", filetype):lower()
 end
 
 M.get_fileformat = function(self)
