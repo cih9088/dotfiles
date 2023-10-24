@@ -174,10 +174,11 @@ declare -A gpus
 names=($(nvidia-smi --query-gpu=name --format=csv,noheader,nounits))
 nvml_version=$(nvidia-smi -i 0 --query-gpu=driver_version --format=csv,noheader)
 max_length=0
+n_pad_idx=${#names[@]}
+n_pad_idx=${#n_pad_idx}
+names=($(sort <<< "${names[*]}" | uniq))
 for name in ${names[@]}; do
-  if [ ${#name} -gt ${max_length} ]; then
-    max_length=${#name}
-  fi
+  [ ${#name} -gt ${max_length} ] && max_length=${#name}
 done
 max_length=$(( ${max_length} + 2 ))
 
@@ -226,7 +227,7 @@ while true; do
 
   out=""
   if [ ${SHOW_HEADER} -eq 1 ]; then
-    out+="${Bold}$(hostname)${Reset} ${Dark}${nvml_version}${Reset}   $(date)\n"
+    out+="${Bold}$(hostname)${Reset}  ${Dark}${nvml_version}${Reset}   $(date)\n"
   fi
 
   for uuid in "${gpus_order[@]}"; do
@@ -294,7 +295,7 @@ while true; do
   {
     # index
     cyan()
-    printf "[%s] ", $1
+    printf "[%'${n_pad_idx}'d] ", $1
     reset()
 
     # gpu name
