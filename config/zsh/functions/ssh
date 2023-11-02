@@ -5,10 +5,39 @@
 #   HostName foo.example.com
 #   HostName 192.168.1.1
 
-if [[ $# -eq 0 ]] || [[ $# -eq 1 && $1 =~ "@$" ]]; then
-  has -v fzf awk xpanes || exit 1
 
-  _config=$HOME/.ssh/config
+has() {
+  local verbose=0
+  if [[ $1 = '-v' ]]; then
+    verbose=1
+    shift
+  fi
+  for c; do c="${c%% *}"
+    if ! command -v "$c" &> /dev/null; then
+      (( verbose > 0 )) && printf "\033[1;31m%s\033[0m not found.\n" "$c" >&2
+      return 1
+    fi
+  done
+}
+
+
+
+# TODO: develop more
+is_first_destination() {
+  local _config=$HOME/.ssh/config
+
+  # no argument
+  [ $# -eq 0 ] && return 1
+  # user@host
+  [[ "$1" == *"@"* ]] && return 0
+  # in .ssh/config
+  grep -q "^Host $1\$" $_config && return 0
+  return 1
+}
+
+parse_config() {
+  local _config=$HOME/.ssh/config
+
   targets=$(awk '
   BEGIN { current = ""; hosts[0] = ""; hostnames[0] = ""; ips[0] = ""; aliases[0] = "" }
   {
@@ -44,11 +73,11 @@ if [[ $# -eq 0 ]] || [[ $# -eq 1 && $1 =~ "@$" ]]; then
       }
     }
   }
-  ' $_config | grep -v '*' | column -t -s '|')
+  ' $_config | sort --version-sort | grep -v '*' | column -t -s '|')
 
   exit_code=$?
   [ ${exit_code} != 0 ] && return ${exit_code}
-  targets=$(echo "${targets}" \
+  targets=($(echo "${targets}" \
     | fzf --bind 'ctrl-a:select-all' --multi \
       --height=40% --cycle --no-sort --layout=reverse \
       --preview-window=up:2 \
@@ -67,15 +96,11 @@ if [[ $# -eq 0 ]] || [[ $# -eq 1 && $1 =~ "@$" ]]; then
           }
         }
       }'"'" \
-    | awk '{print $1}')
-  if [ -n "${targets}" ]; then
-    if [ -n "$1" ]; then
-      echo "${targets}" | sed "s/^/$1/" | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
-    else
-      echo "${targets}" | xpanes -t -s -c "ssh -o StrictHostKeyChecking=no {}"
-    fi
-  fi
-else
+        | awk '{print $1}'))
+  echo "${targets[@]}"
+}
+
+if is_first_destination "$@";  then
   if [ -t 0 ] && ps -p $$ -o ppid= \
     | xargs -I{} ps -p {} -o comm= \
     | grep -qw tmux; then
@@ -92,9 +117,23 @@ else
     #                                   .* | command
     #                                 /\6/ | replace with destination
     # tmux set-option -p pane-border-format '#[bg=colour239] #[bg=colour240]#T#[bg=colour239] #[default]'
+    # tmux select-pane -T "$(echo "$@" \
     tmux select-pane -T "$(echo "$@" \
       | sed 's/[[:space:]]*\(\(\(-[46AaCfGgKkMNnqsTtVvXxYy]\)\|\(-[^[:space:]]*\([[:space:]]\+[^[:space:]]*\)\?\)\)[[:space:]]*\)*[[:space:]]\+\([^-][^[:space:]]*\).*/\6/')"
   fi
 
   command ssh "$@"
+else
+
+  has -v fzf awk tmux xpanes || exit 1
+
+  targets=($(parse_config))
+  if [ ${#targets[@]} -eq 1 ]; then
+    # zsh array indexing starts at 1
+    command ssh "${targets[1]}" "$@"
+  elif [ ${#targets[@]} -gt 1 ]; then
+    _index='INDEX=`tmux display -pt "${TMUX_PANE}" "#{pane_index}"`'
+    xpanes -B "${_index}" -t -s -c "ssh -o StrictHostKeyChecking=no {} $*" "${targets[@]}"
+  fi
 fi
+

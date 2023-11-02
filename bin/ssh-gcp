@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+trap cleanup SIGHUP SIGINT SIGTERM
+
+set -eu
+
+has() {
+  local verbose=0
+  if [[ $1 = '-v' ]]; then
+    verbose=1
+    shift
+  fi
+  for c; do c="${c%% *}"
+    if ! command -v "$c" &> /dev/null; then
+      (( verbose > 0 )) && printf "\033[1;31m%s\033[0m not found.\n" "$c" >&2
+      return 1
+    fi
+  done
+}
+
+has -v gcloud fzf awk column tmux xpanes || exit 1
+
+projects=($(gcloud projects list --format="table[no-heading](projectId)"))
+
+temp_dir=$(mktemp -d)
+fifo="${temp_dir}/pipe-$$"
+mkfifo "$fifo"
+
+cleanup() {
+  [[ -e "$fifo" ]] && rm -rf "$temp_dir"
+}
+
+(
+  echo -e "PROJECT_ID\tNAME\tZONE\tMACHINE_TYPE\tSTATUS"
+  for project in "${projects[@]}"; do
+    echo "$(
+      gcloud compute instances list --project "${project}" \
+        --format="table[no-heading](name,zone,machineType,status)" \
+        | sort --version-sort | sed "s/^/${project}  /"
+    )" &
+  done
+) >> "$fifo" &
+
+# mapfile -t targets < <(fzf -e --bind 'Ctrl-A:toggle-all,`:jump' --inline-info --multi --height=40% -e --header-lines=1 --layout=reverse < "$fifo")
+mapfile -t targets < <(cat "$fifo" | column -t | fzf -e --bind 'Ctrl-A:toggle-all,`:jump' --inline-info --multi --height=~40% -e --header-lines=1 --layout=reverse)
+
+[ "${#targets[@]}" -eq 0 ] && (cleanup; exit 0)
+
+cmds=()
+msgs=()
+for target in "${targets[@]}"; do
+  project="$(echo "${target}" | awk '{print $1}')"
+  instance="$(echo "${target}" | awk '{print $2}')"
+  zone="$(echo "${target}" | awk '{print $3}')"
+  machine_type="$(echo "${target}" | awk '{print $4}')"
+
+  msgs+=("SSH into $project/$instance ($machine_type) in $zone...")
+  cmds+=("gcloud compute ssh $instance --project $project --zone $zone $*")
+done
+
+if [ "${#cmds[@]}" -eq 1 ]; then
+  echo "${msgs[0]}"
+  command ${cmds[0]}
+elif [ "${#cmds[@]}" -gt 1 ]; then
+  xpanes -t -s -c "{}" "${cmds[@]}"
+fi
