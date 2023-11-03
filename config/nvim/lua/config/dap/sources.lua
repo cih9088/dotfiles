@@ -95,30 +95,59 @@ local function python_setup()
    }
 end
 
-local function node2_setup()
-   dap.adapters.node2 = {
-      type = 'executable',
-      command = 'node-debug2-adapter',
+local function node_setup()
+
+   dap.adapters["pwa-node"] = {
+      type = "server",
+      host = "localhost",
+      port = "${port}",
+      executable = {
+         command = "node",
+         args = {
+            vim.fn.stdpath("data") .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
+            "${port}",
+         },
+      },
    }
 
-   dap.configurations.node2 = {
-      {
-         name = 'Node2: Launch',
-         type = 'node2',
-         request = 'launch',
-         program = '${file}',
-         cwd = vim.fn.getcwd(),
-         sourceMaps = true,
-         protocol = 'inspector',
-         console = 'integratedTerminal',
-      },
-      {
-         name = 'Node2: Attach to process',
-         type = 'node2',
-         request = 'attach',
-         processId = require('dap.utils').pick_process,
-      },
-   }
+   for _, language in ipairs({ "typescript", "javascript", "typescriptreact", "javascriptreact" }) do
+      dap.configurations[language] = {
+         {
+            type = "pwa-node",
+            request = "attach",
+            name = "Attach debugger to existing `node --inspect` process",
+            processId = function()
+               return require 'dap.utils'.pick_process({ filter = "node" })
+            end,
+            cwd = "${workspaceFolder}",
+            sourceMaps = true,
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+         },
+         {
+            type = "pwa-node",
+            request = "launch",
+            name = "Luanch Nest.js",
+            runtimeExecutable = "npm",
+            runtimeArgs = {
+               "run",
+               "start:debug",
+            },
+            autoAttachChildProcesses = true,
+            cwd = "${workspaceFolder}",
+            sourceMaps = true,
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+            protocol = "inspector",
+            console = "integratedTerminal",
+         },
+         language == "javascript" and {
+            type = "pwa-node",
+            request = "launch",
+            name = "Launch current file in a node process",
+            program = "${file}",
+            cwd = "${workspaceFolder}",
+         } or nil,
+      }
+   end
 end
 
 
@@ -151,7 +180,7 @@ end
 function M.setup()
    bashdb_setup()
    python_setup()
-   node2_setup()
+   node_setup()
    codelldb_setup()
 end
 
