@@ -73,12 +73,40 @@ local function python_setup()
       end
    end
 
-   dap.adapters.python = {
-      type = 'executable',
-      command = 'debugpy-adapter',
-   }
+   dap.adapters.python = function(cb, config)
+      if config.request == 'attach' then
+         local port = (config.connect or config).port
+         local host = (config.connect or config).host or '127.0.0.1'
+         cb({
+            type = 'server',
+            port = assert(port, '`connect.port` is required for a python `attach` configuration'),
+            host = host,
+            options = {
+               source_filetype = 'python',
+            }
+         })
+      else
+         cb({
+            type = 'executable',
+            command = 'debugpy-adapter',
+            options = {
+               source_filetype = 'python',
+            }
+         })
+      end
+   end
 
    dap.configurations.python = {
+      {
+         type = "python",
+         request = "attach",
+         name = 'Attach debugger to remote',
+         connect = function()
+            local host = get_input { "Host: ", default = "127.0.0.1" }
+            local port = tonumber(get_input { "Port: ", default = "5678" })
+            return { host = host, port = port }
+         end,
+      },
       {
          type = 'python',
          request = 'launch',

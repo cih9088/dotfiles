@@ -22,3 +22,6 @@ snippet pickleload
 snippet pickledump
 	with open(${1:file_to_dump}, 'wb') as f:
 		pickle.dump(${0:var}, f)
+
+snippet debugpy
+	__import__('debugpy').listen(('0.0.0.0', ${1:5678})); __import__('debugpy').wait_for_client()
