@@ -6,6 +6,26 @@ local is_windows = function()
    return vim.loop.os_uname().sysname:find("Windows", 1, true) and true
 end
 
+
+local function get_input(args)
+   setmetatable(args, { __index = { default = nil, completion = nil, split = false } })
+   local prompt, default, completion, split =
+       args[1] or args.prompt,
+       args[2] or args.default,
+       args[3] or args.completion,
+       args[4] or args.split
+
+   local out
+   vim.ui.input({ prompt = prompt, default = default, completion = completion }, function(value)
+      if split then
+         value = vim.split(value or "", " +")
+      end
+      out = value
+   end)
+   return out
+end
+
+
 local function bashdb_setup()
    dap.adapters.bashdb = {
       type = 'executable',
@@ -65,15 +85,17 @@ local function python_setup()
          name = "Launch file with arguments",
          pythonPath = get_python_path,
          program = function()
-            local value = vim.fn.input("File to execute: ", vim.fn.expand('%:p'))
-            return value
+            return get_input {
+               "File to execute: ",
+               default = vim.fn.expand("%:p"),
+               completion = "file",
+            }
          end,
          args = function()
-            local args_string = vim.fn.input('Arguments: ')
-            return vim.split(args_string, " +")
+            return get_input { "Arguments: ", split = true }
          end,
          justMyCode = function()
-            return vim.fn.input('Enable JustMyCode? [y/n]: ', 'n') == 'y'
+            return get_input { "Enable JustMyCode? [y/n]: ", default = 'n' } == 'y'
          end,
       },
       {
@@ -83,20 +105,16 @@ local function python_setup()
          module = "pytest",
          pythonPath = get_python_path,
          args = function()
-            local args_string = vim.fn.input('Arguments: ', '.')
-            local args = { "-v", "-s" }
-            for k, v in pairs(vim.split(args_string, " +")) do table.insert(args, v) end
-            return args
+            get_input { "Arguments: ", default = "-v -s .", split = true }
          end,
          justMyCode = function()
-            return vim.fn.input('Enable JustMyCode? [y/n]: ', 'n') == 'y'
+            return get_input { "Enable JustMyCode? [y/n]: ", default = 'n' } == 'y'
          end,
       }
    }
 end
 
 local function node_setup()
-
    dap.adapters["pwa-node"] = {
       type = "server",
       host = "localhost",
@@ -163,11 +181,15 @@ local function codelldb_setup()
 
    dap.configurations.cpp = {
       {
-         name = "Launch",
          type = "codelldb",
          request = "launch",
+         name = "Launch",
          program = function()
-            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+            return get_input {
+               "File to execute: ",
+               default = vim.fn.getcwd() .. '/',
+               completion = "file",
+            }
          end,
          cwd = '${workspaceFolder}',
          stopOnEntry = false,
@@ -177,11 +199,41 @@ local function codelldb_setup()
    dap.configurations.rust = dap.configurations.cpp
 end
 
+local function delve_setup()
+   dap.adapters.go = {
+      type = "server",
+      port = '${port}',
+      executable = {
+         command = vim.fn.stdpath("data") .. '/mason/bin/dlv',
+         args = { "dap", "-l", "127.0.0.1:${port}" }
+      }
+   }
+
+   dap.configurations.go = {
+      {
+         type = "go",
+         request = "launch",
+         name = "Launch file with arguments",
+         program = function()
+            return get_input {
+               "File to execute: ",
+               default = vim.fn.expand("%:p"),
+               completion = "file",
+            }
+         end,
+         args = function()
+            return get_input { "Arguments: ", split = true }
+         end
+      },
+   }
+end
+
 function M.setup()
    bashdb_setup()
    python_setup()
    node_setup()
    codelldb_setup()
+   delve_setup()
 end
 
 return M
