@@ -28,7 +28,7 @@ function M.setup()
          "printenv",
          "gitsigns",
 
-         "debugpy", "js-debug-adapter", "codelldb", "delve"
+         "debugpy", "js-debug-adapter", "codelldb", "delve", "bash-debug-adapter"
       },
    })
 end

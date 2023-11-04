@@ -37,7 +37,7 @@ local function bashdb_setup()
       {
          type = 'bashdb',
          request = 'launch',
-         name = "Launch file",
+         name = "Launch file with arguments",
          showDebugOutput = true,
          pathBashdb = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir/bashdb',
          pathBashdbLib = vim.fn.stdpath("data") .. '/mason/packages/bash-debug-adapter/extension/bashdb_dir',
@@ -46,10 +46,12 @@ local function bashdb_setup()
          program = "${file}",
          cwd = '${workspaceFolder}',
          pathCat = "cat",
-         pathBash = "/bin/bash",
+         pathBash = "bash",
          pathMkfifo = "mkfifo",
          pathPkill = "pkill",
-         args = {},
+         args = function()
+            return get_input { "Arguments: ", split = true }
+         end,
          env = {},
          terminalKind = "integrated",
       }
