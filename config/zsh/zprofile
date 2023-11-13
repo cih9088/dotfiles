@@ -29,16 +29,16 @@
 # ---------------------------------------------------------------------------------------
   # systemwide bin directory
   path=(
-    /usr/local/{bin,sbin}
-    /usr/{bin,sbin}
-    /{bin,sbin}
+    /usr/local/{sbin,bin}
+    /usr/{sbin,bin}
+    /{sbin,bin}
     /snap/bin
     $path
   )
   # apple silicon homebrew path
   if [[ "$OSTYPE" == darwin* && "$(uname -m)" == "arm64" ]]; then
     path=(
-      /opt/homebrew/{bin,sbin}
+      /opt/homebrew/{sbin,bin}
       $path
     )
   fi

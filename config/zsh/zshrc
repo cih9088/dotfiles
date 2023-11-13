@@ -103,6 +103,9 @@
 
 # Setup asdf
 # ---------------------------------------------------------------------------------------
+  # https://github.com/asdf-vm/asdf/pull/1560
+  export ASDF_FORCE_PREPEND=yes
+
   # prefer locally installed asdf
   if [ -f $HOME/.asdf/asdf.sh ]; then
     source $HOME/.asdf/asdf.sh
