@@ -228,6 +228,27 @@
   fi
 
 
+# gcloud support
+# ---------------------------------------------------------------------------------------
+
+  if  [ -x "$(command -v gcloud)" ]; then
+    # gcloud command is way slower
+    if command -v brew >/dev/null; then
+      BREW_PREFIX=$(brew --prefix)
+      [ -f $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc ] &&
+        source $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc
+      [ -f $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc ] &&
+        source $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc
+      unset BREW_PREFIX
+    else
+      GCLOUD_ROOT_PATH=$(gcloud --format='value(installation.sdk_root)' info)
+      [ -f $GCLOUD_ROOT_PATH/path.zsh.inc ] && source $GCLOUD_ROOT_PATH/path.zsh.inc
+      [ -f $GCLOUD_ROOT_PATH/completion.zsh.inc ] &&
+        source $GCLOUD_ROOT_PATH/completion.zsh.inc
+      unset GCLOUD_ROOT_PATH
+    fi
+  fi
+
 
 
 # =======================================================================================
