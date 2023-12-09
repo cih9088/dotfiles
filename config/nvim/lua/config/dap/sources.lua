@@ -174,7 +174,22 @@ local function node_setup()
          {
             type = "pwa-node",
             request = "launch",
-            name = "Luanch Nest.js",
+            name = "Luanch node with debugger",
+            runtimeExecutable = "npm",
+            runtimeArgs = function()
+               return get_input { "npm Arguments: ", default = "", split = true }
+            end,
+            autoAttachChildProcesses = true,
+            cwd = "${workspaceFolder}",
+            sourceMaps = true,
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+            protocol = "inspector",
+            console = "integratedTerminal",
+         },
+         {
+            type = "pwa-node",
+            request = "launch",
+            name = "Luanch node with debugger (Nest.js)",
             runtimeExecutable = "npm",
             runtimeArgs = {
                "run",
