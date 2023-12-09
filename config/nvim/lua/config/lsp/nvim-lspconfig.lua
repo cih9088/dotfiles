@@ -58,6 +58,7 @@ local on_attach = function(client, bufnr)
    end
 
    -- Inlay hints
+   require("lsp-inlayhints").on_attach(client, bufnr)
    if client.server_capabilities.inlayHintProvider then
       vim.lsp.buf.inlay_hint(bufnr, true)
    end
@@ -106,6 +107,10 @@ end
 
 
 function M.setup()
+   -- enable inlay hints
+   require("lsp-inlayhints").setup()
+   vim.api.nvim_command('hi! link LspInlayHint Comment')
+
    -- Use a loop to conveniently call 'setup' on multiple servers and
    -- map buffer local keybindings when the language server attaches
    local servers = {
