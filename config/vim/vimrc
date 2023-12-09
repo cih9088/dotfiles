@@ -604,12 +604,12 @@
 
     if has ('nvim')
       let border_opts = extend({'is_frame': 1,}, border_opts)
-      let frame = s:create_float('Todo', border_opts)
+      let frame = s:create_float('Normal', border_opts)
       call nvim_buf_set_lines(frame, 0, -1, v:true, border)
       call s:create_float('Normal', opts)
     else
       let opts = extend({'is_frame': 1,}, border_opts)
-      let frame = s:create_popup_window('Todo', border_opts)
+      let frame = s:create_popup_window('Normal', border_opts)
       call setbufline(frame, 1, border)
       call s:create_popup_window('Normal', opts)
     endif

@@ -119,6 +119,7 @@ function M.setup()
       "lua_ls",
       "ansiblels",
       "tsserver",
+      "cmake"
    }
    for _, server in ipairs(servers) do
       local config = get_config(server)
