@@ -102,6 +102,7 @@ prefix < l : yabai -m space --focus next; skhd -k "ctrl - s"
 
 # float / unfloat window and center on screen
 prefix < t : yabai -m window --toggle float;\
+  yabai -m window --layer below \
   yabai -m window --grid 6:6:1:1:4:4;\
   skhd -k "ctrl - s"
 
