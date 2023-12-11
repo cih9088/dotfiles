@@ -1393,8 +1393,16 @@ EOF
 " LunarWatcher/auto-pairs
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('auto-pairs')
-    let g:AutoPairsMapBS = 1
-    let g:AutoPairsMultilineBackspace = 1
+    let g:AutoPairsMapBS = 0
+    let g:AutoPairsMultilineBackspace = 0
+    let g:AutoPairsShortcutFastWrap = "<c-f>"
+    " disable all other mappings
+    let g:AutoPairsShortcutToggle = ""
+    let g:AutoPairsShortcutIgnore = ""
+    let g:AutoPairsShortcutJump = ""
+    let g:AutoPairsShortcutBackInsert = ""
+    let g:AutoPairsMoveExpression = ""
+    let g:AutoPairsShortcutToggleMultilineClose = ""
   endif
 
 

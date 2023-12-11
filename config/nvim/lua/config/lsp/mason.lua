@@ -16,6 +16,20 @@ function M.setup()
    })
 
    mason_lspconfig.setup({
+      ensure_installed = {
+         "ansiblels",
+         "bashls",
+         "cmake",
+         "clangd",
+         "gopls@v0.13.2",
+         "jsonls",
+         "lua_ls",
+         "pyright",
+         "rust_analyzer",
+         "tsserver",
+         "vimls",
+         "yamlls",
+      },
       automatic_installation = true,
    })
 
@@ -23,10 +37,9 @@ function M.setup()
       ensure_installed = {
          "black", "isort", "ruff",
          "prettier",
-         "ansiblelint",
+         -- python 3.8 compatible
+         "ansiblelint@6.13.1",
          "shellcheck", "shfmt",
-         "printenv",
-         "gitsigns",
 
          "debugpy", "js-debug-adapter", "codelldb", "delve", "bash-debug-adapter"
       },

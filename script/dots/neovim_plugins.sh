@@ -62,14 +62,13 @@ setup_for_local() {
     log_info "Install fzf"
     nvim --headless +'if has_key(g:plugs, "fzf") | call fzf#install() | endif' +qall
 
-    ## mason
-    log_info "Install LSPs"
-    nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
-      `'| execute "MasonInstall pyright gopls rust_analyzer bashls vimls yamlls jsonls lua_ls ansiblels tsserver cmake-language-server" '`
-      `'| endif' +qall || true
-    nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
-      `'| execute "MasonInstall isort black ruff debugpy shfmt prettier node-debug2-adapter codelldb delve" '`
-      `'| endif' +qall || true
+    # will be installed automatically
+    # ## mason
+    # log_info "Install LSPs"
+    # nvim --headless +'if has_key(g:plugs, "mason.nvim") '`
+    #   `'| execute "MasonInstall pyright gopls rust-analyzer bash-language-server vim-language-server yaml-language-server json-lsp lua-language-server ansible-language-server typescript-language-server cmake-language-server" '`
+    #   `'| execute "MasonInstall isort black ruff debugpy shfmt prettier node-debug2-adapter codelldb delve" '`
+    #   `'| endif' +qall || true
   fi
 }
 
