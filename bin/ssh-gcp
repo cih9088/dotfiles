@@ -41,10 +41,35 @@ cleanup() {
   done
 ) >> "$fifo" &
 
-# mapfile -t targets < <(fzf -e --bind 'Ctrl-A:toggle-all,`:jump' --inline-info --multi --height=40% -e --header-lines=1 --layout=reverse < "$fifo")
-mapfile -t targets < <(cat "$fifo" | column -t | fzf -e --bind 'Ctrl-A:toggle-all,`:jump' --inline-info --multi --height=~40% -e --header-lines=1 --layout=reverse)
+# mapfile -t targets < <(
+#   fzf --exact \
+#     --bind 'Ctrl-A:toggle-all,`:jump' \
+#     --inline-info \
+#     --multi \
+#     --height=40% \
+#     --header-lines=1 \
+#     --layout=reverse \
+#       < "$fifo"
+# )
+mapfile -t targets < <(
+  cat "$fifo" \
+    | column -t \
+    | fzf --exact \
+        --bind 'Ctrl-A:toggle-all,`:jump' \
+        --inline-info \
+        --multi \
+        --height=~40% \
+        --header-lines=1 \
+        --layout=reverse
+)
 
 [ "${#targets[@]}" -eq 0 ] && (cleanup; exit 0)
+
+user=""
+if [ ${#@} -ge 1 ] && [[ $1 == *"@" ]]; then
+  user="$1"
+  shift
+fi
 
 cmds=()
 msgs=()
@@ -54,12 +79,13 @@ for target in "${targets[@]}"; do
   zone="$(echo "${target}" | awk '{print $3}')"
   machine_type="$(echo "${target}" | awk '{print $4}')"
 
-  msgs+=("SSH into $project/$instance ($machine_type) in $zone...")
-  cmds+=("gcloud compute ssh $instance --project $project --zone $zone $*")
+  msgs+=("SSH into $project/$user$instance ($machine_type) in $zone...")
+  cmds+=("gcloud compute ssh $user$instance --project $project --zone $zone $*")
 done
 
 if [ "${#cmds[@]}" -eq 1 ]; then
   echo "${msgs[0]}"
+  # echo ${cmds[0]}
   command ${cmds[0]}
 elif [ "${#cmds[@]}" -gt 1 ]; then
   xpanes -t -s -c "{}" "${cmds[@]}"

@@ -122,9 +122,14 @@ if is_first_destination "$@";  then
       | sed 's/[[:space:]]*\(\(\(-[46AaCfGgKkMNnqsTtVvXxYy]\)\|\(-[^[:space:]]*\([[:space:]]\+[^[:space:]]*\)\?\)\)[[:space:]]*\)*[[:space:]]\+\([^-][^[:space:]]*\).*/\6/')"
   fi
 
-  command ssh "$@"
-else
+  command ssh "$*"
 
+elif [ "$1" = "gcp" ]; then
+  # gcp plugin
+  has -v ssh-gcp || exit 1
+  shift; ssh-gcp $@
+else
+  # local config parsing
   has -v fzf awk tmux xpanes || exit 1
 
   targets=($(parse_config))
@@ -136,4 +141,3 @@ else
     xpanes -B "${_index}" -t -s -c "ssh -o StrictHostKeyChecking=no {} $*" "${targets[@]}"
   fi
 fi
-
