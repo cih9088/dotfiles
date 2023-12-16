@@ -89,7 +89,18 @@ local server_configs = {
          },
          staticcheck = true,
       }
-   }
+   },
+   rust_analyzer = {
+      settings = {
+         ["rust-analyzer"] = {
+            check = {
+               enable = true,
+               command = "clippy",
+               features = "all",
+            },
+         },
+      }
+   },
 }
 
 local function get_config(server_name)
