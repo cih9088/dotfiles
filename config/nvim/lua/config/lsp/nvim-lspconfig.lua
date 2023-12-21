@@ -120,7 +120,13 @@ end
 function M.setup()
    -- enable inlay hints
    require("lsp-inlayhints").setup()
-   vim.api.nvim_command('hi! link LspInlayHint Comment')
+   vim.cmd([[
+      augroup lsp_inlayhint
+         autocmd!
+         autocmd ColorScheme * highlight! link LspInlayHint Comment
+      augroup END
+   ]])
+   vim.cmd([[doautocmd ColorScheme]])
 
    -- Use a loop to conveniently call 'setup' on multiple servers and
    -- map buffer local keybindings when the language server attaches
