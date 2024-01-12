@@ -113,6 +113,7 @@
     Plug 'lvimuser/lsp-inlayhints.nvim'
     " Plug 'hood/popui.nvim'
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+    Plug 'windwp/nvim-ts-autotag'
   else
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     Plug 'dag/vim-fish', { 'for': 'fish' }
@@ -1461,5 +1462,10 @@ EOF
     lua require('config.popui').setup({})
   endif
 
+" windwp/nvim-ts-autotag
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('nvim-ts-autotag')
+    lua require('nvim-ts-autotag').setup({})
+  endif
 
 " }}}

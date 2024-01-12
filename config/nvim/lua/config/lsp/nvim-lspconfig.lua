@@ -136,12 +136,17 @@ function M.setup()
       "rust_analyzer",
       "bashls",
       "vimls",
-      "yamlls",
-      "jsonls",
       "lua_ls",
-      "ansiblels",
+      "cmake",
+      "clangd",
+      "html",
+      "cssls",
       "tsserver",
-      "cmake"
+      "tailwindcss",
+      "emmet_language_server",
+      "yamlls",
+      "ansiblels",
+      "jsonls",
    }
    for _, server in ipairs(servers) do
       local config = get_config(server)

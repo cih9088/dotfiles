@@ -17,18 +17,22 @@ function M.setup()
 
    mason_lspconfig.setup({
       ensure_installed = {
-         "ansiblels",
+         "pyright",
+         "gopls@v0.13.2",
+         "rust_analyzer",
          "bashls",
+         "vimls",
+         "lua_ls",
          "cmake",
          "clangd",
-         "gopls@v0.13.2",
-         "jsonls",
-         "lua_ls",
-         "pyright",
-         "rust_analyzer",
+         "html",
+         "cssls",
          "tsserver",
-         "vimls",
+         "tailwindcss",
+         "emmet_language_server",
          "yamlls",
+         "ansiblels",
+         "jsonls",
       },
       automatic_installation = true,
    })
@@ -36,7 +40,7 @@ function M.setup()
    mason_null_ls.setup({
       ensure_installed = {
          "black", "isort", "ruff",
-         "prettier",
+         "prettierd", "eslint_d",
          -- python 3.8 compatible
          "ansiblelint@6.13.1",
          "shellcheck", "shfmt",
