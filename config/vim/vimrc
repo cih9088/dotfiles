@@ -1176,11 +1176,12 @@ EOF
 " lukas-reineke/indent-blankline.nvim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('indent-blankline.nvim')
-    let g:indent_blankline_show_first_indent_level = v:false
-    let g:indent_blankline_show_end_of_line = v:true
-    let g:indent_blankline_show_current_context = v:false
-    let g:indent_blankline_show_current_context_start = v:false
-    let g:indent_blankline_filetype_exclude = ['help', 'checkhealth', 'startify']
+    lua <<EOF
+      require("ibl").setup({
+        exclude = { filetypes = { 'help', 'checkhealth', 'startify' } },
+        scope = { show_start = false, show_end = false },
+      })
+EOF
   endif
 
 
