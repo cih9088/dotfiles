@@ -117,8 +117,8 @@ if !exists('s:rgb_map')
         \ 250: '#bcbcbc', 251: '#c6c6c6', 252: '#d0d0d0',
         \ 253: '#dadada', 254: '#e4e4e4', 255: '#eeeeee' }
     else
-        let s:rgb_map =
-        \{ 22: '#006F00', 23: '#007173', 24: '#007299', 25: '#0074BE', 30: '#009799',
+        let s:rgb_map = { 16: '#000000',
+        \  22: '#006F00', 23: '#007173', 24: '#007299', 25: '#0074BE', 30: '#009799',
         \  31: '#0099BD', 38: '#00BDDF', 52: '#730B00', 58: '#727100', 59: '#727272',
         \  65: '#719872', 66: '#719899', 67: '#7299BC', 68: '#719CDF', 73: '#6FBCBD',
         \  74: '#70BDDF', 88: '#9B1300', 89: '#9B1D72', 94: '#9A7200', 95: '#9A7372',
@@ -203,7 +203,7 @@ if exists("syntax_on")
   syntax reset
 endif
 
-call s:hi('Normal', [s:dark_fg, s:light_fg], [s:dark_bg, s:light_bg])
+call s:hi('Normal', [s:dark_fg, s:light_fg], ['', ''])
 
 call s:hi('LineNr', [101, 101], [s:dark_bg + 1, s:light_bg - 2])
 call s:hi('Visual', ['', ''], [23, 152])
@@ -276,6 +276,7 @@ call s:hi('CursorLine', ['', ''], [s:dark_bg - 1, s:light_bg - 1])
 call s:hi('CursorLineNr', [131, 131], [s:dark_bg - 1, s:light_bg - 1])
 call s:hi('CursorColumn', ['', ''], [s:dark_bg - 1, s:light_bg - 1])
 call s:hi('NormalFloat', ['', ''], [s:dark_bg - 1, s:light_bg - 1])
+call s:hi('FloatBorder', [s:dark_fg, s:light_fg], [s:dark_bg - 1, s:light_bg - 1])
 
 call s:hi('Directory', [187, 95], ['', ''])
 
@@ -284,7 +285,7 @@ call s:hi('DiffDelete', ['NONE', 'NONE'], [95, 181])
 call s:hi('DiffChange', ['NONE', 'NONE'], [s:dark_bg + 3, 189])
 call s:hi('DiffText',   ['NONE', 'NONE'], [52, 224])
 
-call s:hi('VertSplit', [s:dark_bg_2, s:light_bg - 3], [s:dark_bg_2, s:light_bg - 3])
+call s:hi('VertSplit', [s:dark_bg_2, s:light_bg - 3], ['', ''])
 call s:hi('Folded', [101, 101], [s:dark_bg + 1, s:light_bg - 2])
 
 " set foldcolumn=1
