@@ -11,10 +11,9 @@ end
 
 local function diagnostic_override()
    vim.diagnostic.config({
-      virtual_text = false,
-      -- virtual_text = {
-      --    severity = vim.diagnostic.severity.ERROR,
-      -- },
+      virtual_text = {
+         severity = vim.diagnostic.severity.ERROR,
+      },
       float = {
          severity_sort = true,
          source = "always",
@@ -37,14 +36,14 @@ local function diagnostic_override()
          vim.w.lsp_diagnostics_last_cursor = current_cursor
          local _, winnr = _G.LspDiagnosticsShowPopup()
          if winnr ~= nil then
-            vim.api.nvim_win_set_option(winnr, "winblend", 20) -- opacity for diagnostics
+            vim.api.nvim_win_set_option(winnr, "winblend", 0) -- opacity for diagnostics
          end
       end
    end
    vim.cmd([[
       augroup LSPDiagnosticsOnHover
          autocmd!
-         autocmd CursorHold *   lua _G.LspDiagnosticsPopupHandler()
+         autocmd CursorHold * lua _G.LspDiagnosticsPopupHandler()
       augroup END
    ]])
 end

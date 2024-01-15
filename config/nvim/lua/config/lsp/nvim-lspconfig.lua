@@ -128,6 +128,12 @@ function M.setup()
    ]])
    vim.cmd([[doautocmd ColorScheme]])
 
+   -- LSP settings (for overriding per client)
+   local handlers = {
+      ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
+      ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single", focusable = false }),
+   }
+
    -- Use a loop to conveniently call 'setup' on multiple servers and
    -- map buffer local keybindings when the language server attaches
    local servers = {
@@ -154,6 +160,7 @@ function M.setup()
          on_attach = config.on_attach,
          capabilities = config.capabilities,
          settings = config.settings,
+         handlers = handlers,
       }
    end
 end
