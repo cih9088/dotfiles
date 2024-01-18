@@ -57,7 +57,12 @@ setup_for_local() {
       ++ tar -xvzf "flex-${VERSION##v}.tar.gz"
 
       ++ pushd "flex-${VERSION##v}"
-      ++ ./configure --prefix="${PREFIX}"
+      # https://github.com/westes/flex/issues/442
+      if [ ${PLATFORM_ID} == "ubuntu" ] && [ ${PLATFORM_VERSION} == "18.04" ]; then
+        CFLAGS="$CFLAGS -D_GNU_SOURCE" ++ ./configure --prefix="${PREFIX}"
+      else
+        ++ ./configure --prefix="${PREFIX}"
+      fi
       ++ make
       ++ make install
       ++ popd
