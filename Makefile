@@ -284,7 +284,7 @@ neovim: \
 	@( $(SCRIPTS_DIR)/apps/neovim.sh )
 
 tmux: \
-	ncurses libevent terminfo
+	ncurses libevent
 	@( $(SCRIPTS_DIR)/apps/tmux.sh )
 
 wget: \

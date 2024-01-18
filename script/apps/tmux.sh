@@ -32,6 +32,19 @@ verify_version() {
   [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
 }
 
+install_tmux_terminfo() {
+  local MODE=$1
+
+  # https://github.com/htop-dev/htop/issues/251#issuecomment-719080271
+  ++ curl -LO https://gist.githubusercontent.com/nicm/ea9cf3c93f22e0246ec858122d9abea1/raw/37ae29fc86e88b48dbc8a674478ad3e7a009f357/tmux-256color
+  if [ "${MODE}" == "system" ]; then
+    ++ sudo tic -x tmux-256color
+  else
+    ++ tic -x -o "${HOME}/.terminfo" tmux-256color
+  fi
+
+}
+
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
@@ -57,6 +70,7 @@ setup_for_local() {
 
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
+    install_tmux_terminfo "local"
     if [ -z "${SRC_PATH}" ]; then
       [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
@@ -79,6 +93,18 @@ setup_for_system() {
 
   case "${PLATFORM}" in
     OSX)
+      if [[ "install update"  == *"${COMMAND}"* ]]; then
+        # https://gist.github.com/bbqtd/a4ac060d6f6b9ea6fe3aabe735aa9d95?permalink_comment_id=4531363#gistcomment-4531363
+        local ncdir=$(brew --prefix)/opt/ncurses
+        # local terms=(alacritty-direct alacritty tmux tmux-256color)
+        local terms=(tmux tmux-256color)
+        for x in ${terms[@]} ; do
+          $ncdir/bin/infocmp -x -A $ncdir/share/terminfo $x > ${x}.src &&
+            sed -i '' 's|pairs#0x10000|pairs#32767|' ${x}.src &&
+            /usr/bin/tic -x -o "${HOME}/.terminfo" ${x}.src &&
+            rm -f ${x}.src
+        done
+      fi
       if [ "${COMMAND}" == "remove" ]; then
         # brew list reattach-to-user-namespace >/dev/null 2>&1 && ++ brew uninstall reattach-to-user-namespace
         brew list tmux >/dev/null 2>&1 && ++ brew uninstall tmux
@@ -89,6 +115,9 @@ setup_for_system() {
       fi
       ;;
     LINUX)
+      if [[ "install update"  == *"${COMMAND}"* ]]; then
+        install_tmux_terminfo "system"
+      fi
       case "${PLATFORM_ID}" in
         debian|ubuntu)
           if [ "${COMMAND}" == "remove" ]; then

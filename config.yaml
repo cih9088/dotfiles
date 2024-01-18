@@ -36,9 +36,6 @@ lua:
 # apps & libs
 #######################
 
-terminfo:
-  mode: local
-
 zsh:
 
 prezto:
