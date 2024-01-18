@@ -75,11 +75,11 @@ local function python_setup()
       end
    end
 
-   dap.adapters.python = function(cb, config)
+   dap.adapters.python = function(callback, config)
       if config.request == 'attach' then
          local port = (config.connect or config).port
          local host = (config.connect or config).host or '127.0.0.1'
-         cb({
+         callback({
             type = 'server',
             port = assert(port, '`connect.port` is required for a python `attach` configuration'),
             host = host,
@@ -88,7 +88,7 @@ local function python_setup()
             }
          })
       else
-         cb({
+         callback({
             type = 'executable',
             command = 'debugpy-adapter',
             options = {
@@ -102,12 +102,13 @@ local function python_setup()
       {
          type = "python",
          request = "attach",
-         name = 'Attach debugger to remote',
+         name = 'Attach to remote',
          connect = function()
             local host = get_input { "Host: ", default = "127.0.0.1" }
             local port = tonumber(get_input { "Port: ", default = "5678" })
             return { host = host, port = port }
          end,
+         console = "integratedTerminal",
       },
       {
          type = 'python',
@@ -124,6 +125,7 @@ local function python_setup()
          args = function()
             return get_input { "Arguments: ", split = true }
          end,
+         console = "integratedTerminal",
          justMyCode = function()
             return get_input { "Enable JustMyCode? [y/n]: ", default = 'n' } == 'y'
          end,
@@ -137,6 +139,7 @@ local function python_setup()
          args = function()
             get_input { "Arguments: ", default = "-v -s .", split = true }
          end,
+         console = "integratedTerminal",
          justMyCode = function()
             return get_input { "Enable JustMyCode? [y/n]: ", default = 'n' } == 'y'
          end,
@@ -145,46 +148,75 @@ local function python_setup()
 end
 
 local function node_setup()
-   dap.adapters["pwa-node"] = {
-      type = "server",
-      host = "localhost",
-      port = "${port}",
-      executable = {
-         command = "node",
-         args = {
-            vim.fn.stdpath("data") .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
-            "${port}",
+   for _, adapter in ipairs({ "pwa-node", "pwa-chrome" }) do
+      dap.adapters[adapter] = {
+         type = "server",
+         host = "localhost",
+         port = "${port}",
+         executable = {
+            command = vim.fn.stdpath("data") .. '/mason/packages/js-debug-adapter/js-debug-adapter',
+            args = { "${port}" },
          },
-      },
-   }
+      }
+   end
 
    for _, language in ipairs({ "typescript", "javascript", "typescriptreact", "javascriptreact" }) do
       dap.configurations[language] = {
          {
             type = "pwa-node",
             request = "attach",
-            name = "Attach debugger to existing `node --inspect` process",
+            name = "Attach to existing `node --inspect` process",
             processId = function()
                return require 'dap.utils'.pick_process({ filter = "node" })
             end,
             cwd = "${workspaceFolder}",
-            sourceMaps = true,
+            skipFiles = { "<node_internals>/**", "**/node_modules/**" },
+            smartStep = true,
             resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+            sourceMaps = true,
          },
          {
             type = "pwa-node",
             request = "launch",
-            name = "Luanch node with debugger",
+            name = "Luanch node",
             runtimeExecutable = "npm",
             runtimeArgs = function()
                return get_input { "npm Arguments: ", default = "--inspect-brk run dev", split = true }
             end,
             autoAttachChildProcesses = true,
-            cwd = "${workspaceFolder}",
-            sourceMaps = true,
-            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
-            protocol = "inspector",
             console = "integratedTerminal",
+            cwd = "${workspaceFolder}",
+            skipFiles = { "<node_internals>/**", "**/node_modules/**" },
+            smartStep = true,
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+            sourceMaps = true,
+         },
+         {
+            type = "pwa-chrome",
+            request = "attach",
+            name = "Attach to Chrome",
+            port = function()
+               return tonumber(get_input { "Port: ", default = "9222", split = false })
+            end,
+            webRoot = "${workspaceFolder}",
+            skipFiles = { "<node_internals>/**", "**/node_modules/**" },
+            smartStep = true,
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+            sourceMaps = true,
+         },
+         {
+            type = "pwa-chrome",
+            request = "launch",
+            name = "Launch Chrome",
+            url = function()
+               return get_input { "URL: ", default = "http://localhost:3000", split = false }
+            end,
+            runtimeArgs = { "--incognito" },
+            webRoot = "${workspaceFolder}",
+            skipFiles = { "<node_internals>/**", "**/node_modules/**" },
+            smartStep = true,
+            resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+            sourceMaps = true,
          },
          language == "javascript" and {
             type = "pwa-node",

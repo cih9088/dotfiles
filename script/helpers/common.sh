@@ -99,7 +99,7 @@ export LDFLAGS="-L${PREFIX}/lib -L${PREFIX}/lib64"
 if [ -f "$HOME/.asdf/asdf.sh" ]; then
   export ASDF_DIR=${HOME}/.asdf
   . "${ASDF_DIR}/asdf.sh"
-elif command -v brew >/dev/null && [ -f $(brew --prefix asdf)/libexec/asdf.sh ]; then
+elif command -v brew >/dev/null && [ -f "$(brew --prefix asdf)/libexec/asdf.sh" ]; then
   export ASDF_DIR=$(brew --prefix asdf)/libexec
   . "${ASDF_DIR}/asdf.sh"
 fi
