@@ -441,6 +441,8 @@ if has("nvim")
   call s:hi("DiagnosticSignWarn", [222, 179], [s:dark_bg + 1, s:light_bg - 2])
   call s:hi("DiagnosticSignInfo", [153, 73], [s:dark_bg + 1, s:light_bg - 2])
   call s:hi("DiagnosticSignHint", [250, 241], [s:dark_bg + 1, s:light_bg - 2])
+
+  highlight link debugPC diffAdd
 end
 
 
@@ -450,6 +452,11 @@ if has('nvim-0.8.0')
   highlight link @variable Normal
   highlight link @variable.builtin Special
   highlight link @attribute Identifier
+
+  call s:hi('@text.todo', [222, 173], [s:dark_bg_2, s:light_bg_2])
+  call s:hi('@text.note', [153, 67], [s:dark_bg_2, s:light_bg_2])
+  call s:hi('@text.warning', [222, 173], [s:dark_bg_2, s:light_bg_2])
+  call s:hi('@text.danger', [161, 161], [s:dark_bg_2, s:light_bg_2])
 end
 
 hi CursorLine cterm=NONE
