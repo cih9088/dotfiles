@@ -93,6 +93,10 @@ export CFLAGS="-I${PREFIX}/include"
 export CPPFLAGS="-I${PREFIX}/include"
 export CXXFLAGS="-I${PREFIX}/include"
 export LDFLAGS="-L${PREFIX}/lib -L${PREFIX}/lib64"
+
+# remove trailing colon (some libs failed to install)
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH%:}
+export PKG_CONFIG_PATH=${PKG_CONFIG_PATH%:}
 ################################################################
 
 # asdf
