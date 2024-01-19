@@ -17,7 +17,7 @@ python-env:
 
 golang:
   mode: local
-  version: 1.17.5
+  version: 1.19.13
 
 rust:
   mode: local
