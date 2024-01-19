@@ -14,6 +14,19 @@ TARGET_SHELL=""
 log_title "Prepare for ${THIS_HL}"
 ################################################################
 
+
+clear_local_change() {
+  # sed -i -e '/'$(echo $SHELL_FULL_PATH | sed 's/\//\\\//g')' ]]; then/,/fi/d' ${HOME}/${loginshell_rc}
+  for f in ".bashrc" ".zshrc" ".cshrc" ".tcshrc" ".config/fish/config.fish" ".profile"; do
+    f=$(readlink -f $HOME/$f)
+    if [ -e $f ]; then
+      # -i destroy symlink. --follow-symlink option only in GNU sed
+      sed -e '/# added by dots/,/^fi$/d' $f > temp
+      mv temp $f
+    fi
+  done
+}
+
 local_change() {
   local SHELL_FULL_PATH="$1"
 
@@ -27,16 +40,7 @@ local_change() {
     *)     log_error "$SHELL is not supported"; exit 1; ;;
   esac
 
-  # sed -i -e '/'$(echo $SHELL_FULL_PATH | sed 's/\//\\\//g')' ]]; then/,/fi/d' ${HOME}/${loginshell_rc}
-  for f in ".bashrc" ".zshrc" ".cshrc" ".tcshrc" ".config/fish/config.fish" ".profile"; do
-    f=$(readlink -f $HOME/$f)
-    if [ -e $f ]; then
-      # -i destroy symlink. --follow-symlink option only in GNU sed
-      sed -e '/# added by dots/,/^fi$/d' $f > temp
-      mv temp $f
-    fi
-  done
-
+  clear_local_change
   if [ ${SHELL##*/} = ${SHELL_FULL_PATH##*/} ]; then
     log_info "Your shell is ${SHELL}. No need to change."
     return 0
@@ -48,8 +52,16 @@ local_change() {
     echo -e "# added by dots" >> ${loginshell_rc}
     case $shell in
       bash|zsh)
-        # echo -e "if [[ -e ${SHELL_FULL_PATH} ]]; then\n\texec ${SHELL_FULL_PATH} -l\nfi" >> ${loginshell_rc}
-        echo -e "if [[ \$- == *i* ]] && [[ -e ${SHELL_FULL_PATH} ]]; then\n\texec env -u PATH ${SHELL_FULL_PATH} -l\nfi" >> ${loginshell_rc}
+        (
+          echo -en "if [[ \$- == *i* ]] && [[ -e ${SHELL_FULL_PATH} ]]; then\n"
+          echo -en "\texport LD_LIBRARY_PATH=\"${LD_LIBRARY_PATH}\"\n"
+          echo -en "\tif ${SHELL_FULL_PATH} -c ''; then\n"
+          echo -en "\t\texec env -u PATH ${SHELL_FULL_PATH} -l\n"
+          echo -en "\telse\n"
+          echo -en "\t\techo \"Something went wrong when executing ${SHELL_FULL_PATH}\" >&2\n"
+          echo -en "\tfi\n"
+          echo -en "fi"
+        )  >> ${loginshell_rc}
         ;;
       fish)
         echo -e "if status is-interactive -a -e ${SHELL_FULL_PATH}\n\texec env -u PATH ${SHELL_FULL_PATH} -l\nend" >> ${loginshell_rc}
@@ -68,6 +80,7 @@ local_change() {
 system_change() {
   local SHELL_FULL_PATH=$1
 
+  clear_local_change
   if [[ ! -s ${SHELL_FULL_PATH} ]]; then
     echo "${SHELL_FULL_PATH} is not a proper shell" >&2
     exit 1
