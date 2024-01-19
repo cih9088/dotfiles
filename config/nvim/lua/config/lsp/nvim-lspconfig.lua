@@ -38,7 +38,7 @@ local on_attach = function(client, bufnr)
       lsp_signature.on_attach({
          floating_window_above_cur_line = true,
          handler_opts = {
-            border = "rounded",
+            border = "single",
          },
       }, bufnr)
    end
@@ -88,6 +88,15 @@ local server_configs = {
             unusedparams = true,
          },
          staticcheck = true,
+         hints = {
+            assignVariableTypes = true,
+            compositeLiteralFields = true,
+            compositeLiteralTypes = true,
+            constantValues = true,
+            functionTypeParameters = true,
+            parameterNames = true,
+            rangeVariableTypes = true,
+         },
       }
    },
    rust_analyzer = {
@@ -101,6 +110,34 @@ local server_configs = {
          },
       }
    },
+   tsserver = {
+      settings = {
+         typescript = {
+            inlayHints = {
+               includeInlayParameterNameHints = 'all',
+               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+               includeInlayFunctionParameterTypeHints = true,
+               includeInlayVariableTypeHints = true,
+               includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+               includeInlayPropertyDeclarationTypeHints = true,
+               includeInlayFunctionLikeReturnTypeHints = true,
+               includeInlayEnumMemberValueHints = true,
+            }
+         },
+         javascript = {
+            inlayHints = {
+               includeInlayParameterNameHints = 'all',
+               includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+               includeInlayFunctionParameterTypeHints = true,
+               includeInlayVariableTypeHints = true,
+               includeInlayVariableTypeHintsWhenTypeMatchesName = false,
+               includeInlayPropertyDeclarationTypeHints = true,
+               includeInlayFunctionLikeReturnTypeHints = true,
+               includeInlayEnumMemberValueHints = true,
+            }
+         }
+      }
+   }
 }
 
 local function get_config(server_name)

@@ -21,9 +21,6 @@ local function diagnostic_override()
          border = "single",
       },
    })
-   _G.LspDiagnosticsShowPopup = function()
-      return vim.diagnostic.open_float(nil, { scope = "cursor" })
-   end
 
    -- Show diagnostics in a pop-up window on hover
    _G.LspDiagnosticsPopupHandler = function()
@@ -34,7 +31,7 @@ local function diagnostic_override()
       -- but only once for the current cursor location (unless moved afterwards).
       if not (current_cursor[1] == last_popup_cursor[1] and current_cursor[2] == last_popup_cursor[2]) then
          vim.w.lsp_diagnostics_last_cursor = current_cursor
-         local _, winnr = _G.LspDiagnosticsShowPopup()
+         local _, winnr = vim.diagnostic.open_float(nil, { scope = "cursor" })
          if winnr ~= nil then
             vim.api.nvim_win_set_option(winnr, "winblend", 0) -- opacity for diagnostics
          end

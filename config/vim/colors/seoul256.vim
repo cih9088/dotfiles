@@ -442,6 +442,8 @@ if has("nvim")
   call s:hi("DiagnosticSignInfo", [153, 73], [s:dark_bg + 1, s:light_bg - 2])
   call s:hi("DiagnosticSignHint", [250, 241], [s:dark_bg + 1, s:light_bg - 2])
 
+  call s:hi('LspSignatureActiveParameter', [174, 131], ['', ''])
+
   highlight link debugPC diffAdd
 end
 

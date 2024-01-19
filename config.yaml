@@ -25,7 +25,7 @@ rust:
 
 nodejs:
   mode: local
-  version: 19.0.0
+  version: 17.9.1  # glibc 2.27 compatible
 
 lua:
   mode: local

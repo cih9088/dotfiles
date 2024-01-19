@@ -257,7 +257,27 @@ local function codelldb_setup()
       },
    }
    dap.configurations.c = dap.configurations.cpp
-   dap.configurations.rust = dap.configurations.cpp
+
+   dap.configurations.rust = {
+      {
+         type = "codelldb",
+         request = "launch",
+         name = "Launch",
+         program = function()
+            local metadata_json = vim.fn.system("cargo metadata --format-version 1 --no-deps")
+            local metadata = vim.fn.json_decode(metadata_json)
+            local target_name = metadata.packages[1].targets[1].name
+            local target_dir = metadata.target_directory
+            return get_input {
+               "File to execute: ",
+               default = target_dir .. "/debug/" .. target_name,
+               completion = "file",
+            }
+         end,
+         cwd = '${workspaceFolder}',
+         stopOnEntry = false,
+      },
+   }
 end
 
 local function delve_setup()
