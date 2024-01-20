@@ -127,7 +127,7 @@ local function python_setup()
          end,
          console = "integratedTerminal",
          justMyCode = function()
-            return get_input { "Enable JustMyCode? [y/n]: ", default = 'n' } == 'y'
+            return get_input { "Enable JustMyCode? [y/n]: ", default = 'y' } == 'y'
          end,
       },
       {
@@ -141,7 +141,7 @@ local function python_setup()
          end,
          console = "integratedTerminal",
          justMyCode = function()
-            return get_input { "Enable JustMyCode? [y/n]: ", default = 'n' } == 'y'
+            return get_input { "Enable JustMyCode? [y/n]: ", default = 'y' } == 'y'
          end,
       }
    }

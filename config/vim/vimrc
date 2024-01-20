@@ -955,8 +955,8 @@
 " https://github.com/wookayin/dotfiles/commit/96d935515486f44ec361db3df8ab9ebb41ea7e40
 " ---------------------------------------------------------------------------------------
   if has('nvim-0.4.0')
-    command! CloseAllFloatingWindows   lua _G.CloseAllFloatingWindows()
-    lua<<EOF
+    command! CloseAllFloatingWindows lua _G.CloseAllFloatingWindows()
+    lua <<EOF
     _G.CloseAllFloatingWindows = function()
       local closed_windows = {}
       for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -1176,12 +1176,7 @@ EOF
 " lukas-reineke/indent-blankline.nvim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('indent-blankline.nvim')
-    lua <<EOF
-      require("ibl").setup({
-        exclude = { filetypes = { 'help', 'checkhealth', 'startify' } },
-        scope = { show_start = false, show_end = false },
-      })
-EOF
+    lua require('plugins.indent-blankline').setup({})
   endif
 
 
@@ -1418,21 +1413,21 @@ EOF
 " nvim-tree/nvim-web-devicons
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-web-devicons')
-    lua require('config.nvim-web-devicons').setup({})
+    lua require('plugins.nvim-web-devicons').setup({})
   endif
 
 
 " folke/which-key.nvim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('which-key.nvim')
-    lua require('config.which-key').setup({})
+    lua require('plugins.which-key').setup({})
   endif
 
 
 " nvim-treesitter/nvim-treesitter
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-treesitter')
-    lua require('config.nvim-treesitter').setup({})
+    lua require('plugins.nvim-treesitter').setup({})
   endif
 
 
@@ -1453,14 +1448,14 @@ EOF
 " lewis6991/gitsigns.nvim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('gitsigns.nvim')
-    lua require('config.gitsigns').setup({})
+    lua require('plugins.gitsigns').setup({})
   endif
 
 
 " hood/popui.nvim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('popui.nvim')
-    lua require('config.popui').setup({})
+    lua require('plugins.popui').setup({})
   endif
 
 " windwp/nvim-ts-autotag
