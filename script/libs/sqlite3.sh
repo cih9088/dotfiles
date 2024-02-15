@@ -15,7 +15,9 @@ log_title "Prepare for ${THIS_HL}"
 ################################################################
 
 list_versions() {
-  echo "$("${DIR}/../helpers/gh_list_tags" "${GH}")" | grep '[0-9]'
+  echo "$("${DIR}/../helpers/gh_list_tags" "${GH}")" |
+    grep 'version-[0-9.]*' |
+    sed 's/version-//'
 }
 
 version_func() {
@@ -62,10 +64,10 @@ setup_for_local() {
     if [ -z "${SRC_PATH}" ]; then
       [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
-      ++ curl -L "https://www.sqlite.org/src/tarball/sqlite.tar.gz?r=${VERSION}" -o sqlite-${VERSION}.tar.gz
+      ++ curl -L "https://github.com/${GH}/archive/refs/tags/version-${VERSION}.tar.gz" -o "sqlite-${VERSION}.tar.gz"
       ++ tar -xvzf "sqlite-${VERSION}.tar.gz"
 
-      ++ pushd "sqlite"
+      ++ pushd "sqlite-version-${VERSION}"
       ++ mkdir build && ++ cd build
       ++ ../configure --prefix="${PREFIX}"
       ++ make
@@ -73,7 +75,7 @@ setup_for_local() {
       ++ make install
       ++ popd
 
-      ++ mv "sqlite" "${PREFIX}/src/sqlite-${VERSION}"
+      ++ mv "sqlite-version-${VERSION}" "${PREFIX}/src/sqlite-${VERSION}"
     fi
   fi
 }

@@ -23,10 +23,10 @@ if [ -z "$GH_ACCESS" ]; then
         awk '{print $2}' |
         sed 's|href="/'${GH_REPO}'/releases/tag/\(.*\)"|\1|' || true
       }
-    )\n"
-    QUERY="?after=$(echo "$OUT" | tail -n 1 | tr -d '\\n')"
+    )"$'\n'
+    QUERY="?after=$(echo -n "$OUT" | tail -n 1)"
   done
-  echo -e "${OUT::-2}"
+  echo -e "${OUT}"
 else
   GH_ACCESS="--user $GH_ACCESS"
 
