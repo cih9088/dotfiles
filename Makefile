@@ -284,7 +284,7 @@ neovim: \
 	@( $(SCRIPTS_DIR)/apps/neovim.sh )
 
 tmux: \
-	ncurses libevent
+	ncurses libevent bison
 	@( $(SCRIPTS_DIR)/apps/tmux.sh )
 
 wget: \
