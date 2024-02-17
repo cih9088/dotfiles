@@ -14,12 +14,22 @@ log_title "Prepare for ${THIS_HL}"
 ################################################################
 
 list_versions() {
-  curl --silent --show-error https://sourceforge.net/projects/tcl/files/Tcl/ |
+  _VERSIONS=$(curl --silent --show-error https://sourceforge.net/projects/tcl/files/Tcl/ |
     ${DIR}/../helpers/parser_html 'span' |
     grep 'class="name"' |
     awk '{print $4}' |
     grep -v '[a-z]' |
     sort -Vr
+  )
+
+  # the latest version directory is sometimes not a release
+  if ! curl --silent "https://sourceforge.net/projects/tcl/files/Tcl/$(echo ${_VERSIONS} |
+    awk '{print $1}')/" |
+    grep -q 'Releases'
+  then
+    _VERSIONS=$(echo "$_VERSIONS" | tail -n +2)
+  fi
+  echo "${_VERSIONS}"
 }
 
 verify_version() {
