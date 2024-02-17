@@ -25,6 +25,10 @@ if [ -z "$GH_ACCESS" ]; then
       }
     )"$'\n'
     QUERY="?after=$(echo -n "$OUT" | tail -n 1)"
+    if [ "$QUERY" = "?after=" ]; then
+      # no more tags
+      break
+    fi
   done
   echo -e "${OUT}"
 else
