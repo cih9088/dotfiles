@@ -3,6 +3,7 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
+GH="Old-Man-Programmer/tree"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
@@ -13,24 +14,32 @@ THIS_HL="${BOLD}${UNDERLINE}${THIS}${NC}"
 log_title "Prepare for ${THIS_HL}"
 ################################################################
 
+list_versions() {
+  echo "$("${DIR}/../helpers/gh_list_tags" "${GH}")"
+}
+
 version_func() {
   $1 --version | awk '{print $2}'
+}
+
+verify_version() {
+  local TARGET_VERSION="${1}"
+  local AVAILABLE_VERSIONS="${2}"
+  AVAILABLE_VERSIONS=$(echo "${AVAILABLE_VERSIONS}" | tr "\n\r" " ")
+  [[ " ${AVAILABLE_VERSIONS} " == *" ${TARGET_VERSION} "* ]]
 }
 
 setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
   local SRC_PATH=""
-  [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="1.8.0"
   SRC_PATH="$(find "${PREFIX}/src" -maxdepth 1 -type d -name "tree-*")"
 
   # remove
   if [[ "remove update"  == *"${COMMAND}"* ]]; then
     if [ -n "${SRC_PATH}" ]; then
-      ++ pushd "${SRC_PATH}"
-      make uninstall || true
-      make clean || true
-      ++ popd
+      rm -rf "${PREFIX}/bin/tree"
+      rm -rf "${PREFIX}/share/man/man1/tree.1"
       rm -rf "${SRC_PATH}"
       SRC_PATH=""
     else
@@ -44,13 +53,23 @@ setup_for_local() {
   # install
   if [[ "install update"  == *"${COMMAND}"* ]]; then
     if [ -z "${SRC_PATH}" ]; then
+      [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
-      ++ curl -LO "http://mama.indstate.edu/users/ice/tree/src/tree-${VERSION}.tgz"
-      ++ tar -xvzf "tree-${VERSION}.tgz"
+      ++ curl -LO "https://github.com/Old-Man-Programmer/tree/archive/refs/tags/${VERSION}.tar.gz"
+      ++ tar -xvzf "${VERSION}.tar.gz"
 
       ++ pushd "tree-${VERSION}"
+
+      # for version lower than 2.0
       ++ sed -i -e "\"s|prefix = /usr|prefix = ${PREFIX}|\"" Makefile
       ++ sed -i -e "\"s|MANDIR=\\\${prefix}/man/man1|MANDIR=\\\${prefix}/share/man/man1|\"" Makefile
+      # for version lower than 2.1.0
+      ++ sed -i -e "\"s|prefix=/usr/local|prefix=${PREFIX}|\"" Makefile
+      ++ sed -i -e "\"s|MANDIR=\\\${prefix}/man|MANDIR=\\\${prefix}/share/man/man1|\"" Makefile
+      # newest
+      ++ sed -i -e "\"s|PREFIX=/usr/local|PREFIX=${PREFIX}|\"" Makefile
+      ++ sed -i -e "\"s|MANDIR=\\\${PREFIX}/man|MANDIR=\\\${PREFIX}/share/man/man1|\"" Makefile
+
       ++ make
       ++ make install
       ++ popd
@@ -101,4 +120,4 @@ setup_for_system() {
 
 main_script "${THIS}" \
   setup_for_local setup_for_system \
-  "" "" version_func
+  list_versions verify_version version_func
