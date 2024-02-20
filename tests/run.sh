@@ -9,6 +9,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
 ERR_CODE_INSTALL=111
 ERR_CODE_REMOVE=222
+ERR_CODE_UPDATE=333
 
 DEFAULT_CMD="docker"
 if command -v podman > /dev/null; then
@@ -40,7 +41,7 @@ ITEMS=(
 
   terminfo cmake zlib bzip2 unzip gzip xz libjpeg-turbo opencv ncurses openmpi
   fish "zsh prezto" neovim "tmux tpm"
-  wget tree fd rg thefuck tldr bash-snippets up jq sox pandoc tcpdump
+  wget tree fd rg thefuck tldr bash-snippets up jq sox pandoc tcpdump btop
 
   bins configs
 )
@@ -69,6 +70,8 @@ test_return() {
       FAILED+=("INSTALL $cmd")
     elif [ "${exit_code}" = ${ERR_CODE_REMOVE} ]; then
       FAILED+=("REMOVE $cmd")
+    elif [ "${exit_code}" = ${ERR_CODE_UPDATE} ]; then
+      FAILED+=("UPDATE $cmd")
     else
       FAILED+=("UNKNOWN $cmd")
     fi
@@ -107,6 +110,9 @@ task() {
       EXIT_CODE=0;
       /home/docker/dotfiles/bin/dots \
         --verbose --yes --mode ${mode} install ${items[*]} || EXIT_CODE=${ERR_CODE_INSTALL};
+      [ \$EXIT_CODE != 0 ] && exit \$EXIT_CODE;
+      /home/docker/dotfiles/bin/dots \
+        --verbose --yes --mode ${mode} update ${items[*]} || EXIT_CODE=${ERR_CODE_UPDATE};
       [ \$EXIT_CODE != 0 ] && exit \$EXIT_CODE;
       /home/docker/dotfiles/bin/dots \
         --verbose --yes --mode ${mode} remove $(echo "${items}" | tr " " "\n" | tac | tr "\n" " ") || EXIT_CODE=${ERR_CODE_REMOVE};

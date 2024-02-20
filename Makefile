@@ -322,6 +322,10 @@ jq: \
 	@( $(SCRIPTS_DIR)/apps/jq.sh )
 # -----------------------------------------------------
 
+btop: \
+	bzip2
+	@( $(SCRIPTS_DIR)/apps/btop.sh )
+
 pyenv:
 	@ ( $(SCRIPTS_DIR)/apps/pyenv.sh )
 
@@ -437,7 +441,7 @@ nodejs-env:
 	pandoc \
 	flex libpcap tcpdump \
 	terminfo zsh fish prezto neovim tmux \
-	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq \
+	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq btop \
 	pyenv goenv asdf tpm \
 	bins configs tmux-plugins neovim-plugins neovim-providers \
 	python golang rust nodejs lua perl \

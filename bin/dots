@@ -43,6 +43,7 @@ PKG_APPS_WITH_HELP=(
   "goenv"         "golang version manager"
   "asdf"          "runtime version manager"
   "pandoc"        "universal document converter"
+  "btop"          "resource monitor"
 )
 
 PKG_DOTS_WITH_HELP=(
