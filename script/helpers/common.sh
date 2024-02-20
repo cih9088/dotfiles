@@ -356,13 +356,19 @@ main_script() {
       "${_FUNC_SETUP}" "${_TARGET_COMMAND}" "${_TARGET_VERSION}"
     ) >&3 2>&4 && exit_code="0" || exit_code="$?"
     stop_spinner "${exit_code}" "$_END_BANNER_PASS" "$_END_BANNER_FAIL"
-    log_info "Temp directory: ${_TMP_DIR}"
 
     if [ "$exit_code" -ne 0 ]; then
+      log_info "Temp directory: ${_TMP_DIR}"
       exit "$exit_code"
     fi
 
     # clean up if it succeeded
+    if [ "${_TARGET_COMMAND}" != "install" ]; then
+      for file in $(find ${PREFIX} -xtype l); do
+        log_info "Remove broken symbolic link '$file'"
+        rm -rf ${file}
+      done
+    fi
     rm -rf "${_TMP_DIR}"
   else
     log_ok "Skipping ${_TARGET_HL}."

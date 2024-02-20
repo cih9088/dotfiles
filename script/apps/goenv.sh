@@ -31,7 +31,10 @@ setup_for_local() {
     ++ git clone https://github.com/momo-lab/xxenv-latest.git \
       ${GOENV_ROOT}/plugins/xxenv-latest
   elif [ "${COMMAND}" == "update" ]; then
-    ++ ${GOENV_ROOT}/bin/goenv update
+    ++ pushd ${GOENV_ROOT}
+    ++ git fetch --all
+    _LATEST_TAGS=$(git tag | grep -v '[a-z]' | sort -Vr | head -n 1)
+    ++ git checkout "${_LATEST_TAGS}"
   fi
 }
 

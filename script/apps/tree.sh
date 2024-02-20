@@ -55,7 +55,7 @@ setup_for_local() {
     if [ -z "${SRC_PATH}" ]; then
       [[ -z "${VERSION}" || "${VERSION}" == "latest" ]] && VERSION="$(list_versions | head -n 1)"
 
-      ++ curl -LO "https://github.com/Old-Man-Programmer/tree/archive/refs/tags/${VERSION}.tar.gz"
+      ++ curl -LO "https://github.com/${GH}/archive/refs/tags/${VERSION}.tar.gz"
       ++ tar -xvzf "${VERSION}.tar.gz"
 
       ++ pushd "tree-${VERSION}"
