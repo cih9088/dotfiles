@@ -364,7 +364,7 @@ main_script() {
 
     # clean up if it succeeded
     if [ "${_TARGET_COMMAND}" != "install" ]; then
-      for file in $(find ${PREFIX} -xtype l); do
+      for file in $(find ${PREFIX} -type l ! -exec test -e {} \; -print); do
         log_info "Remove broken symbolic link '$file'"
         rm -rf ${file}
       done
