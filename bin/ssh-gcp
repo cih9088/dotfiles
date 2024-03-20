@@ -18,7 +18,7 @@ has() {
   done
 }
 
-has -v gcloud fzf awk column tmux xpanes || exit 1
+has -v gcloud fzf awk column mapfile || exit 1
 
 projects=($(gcloud projects list --format="table[no-heading](projectId)"))
 
@@ -63,7 +63,10 @@ mapfile -t targets < <(
         --layout=reverse
 )
 
-[ "${#targets[@]}" -eq 0 ] && (cleanup; exit 0)
+if [ "${#targets[@]}" -eq 0 ]; then
+  cleanup
+  exit 0
+fi
 
 user=""
 if [ ${#@} -ge 1 ] && [[ $1 == *"@" ]]; then
@@ -88,5 +91,6 @@ if [ "${#cmds[@]}" -eq 1 ]; then
   # echo ${cmds[0]}
   command ${cmds[0]}
 elif [ "${#cmds[@]}" -gt 1 ]; then
+  has -v tmux xpanes || exit 1
   xpanes -t -s -c "{}" "${cmds[@]}"
 fi

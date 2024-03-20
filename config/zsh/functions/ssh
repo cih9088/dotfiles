@@ -126,11 +126,11 @@ if is_first_destination "$@";  then
 
 elif [ "$1" = "gcp" ]; then
   # gcp plugin
-  has -v ssh-gcp || exit 1
+  has -v ssh-gcp || return 1
   shift; ssh-gcp $@
 else
   # local config parsing
-  has -v fzf awk tmux xpanes || exit 1
+  has -v fzf awk tmux xpanes || return 1
 
   targets=($(parse_config))
   if [ ${#targets[@]} -eq 1 ]; then

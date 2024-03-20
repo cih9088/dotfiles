@@ -4,5 +4,5 @@ if [ -x "$(command -v thefuck)" ]; then
   $0 "$@"
 else
   echo "thefuck not found" >&2
-  exit 1
+  return 1
 fi
