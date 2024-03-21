@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-trap cleanup SIGHUP SIGINT SIGTERM
+trap cleanup SIGHUP SIGINT SIGTERM EXIT
 
 set -eu
 
@@ -18,30 +18,34 @@ has() {
   done
 }
 
+cleanup() {
+  [ -e "$_TEMP_DIR" ] && rm -rf "$_TEMP_DIR"
+}
+
 has -v gcloud fzf awk column mapfile || exit 1
 
-projects=($(gcloud projects list --format="table[no-heading](projectId)"))
+_USER=""
 
-temp_dir=$(mktemp -d)
-fifo="${temp_dir}/pipe-$$"
-mkfifo "$fifo"
+[ ${#@} -ge 1 ] && [[ "$1" == *"@" ]] && _USER="$1" && shift
 
-cleanup() {
-  [[ -e "$fifo" ]] && rm -rf "$temp_dir"
-}
+_PROJECTS=($(gcloud projects list --format="table[no-heading](projectId)"))
+
+_TEMP_DIR=$(mktemp -d)
+_INSTANCES_FIFO="${_TEMP_DIR}/pipe-$$"
+mkfifo "$_INSTANCES_FIFO"
 
 (
   echo -e "PROJECT_ID\tNAME\tZONE\tMACHINE_TYPE\tSTATUS"
-  for project in "${projects[@]}"; do
+  for _PROJECT in "${_PROJECTS[@]}"; do
     echo "$(
-      gcloud compute instances list --project "${project}" \
+      gcloud compute instances list --project "${_PROJECT}" \
         --format="table[no-heading](name,zone,machineType,status)" \
-        | sort --version-sort | sed "s/^/${project}  /"
+        | sort --version-sort | sed "s/^/${_PROJECT}  /"
     )" &
   done
-) >> "$fifo" &
+) >> "$_INSTANCES_FIFO" &
 
-# mapfile -t targets < <(
+# mapfile -t _INSTANCE_INFOS < <(
 #   fzf --exact \
 #     --bind 'Ctrl-A:toggle-all,`:jump' \
 #     --inline-info \
@@ -49,10 +53,10 @@ cleanup() {
 #     --height=40% \
 #     --header-lines=1 \
 #     --layout=reverse \
-#       < "$fifo"
+#       < "$_INSTANCES_FIFO"
 # )
-mapfile -t targets < <(
-  cat "$fifo" \
+mapfile -t _INSTANCE_INFOS < <(
+  cat "$_INSTANCES_FIFO" \
     | column -t \
     | fzf --exact \
         --bind 'Ctrl-A:toggle-all,`:jump' \
@@ -63,34 +67,25 @@ mapfile -t targets < <(
         --layout=reverse
 )
 
-if [ "${#targets[@]}" -eq 0 ]; then
-  cleanup
-  exit 0
-fi
+[ "${#_INSTANCE_INFOS[@]}" -eq 0 ] && exit 0
 
-user=""
-if [ ${#@} -ge 1 ] && [[ $1 == *"@" ]]; then
-  user="$1"
-  shift
-fi
+_CMDS=()
+_MSGS=()
+for _INSTANCE_INFO in "${_INSTANCE_INFOS[@]}"; do
+  _PROJECT="$(echo "${_INSTANCE_INFO}" | awk '{print $1}')"
+  _INSTANCE="$(echo "${_INSTANCE_INFO}" | awk '{print $2}')"
+  _ZONE="$(echo "${_INSTANCE_INFO}" | awk '{print $3}')"
+  _MACHINE_TYPE="$(echo "${_INSTANCE_INFO}" | awk '{print $4}')"
 
-cmds=()
-msgs=()
-for target in "${targets[@]}"; do
-  project="$(echo "${target}" | awk '{print $1}')"
-  instance="$(echo "${target}" | awk '{print $2}')"
-  zone="$(echo "${target}" | awk '{print $3}')"
-  machine_type="$(echo "${target}" | awk '{print $4}')"
-
-  msgs+=("SSH into $project/$user$instance ($machine_type) in $zone...")
-  cmds+=("gcloud compute ssh $user$instance --project $project --zone $zone $*")
+  _MSGS+=("SSH into $_PROJECT/$_USER$_INSTANCE ($_MACHINE_TYPE) in $_ZONE...")
+  _CMDS+=("gcloud compute ssh $_USER$_INSTANCE --project $_PROJECT --zone $_ZONE $*")
 done
 
-if [ "${#cmds[@]}" -eq 1 ]; then
-  echo "${msgs[0]}"
-  # echo ${cmds[0]}
-  command ${cmds[0]}
-elif [ "${#cmds[@]}" -gt 1 ]; then
+if [ "${#_CMDS[@]}" -eq 1 ]; then
+  echo "${_MSGS[0]}"
+  # echo ${_CMDS[0]}
+  command ${_CMDS[0]}
+elif [ "${#_CMDS[@]}" -gt 1 ]; then
   has -v tmux xpanes || exit 1
-  xpanes -t -s -c "{}" "${cmds[@]}"
+  xpanes -t -s -c "{}" "${_CMDS[@]}"
 fi

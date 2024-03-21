@@ -1,0 +1,137 @@
+#!/usr/bin/env bash
+
+trap cleanup SIGHUP SIGINT SIGTERM EXIT
+
+set -eu
+
+has() {
+  local verbose=0
+  if [[ $1 = '-v' ]]; then
+    verbose=1
+    shift
+  fi
+  for c; do c="${c%% *}"
+    if ! command -v "$c" &> /dev/null; then
+      (( verbose > 0 )) && printf "\033[1;31m%s\033[0m not found.\n" "$c" >&2
+      return 1
+    fi
+  done
+}
+
+cleanup() {
+  [ -e "$_TEMP_DIR" ] && rm -rf "$_TEMP_DIR"
+}
+
+has -v gcloud fzf awk column mapfile || exit 1
+
+_IS_RSYNC=false
+_IS_GET=false
+_IS_SEND=false
+_RSYNC="rsync -auzP"
+_SUB_COMMAND_OPTIONS=""
+_USER=""
+
+[[ "$0" = *"rsync-gcp" ]] && _IS_RSYNC=true
+if [ "$_IS_RSYNC" = true ]; then
+  has -v rsync || exit 1
+fi
+[ ${#@} -ge 1 ] && [[ "$1" == *"@" ]] && _USER="$1" && shift
+
+
+while [ ${#@} -gt 2 ]; do
+  _SUB_COMMAND_OPTIONS="$_SUB_COMMAND_OPTIONS $1"
+  shift
+done
+[ "$_IS_RSYNC" = true ] && [ -n "$_SUB_COMMAND_OPTIONS" ] && _RSYNC="rsync $_SUB_COMMAND_OPTIONS"
+
+if [ ${#@} -ne 2 ]; then
+  echo "need 2 arguments" >&2
+  exit 1
+fi
+
+[[ $1 = ":"* ]] && _IS_GET=true
+[[ $2 = ":"* ]] && _IS_SEND=true
+
+if [ $_IS_GET == $_IS_SEND ]; then
+  echo "either from local to remote or remote to local" >&2
+  exit 1
+fi
+
+_PROJECTS=($(gcloud projects list --format="table[no-heading](projectId)"))
+_TEMP_DIR=$(mktemp -d)
+
+_INSTANCES_FIFO="${_TEMP_DIR}/pipe-$$"
+mkfifo "$_INSTANCES_FIFO"
+_FILES_FIFO="${_TEMP_DIR}/files-$$"
+mkfifo "$_FILES_FIFO"
+
+
+(
+  echo -e "PROJECT_ID\tNAME\tZONE\tMACHINE_TYPE\tSTATUS"
+  for _PROJECT in "${_PROJECTS[@]}"; do
+    echo "$(
+      gcloud compute instances list --project "${_PROJECT}" \
+        --format="table[no-heading](name,zone,machineType,status)" \
+        | sort --version-sort | sed "s/^/${_PROJECT}  /"
+    )" &
+  done
+) >> "$_INSTANCES_FIFO" &
+
+mapfile -t _INSTANCE_INFOS < <(
+  cat "$_INSTANCES_FIFO" \
+      | column -t \
+      | fzf --exact \
+          --bind '`:jump' \
+          --inline-info \
+          --height=~40% \
+          --header-lines=1 \
+          --layout=reverse
+)
+
+[ "${#_INSTANCE_INFOS[@]}" -eq 0 ] && exit 0
+
+for _INSTANCE_INFO in "${_INSTANCE_INFOS[@]}"; do
+  _PROJECT="$(echo "${_INSTANCE_INFO}" | awk '{print $1}')"
+  _INSTANCE="$(echo "${_INSTANCE_INFO}" | awk '{print $2}')"
+  _ZONE="$(echo "${_INSTANCE_INFO}" | awk '{print $3}')"
+
+  if [ "$_IS_GET" = true ]; then
+    if [ "$_IS_RSYNC" = true ]; then
+      _MSG="rsync from $_USER$_INSTANCE$1 to $2"
+    else
+      _MSG="scp from $_USER$_INSTANCE$1 to $2"
+    fi
+
+    gcloud compute ssh "$_USER$_INSTANCE" --project "$_PROJECT" --zone "$_ZONE" -- find "${1:1}" >> "$_FILES_FIFO" 2>/dev/null &
+    mapfile -t _FILES < <(fzf --exact --inline-info --no-sort --multi --bind='Ctrl-A:toggle-all,`:jump' < "$_FILES_FIFO")
+    if (( ${#_FILES[@]} )); then
+      if [ "$_IS_RSYNC" = true ]; then
+        echo "rsync from $_USER$_INSTANCE$1 to $2"
+        for _FILE in "${_FILES[@]}"; do
+          # https://unix.stackexchange.com/a/222215
+          _FILE="$(echo "${_FILE// /\\ }" | sed -e "s/^/\"/" -e "s/$/\"/")"
+          # rsync per file becase of compatability with old version
+          # https://stackoverflow.com/a/15818000
+          $_RSYNC -e "gcloud compute ssh --project $_PROJECT --zone $_ZONE $_USER$_INSTANCE --" ":$_FILE" "$2"
+        done
+      else
+        echo "scp from $_USER$_INSTANCE$1 to $2"
+        _FILES_WITH_HOST=()
+        for _FILE in "${_FILES[@]}"; do
+          _FILES_WITH_HOST+=("$_USER$_INSTANCE:$_FILE")
+        done
+        gcloud compute scp --recurse --project "$_PROJECT" --zone "$_ZONE" "${_FILES_WITH_HOST[@]}" "$2"
+      fi
+    fi
+  fi
+
+  if [ "$_IS_SEND" = true ]; then
+    if [ "$_IS_RSYNC" = true ]; then
+      echo "rsync from $1 to $_USER$_INSTANCE$2"
+      $_RSYNC -e "gcloud compute ssh --project $_PROJECT --zone $_ZONE $_USER$_INSTANCE --" "$1" "$2"
+    else
+      echo "scp from $1 to $_USER$_INSTANCE$2"
+      gcloud compute scp --recurse --project "$_PROJECT" --zone "$_ZONE" "$1" "$_USER$_INSTANCE$2"
+    fi
+  fi
+done
