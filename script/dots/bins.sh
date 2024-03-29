@@ -31,13 +31,13 @@ setup_for_local() {
     case ${PLATFORM} in
       OSX )
         # install
-        for file in `find ${BIN_DIR} -type f -perm +111 -exec basename {} \;`; do
+        for file in `find ${BIN_DIR} -mindepth 1 -perm +111 -exec basename {} \;`; do
           log_info "Update symbolic link '${BIN_DIR}/${file}' -> '${PREFIX}/bin/$file'"
           ln -snf ${BIN_DIR}/${file} ${PREFIX}/bin/$file
         done
         ;;
       LINUX )
-        for file in `find ${BIN_DIR} -type f -executable -printf "%f\n"`; do
+        for file in `find ${BIN_DIR} -mindepth 1 -executable -printf "%f\n"`; do
           log_info "Update symbolic link '${BIN_DIR}/${file}' -> '${PREFIX}/bin/$file'"
           ln -snf ${BIN_DIR}/${file} ${PREFIX}/bin/$file
         done
