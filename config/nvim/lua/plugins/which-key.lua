@@ -1,8 +1,12 @@
 local M = {}
-local wk = require("which-key")
+
+local utils = require("utils")
 
 function M.setup()
-   wk.setup({})
+   local wk = utils.safe_require("which-key")
+   if wk then
+      wk.setup({})
+   end
 end
 
 return M

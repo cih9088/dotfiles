@@ -1,9 +1,13 @@
 local M = {}
-local devicon = require("nvim-web-devicons")
+
+local utils = require("utils")
 
 function M.setup()
-   devicon.setup({})
+   local devicon = utils.safe_require("nvim-web-devicons")
+
+   if devicon then
+      devicon.setup({})
+   end
 end
 
 return M
-

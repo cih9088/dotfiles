@@ -1,10 +1,7 @@
 local M = {}
 
 local dap = require('dap')
-
-local is_windows = function()
-   return vim.loop.os_uname().sysname:find("Windows", 1, true) and true
-end
+local utils = require('utils')
 
 
 local function get_input(args)
@@ -59,22 +56,6 @@ local function bashdb_setup()
 end
 
 local function python_setup()
-   local get_python_path = function()
-      local venv_path = os.getenv('VIRTUAL_ENV') or os.getenv('CONDA_PREFIX')
-      if venv_path then
-         if is_windows() then
-            return venv_path .. '\\Scripts\\python.exe'
-         end
-         return venv_path .. '/bin/python'
-      else
-         local handle = io.popen("bash -c 'type -P python'")
-         local result = handle:read("*a")
-         handle:close()
-         -- get rid of new line
-         return result:sub(1, -2)
-      end
-   end
-
    dap.adapters.python = function(callback, config)
       if config.request == 'attach' then
          local port = (config.connect or config).port
@@ -114,7 +95,7 @@ local function python_setup()
          type = 'python',
          request = 'launch',
          name = "Launch file with arguments",
-         pythonPath = get_python_path,
+         pythonPath = utils.get_python_path,
          program = function()
             return get_input {
                "File to execute: ",
@@ -135,7 +116,7 @@ local function python_setup()
          request = 'launch',
          name = "Launch pytest",
          module = "pytest",
-         pythonPath = get_python_path,
+         pythonPath = utils.get_python_path,
          args = function()
             get_input { "Arguments: ", default = "-v -s .", split = true }
          end,

@@ -1,75 +1,27 @@
 local M = {}
 
-
-local lspconfig = require("lspconfig")
-
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-   -- Mappings.
-   local opts = { noremap = true, silent = true }
-   vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-   vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-   vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
-   --
-   local bufopts = { noremap = true, silent = true, buffer = bufnr }
-   vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-   vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-   vim.keymap.set("n", "gc", vim.lsp.buf.implementation, bufopts)
-   vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-   vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-   -- vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-   -- vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-   -- vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-   -- vim.keymap.set('n', '<space>wl', function()
-   --    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-   -- end, bufopts)
-   vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
-   vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
-   vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, bufopts)
-   vim.keymap.set('n', '<space>f', function()
-      vim.lsp.buf.format { async = true }
-   end, bufopts)
-
-   -- Signature help
-   local lsp_signature = require("lsp_signature")
-   if lsp_signature then
-      lsp_signature.on_attach({
-         floating_window_above_cur_line = true,
-         handler_opts = {
-            border = "single",
-         },
-      }, bufnr)
-   end
-
-   -- Status help
-   require("lsp-status").on_attach(client)
-
-   -- Highlight symbol under cursor
-   if client.server_capabilities.documentHighlightProvider then
-      vim.cmd([[
-         augroup lsp_document_highlight
-            autocmd! * <buffer>
-            autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-            autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-         augroup END
-      ]])
-   end
-
-   -- Inlay hints
-   require("lsp-inlayhints").on_attach(client, bufnr)
-   if client.server_capabilities.inlayHintProvider then
-      vim.lsp.buf.inlay_hint(bufnr, true)
-   end
-
-   if client.name == 'ruff_lsp' then
-      -- Disable hover in favor of Pyright
-      client.server_capabilities.hoverProvider = false
-   end
-end
-
+local utils = require("utils")
 
 local server_configs = {
+   basedpyright = {
+      settings = {
+         python = {
+            pythonPath = utils.get_python_path(),
+         },
+         basedpyright = {
+            -- Using Ruff's import organizer
+            disableOrganizeImports = true,
+            analysis = {
+               diagnosticSeverityOverrides = {
+                  -- https://github.com/DetachHead/basedpyright/issues/168
+                  reportMissingSuperCall = false,
+                  reportUnusedImport = false,
+                  reportDeprecated = false,
+               },
+            },
+         },
+      },
+   },
    pyright = {
       settings = {
          pyright = {
@@ -77,6 +29,11 @@ local server_configs = {
             disableOrganizeImports = true,
          },
       },
+   },
+   ruff_lsp = {
+      on_attach = function(client, bufnr)
+         client.server_capabilities.hoverProvider = false
+      end
    },
    lua_ls = {
       settings = {
@@ -157,25 +114,37 @@ local function get_config(server_name)
    local capabilities = vim.lsp.protocol.make_client_capabilities()
 
    -- Add additional capabilities supported by nvim-cmp
-   capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
-   capabilities = vim.tbl_extend("keep", capabilities, require("lsp-status").capabilities)
+   local cmp_nvim_lsp = utils.safe_require("cmp_nvim_lsp")
+   if cmp_nvim_lsp then
+      capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+   end
+   local lsp_status = utils.safe_require("lsp-status")
+   if lsp_status then
+      capabilities = vim.tbl_extend("keep", capabilities, lsp_status.capabilities)
+   end
 
-   config.on_attach = on_attach
    config.capabilities = capabilities
    return config
 end
 
 
 function M.setup()
+   local lspconfig = require("lspconfig")
+   local lsp_inlayhint = utils.safe_require("lsp-inlayhints")
+   local lsp_signature = utils.safe_require("lsp_signature")
+   local lsp_status = utils.safe_require("lsp-status")
+
    -- enable inlay hints
-   require("lsp-inlayhints").setup()
-   vim.cmd([[
-      augroup lsp_inlayhint
-         autocmd!
-         autocmd ColorScheme * highlight! link LspInlayHint Comment
-      augroup END
-   ]])
-   vim.cmd([[doautocmd ColorScheme]])
+   if lsp_inlayhint then
+      lsp_inlayhint.setup()
+      vim.cmd([[
+         augroup lsp_inlayhint
+            autocmd!
+            autocmd ColorScheme * highlight! link LspInlayHint Comment
+         augroup END
+      ]])
+      vim.cmd([[doautocmd ColorScheme]])
+   end
 
    -- LSP settings (for overriding per client)
    local handlers = {
@@ -184,10 +153,85 @@ function M.setup()
          { border = "single", focusable = false }),
    }
 
+   vim.api.nvim_create_autocmd('LspAttach', {
+      group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+      callback = function(ev)
+         -- mappings.
+         local opts = { noremap = true, silent = true }
+         vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+         vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+         vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
+
+         -- Buffer local mappings.
+         -- See `:help vim.lsp.*` for documentation on any of the below functions
+         local bufopts = { noremap = true, silent = true }
+         vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+         vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+         vim.keymap.set("n", "gc", vim.lsp.buf.implementation, bufopts)
+         vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+         vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+         -- vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+         -- vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
+         -- vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
+         -- vim.keymap.set('n', '<space>wl', function()
+         --    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+         -- end, bufopts)
+         vim.keymap.set("n", "<space>D", vim.lsp.buf.type_definition, bufopts)
+         vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
+         vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, bufopts)
+         vim.keymap.set('n', '<space>f', function()
+            vim.lsp.buf.format { async = true }
+         end, bufopts)
+
+         local client = vim.lsp.get_client_by_id(ev.data.client_id)
+
+         -- Signature help
+         if lsp_signature then
+            lsp_signature.on_attach({
+               floating_window_above_cur_line = true,
+               handler_opts = {
+                  border = "single",
+               },
+            }, ev.buf)
+         end
+
+         -- Status help
+         if lsp_status then
+            lsp_status.on_attach(client)
+         end
+
+         -- Highlight symbol under cursor
+         if client.server_capabilities.documentHighlightProvider then
+            vim.cmd([[
+          augroup lsp_document_highlight
+             autocmd! * <buffer>
+             autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+             autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+          augroup END
+       ]])
+         end
+
+         -- Inlay hints
+         if client.server_capabilities.inlayHintProvider then
+            if vim.lsp.inlay_hint then
+               vim.lsp.inlay_hint.enable(ev.buf, true)
+            else
+               if lsp_inlayhint then
+                  lsp_inlayhint.on_attach(client, ev.buf)
+               end
+            end
+         end
+
+         -- Disable highlight from lsp for TreeSitter
+         client.server_capabilities.semanticTokensProvider = nil
+      end,
+   })
+
+
    -- Use a loop to conveniently call 'setup' on multiple servers and
    -- map buffer local keybindings when the language server attaches
    local servers = {
-      "pyright",
+      "basedpyright",
       "ruff_lsp",
       "gopls",
       "rust_analyzer",
