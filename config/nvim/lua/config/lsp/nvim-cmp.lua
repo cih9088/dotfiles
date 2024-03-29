@@ -79,6 +79,7 @@ local function cmp_setup()
       }, {
          { name = "buffer", keyword_length = 3 },
          { name = "tmux",   max_item_count = 3 },
+         { name = "emoji" },
       }),
       sorting = {
          comparators = {

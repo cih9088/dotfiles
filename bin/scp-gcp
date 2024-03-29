@@ -4,6 +4,14 @@ trap cleanup SIGHUP SIGINT SIGTERM EXIT
 
 set -eu
 
+_TEMP_DIR=""
+_IS_RSYNC=false
+_IS_GET=false
+_IS_SEND=false
+_RSYNC="rsync -auzP"
+_SUB_COMMAND_OPTIONS=""
+_USER=""
+
 has() {
   local verbose=0
   if [[ $1 = '-v' ]]; then
@@ -23,13 +31,6 @@ cleanup() {
 }
 
 has -v gcloud fzf awk column mapfile || exit 1
-
-_IS_RSYNC=false
-_IS_GET=false
-_IS_SEND=false
-_RSYNC="rsync -auzP"
-_SUB_COMMAND_OPTIONS=""
-_USER=""
 
 [[ "$0" = *"rsync-gcp" ]] && _IS_RSYNC=true
 if [ "$_IS_RSYNC" = true ]; then
@@ -58,8 +59,8 @@ if [ $_IS_GET == $_IS_SEND ]; then
 fi
 
 _PROJECTS=($(gcloud projects list --format="table[no-heading](projectId)"))
-_TEMP_DIR=$(mktemp -d)
 
+_TEMP_DIR=$(mktemp -d)
 _INSTANCES_FIFO="${_TEMP_DIR}/pipe-$$"
 mkfifo "$_INSTANCES_FIFO"
 _FILES_FIFO="${_TEMP_DIR}/files-$$"

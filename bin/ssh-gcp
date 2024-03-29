@@ -4,6 +4,9 @@ trap cleanup SIGHUP SIGINT SIGTERM EXIT
 
 set -eu
 
+_TEMP_DIR=""
+_USER=""
+
 has() {
   local verbose=0
   if [[ $1 = '-v' ]]; then
@@ -23,8 +26,6 @@ cleanup() {
 }
 
 has -v gcloud fzf awk column mapfile || exit 1
-
-_USER=""
 
 [ ${#@} -ge 1 ] && [[ "$1" == *"@" ]] && _USER="$1" && shift
 

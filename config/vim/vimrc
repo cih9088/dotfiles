@@ -104,6 +104,7 @@
     Plug 'hrsh7th/cmp-nvim-lsp'
     Plug 'hrsh7th/cmp-buffer'
     Plug 'hrsh7th/cmp-path'
+    Plug 'hrsh7th/cmp-emoji'
     Plug 'hrsh7th/cmp-cmdline'
     Plug 'andersevenrud/cmp-tmux'
     Plug 'L3MON4D3/LuaSnip'
@@ -134,6 +135,7 @@
 
   if has("nvim-0.8.0")
     Plug 'mfussenegger/nvim-dap'
+    Plug 'nvim-neotest/nvim-nio'
     Plug 'rcarriga/nvim-dap-ui'
   endif
 
@@ -803,6 +805,12 @@
 " shebang
 " ---------------------------------------------------------------------------------------
   inoreabbrev <expr> #!! "#!/usr/bin/env" . (empty(&filetype) ? '' : ' '.&filetype)
+
+
+" scroll more
+" ---------------------------------------------------------------------------------------
+  nnoremap <C-e> 2<C-e>
+  nnoremap <C-y> 2<C-y>
 
 
 " }}}

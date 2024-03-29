@@ -8,7 +8,6 @@ local lspconfig = require("lspconfig")
 local on_attach = function(client, bufnr)
    -- Mappings.
    local opts = { noremap = true, silent = true }
-   vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
    vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
@@ -62,10 +61,23 @@ local on_attach = function(client, bufnr)
    if client.server_capabilities.inlayHintProvider then
       vim.lsp.buf.inlay_hint(bufnr, true)
    end
+
+   if client.name == 'ruff_lsp' then
+      -- Disable hover in favor of Pyright
+      client.server_capabilities.hoverProvider = false
+   end
 end
 
 
 local server_configs = {
+   pyright = {
+      settings = {
+         pyright = {
+            -- Using Ruff's import organizer
+            disableOrganizeImports = true,
+         },
+      },
+   },
    lua_ls = {
       settings = {
          Lua = {
@@ -168,13 +180,15 @@ function M.setup()
    -- LSP settings (for overriding per client)
    local handlers = {
       ["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "single" }),
-      ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single", focusable = false }),
+      ["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help,
+         { border = "single", focusable = false }),
    }
 
    -- Use a loop to conveniently call 'setup' on multiple servers and
    -- map buffer local keybindings when the language server attaches
    local servers = {
       "pyright",
+      "ruff_lsp",
       "gopls",
       "rust_analyzer",
       "bashls",
@@ -184,6 +198,7 @@ function M.setup()
       "clangd",
       "html",
       "cssls",
+      "eslint",
       "tsserver",
       "tailwindcss",
       "emmet_language_server",

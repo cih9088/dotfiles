@@ -101,7 +101,7 @@ task() {
   local exit_code=0
 
   ${COMMAND} run --rm \
-    -v "$DIR"/..:/dotfiles:z \
+    -v "$DIR"/..:/dotfiles:ro \
     "${image}" \
     bash -c "\
       sudo cp -r /dotfiles /home/docker/dotfiles &&
@@ -138,8 +138,8 @@ open_sem "${N_WORKERS}"
 for image in "${IMAGES[@]}"; do
   for items in "${ITEMS[@]}"; do
     for mode in "${MODES[@]}"; do
-      printf "[%${#N_TOTAL}d/%d] %-30s || %s\n" "$CTR" "$N_TOTAL" "$image - $mode" "$items"
       run_with_lock task "${image}" "${mode}" "${items}"
+      printf "[%${#N_TOTAL}d/%d] %-30s || %s\n" "$CTR" "$N_TOTAL" "$image - $mode" "$items"
       CTR=$(( $CTR + 1 ))
     done
   done
