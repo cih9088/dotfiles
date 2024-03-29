@@ -23,6 +23,7 @@ function M.setup()
       mason_lspconfig.setup({
          ensure_installed = {
             "basedpyright",
+            "pyright",
             "gopls@v0.13.2",
             "rust_analyzer",
             "bashls",

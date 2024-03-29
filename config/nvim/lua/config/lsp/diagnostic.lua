@@ -11,9 +11,7 @@ end
 
 local function diagnostic_override()
    vim.diagnostic.config({
-      virtual_text = {
-         severity = vim.diagnostic.severity.ERROR,
-      },
+      virtual_text = false,
       float = {
          severity_sort = true,
          source = "always",

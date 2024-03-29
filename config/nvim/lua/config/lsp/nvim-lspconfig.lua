@@ -11,12 +11,16 @@ local server_configs = {
          basedpyright = {
             -- Using Ruff's import organizer
             disableOrganizeImports = true,
+            -- typeCheckingMode = "standard",
             analysis = {
                diagnosticSeverityOverrides = {
                   -- https://github.com/DetachHead/basedpyright/issues/168
                   reportMissingSuperCall = false,
                   reportUnusedImport = false,
-                  reportDeprecated = false,
+                  reportUnnecessaryIsInstance = false,
+                  reportImplicitStringConcatenation = false,
+                  reportIgnoreCommentWithoutRule = false,
+                  reportAny = false,
                },
             },
          },
@@ -137,13 +141,13 @@ function M.setup()
    -- enable inlay hints
    if lsp_inlayhint then
       lsp_inlayhint.setup()
-      vim.cmd([[
-         augroup lsp_inlayhint
-            autocmd!
-            autocmd ColorScheme * highlight! link LspInlayHint Comment
-         augroup END
-      ]])
-      vim.cmd([[doautocmd ColorScheme]])
+      -- vim.cmd([[
+      --    augroup lsp_inlayhint
+      --       autocmd!
+      --       autocmd ColorScheme * highlight! link LspInlayHint Comment
+      --    augroup END
+      -- ]])
+      -- vim.cmd([[doautocmd ColorScheme]])
    end
 
    -- LSP settings (for overriding per client)
@@ -232,6 +236,7 @@ function M.setup()
    -- map buffer local keybindings when the language server attaches
    local servers = {
       "basedpyright",
+      -- "pyright",
       "ruff_lsp",
       "gopls",
       "rust_analyzer",
