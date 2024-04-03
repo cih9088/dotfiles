@@ -7,7 +7,11 @@ else
 fi
 
 # default colour scheme
+[ -z "${_COLOUR_SCHEME+x}" ] && _COLOUR_SCHEME=$(
+  basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme ${2:-0.001} )[\"']" $DOTS/config/alacritty/colourschemes)" |
+    cut -d '.' -f 1)
 [ -n "${_COLOUR_SCHEME}" ] && export COLOUR_SCHEME=${_COLOUR_SCHEME}
+echo "Change Theme to '$COLOUR_SCHEME'"
 
 # change alcritty background
 alacritty-theme "$COLOUR_SCHEME"

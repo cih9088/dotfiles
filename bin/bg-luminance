@@ -2,7 +2,9 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-$DIR/xterm-query | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | awk '
+T=${1:-0.001}
+
+"$DIR/xterm-query" 11 "${T}" | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | awk '
 function parsehex(V,OUT) {
   if(V ~ /^0x/)  V=substr(V,3);
 

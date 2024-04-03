@@ -20,7 +20,7 @@ target_tty="${SSH_TTY:-$parent_tty}"
 # 11: text background
 Ps=${1:-11}
 
-# wait 1 second max by default
+# wait 0.001 second max by default
 t=${2:-0.001}
 max_ctr=${3:-1000}
 
