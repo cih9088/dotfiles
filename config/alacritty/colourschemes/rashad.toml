@@ -1,0 +1,38 @@
+[colors.bright]
+black = "#1D344F"
+blue = "#6080b0"
+cyan = "#6ca8cf"
+green = "#7ca198"
+magenta = "#8e6f98"
+red = "#C98093"
+white = "#CDD1D5"
+yellow = "#E4B371"
+
+[colors.dim]
+black = "#1D344F"
+blue = "#6080b0"
+cyan = "#6ca8cf"
+green = "#7ca198"
+magenta = "#8e6f98"
+red = "#C98093"
+white = "#CDD1D5"
+yellow = "#E4B371"
+
+[colors.normal]
+black = "#1D344F"
+blue = "#6080b0"
+cyan = "#6ca8cf"
+green = "#7ca198"
+magenta = "#8e6f98"
+red = "#C98093"
+white = "#CDD1D5"
+yellow = "#E4B371"
+
+[colors.primary]
+background = "#EDEFF1"
+dim_foreground = "#a5abb6"
+foreground = "#1D344F"
+
+[colors.selection]
+background = "CellForeground"
+text = "CellBackground"
