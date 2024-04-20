@@ -218,7 +218,13 @@ local function codelldb_setup()
       executable = {
          command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
          args = { '--port', '${port}' }
-      }
+      },
+      enrich_config = function(config, on_config)
+         if config["cargo"] ~= nil then
+            config = require("config.dap.rust_enrich").inspect(config)
+         end
+         on_config(config)
+      end,
    }
 
    dap.configurations.cpp = {
@@ -244,19 +250,39 @@ local function codelldb_setup()
          type = "codelldb",
          request = "launch",
          name = "Launch",
-         program = function()
-            local metadata_json = vim.fn.system("cargo metadata --format-version 1 --no-deps")
-            local metadata = vim.fn.json_decode(metadata_json)
-            local target_name = metadata.packages[1].targets[1].name
-            local target_dir = metadata.target_directory
-            return get_input {
-               "File to execute: ",
-               default = target_dir .. "/debug/" .. target_name,
-               completion = "file",
-            }
-         end,
+         -- program = function()
+         --    local metadata_json = vim.fn.system("cargo metadata --format-version 1 --no-deps")
+         --    local metadata = vim.fn.json_decode(metadata_json)
+         --    local target_name = metadata.packages[1].targets[1].name
+         --    local target_dir = metadata.target_directory
+         --    return get_input {
+         --       "File to execute: ",
+         --       default = target_dir .. "/debug/" .. target_name,
+         --       completion = "file",
+         --    }
+         -- end,
          cwd = '${workspaceFolder}',
          stopOnEntry = false,
+         cargo = {
+            args = { "build" }
+         },
+      },
+      {
+         type = "codelldb",
+         request = "launch",
+         name = "Launch test",
+         cwd = '${workspaceFolder}',
+         stopOnEntry = false,
+         cargo = {
+            args = { "test", "--no-run" }
+         },
+         args = function()
+            return get_input {
+               "Test arguments to execute: ",
+               default = "",
+               split = true,
+            }
+         end
       },
    }
 end
@@ -296,6 +322,9 @@ function M.setup()
    node_setup()
    codelldb_setup()
    delve_setup()
+
+   -- Override default configurations with `launch.json`
+   require("dap.ext.vscode").load_launchjs(".vscode/launch.json")
 end
 
 return M
