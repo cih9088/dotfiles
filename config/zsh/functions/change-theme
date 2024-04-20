@@ -7,51 +7,55 @@ else
 fi
 
 # default colour scheme
-[ -z "${_COLOUR_SCHEME+x}" ] && _COLOUR_SCHEME=$(
-  basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme ${2:-0.001} )[\"']" $DOTS/config/alacritty/colourschemes)" |
-    cut -d '.' -f 1)
-[ -n "${_COLOUR_SCHEME}" ] && export COLOUR_SCHEME=${_COLOUR_SCHEME}
-echo "Change Theme to '$COLOUR_SCHEME'"
+[ ! -n "${_COLOUR_SCHEME}" ] && _COLOUR_SCHEME=$(
+  basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
+    cut -d '.' -f 1
+)
 
-# change alcritty background
-alacritty-theme "$COLOUR_SCHEME"
+if [ -n "${_COLOUR_SCHEME}" ]; then
+  export COLOUR_SCHEME=${_COLOUR_SCHEME}
+  echo "Changing theme to '${COLOUR_SCHEME}'"
 
-# wait a bit
-sleep 0.5
+  # change alcritty background
+  alacritty-theme "$COLOUR_SCHEME"
 
-# renew environment variable
-export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
+  # wait a bit
+  sleep 0.5
 
-# renew ls color
-[ -f $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME ] &&
-  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME) ||
-  export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$BG_LUMINANCE)
+  # renew environment variable
+  export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
-# renew fzf color
-[ -f $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME ] &&
-  export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME)" ||
-  export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$BG_LUMINANCE)"
+  # renew ls color
+  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME ] &&
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME) ||
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$BG_LUMINANCE)
+
+  # renew fzf color
+  [ -f $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME ] &&
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME)" ||
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$BG_LUMINANCE)"
 
 
-if tmux info &> /dev/null; then
-  # update tmux environment
-  tmux set-environment BG_LUMINANCE $BG_LUMINANCE
-  tmux set-environment COLOUR_SCHEME $COLOUR_SCHEME
+  if tmux info &> /dev/null; then
+    # update tmux environment
+    tmux set-environment BG_LUMINANCE $BG_LUMINANCE
+    tmux set-environment COLOUR_SCHEME $COLOUR_SCHEME
 
-  # source tmux config
-  tmux source-file $HOME/.tmux.conf
+    # source tmux config
+    tmux source-file $HOME/.tmux.conf
 
-  # change vim colourscheme in all tmux session
-  sessions=($(tmux list-sessions -F '#{session_name}'))
-  for session in "${sessions[@]}"; do
-    windows=($(tmux list-windows -t ${session} -F '#{session_name}:#{window_index}'))
-    is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -Ei '^[^TXZ]+ +(\S+\/)?g?(view|n?vim?x?)(diff)?$'"
-    for window in "${windows[@]}"; do
-      panes=($(tmux list-panes -F '#{session_name}:#{window_index}.#{pane_index}' -t $window))
-      for pane in "${panes[@]}"; do
-        tmux if-shell -t "$pane" "$is_vim" "send-keys -t $pane ESCAPE ENTER"
-        tmux if-shell -t "$pane" "$is_vim" "send-keys -t $pane ':call ChangeBackground()' ENTER"
+    # change vim colourscheme in all tmux session
+    sessions=($(tmux list-sessions -F '#{session_name}'))
+    for session in "${sessions[@]}"; do
+      windows=($(tmux list-windows -t ${session} -F '#{session_name}:#{window_index}'))
+      is_vim="ps -o state= -o comm= -t '#{pane_tty}' | grep -Ei '^[^TXZ]+ +(\S+\/)?g?(view|n?vim?x?)(diff)?$'"
+      for window in "${windows[@]}"; do
+        panes=($(tmux list-panes -F '#{session_name}:#{window_index}.#{pane_index}' -t $window))
+        for pane in "${panes[@]}"; do
+          tmux if-shell -t "$pane" "$is_vim" "send-keys -t $pane ESCAPE ENTER"
+          tmux if-shell -t "$pane" "$is_vim" "send-keys -t $pane ':call ChangeBackground()' ENTER"
+        done
       done
     done
-  done
+  fi
 fi

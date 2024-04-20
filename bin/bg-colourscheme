@@ -2,7 +2,5 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
-T=${1:-0.001}
-
-"$DIR/xterm-query" 11 "${T}" |
+"$DIR/xterm-query" 11 |
   sed 's|.*rgb:\([0-9a-f]\{2\}\).*/\([0-9a-f]\{2\}\).*/\([0-9a-f]\{2\}\).*|\1\2\3|'
