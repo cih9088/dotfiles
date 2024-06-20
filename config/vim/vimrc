@@ -302,7 +302,14 @@
         if l:scheme =~ 'rose-pine.*'
           let g:rose_pine_variant = split(l:scheme, "-")[-1]
           let l:scheme = 'rose-pine'
-          lua require("rose-pine").setup({dark_variant = vim.g.rose_pine_variant})
+          lua << EOF
+require("rose-pine").setup({
+  dark_variant = vim.g.rose_pine_variant,
+  highlight_groups = {
+    StatusLineNC = { bg = "base" }
+  }
+})
+EOF
           unlet g:rose_pine_variant
         endif
 
