@@ -138,6 +138,9 @@
     Plug 'nvim-neotest/nvim-nio'
     Plug 'rcarriga/nvim-dap-ui'
   endif
+  if has("nvim-0.9")
+    Plug 'andrewferrier/debugprint.nvim'
+  endif
 
 
 " Etc.
@@ -1479,4 +1482,9 @@ EOF
     lua require('nvim-ts-autotag').setup({})
   endif
 
+" andrewferrier/debugprint.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('debugprint.nvim')
+    lua require('debugprint').setup({})
+  endif
 " }}}
