@@ -151,6 +151,14 @@
   else
     Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
   endif
+
+  if has("nvim-0.5")
+    Plug 'MunifTanjim/nui.nvim'
+  endif
+  if has("nvim-0.8")
+    Plug 'SmiteshP/nvim-navic'
+    Plug 'SmiteshP/nvim-navbuddy'
+  endif
   
 
 

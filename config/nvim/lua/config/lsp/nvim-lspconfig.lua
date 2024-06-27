@@ -137,6 +137,7 @@ function M.setup()
    local lsp_inlayhint = utils.safe_require("lsp-inlayhints")
    local lsp_signature = utils.safe_require("lsp_signature")
    local lsp_status = utils.safe_require("lsp-status")
+   local navbuddy = utils.safe_require("nvim-navbuddy")
 
    -- enable inlay hints
    if lsp_inlayhint then
@@ -202,6 +203,12 @@ function M.setup()
          -- Status help
          if lsp_status then
             lsp_status.on_attach(client)
+         end
+
+         if client.server_capabilities.documentSymbolProvider then
+            if navbuddy then
+               navbuddy.attach(client, ev.buf)
+            end
          end
 
          -- Highlight symbol under cursor
