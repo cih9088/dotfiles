@@ -25,3 +25,17 @@ snippet pickledump
 
 snippet debugpy
 	__import__('debugpy').listen(('0.0.0.0', ${1:5678})); __import__('debugpy').wait_for_client()
+
+snippet tipdb
+	class ForkedPdb(__import__('pdb').Pdb):
+	    def interaction(self, *args, **kwargs):
+	        _stdin = __import__('sys').stdin
+	        try:
+	            __import__('sys').stdin = open("/dev/stdin")
+	            __import__('pdb').Pdb.interaction(self, *args, **kwargs)
+	        finally:
+	            __import__('sys').stdin = _stdin
+	rank = __import__("os").environ.get("OMPI_COMM_WORLD_RANK") or __import__("os").environ.get("RANK")
+	if rank and int(rank) == 0:
+	    ForkedPdb().set_trace()
+	__import__('torch').distributed.barrier()
