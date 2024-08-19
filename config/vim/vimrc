@@ -111,7 +111,9 @@
     Plug 'saadparwaiz1/cmp_luasnip'
 
     Plug 'ray-x/lsp_signature.nvim'
-    Plug 'lvimuser/lsp-inlayhints.nvim'
+    if !has("nvim-0.10")
+      Plug 'lvimuser/lsp-inlayhints.nvim'
+    endif
     " Plug 'hood/popui.nvim'
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     Plug 'windwp/nvim-ts-autotag'

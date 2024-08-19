@@ -13,7 +13,7 @@ option_as_alt = "Both"
 size = 10.5
 normal = { family = "SFMono Nerd Font", style = "Light" }
 bold = { style = "Semibold" }
-italic = { style = "Italic" }
+italic = { style = "Light Italic" }
 bold_italic = { style = "Semibold Italic" }
 
 [[hints.enabled]]

@@ -7,10 +7,10 @@
 "
 " File:         seoul256.vim
 " URL:          github.com/junegunn/seoul256.vim
-" Author:       Junegunn Choi (junegunn.c@gmail.com)
+" Author:       Inhyuk Andy Cho, Junegunn Choi (junegunn.c@gmail.com)
 " License:      MIT
 "
-" Copyright (c) 2017 Junegunn Choi
+" Copyright (c) 2017 Inhyuk Andy Cho
 "
 " MIT License
 "
@@ -180,9 +180,14 @@ let s:light_bg_2 = min([s:light_bg + 2, 256])
 let s:dark_fg = 252
 let s:light_fg = 239
 
-function! s:hi(item, fg, bg)
+function! s:hi(item, fg, bg, ...)
   let fg = a:fg[s:style_idx] > 255 ? 231 : a:fg[s:style_idx]
   let bg = a:bg[s:style_idx] > 255 ? 231 : a:bg[s:style_idx]
+  let attrs = ''
+  if a:0 > 0
+    let attrs = a:1
+  endif
+
 
   if !empty(fg)
     execute printf("highlight %s ctermfg=%s guifg=%s", a:item, fg, get(s:rgb_map, fg, 'NONE'))
@@ -190,6 +195,13 @@ function! s:hi(item, fg, bg)
   if !empty(bg)
     execute printf("highlight %s ctermbg=%s guibg=%s", a:item, bg, get(s:rgb_map, bg, 'NONE'))
   endif
+  if !empty(attrs)
+    execute printf("highlight %s cterm=%s gui=%s", a:item, attrs, attrs)
+  endif
+endfunction
+
+function! s:link(from_item, to_item)
+  execute printf("highlight! link %s %s", a:from_item, a:to_item)
 endfunction
 
 let s:gui = has('gui_running')
@@ -203,16 +215,16 @@ if exists("syntax_on")
   syntax reset
 endif
 
-call s:hi('Normal', [s:dark_fg, s:light_fg], ['', ''])
+call s:hi('Normal', [s:dark_fg, s:light_fg], ['NONE', 'NONE'])
 
 call s:hi('LineNr', [101, 101], [s:dark_bg + 1, s:light_bg - 2])
-call s:hi('Visual', ['', ''], [23, 152])
+call s:hi('Visual', ['NONE', 'NONE'], [23, 152])
 call s:hi('VisualNOS', ['', ''], [23, 152])
 
 call s:hi('Comment', [65, 65], ['', ''])
 call s:hi('Number', [222, 95], ['', ''])
 call s:hi('Float', [222, 95], ['', ''])
-call s:hi('Boolean', [103, 168], ['', ''])
+call s:hi('Boolean', [103, 96], ['', ''])
 call s:hi('String', [109, 30], ['', ''])
 call s:hi('Constant', [73, 23], ['', ''])
 call s:hi('Character', [174, 168], ['', ''])
@@ -244,7 +256,7 @@ call s:hi('PreProc', [143, 58], ['', ''])
 call s:hi('Identifier', [217, 96], ['', ''])
 
 " AAA Abc
-call s:hi('Type', [179, 94], ['', ''])
+call s:hi('Type', [179, 94], ['', ''], 'bold')
 
 " + - * / <<
 call s:hi('Operator', [186, 131], ['', ''])
@@ -272,20 +284,21 @@ call s:hi('ColorColumn', ['', ''], [s:dark_bg - 1, s:light_bg - 2])
 " hi CursorIM ctermfg=
 
 " set cursorline cursorcolumn
-call s:hi('CursorLine', ['', ''], [s:dark_bg - 1, s:light_bg - 1])
-call s:hi('CursorLineNr', [131, 131], [s:dark_bg - 1, s:light_bg - 1])
+call s:hi('CursorLine', ['', ''], [s:dark_bg - 1, s:light_bg - 1], 'NONE')
+call s:hi('CursorLineNr', [131, 131], [s:dark_bg + 1, s:light_bg - 2], 'bold')
 call s:hi('CursorColumn', ['', ''], [s:dark_bg - 1, s:light_bg - 1])
 call s:hi('NormalFloat', ['', ''], [s:dark_bg - 1, s:light_bg - 1])
 call s:hi('FloatBorder', [s:dark_fg, s:light_fg], [s:dark_bg - 1, s:light_bg - 1])
 
 call s:hi('Directory', [187, 95], ['', ''])
 
-call s:hi('DiffAdd',    ['NONE', 'NONE'], [22, 151])
-call s:hi('DiffDelete', ['NONE', 'NONE'], [95, 181])
-call s:hi('DiffChange', ['NONE', 'NONE'], [s:dark_bg + 3, 189])
-call s:hi('DiffText',   ['NONE', 'NONE'], [52, 224])
+call s:hi('DiffAdd',    ['NONE', 'NONE'], [22, 151], 'NONE')
+call s:hi('DiffDelete', ['NONE', 'NONE'], [95, 181], 'NONE')
+call s:hi('DiffChange', ['NONE', 'NONE'], [s:dark_bg + 3, 189], 'NONE')
+call s:hi('DiffText',   ['NONE', 'NONE'], [52, 224], 'bold')
 
 call s:hi('VertSplit', [s:dark_bg_2, s:light_bg - 3], ['', ''])
+call s:link('WinSeparator', 'VertSplit')
 call s:hi('Folded', [101, 101], [s:dark_bg + 1, s:light_bg - 2])
 
 " set foldcolumn=1
@@ -308,10 +321,11 @@ call s:hi('PmenuSbar', ['', ''], [65, 65])
 call s:hi('PmenuThumb', ['', ''], [23, 23])
 
 call s:hi('Search', [s:dark_fg, 255], [24, 74])
+call s:hi('QuickFixLine', [s:dark_fg, 255], [24, 74])
 call s:hi('IncSearch', [220, 220], [s:dark_bg + 1, 238])
 
 " String delimiter, interpolation
-call s:hi('Special', [216, 173], ['', ''])
+call s:hi('Special', [216, 173], ['', ''], 'bold')
 " hi SpecialChar ctermfg=
 " hi SpecialComment ctermfg=
 " hi Tag ctermfg=
@@ -348,12 +362,10 @@ else
 endif
 
 "
-call s:hi('StatusLine', [95, 95], [187, 187])
-call s:hi('StatusLineNC', [s:dark_bg + 2, s:light_bg - 2], [187, 238])
-call s:hi('StatusLineTerm', [95, 95], [187, 187])
-call s:hi('StatusLineTermNC', [s:dark_bg + 2, s:light_bg - 2], [187, 238])
-hi StatusLineTerm cterm=bold,reverse gui=bold,reverse
-hi StatusLineTermNC cterm=bold,reverse gui=bold,reverse
+call s:hi('StatusLine', [95, 95], [187, 187], 'bold,reverse')
+call s:hi('StatusLineNC', [s:dark_bg + 2, s:light_bg - 2], [187, 238], 'reverse')
+call s:hi('StatusLineTerm', [95, 95], [187, 187], 'bold,reverse')
+call s:hi('StatusLineTermNC', [s:dark_bg + 2, s:light_bg - 2], [187, 238], 'reverse')
 call s:hi('TabLineFill', [s:dark_bg + 2, s:light_bg - 2], ['', ''])
 call s:hi('TabLineSel', [187, 187], [23, 66])
 call s:hi('TabLine', [s:dark_bg + 12, s:light_bg - 12], [s:dark_bg + 4, s:light_bg - 4])
@@ -374,7 +386,7 @@ call s:hi('SignColumn', [173, 173], [s:dark_bg + 1, s:light_bg - 2])
 " Diff
 call s:hi('diffAdded',   [108, 65], ['', ''])
 call s:hi('diffRemoved', [174, 131], ['', ''])
-hi link diffLine Constant
+call s:link('diffLine', 'Constant')
 
 call s:hi('Conceal', [s:dark_fg + 2, s:light_fg - 2], [s:dark_bg - 1, s:light_bg + 2])
 call s:hi('Ignore',  [s:dark_bg + 3, s:light_bg - 3], [s:dark_bg, s:light_bg])
@@ -444,25 +456,42 @@ if has("nvim")
 
   call s:hi('LspSignatureActiveParameter', [174, 131], ['', ''])
 
-  highlight link debugPC diffAdd
+  call s:link('debugPC', 'diffAdd')
 end
 
 
 if has('nvim-0.8.0')
-  " Treesitter
-  " ---------
-  highlight link @variable Normal
-  highlight link @variable.builtin Special
-  highlight link @attribute Identifier
+  " Treesitter highlight group
+  " --------------------------
+  call s:link('@variable', 'Normal')
+  call s:link('@variable.builtin', 'Special')
+  call s:link('@variable.parameter', 'Normal')
+  call s:link('@variable.parameter.builtin', 'Special')
+  call s:hi('@variable.member', [217, 96], ['', ''])
 
-  call s:hi('@text.todo', [222, 173], [s:dark_bg_2, s:light_bg_2])
-  call s:hi('@text.note', [153, 67], [s:dark_bg_2, s:light_bg_2])
-  call s:hi('@text.warning', [222, 173], [s:dark_bg_2, s:light_bg_2])
-  call s:hi('@text.danger', [161, 161], [s:dark_bg_2, s:light_bg_2])
+  call s:link('@constant', 'Constant')
+  call s:link('@constant.builtin', 'Special')
+  call s:link('@constant.macro', 'Macro')
+
+  call s:link('@type', 'Type')
+  call s:link('@type.builtin', 'Type')
+
+  call s:link('@function.macro', 'Macro')
+
+  call s:link('@keyword', 'Keyword')
+
+  call s:link('@keyword.conditional', 'Conditional')
+
+  call s:hi('@keyword.directive', [143, 58], ['', ''])
+  call s:hi('@keyword.directive.define', [143, 58], ['', ''])
+
+  call s:hi('@comment.error', [161, 161], [s:dark_bg_2, s:light_bg_2], 'bold')
+  call s:hi('@comment.warning', [222, 179], [s:dark_bg_2, s:light_bg_2], 'bold')
+  call s:hi('@comment.todo', [168, 125], [s:dark_bg_2, s:light_bg_2], 'bold')
+  call s:hi('@comment.note', [153, 73], [s:dark_bg_2, s:light_bg_2], 'bold')
+
+  call s:link('@markup.raw', 'Normal')
 end
-
-hi CursorLine cterm=NONE
-hi CursorLineNr cterm=NONE
 
 let g:seoul256_current_fg = [s:dark_fg, s:light_fg][s:style_idx]
 let g:seoul256_current_bg = [s:dark_bg, s:light_bg][s:style_idx]

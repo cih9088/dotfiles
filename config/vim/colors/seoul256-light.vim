@@ -7,10 +7,10 @@
 "
 " File:         seoul256-light.vim
 " URL:          github.com/junegunn/seoul256.vim
-" Author:       Junegunn Choi (junegunn.c@gmail.com)
+" Author:       Inhyuk Andy cho, Junegunn Choi (junegunn.c@gmail.com)
 " License:      MIT
 "
-" Copyright (c) 2017 Junegunn Choi
+" Copyright (c) 2017 Inhyuk Andy Cho
 "
 " MIT License
 "

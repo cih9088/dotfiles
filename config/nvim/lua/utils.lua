@@ -1,13 +1,23 @@
 local M = {}
 
-function M.safe_require(module)
+function M.safe_require(args)
+   if type(args) ~= "table" then
+      args = {module = args}
+   end
+   setmetatable(args,{__index={ignore=false}})
+    local module, ignore =
+      args[1] or args.module,
+      args[2] or args.ignore
    local ok, result = pcall(require, module)
    if not ok then
-      vim.notify(string.format("Error requiring module: %s", module), vim.log.levels.ERROR)
-      return ok
+      if not ignore then
+         vim.notify(string.format("Error requiring module: %s", module), vim.log.levels.ERROR)
+      end
+      return nil
    end
    return result
 end
+
 
 function M.dump(o)
    if type(o) == "table" then
