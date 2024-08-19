@@ -256,7 +256,7 @@ call s:hi('PreProc', [143, 58], ['', ''])
 call s:hi('Identifier', [217, 96], ['', ''])
 
 " AAA Abc
-call s:hi('Type', [179, 94], ['', ''], 'bold')
+call s:hi('Type', [179, 94], ['', ''])
 
 " + - * / <<
 call s:hi('Operator', [186, 131], ['', ''])
@@ -467,7 +467,7 @@ if has('nvim-0.8.0')
   call s:link('@variable.builtin', 'Special')
   call s:link('@variable.parameter', 'Normal')
   call s:link('@variable.parameter.builtin', 'Special')
-  call s:hi('@variable.member', [217, 96], ['', ''])
+  call s:link('@variable.member', 'Identifier')
 
   call s:link('@constant', 'Constant')
   call s:link('@constant.builtin', 'Special')
@@ -481,9 +481,14 @@ if has('nvim-0.8.0')
   call s:link('@keyword', 'Keyword')
 
   call s:link('@keyword.conditional', 'Conditional')
+  call s:link('@keyword.repeat', 'Repeat')
+  call s:link('@keyword.type', 'Conditional')
+  call s:link('@keyword..exception', 'Exception')
 
-  call s:hi('@keyword.directive', [143, 58], ['', ''])
-  call s:hi('@keyword.directive.define', [143, 58], ['', ''])
+  call s:link('@keyword.directive', 'PreProc')
+  call s:link('@keyword.directive.define', 'PreProc')
+
+  call s:link('@punctuation.special', 'Delimiter')
 
   call s:hi('@comment.error', [161, 161], [s:dark_bg_2, s:light_bg_2], 'bold')
   call s:hi('@comment.warning', [222, 179], [s:dark_bg_2, s:light_bg_2], 'bold')
