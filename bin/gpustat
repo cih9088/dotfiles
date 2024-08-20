@@ -204,19 +204,18 @@ while true; do
     ctr=$(( ${ctr} + 1 ))
   done <<< "${basic_info}"
 
-  re_parse=false
   if [ ! -z "${per_info}" ]; then
     while IFS= read -r line; do
       uuid=$(cut -d ',' -f 1 <(echo ${line}) | tr -d '[:space:]')
       pid=$(cut -d ',' -f 2 <(echo ${line}) | tr -d '[:space:]')
       memory=$(cut -d ',' -f 3 <(echo ${line}) | tr -d '[:space:]')
+      # already killed process
+      if [ ! -d "/proc/${pid}" ]; then
+        continue
+      fi
       user=$(stat -c "%U" /proc/${pid} 2>/dev/null || echo "Anonymous")
       comm=$(strings /proc/${pid}/cmdline || echo "Unkonwn")
       [ ! -z "$comm" ] && comm=$(echo "$comm" | head -n 1) || comm="Unkonwn"
-      if [ "$user" == "Anonymous" ] || [ "$comm" == "Unkonwn" ]; then
-        re_parse=true
-        break
-      fi
       gpus[${uuid}]="${gpus[${uuid}]}, ${user}, ${comm}, ${pid}, ${memory}"
     done <<< "${per_info}"
   fi
