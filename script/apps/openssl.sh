@@ -71,6 +71,15 @@ setup_for_local() {
       ++ popd
 
       ++ mv "openssl-openssl-${VERSION}" "${PREFIX}/src/openssl-${VERSION}"
+
+      # download CA root certificates bundle from the curl author
+      # and save it as 'cert.pem', openssl's default cafile name
+      # or you could save it somewhere else and set 'SSL_CERT_FILE' environment variable.
+      # it is roughly equivalant to `certifi`'s.
+      #
+      # cf) python -c 'import ssl; print(ssl.get_default_verify_paths())'
+      ++ mkdir -p $HOME/.local/ssl
+      ++ curl -L http://curl.haxx.se/ca/cacert.pem -o $HOME/.local/ssl/cert.pem
     fi
   fi
 }
