@@ -473,6 +473,10 @@ if has('nvim-0.8.0')
   call s:link('@constant.builtin', 'Special')
   call s:link('@constant.macro', 'Macro')
 
+  call s:link('@string', 'String')
+  call s:link('@string.regexp', 'String')
+  call s:link('@string.escape', 'String')
+
   call s:link('@type', 'Type')
   call s:link('@type.builtin', 'Type')
 
