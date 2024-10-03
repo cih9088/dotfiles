@@ -203,6 +203,13 @@ brew install --cask zotero
 # brew install --cask vagrant
 # brew install --cask vagrant-manager
 
+# https://github.com/AlexStrNik/Browserino/
+# browserosaurus alternative
+cd $HOME/Downloads && { curl -LO https://github.com/AlexStrNik/Browserino/releases/latest/download/Browserino-Installer.dmg; cd -; }
+hdiutil attach $HOME/Downloads/Browserino-Installer.dmg
+cp -r /Volumes/Browserino\ Installer/Browserino.app /Applications
+hdiutil detach /Volumes/Browserino\ Installer
+
 
 # install yabai
 brew install koekeishiya/formulae/yabai
