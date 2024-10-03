@@ -220,10 +220,6 @@ while true; do
     done <<< "${per_info}"
   fi
 
-  if [ ${re_parse} == "true" ]; then
-    continue
-  fi
-
   out=""
   if [ ${SHOW_HEADER} -eq 1 ]; then
     out+="${Bold}$(hostname)${Reset}  ${Dark}${nvml_version}${Reset}   $(date)\n"

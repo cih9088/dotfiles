@@ -486,7 +486,6 @@ if has('nvim-0.8.0')
 
   call s:link('@keyword.conditional', 'Conditional')
   call s:link('@keyword.repeat', 'Repeat')
-  call s:link('@keyword.type', 'Conditional')
   call s:link('@keyword..exception', 'Exception')
 
   call s:link('@keyword.directive', 'PreProc')
