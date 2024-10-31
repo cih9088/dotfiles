@@ -3,6 +3,9 @@ local M = {}
 local dap = require('dap')
 local utils = require('utils')
 
+-- keep argument for input
+local default_args = ""
+
 
 local function get_input(args)
    setmetatable(args, { __index = { default = nil, completion = nil, split = false } })
@@ -14,6 +17,7 @@ local function get_input(args)
 
    local out
    vim.ui.input({ prompt = prompt, default = default, completion = completion }, function(value)
+      default_args = value
       if split then
          value = vim.split(value or "", " +")
       end
@@ -47,7 +51,7 @@ local function bashdb_setup()
          pathMkfifo = "mkfifo",
          pathPkill = "pkill",
          args = function()
-            return get_input { "Arguments: ", split = true }
+            return get_input { "Arguments: ", default = default_args, split = true }
          end,
          env = {},
          terminalKind = "integrated",
@@ -104,7 +108,7 @@ local function python_setup()
             }
          end,
          args = function()
-            return get_input { "Arguments: ", split = true }
+            return get_input { "Arguments: ", default = default_args, split = true }
          end,
          console = "integratedTerminal",
          justMyCode = function()
@@ -250,17 +254,9 @@ local function codelldb_setup()
          type = "codelldb",
          request = "launch",
          name = "Launch",
-         -- program = function()
-         --    local metadata_json = vim.fn.system("cargo metadata --format-version 1 --no-deps")
-         --    local metadata = vim.fn.json_decode(metadata_json)
-         --    local target_name = metadata.packages[1].targets[1].name
-         --    local target_dir = metadata.target_directory
-         --    return get_input {
-         --       "File to execute: ",
-         --       default = target_dir .. "/debug/" .. target_name,
-         --       completion = "file",
-         --    }
-         -- end,
+         args = function()
+            return get_input { "Arguments: ", default = default_args, split = true }
+         end,
          cwd = '${workspaceFolder}',
          stopOnEntry = false,
          cargo = {
@@ -279,7 +275,7 @@ local function codelldb_setup()
          args = function()
             return get_input {
                "Test arguments to execute: ",
-               default = "",
+               default = default_args,
                split = true,
             }
          end
@@ -310,7 +306,7 @@ local function delve_setup()
             }
          end,
          args = function()
-            return get_input { "Arguments: ", split = true }
+            return get_input { "Arguments: ", default = default_args, split = true }
          end
       },
    }
