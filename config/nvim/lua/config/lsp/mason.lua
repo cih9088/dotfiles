@@ -33,7 +33,7 @@ function M.setup()
             "clangd",
             "html",
             "cssls",
-            "tsserver",
+            "ts_ls",
             "tailwindcss",
             "emmet_language_server",
             "yamlls",

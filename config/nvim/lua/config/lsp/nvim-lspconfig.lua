@@ -83,7 +83,7 @@ local server_configs = {
          },
       }
    },
-   tsserver = {
+   ts_ls = {
       settings = {
          typescript = {
             inlayHints = {
@@ -255,7 +255,7 @@ function M.setup()
       "html",
       "cssls",
       "eslint",
-      "tsserver",
+      "ts_ls",
       "tailwindcss",
       "emmet_language_server",
       "yamlls",
