@@ -318,8 +318,12 @@
           lua << EOF
 require("rose-pine").setup({
   dark_variant = vim.g.rose_pine_variant,
+  dim_inactive_windows = false,
   highlight_groups = {
-    StatusLineNC = { bg = "base" }
+    StatusLine = { fg = "love", bg = "love", blend = 10 },
+    CurSearch = { fg = "base", bg = "leaf", inherit = false },
+    Search = { fg = "text", bg = "leaf", blend = 20, inherit = false },
+    QuickFixLine = { link = "Question" },
   }
 })
 EOF

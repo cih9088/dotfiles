@@ -275,7 +275,7 @@ M.set_active = function(self)
       "[%n] 🌸 ",
       -- string.format("[%s] ", self:get_current_mode()),
       self:get_filepath(),
-      self.get_filename(),
+      self:get_filename(),
       self:get_fileflag(),
       self:get_filetype(),
       "%=",
