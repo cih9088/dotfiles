@@ -34,7 +34,7 @@ local server_configs = {
          },
       },
    },
-   ruff_lsp = {
+   ruff = {
       on_attach = function(client, bufnr)
          client.server_capabilities.hoverProvider = false
       end
@@ -244,7 +244,7 @@ function M.setup()
    local servers = {
       "basedpyright",
       -- "pyright",
-      "ruff_lsp",
+      "ruff",
       "gopls",
       "rust_analyzer",
       "bashls",

@@ -47,7 +47,7 @@ function M.setup()
    if mason_null_ls then
       mason_null_ls.setup({
          ensure_installed = {
-            "black", "isort", "ruff-lsp",
+            "black", "isort", "ruff",
             "prettierd", "eslint-lsp",
             -- python 3.8 compatible
             "ansiblelint@6.13.1",
