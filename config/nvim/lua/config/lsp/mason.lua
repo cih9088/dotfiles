@@ -45,15 +45,15 @@ function M.setup()
    end
 
    if mason_null_ls then
+      -- version fixed for python(3.8) and go(1.19.13) compatibility
       mason_null_ls.setup({
          ensure_installed = {
-            "black", "isort", "ruff",
+            "black@24.8.0", "isort", "ruff",
             "prettierd", "eslint-lsp",
-            -- python 3.8 compatible
             "ansiblelint@6.13.1",
             "shellcheck", "shfmt",
 
-            "debugpy", "js-debug-adapter", "codelldb", "delve", "bash-debug-adapter"
+            "debugpy", "js-debug-adapter", "codelldb", "delve@1.22.0", "bash-debug-adapter"
          },
       })
    end
