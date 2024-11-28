@@ -18,7 +18,19 @@ function M.setup()
             -- lua
             -- null_ls.builtins.formatting.stylua,
 
-            null_ls.builtins.formatting.prettierd,
+            -- remove yaml for yamlfmt
+            null_ls.builtins.formatting.prettierd.with({
+               filetype = {
+                  "javascript", "javascriptreact", "typescript", "typescriptreact", "vue",
+                  "css", "scss", "less", "html", "json", "jsonc",
+                  "markdown", "markdown.mdx",
+                  "graphql", "handlebars", "svelte", "astro", "htmlangular" }
+            }),
+
+            -- yaml (no indent at arrays)
+            null_ls.builtins.formatting.yamlfmt.with({
+               args = { "-formatter", "indentless_arrays=true", "-" }
+            }),
 
             -- yaml.ansible
             null_ls.builtins.diagnostics.ansiblelint,
