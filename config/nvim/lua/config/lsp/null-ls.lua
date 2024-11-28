@@ -9,11 +9,17 @@ function M.setup()
       null_ls.setup({
          debug = false,
          sources = {
-            -- python
-            null_ls.builtins.formatting.black,
-            null_ls.builtins.formatting.isort.with({
-               args = { "--stdout", "--profile", "black", "--lines-after-imports", "2", "--filename", "$FILENAME", "-" },
-            }),
+            -- ruff will take care of it
+            -- -- python 
+            -- null_ls.builtins.formatting.black,
+            -- null_ls.builtins.formatting.isort.with({
+            --    args = { "--stdout", "--profile", "black", "--lines-after-imports", "2", "--filename", "$FILENAME", "-" },
+            -- }),
+
+            -- go
+            -- golines run goimports at the last stage so no need
+            -- null_ls.builtins.formatting.goimports,
+            null_ls.builtins.formatting.golines,
 
             -- lua
             -- null_ls.builtins.formatting.stylua,

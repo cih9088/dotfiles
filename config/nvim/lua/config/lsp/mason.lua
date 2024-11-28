@@ -53,6 +53,7 @@ function M.setup()
             "prettierd", "eslint-lsp",
             "ansiblelint@6.13.1",
             "shellcheck", "shfmt",
+            "goimports", "golines",
             "yamlfmt",
 
             "debugpy", "js-debug-adapter", "codelldb", "delve@1.22.0", "bash-debug-adapter"
