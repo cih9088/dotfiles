@@ -35,7 +35,7 @@ function M.setup()
 
             -- yaml (no indent at arrays)
             null_ls.builtins.formatting.yamlfmt.with({
-               args = { "-formatter", "indentless_arrays=true", "-" }
+               args = { "-formatter", "indentless_arrays=true,retain_line_breaks_single=true", "-" }
             }),
 
             -- yaml.ansible
