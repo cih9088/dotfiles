@@ -261,6 +261,7 @@ function M.setup()
       "yamlls",
       "ansiblels",
       "jsonls",
+      "terraformls",
    }
    for _, server in ipairs(servers) do
       local config = get_config(server)

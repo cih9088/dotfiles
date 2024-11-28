@@ -39,6 +39,7 @@ function M.setup()
             "yamlls",
             "ansiblels",
             "jsonls",
+            "terraformls",
          },
          automatic_installation = true,
       })
