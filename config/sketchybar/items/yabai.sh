@@ -24,6 +24,7 @@ yabai_bracket=(
 )
 
 sketchybar --add event layout_change                     \
+           --add event space_changed                     \
            --add event window_focused                    \
            --add event yabai_init                        \
            --add item padding_yabai left                 \
@@ -32,7 +33,9 @@ sketchybar --add event layout_change                     \
            --add item yabai left                         \
            --set yabai "${yabai[@]}"                     \
            --subscribe yabai yabai_init                  \
+                             layout_change               \
                              window_focused              \
+                             space_changed               \
                              mouse.clicked               \
                              mouse.entered               \
                              mouse.exited                \

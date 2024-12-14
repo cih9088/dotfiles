@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 space_layout() {
   layout="$(yabai -m query --spaces --space | jq -r '.type')"
 
@@ -78,6 +79,10 @@ case "$SENDER" in
   "window_focused" )
     windows_on_spaces $(yabai -m query --spaces --space recent | jq -r '.index')
     windows_on_spaces $(yabai -m query --spaces --space | jq -r '.index')
+    # windows_on_spaces
+    ;;
+  "space_changed" )
+    space_layout
     ;;
   "yabai_init" )
     space_layout

@@ -1,9 +1,6 @@
 # the default mode
 :: default : sketchybar --trigger skhd_mode_change MODE=default
 
-# a mode for focus operations
-:: focus @ : sketchybar --trigger skhd_mode_change MODE=focus
-
 # a mode for warp operations
 :: warp @ : sketchybar --trigger skhd_mode_change MODE=warp
 
@@ -16,40 +13,41 @@
 # enter and exit modes
 default                      < ctrl - s         ; prefix
 prefix                       < ctrl - s         ; default
-default                      < alt - space      ; focus
-focus                        < alt - space      ; warp
+default                      < alt - space      ; warp
 warp                         < alt - space      ; resize
 resize                       < alt - space      ; default
-focus, resize, warp, prefix  < escape           ; default
+resize, warp, prefix         < escape           ; default
 
 # focus window h and j cycles, this is dependent on the monitor order beeing correct
 # default, focus, resize, warp < alt - h          :  yabai -m window --focus west \
 #   || (yabai -m display --focus last && yabai -m window --focus last)
 # default, focus, resize, warp < alt - l          :  yabai -m window --focus east \
 #   || (yabai -m display --focus first && yabai -m window --focus first)
-default, focus, resize, warp < alt - h          :  yabai -m window --focus west \
+default, resize, warp < alt - h          :  yabai -m window --focus west \
   || (yabai -m display --focus west && yabai -m window --focus last)
-default, focus, resize, warp < alt - l          :  yabai -m window --focus east \
+default, resize, warp < alt - l          :  yabai -m window --focus east \
   || (yabai -m display --focus east && yabai -m window --focus last)
-default, focus, resize, warp < alt - j          :  yabai -m window --focus south
-default, focus, resize, warp < alt - k          :  yabai -m window --focus north
+default, resize, warp < alt - j          :  yabai -m window --focus south
+default, resize, warp < alt - k          :  yabai -m window --focus north
+default, resize, warp < alt - n          :  yabai -m window --focus stack.next
+default, resize, warp < alt - p          :  yabai -m window --focus stack.prev
 
 # focus monitor cycle around
-default, focus, resize, warp < shift + alt - h  :  yabai -m display --focus prev \
+default, resize, warp < shift + alt - h  :  yabai -m display --focus prev \
   || (yabai -m display --focus west || yabai -m display --focus last)
-default, focus, resize, warp < shift + alt - l  :  yabai -m display --focus next \
+default, resize, warp < shift + alt - l  :  yabai -m display --focus next \
   || (yabai -m display --focus east || yabai -m display --focus last)
 
-focus, resize, warp < space                 :  yabai -m space --rotate 90                 # rotate tree
-focus, resize, warp < shift - space         :  yabai -m space --rotate 270                # rotate tree
-focus, resize, warp < y                     :  yabai -m space --mirror y-axis             # mirror vertical
-focus, resize, warp < x                     :  yabai -m space --mirror x-axis             # mirror horizontal
-focus, resize, warp < z                     :  yabai -m window --toggle zoom-fullscreen   # toggle window zoom fullscreen
-focus, resize, warp < p                     :  yabai -m window --toggle zoom-parent       # toggle window parent zoom
-focus, resize, warp < s                     :  yabai -m window --toggle split             # toggle window split type
-focus, resize, warp < t                     :  yabai -m window --toggle float;\
-                                               yabai -m window --grid 6:6:1:1:4:4         # Float a centered window
-focus, resize, warp < q                     :  yabai -m space --balance                   # equalize size of windows
+resize, warp < space                 :  yabai -m space --rotate 90                 # rotate tree
+resize, warp < shift - space         :  yabai -m space --rotate 270                # rotate tree
+resize, warp < y                     :  yabai -m space --mirror y-axis             # mirror vertical
+resize, warp < x                     :  yabai -m space --mirror x-axis             # mirror horizontal
+resize, warp < z                     :  yabai -m window --toggle zoom-fullscreen   # toggle window zoom fullscreen
+resize, warp < p                     :  yabai -m window --toggle zoom-parent       # toggle window parent zoom
+resize, warp < s                     :  yabai -m window --toggle split             # toggle window split type
+# resize, warp < t                     :  yabai -m window --toggle float && \
+#                                         yabai -m window --grid 6:6:1:1:4:4         # Float a centered window
+# resize, warp < q                     :  yabai -m space --balance                   # equalize size of windows
 
 # move window
 warp < h                                    :  yabai -m window --warp west
