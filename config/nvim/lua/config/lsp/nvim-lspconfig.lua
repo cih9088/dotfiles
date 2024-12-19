@@ -11,7 +11,7 @@ local server_configs = {
          basedpyright = {
             -- Using Ruff's import organizer
             disableOrganizeImports = true,
-            -- typeCheckingMode = "standard",
+            typeCheckingMode = "standard",
             analysis = {
                diagnosticSeverityOverrides = {
                   -- https://github.com/DetachHead/basedpyright/issues/168

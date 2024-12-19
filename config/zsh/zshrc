@@ -11,6 +11,14 @@
 # =======================================================================================
 
 
+
+# Source Prezto
+# ---------------------------------------------------------------------------------------
+  # prezto should be sourced here for the fast startup
+  [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] &&
+    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+
+
 # Get terminal colour scheme and background luminance
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
@@ -20,7 +28,6 @@
   [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=seoul256
   [ -z "${BG_LUMINANCE+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
   [ -z "${BG_LUMINANCE}" ] && export BG_LUMINANCE="dark"
-
 
 
 # Add color to terminal
@@ -157,13 +164,6 @@
   # build python with shared object
   # (https://github.com/pyenv/pyenv/tree/master/plugins/python-build#building-with---enable-shared)
   export PYTHON_CONFIGURE_OPTS="--enable-shared"
-
-
-# Source Prezto
-# ---------------------------------------------------------------------------------------
-  # prezto should be sourced here for the fast startup
-  [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] &&
-    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
 # Setup FZF
