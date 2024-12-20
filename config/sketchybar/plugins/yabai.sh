@@ -84,7 +84,7 @@ case "$SENDER" in
   "space_changed" )
     space_layout
     ;;
-  "yabai_init" )
+  "system_woke" )
     space_layout
     windows_on_spaces
     ;;

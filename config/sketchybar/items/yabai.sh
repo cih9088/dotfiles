@@ -26,13 +26,13 @@ yabai_bracket=(
 sketchybar --add event layout_change                     \
            --add event space_changed                     \
            --add event window_focused                    \
-           --add event yabai_init                        \
+           --add event system_woke                       \
            --add item padding_yabai left                 \
            --set padding_yabai "${padding[@]}"           \
                                associated_display=active \
            --add item yabai left                         \
            --set yabai "${yabai[@]}"                     \
-           --subscribe yabai yabai_init                  \
+           --subscribe yabai system_woke                 \
                              layout_change               \
                              window_focused              \
                              space_changed               \
@@ -42,4 +42,4 @@ sketchybar --add event layout_change                     \
            --add bracket yabai_bracket yabai             \
            --set yabai_bracket "${yabai_bracket[@]}"
 
-sketchybar --trigger yabai_init
+sketchybar --trigger system_woke
