@@ -79,7 +79,7 @@ for _INSTANCE_INFO in "${_INSTANCE_INFOS[@]}"; do
   _MACHINE_TYPE="$(echo "${_INSTANCE_INFO}" | awk '{print $4}')"
 
   _MSGS+=("SSH into $_PROJECT/$_USER$_INSTANCE ($_MACHINE_TYPE) in $_ZONE...")
-  _CMDS+=("gcloud compute ssh $_USER$_INSTANCE --project $_PROJECT --zone $_ZONE $*")
+  _CMDS+=("gcloud compute ssh $_USER$_INSTANCE --project $_PROJECT --zone $_ZONE --tunnel-through-iap $*")
 done
 
 if [ "${#_CMDS[@]}" -eq 1 ]; then

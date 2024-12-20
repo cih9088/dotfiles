@@ -109,7 +109,7 @@ if [ "$_IS_GET" = true ]; then
     _INSTANCE="$(echo "${_INSTANCE_INFO}" | awk '{print $2}')"
     _ZONE="$(echo "${_INSTANCE_INFO}" | awk '{print $3}')"
 
-    gcloud compute ssh "$_USER$_INSTANCE" --project "$_PROJECT" --zone "$_ZONE" -- find "${1:1}" >> "$_FILES_FIFO" 2>/dev/null &
+    gcloud compute ssh --tunnel-through-iap "$_USER$_INSTANCE" --project "$_PROJECT" --zone "$_ZONE" -- find "${1:1}" >> "$_FILES_FIFO" 2>/dev/null &
     mapfile -t _FILES < <(fzf --exact --inline-info --no-sort --multi --bind='Ctrl-A:toggle-all,`:jump' < "$_FILES_FIFO")
     if (( ${#_FILES[@]} )); then
       if [ "$_IS_RSYNC" = true ]; then
@@ -119,7 +119,7 @@ if [ "$_IS_GET" = true ]; then
           _FILE="$(echo "${_FILE// /\\ }" | sed -e "s/^/\"/" -e "s/$/\"/")"
           # rsync per file becase of compatability with old version
           # https://stackoverflow.com/a/15818000
-          $_RSYNC -e "gcloud compute ssh --project $_PROJECT --zone $_ZONE $_USER$_INSTANCE --" ":$_FILE" "$2"
+          $_RSYNC -e "gcloud compute ssh --tunnel-through-iap --project $_PROJECT --zone $_ZONE $_USER$_INSTANCE --" ":$_FILE" "$2"
         done
       else
         echo "scp from $_USER$_INSTANCE$1 to $2"
@@ -127,7 +127,7 @@ if [ "$_IS_GET" = true ]; then
         for _FILE in "${_FILES[@]}"; do
           _FILES_WITH_HOST+=("$_USER$_INSTANCE:$_FILE")
         done
-        gcloud compute scp --recurse --project "$_PROJECT" --zone "$_ZONE" "${_FILES_WITH_HOST[@]}" "$2"
+        gcloud compute scp --tunnel-through-iap --recurse --project "$_PROJECT" --zone "$_ZONE" "${_FILES_WITH_HOST[@]}" "$2"
       fi
     fi
   done
@@ -141,10 +141,10 @@ else
     if [ "$_IS_SEND" = true ]; then
       if [ "$_IS_RSYNC" = true ]; then
         echo "rsync from $1 to $_USER$_INSTANCE$2"
-        $_RSYNC -e "gcloud compute ssh --project $_PROJECT --zone $_ZONE $_USER$_INSTANCE --" "$1" "$2" &
+        $_RSYNC -e "gcloud compute ssh --tunnel-through-iap --project $_PROJECT --zone $_ZONE $_USER$_INSTANCE --" "$1" "$2" &
       else
         echo "scp from $1 to $_USER$_INSTANCE$2"
-        gcloud compute scp --recurse --project "$_PROJECT" --zone "$_ZONE" "$1" "$_USER$_INSTANCE$2" &
+        gcloud compute scp --tunnel-through-iap --recurse --project "$_PROJECT" --zone "$_ZONE" "$1" "$_USER$_INSTANCE$2" &
       fi
     fi
   done
