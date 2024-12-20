@@ -28,10 +28,19 @@ is_first_destination() {
 
   # no argument
   [ $# -eq 0 ] && return 1
+
   # user@host
   [[ "$1" == *"@"* ]] && return 0
-  # in .ssh/config
+
+  # ip
+  [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && return 0
+
+  # domain
+  [[ "$1" =~ .*\..* ]] && return 0
+
+  # alias in .ssh/config
   grep -q "^Host $1\$" $_config && return 0
+
   return 1
 }
 
@@ -100,7 +109,12 @@ parse_config() {
   echo "${targets[@]}"
 }
 
-if is_first_destination "$@";  then
+if [ "$1" = "gcp" ]; then
+  # gcp plugin
+  has -v ssh-gcp || return 1
+  shift; ssh-gcp $@
+
+elif is_first_destination "$@";  then
   if [ -t 0 ] && ps -p $$ -o ppid= \
     | xargs -I{} ps -p {} -o comm= \
     | grep -qw tmux; then
@@ -124,10 +138,6 @@ if is_first_destination "$@";  then
 
   command ssh "$*"
 
-elif [ "$1" = "gcp" ]; then
-  # gcp plugin
-  has -v ssh-gcp || return 1
-  shift; ssh-gcp $@
 else
   # local config parsing
   has -v fzf awk tmux xpanes || return 1
