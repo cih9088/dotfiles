@@ -136,7 +136,7 @@ elif is_first_destination "$@";  then
       | sed 's/[[:space:]]*\(\(\(-[46AaCfGgKkMNnqsTtVvXxYy]\)\|\(-[^[:space:]]*\([[:space:]]\+[^[:space:]]*\)\?\)\)[[:space:]]*\)*[[:space:]]\+\([^-][^[:space:]]*\).*/\6/')"
   fi
 
-  command ssh "$*"
+  command ssh "$@"
 
 else
   # local config parsing
