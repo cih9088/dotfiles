@@ -134,7 +134,7 @@ end
 
 function M.setup()
    local lspconfig = require("lspconfig")
-   local lsp_inlayhint = utils.safe_require{"lsp-inlayhints", ignore=true}
+   local lsp_inlayhint = utils.safe_require { "lsp-inlayhints", ignore = true }
    local lsp_signature = utils.safe_require("lsp_signature")
    local lsp_status = utils.safe_require("lsp-status")
    local navbuddy = utils.safe_require("nvim-navbuddy")
@@ -225,13 +225,20 @@ function M.setup()
          -- Inlay hints
          if client.server_capabilities.inlayHintProvider then
             if vim.lsp.inlay_hint then
-               vim.lsp.inlay_hint.enable(true, {bufnr = ev.buf})
+               vim.lsp.inlay_hint.enable(false, { bufnr = ev.buf })
             else
                if lsp_inlayhint then
                   lsp_inlayhint.on_attach(client, ev.buf)
                end
             end
          end
+
+         function toggle_inlay_hint()
+            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+         end
+
+         vim.api.nvim_create_user_command('LspToggleInlayHint', toggle_inlay_hint, {})
+         vim.keymap.set("n", "<space>h", toggle_inlay_hint, bufopts)
 
          -- Disable highlight from lsp for TreeSitter
          client.server_capabilities.semanticTokensProvider = nil
