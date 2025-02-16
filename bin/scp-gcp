@@ -98,16 +98,16 @@ fi
 
 if [ "$_IS_GET" = true ]; then
 
-  if [ "$_IS_RSYNC" = true ]; then
-    _MSG="rsync from $_USER$_INSTANCE$1 to $2"
-  else
-    _MSG="scp from $_USER$_INSTANCE$1 to $2"
-  fi
-
   for _INSTANCE_INFO in "${_INSTANCE_INFOS[@]}"; do
     _PROJECT="$(echo "${_INSTANCE_INFO}" | awk '{print $1}')"
     _INSTANCE="$(echo "${_INSTANCE_INFO}" | awk '{print $2}')"
     _ZONE="$(echo "${_INSTANCE_INFO}" | awk '{print $3}')"
+
+    if [ "$_IS_RSYNC" = true ]; then
+      _MSG="rsync from $_USER$_INSTANCE$1 to $2"
+    else
+      _MSG="scp from $_USER$_INSTANCE$1 to $2"
+    fi
 
     gcloud compute ssh --tunnel-through-iap "$_USER$_INSTANCE" --project "$_PROJECT" --zone "$_ZONE" -- find "${1:1}" >> "$_FILES_FIFO" 2>/dev/null &
     mapfile -t _FILES < <(fzf --exact --inline-info --no-sort --multi --bind='Ctrl-A:toggle-all,`:jump' < "$_FILES_FIFO")
