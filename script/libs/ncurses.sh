@@ -80,8 +80,10 @@ setup_for_local() {
           --prefix="${PREFIX}" \
           --with-normal \
           --with-shared \
+          --without-debug \
           --enable-pc-files \
-          --with-versioned-syms
+          --with-versioned-syms \
+          --disable-widec
         ++ make
         ++ make install.includes
         ++ make install.libs
@@ -98,6 +100,7 @@ setup_for_local() {
           --prefix="${PREFIX}" \
           --with-normal \
           --with-shared \
+          --without-debug \
           --enable-pc-files \
           --with-versioned-syms \
           --enable-widec
