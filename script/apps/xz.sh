@@ -18,8 +18,9 @@ list_versions() {
     ${DIR}/../helpers/parser_html 'span' |
     grep 'class="name"' |
     awk '{print $4}' |
-    grep gz | 
+    grep gz |
     sed -e 's/xz-//' -e 's/.tar.gz//' |
+    grep -v '[a-z]' |
     sort -Vr
 }
 

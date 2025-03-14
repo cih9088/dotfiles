@@ -19,6 +19,7 @@ list_versions() {
     grep -v 'latest' | grep 'tar.gz\"' | grep -v 'libasn1' |
     awk '{print $4}' |
     sed -e 's/.tar.gz//' -e 's/libtasn1-//' |
+    grep -v '[a-z]' |
     sort -Vr
 }
 
