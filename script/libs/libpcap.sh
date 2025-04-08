@@ -61,6 +61,9 @@ setup_for_local() {
       ++ tar -xvzf "libpcap-${VERSION}.tar.gz"
 
       ++ pushd "libpcap-libpcap-${VERSION}"
+      if [ -f "./autogen.sh" ]; then
+        ++ ./autogen.sh
+      fi
       ++ ./configure --prefix="${PREFIX}"
       ++ make
       ++ make install
