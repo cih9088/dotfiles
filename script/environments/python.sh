@@ -130,7 +130,7 @@ update_asdf_global_py_version() {
     _PY2_VERSION=$VERSION
   fi
 
-  ++ asdf global python "$_PY3_VERSION" "$_PY2_VERSION"
+  ++ asdf set -u python "$_PY3_VERSION" "$_PY2_VERSION"
 }
 
 # python2_install() {

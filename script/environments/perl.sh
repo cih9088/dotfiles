@@ -152,7 +152,7 @@ from_asdf() {
     ++ asdf uninstall perl "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
     ++ asdf install perl "${VERSION}"
-    ++ asdf global perl "${VERSION}"
+    ++ asdf set -u perl "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

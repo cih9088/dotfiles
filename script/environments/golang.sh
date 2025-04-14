@@ -100,7 +100,7 @@ from_asdf() {
     ++ asdf uninstall golang "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
     ++ asdf install golang "${VERSION}"
-    ++ asdf global golang "${VERSION}"
+    ++ asdf set -u golang "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

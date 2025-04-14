@@ -63,7 +63,7 @@ from_asdf() {
   elif [ "${COMMAND}" == "install" ]; then
     # ++ ASDF_LUA_LINUX_READLINE=1 asdf install lua "${VERSION}"
     ++ asdf install lua "${VERSION}"
-    ++ asdf global lua "${VERSION}"
+    ++ asdf set -u lua "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

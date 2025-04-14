@@ -93,7 +93,7 @@ from_asdf() {
     ++ asdf uninstall nodejs "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
     ++ asdf install nodejs "${VERSION}"
-    ++ asdf global nodejs "${VERSION}"
+    ++ asdf set -u nodejs "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

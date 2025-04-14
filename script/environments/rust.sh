@@ -88,7 +88,7 @@ from_asdf() {
     ++ asdf uninstall rust "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
     ++ asdf install rust "${VERSION}"
-    ++ asdf global rust "${VERSION}"
+    ++ asdf set -u rust "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0
