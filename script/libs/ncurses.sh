@@ -80,13 +80,16 @@ setup_for_local() {
           --prefix="${PREFIX}" \
           --with-normal \
           --with-shared \
+          --with-termlib \
+          --with-termcap \
+          --with-cxx-shared \
           --without-debug \
+          --with-pkg-config \
           --enable-pc-files \
           --with-versioned-syms \
           --disable-widec
         ++ make
-        ++ make install.includes
-        ++ make install.libs
+        ++ make install
         ++ popd
 
         ++ mv "ncurses-${VERSION}" "${PREFIX}/src"
@@ -100,13 +103,16 @@ setup_for_local() {
           --prefix="${PREFIX}" \
           --with-normal \
           --with-shared \
+          --with-termlib \
+          --with-termcap \
+          --with-cxx-shared \
           --without-debug \
+          --with-pkg-config \
           --enable-pc-files \
           --with-versioned-syms \
           --enable-widec
         ++ make
-        ++ make install.includes
-        ++ make install.libs
+        ++ make install
         ++ popd
 
         ++ mv "ncurses-${VERSION}" "${PREFIX}/src/ncursesw-${VERSION}"
