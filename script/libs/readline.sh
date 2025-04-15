@@ -64,8 +64,8 @@ setup_for_local() {
       ++ pushd "readline-${VERSION}"
       ++ ./configure --prefix="${PREFIX}" --enable-shared
       # https://lists.gnu.org/archive/html/bug-readline/2017-10/msg00007.html
-      ++ make SHLIB_LIBS="-lncurses"
-      ++ make install
+      ++ make SHLIB_LIBS="$LDFLAGS -lncursesw -ltinfo"
+      ++ make SHLIB_LIBS="$LDFLAGS -lncursesw -ltinfo" install
       ++ popd
 
       ++ mv "readline-${VERSION}" "${PREFIX}/src"

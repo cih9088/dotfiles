@@ -199,7 +199,7 @@ EOF
 
 ++() {
   # set -f  # no double expand
-  eval "$@" || exit $?
+  "$@" || exit $?
 }
 
 
