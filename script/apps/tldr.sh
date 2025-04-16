@@ -3,7 +3,7 @@
 ################################################################
 THIS=$(basename "$0")
 THIS=${THIS%.*}
-GH="dbrgn/tealdeer"
+GH="tealdeer-rs/tealdeer"
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 . ${DIR}/../helpers/common.sh
@@ -50,10 +50,10 @@ setup_for_local() {
       fi
 
       if [ "${ARCH}" == "x86_64" ]; then
-        ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-x86_64-musl"
+        ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/${_name}-linux-x86_64-musl"
         ++ mv "${_name}-linux-x86_64-musl" "${PREFIX}/bin/tldr"
       elif [ "${ARCH}" == "aarch64" ]; then
-        ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/${_name}-linux-armv7-musleabihf"
+        ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/${_name}-linux-armv7-musleabihf"
         ++ mv "${_name}-linux-armv7-musleabihf" "${PREFIX}/bin/tldr"
       fi
       ++ chmod +x "${PREFIX}/bin/tldr"
@@ -89,11 +89,11 @@ setup_for_system() {
         VERSION="$(list_versions | head -n 1)"
         ++ sudo mkdir -p /usr/local/bin
         if [ "${ARCH}" == "x86_64" ]; then
-          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tealdeer-linux-x86_64-musl"
+          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/tealdeer-linux-x86_64-musl"
           ++ sudo mv "tealdeer-linux-x86_64-musl" "/usr/local/bin/tldr"
           ++ sudo chmod +x /usr/local/bin/tldr
         elif [ "${ARCH}" == "aarch64" ]; then
-          ++ curl -LO "https://github.com/dbrgn/tealdeer/releases/download/${VERSION}/tealdeer-linux-armv7-musleabihf"
+          ++ curl -LO "https://github.com/${GH}/releases/download/${VERSION}/tealdeer-linux-armv7-musleabihf"
           ++ sudo mv "tealdeer-linux-armv7-musleabihf" "/usr/local/bin/tldr"
           ++ sudo chmod +x /usr/local/bin/tldr
         fi
