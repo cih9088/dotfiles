@@ -24,15 +24,21 @@ else
   args="$@"
 fi
 
-coproc gpudetailfd { ${DIR}/gpustat --no-header $@ | sed 's/^/        /'; }
-exec 3>&${gpudetailfd[0]}
+
+if command -v nvidia-smi >/dev/null; then
+  coproc gpudetailfd { ${DIR}/gpustat --no-header $@ | sed 's/^/        /'; }
+  exec 3>&${gpudetailfd[0]}
+fi
+
 hostname="$(hostname)"
 now="$(date)"
 echo "${BIWhite}${hostname}${Color_Off} ${now}"
 echo -en "   CPU: " && ${DIR}/cpu-usage | ${DIR}/ascii-bar 40
 echo
 echo -en "   MEM: " && ${DIR}/mem-usage | ${DIR}/ascii-bar 40
-echo
-echo -en "   GPU: " && ${DIR}/gpu-usage | ${DIR}/ascii-bar 40
-echo
-echo "$(cat <&3)"
+if command -v nvidia-smi >/dev/null; then
+  echo
+  echo -en "   GPU: " && ${DIR}/gpu-usage | ${DIR}/ascii-bar 40
+  echo
+  echo "$(cat <&3)"
+fi
