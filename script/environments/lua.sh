@@ -11,9 +11,6 @@ CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 
 log_title "Prepare for ${THIS_HL}"
-
-export MYLDFLAGS="${LDFLAGS}"
-export MYCFLAGS="${CFLAGS}"
 ################################################################
 
 list_versions() {
@@ -67,8 +64,9 @@ from_asdf() {
   if [ "${COMMAND}" == "remove" ]; then
     ++ asdf uninstall lua "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
-    # ++ ASDF_LUA_LINUX_READLINE=1 asdf install lua "${VERSION}"
-    ++ asdf install lua "${VERSION}"
+    # need to edit Makefile for custom install but asdf-lua does not support it
+    # ASDF_LUA_LINUX_READLINE=1 MYLDFLAGS="${LDFLAGS}" MYCFLAGS="${CFLAGS}" \
+    #   ++ asdf install lua "${VERSION}"
     ++ asdf set -u lua "${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
@@ -84,6 +82,9 @@ from_mise() {
   if [ "${COMMAND}" == "remove" ]; then
     ++ mise unuse -g -y "lua@${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
+    # need to edit Makefile for custom install but asdf-lua does not support it
+    # ASDF_LUA_LINUX_READLINE=1 MYLDFLAGS="${LDFLAGS}" MYCFLAGS="${CFLAGS}" \
+    #   ++ mise use -g -v "lua@${VERSION}"
     ++ mise use -g -v "lua@${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"

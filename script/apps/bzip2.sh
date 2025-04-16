@@ -91,7 +91,7 @@ setup_for_local() {
       ++ tar -xvzf "bzip2-${VERSION}.tar.gz"
 
       ++ pushd "bzip2-${VERSION}"
-      ++ sed -i -e "\"s|\$(PREFIX)/man|\$(PREFIX)/share/man|\"" Makefile
+      ++ sed -i -e "s|\$(PREFIX)/man|\$(PREFIX)/share/man|" Makefile
       ++ make install PREFIX="${PREFIX}"
       # Build shared library
       ++ make clean

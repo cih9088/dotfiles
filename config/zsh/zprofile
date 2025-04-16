@@ -102,12 +102,8 @@
   [[ ":${PKG_CONFIG_PATH}:" != *":${HOME}/.local/lib64/pkgconfig:"* ]] && \
     export PKG_CONFIG_PATH="${HOME}/.local/lib64/pkgconfig${PKG_CONFIG_PATH+:$PKG_CONFIG_PATH}"
 
-  [[ " ${CFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
-    export CFLAGS="-I${HOME}/.local/include ${CFLAGS}"
   [[ " ${CPPFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
     export CPPFLAGS="-I${HOME}/.local/include ${CPPFLAGS}"
-  [[ " ${CXXFLAGS} " != *" -I${HOME}/.local/include "* ]] && \
-    export CXXFLAGS="-I${HOME}/.local/include ${CXXFLAGS}"
 
   [[ " ${LDFLAGS} " != *" -L${HOME}/.local/lib "* ]] && \
     export LDFLAGS="-L${HOME}/.local/lib ${LDFLAGS}"

@@ -12,8 +12,6 @@ CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 THIS_HL=${BOLD}${UNDERLINE}${THIS}${NC}
 
 log_title "Prepare for ${THIS_HL}"
-
-export CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include/ncurses"
 ################################################################
 
 list_versions() {
@@ -254,7 +252,8 @@ from_asdf() {
   if [ "${COMMAND}" == "remove" ]; then
     ++ asdf uninstall python "${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
-    ++ asdf install python "${VERSION}"
+    CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include/ncurses" \
+      ++ asdf install python "${VERSION}"
 
     # upgrade pip
     command -v python2 >/dev/null && python2 -m pip install --upgrade pip >&3 2>&4 || true
@@ -276,7 +275,8 @@ from_mise() {
   if [ "${COMMAND}" == "remove" ]; then
     ++ mise unuse -g -y "python@${VERSION}"
   elif [ "${COMMAND}" == "install" ]; then
-    ++ mise use -g -v "python@${VERSION}"
+    CPPFLAGS="${CPPFLAGS} -I${PREFIX}/include/ncurses" \
+      ++ mise use -g -v "python@${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

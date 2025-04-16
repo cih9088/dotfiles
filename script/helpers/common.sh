@@ -89,9 +89,9 @@ export PATH="${PREFIX}/bin${PATH+:$PATH}"
 export LD_LIBRARY_PATH="${PREFIX}/lib:${PREFIX}/lib64${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}"
 export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PREFIX}/lib64/pkgconfig${PKG_CONFIG_PATH+:$PKG_CONFIG_PATH}"
 export ACLOCAL_PATH="${PREFIX}/share/aclocal${ACLOCAL_PATH+:$ACLOCAL_PATH}"
-export CFLAGS="-I${PREFIX}/include"
 export CPPFLAGS="-I${PREFIX}/include"
-export CXXFLAGS="-I${PREFIX}/include"
+export CFLAGS=""
+export CXXFLAGS=""
 export LDFLAGS="-L${PREFIX}/lib -L${PREFIX}/lib64"
 
 # remove trailing colon (some libs failed to install)

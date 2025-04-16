@@ -61,14 +61,14 @@ setup_for_local() {
       ++ pushd "tree-${VERSION}"
 
       # for version lower than 2.0
-      ++ sed -i -e "\"s|prefix = /usr|prefix = ${PREFIX}|\"" Makefile
-      ++ sed -i -e "\"s|MANDIR=\\\${prefix}/man/man1|MANDIR=\\\${prefix}/share/man/man1|\"" Makefile
+      ++ sed -i -e "s|prefix = /usr|prefix = ${PREFIX}|" Makefile
+      ++ sed -i -e "s|MANDIR=\${prefix}/man/man1|MANDIR=\${prefix}/share/man/man1|" Makefile
       # for version lower than 2.1.0
-      ++ sed -i -e "\"s|prefix=/usr/local|prefix=${PREFIX}|\"" Makefile
-      ++ sed -i -e "\"s|MANDIR=\\\${prefix}/man|MANDIR=\\\${prefix}/share/man/man1|\"" Makefile
+      ++ sed -i -e "s|prefix=/usr/local|prefix=${PREFIX}|" Makefile
+      ++ sed -i -e "s|MANDIR=\${prefix}/man|MANDIR=\${prefix}/share/man/man1|" Makefile
       # newest
-      ++ sed -i -e "\"s|PREFIX=/usr/local|PREFIX=${PREFIX}|\"" Makefile
-      ++ sed -i -e "\"s|MANDIR=\\\${PREFIX}/man|MANDIR=\\\${PREFIX}/share/man/man1|\"" Makefile
+      ++ sed -i -e "s|PREFIX=/usr/local|PREFIX=${PREFIX}|" Makefile
+      ++ sed -i -e "s|MANDIR=\${PREFIX}/man|MANDIR=\${PREFIX}/share/man/man1|" Makefile
 
       ++ make
       ++ make install

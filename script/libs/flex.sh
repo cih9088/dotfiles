@@ -59,7 +59,8 @@ setup_for_local() {
       ++ pushd "flex-${VERSION##v}"
       # https://github.com/westes/flex/issues/442
       if [ ${PLATFORM_ID} == "ubuntu" ] && [ ${PLATFORM_VERSION} == "18.04" ]; then
-        CFLAGS="$CFLAGS -D_GNU_SOURCE" ++ ./configure --prefix="${PREFIX}"
+        CFLAGS="$CFLAGS -D_GNU_SOURCE" \
+          ++ ./configure --prefix="${PREFIX}"
       else
         ++ ./configure --prefix="${PREFIX}"
       fi
