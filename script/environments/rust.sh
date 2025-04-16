@@ -15,7 +15,9 @@ log_title "Prepare for ${THIS_HL}"
 ################################################################
 
 list_versions() {
-  if command -v asdf > /dev/null; then
+  if command -v mise > /dev/null; then
+    mise ls-remote rust sort -Vr
+  elif command -v asdf > /dev/null; then
     asdf plugin list 2>/dev/null | grep -q rust || asdf plugin add rust >&3 2>&4
     asdf list all rust | sort -Vr
   else
@@ -39,7 +41,10 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
 
-  if command -v asdf > /dev/null; then
+  if command -v mise > /dev/null; then
+    log_info "Note that ${THIS_HL} would be handled by mise."
+    from_mise "$COMMAND" "$VERSION"
+  elif command -v asdf > /dev/null; then
     log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
   else
@@ -89,6 +94,21 @@ from_asdf() {
   elif [ "${COMMAND}" == "install" ]; then
     ++ asdf install rust "${VERSION}"
     ++ asdf set -u rust "${VERSION}"
+  elif [ "${COMMAND}" == "update" ]; then
+    log_error "Not supported command 'update'"
+    exit 0
+  fi
+}
+
+from_mise() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION=latest
+
+  if [ "${COMMAND}" == "remove" ]; then
+    ++ mise unuse -g -y "rust@${VERSION}"
+  elif [ "${COMMAND}" == "install" ]; then
+    ++ mise use -g -v "rust@${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

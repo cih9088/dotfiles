@@ -132,12 +132,32 @@
   fi
 
 
+# Setup mise
+# ---------------------------------------------------------------------------------------
+  _MISE_BINARY=
+  if [ -f "${HOME}/.local/bin/mise" ]; then
+    _MISE_BINARY="${HOME}/.local/bin/mise"
+  elif command -v brew >/dev/null; then
+    BREW_PREFIX=$(brew --prefix)
+    [ -f "$BREW_PREFIX/bin/mise" ] && _MISE_BINARY=$BREW_PREFIX/bin/mise || true
+    unset BREW_PREFIX
+  fi
+
+  if [ ! -z "${_MISE_BINARY+x}" ]; then
+    eval "$(${_MISE_BINARY} activate bash)"
+    # https://mise.jdx.dev/lang/python.html#python.compile
+    # make mise compile python instead of download precompiled version
+    export MISE_PYTHON_COMPILE=true
+  fi
+  unset _MISE_BINARY
+
+
 # Setup conda
 # ---------------------------------------------------------------------------------------
   export CONDA_AUTO_ACTIVATE_BASE=false
 
 
-# Setup virtualenvwrapper (using asdf python)
+# Setup virtualenvwrapper (using asdf/mise python)
 # ---------------------------------------------------------------------------------------
   export WORKON_HOME=$HOME/.virtualenvs
   export PROJECT_HOME=$HOME/workspace
@@ -145,7 +165,16 @@
   # because of the change of PATH during zsh initialisation in non-tmux session
   # This prevents no module found error in virtualenvwrapper
   if [ ! -e "${VIRTUALENVWRAPPER_LAZY_SCRIPT}" ] && [ -z "${TMUX+x}" ]; then
-    if command -v asdf > /dev/null; then
+    if command -v mise > /dev/null; then
+      PATH_TO_PYTHON=$(mise where python 2>/dev/null)
+      if [ ! -z "${PATH_TO_PYTHON+x}" ] &&
+        [ -x "$(command -v $PATH_TO_PYTHON/bin/virtualenvwrapper_lazy.sh)" ]; then
+        export VIRTUALENVWRAPPER_VIRTUALENV=$PATH_TO_PYTHON/bin/virtualenv
+        export VIRTUALENVWRAPPER_SCRIPT=$PATH_TO_PYTHON/bin/virtualenvwrapper.sh
+        export VIRTUALENVWRAPPER_LAZY_SCRIPT=$PATH_TO_PYTHON/bin/virtualenvwrapper_lazy.sh
+      fi
+      unset PATH_TO_PYTHON
+    elif command -v asdf > /dev/null; then
       PATH_TO_PYTHON=$(asdf where python 2>/dev/null)
       if [ ! -z "${PATH_TO_PYTHON+x}" ] &&
         [ -x "$(command -v $PATH_TO_PYTHON/bin/virtualenvwrapper_lazy.sh)" ]; then
@@ -230,7 +259,6 @@
 
 # gcloud support
 # ---------------------------------------------------------------------------------------
-
   if  [ -x "$(command -v gcloud)" ]; then
     # gcloud command is way slower
     if command -v brew >/dev/null; then

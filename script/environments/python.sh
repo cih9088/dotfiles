@@ -25,6 +25,9 @@ list_versions() {
     else
       pyenv install -l | grep -v '[a-zA-Z]' | sed 's/ //' | sort -Vr
     fi
+  elif command -v mise > /dev/null; then
+    echo "latest"
+    mise ls-remote python | grep -v '[a-zA-Z]' | sort -Vr
   elif command -v asdf > /dev/null; then
     asdf plugin list 2>/dev/null | grep -q python || asdf plugin add python >&3 2>&4
     if [ "$COMMAND" == "remove" ]; then
@@ -58,6 +61,9 @@ setup_for_local() {
 
     log_info "Note that ${THIS_HL} would be handled by pyenv."
     from_pyenv "$COMMAND" "$VERSION"
+  elif command -v mise > /dev/null; then
+    log_info "Note that ${THIS_HL} would be handled by mise."
+    from_mise "$COMMAND" "$VERSION"
   elif command -v asdf > /dev/null; then
     log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
@@ -256,6 +262,21 @@ from_asdf() {
 
     update_asdf_global_py_version "${VERSION}"
 
+  elif [ "${COMMAND}" == "update" ]; then
+    log_error "Not supported command 'update'"
+    exit 0
+  fi
+}
+
+from_mise() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION=latest
+
+  if [ "${COMMAND}" == "remove" ]; then
+    ++ mise unuse -g -y "python@${VERSION}"
+  elif [ "${COMMAND}" == "install" ]; then
+    ++ mise use -g -v "python@${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

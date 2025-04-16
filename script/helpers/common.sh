@@ -107,17 +107,37 @@ elif command -v brew >/dev/null && [ -f "$(brew --prefix asdf)/libexec/asdf.sh" 
   export ASDF_DIR=$(brew --prefix asdf)/libexec
   . "${ASDF_DIR}/asdf.sh"
 fi
+
+# mise
+_MISE_BINARY=
+if [ -f "${PREFIX}/bin/mise" ]; then
+  _MISE_BINARY="${PREFIX}/bin/mise"
+elif command -v brew >/dev/null && [ -f "$(brew --prefix mise)/bin/mise" ]; then
+  _MISE_BINARY="$(brew --prefix mise)/bin/mise"
+fi
+if [ ! -z "${_MISE_BINARY+x}" ]; then
+  eval "$(${_MISE_BINARY} activate bash)"
+  export MISE_VERBOSE=1
+  # https://mise.jdx.dev/lang/python.html#python.compile
+  # make mise compile python instead of download precompiled version
+  export MISE_PYTHON_COMPILE=true
+fi
+unset _MISE_BINARY
+
 # pyenv
 export PYENV_ROOT=$HOME/.pyenv
 export PATH="$PYENV_ROOT/bin${PATH+:$PATH}"
-command -v pyenv > /dev/null && eval "$(pyenv init -)" || true
+command -v pyenv >/dev/null && eval "$(pyenv init -)" || true
+
 # goenv
 export GOENV_ROOT=$HOME/.goenv
 export PATH="$GOENV_ROOT/bin${PATH+:$PATH}"
-command -v goenv > /dev/null && eval "$(goenv init -)" || true
+command -v goenv >/dev/null && eval "$(goenv init -)" || true
+
 # build python with shared object
 # (https://github.com/pyenv/pyenv/tree/master/plugins/python-build#building-with---enable-shared)
 export PYTHON_CONFIGURE_OPTS="--enable-shared"
+
 
 ################################################################
 
@@ -131,7 +151,7 @@ if [[ ${PLATFORM} != OSX && ${PLATFORM} != LINUX ]]; then
 fi
 if [[ "${PLATFORM}" == "LINUX" && " ubuntu debian centos rocky " != *" ${PLATFORM_ID} "* ]]; then
   log_error "linux '${PLATFORM_ID}' is not supported."
-  exit 1;
+  exit 1
 fi
 
 ################################################################

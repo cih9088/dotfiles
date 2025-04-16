@@ -17,7 +17,10 @@ log_title "Prepare for ${THIS_HL}"
 ################################################################
 
 list_versions() {
-  if command -v asdf > /dev/null; then
+  if command -v mise > /dev/null; then
+    echo "latest"
+    mise ls-remote nodejs | grep -v '[a-zA-Z]' | sort -Vr
+  elif command -v asdf > /dev/null; then
     asdf plugin list 2>/dev/null | grep -q nodejs || asdf plugin add nodejs >&3 2>&4
     asdf list all nodejs | sort -Vr
   else
@@ -45,7 +48,10 @@ setup_for_local() {
   local COMMAND="${1:-skip}"
   local VERSION="${2:-}"
 
-  if command -v asdf >/dev/null; then
+  if command -v mise > /dev/null; then
+    log_info "Note that ${THIS_HL} would be handled by mise."
+    from_mise "$COMMAND" "$VERSION"
+  elif command -v asdf >/dev/null; then
     log_info "Note that ${THIS_HL} would be handled by asdf."
     from_asdf "$COMMAND" "$VERSION"
   else
@@ -94,6 +100,21 @@ from_asdf() {
   elif [ "${COMMAND}" == "install" ]; then
     ++ asdf install nodejs "${VERSION}"
     ++ asdf set -u nodejs "${VERSION}"
+  elif [ "${COMMAND}" == "update" ]; then
+    log_error "Not supported command 'update'"
+    exit 0
+  fi
+}
+
+from_mise() {
+  local COMMAND="${1:-skip}"
+  local VERSION="${2:-}"
+  [ -z "${VERSION}" ] && VERSION=latest
+
+  if [ "${COMMAND}" == "remove" ]; then
+    ++ mise unuse -g -y "nodejs@${VERSION}"
+  elif [ "${COMMAND}" == "install" ]; then
+    ++ mise use -g -v "nodejs@${VERSION}"
   elif [ "${COMMAND}" == "update" ]; then
     log_error "Not supported command 'update'"
     exit 0

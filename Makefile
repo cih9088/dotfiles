@@ -335,6 +335,9 @@ goenv:
 asdf:
 	@ ( $(SCRIPTS_DIR)/apps/asdf.sh )
 
+mise:
+	@ ( $(SCRIPTS_DIR)/apps/mise.sh )
+
 tpm: \
 	tmux
 	@( $(SCRIPTS_DIR)/apps/tpm.sh )
@@ -442,7 +445,7 @@ nodejs-env:
 	flex libpcap tcpdump \
 	terminfo zsh fish prezto neovim tmux \
 	wget tree fd rg thefuck tldr bash-snippets up oniguruma jq btop \
-	pyenv goenv asdf tpm \
+	pyenv goenv asdf mise tpm \
 	bins configs tmux-plugins neovim-plugins neovim-providers \
 	python golang rust nodejs lua perl \
 	python-env lua-env sh-env nodejs-env

@@ -24,5 +24,13 @@ Thumbs.db
 *.iml
 .idea
  
+
+# vim swap files #
+##################
 *.swp
 *.swo
+
+
+# mise #
+########
+.mise.local.toml
