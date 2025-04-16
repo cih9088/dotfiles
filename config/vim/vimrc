@@ -189,7 +189,9 @@
   set visualbell                        " visualbell on
   set fencs=ucs-bom,utf-8,euc-kr.latin1 " hangle goes euc-kr, unicode goes unicode
   set fileencoding=utf-8                " file saving encoding
-  set tenc=utf-8                        " terminal encoding
+  if exists('+termencoding')
+    set tenc=utf-8                      " terminal encoding
+  endif
   set backspace=eol,start,indent        " go to earlier line where the cursor is positioned at end of the line, start of the line and indent
   set hidden                            " unsaved changes in buffer is hidden not quit
   set history=1000                      " remember more commands and search history
@@ -205,9 +207,11 @@
   set signcolumn=yes                    " always draw the sign column
   set linebreak
   set colorcolumn=90                    " color column to limit coding length
-  set pastetoggle=<F2>                  " when in insert mode, press <F2> to go to
+  if exists('+pastetoggle')
+    set pastetoggle=<F2>                " when in insert mode, press <F2> to go to
                                         " pasete mode, where you can paste mass data
                                         " that won't be autoindent
+  endif
   set scrolloff=5                       " When scrolling, keep cursor 5 lines away from screen border
   set cmdheight=2                       " Give more space for displaying messages.
   set updatetime=300                    " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
@@ -277,6 +281,9 @@
 
   " ChangeBackground changes theme and background
   function! ChangeBackground(...)
+
+    " default background
+    let l:background = "dark"
 
     " Change background
     if !empty($TMUX)
