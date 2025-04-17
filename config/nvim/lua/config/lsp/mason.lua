@@ -24,7 +24,7 @@ function M.setup()
          ensure_installed = {
             "basedpyright",
             "pyright",
-            "gopls@v0.13.2",
+            "gopls",
             "rust_analyzer",
             "bashls",
             "vimls",
@@ -46,17 +46,16 @@ function M.setup()
    end
 
    if mason_null_ls then
-      -- version fixed for python(3.8) and go(1.19.13) compatibility
       mason_null_ls.setup({
          ensure_installed = {
-            "black@24.8.0", "isort", "ruff",
+            "black", "isort", "ruff",
             "prettierd", "eslint-lsp",
-            "ansiblelint@6.13.1",
+            "ansiblelint",
             "shellcheck", "shfmt",
-            "goimports@v0.24.0", "golines",
+            "goimports", "golines",
             "yamlfmt",
 
-            "debugpy", "js-debug-adapter", "codelldb", "delve@1.22.0", "bash-debug-adapter"
+            "debugpy", "js-debug-adapter", "codelldb", "delve", "bash-debug-adapter"
          },
       })
    end

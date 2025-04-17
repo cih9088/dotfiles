@@ -64,7 +64,7 @@ libsodium:
 	@( $(SCRIPTS_DIR)/libs/libsodium.sh )
 
 groff: \
-	texinfo
+	texinfo m4
 	@( $(SCRIPTS_DIR)/libs/groff.sh )
 
 openldap: \
@@ -82,9 +82,9 @@ bison: \
 	m4 texinfo
 	@( $(SCRIPTS_DIR)/libs/bison.sh )
 
-# glibc: \
-#   bison bzip2 gettext texinfo
-#   @( $(SCRIPTS_DIR)/libs/glibc.sh )
+glibc: \
+	bison bzip2 gettext texinfo
+	@( $(SCRIPTS_DIR)/libs/glibc.sh )
 # -----------------------------------------------------
 
 cmake: \
@@ -430,7 +430,7 @@ nodejs-env:
 .PHONY: initMac prerequisites prerequisitesTest changeShell \
 	pkg-config ncurses libevent readline patch help2man gettext sqlite3 libffi \
 	libsodium groff openldap \
-	texinfo bison \
+	texinfo bison glibc \
 	cmake  \
 	zlib bzip2 unzip gzip xz \
 	openssl \

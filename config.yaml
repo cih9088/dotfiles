@@ -10,27 +10,26 @@ perl:
 
 python:
   mode: local
-  version: 3.8.10
+  version: 3.9.22
 
 python-env:
   virtualenv:
 
 golang:
   mode: local
-  version: 1.19.13
+  version: 1.23.8
 
 rust:
   mode: local
-  version: 1.70.0
+  version: 1.76.0
 
 nodejs:
   mode: local
-  version: 17.9.1  # glibc 2.27 compatible
+  version: 17.9.1 # glibc 2.27 compatible
 
 lua:
   mode: local
   version: 5.4.3
-
 
 #######################
 # apps & libs
