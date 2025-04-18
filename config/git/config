@@ -5,6 +5,7 @@
 
 [commit]
 	template = ~/.config/git/gitmessage
+	verbose = true
 
 [credential]
 	helper = "!f() { ~/.config/git/credential_helper.py get; }; f"
@@ -18,3 +19,16 @@
 [merge]
 	tool = nvimdiff
 	conflictstyle = diff3
+
+[mergetool]
+  prompt = true
+  keepBackup = false
+
+[branch]
+  sort = -committerdate
+
+[push]
+  autoSetupRemote = true
+
+[pull]
+	ff = only
