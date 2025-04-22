@@ -210,7 +210,7 @@ M.get_encoding_fileformat = function(self)
 end
 
 M.get_line_col = function()
-   return " %8(%l:%c%V%) %4(%p%%%)"
+   return "%(%l:%c%V%) %4(%p%%%)"
 end
 
 M.lsp_status = function(self)
@@ -220,7 +220,7 @@ M.lsp_status = function(self)
 
    local msg = "🌼"
    local msg_fail = "[No Active LSP]"
-   local clients = vim.lsp.buf_get_clients()
+   local clients = vim.lsp.get_clients()
 
    if #clients == 0 then
       return msg_fail
@@ -278,15 +278,15 @@ M.set_active = function(self)
       self:get_filename(),
       self:get_fileflag(),
       self:get_filetype(),
+      self:get_git_status(),
       "%=",
       "  ",
       -- "%#String#",
-      self:get_encoding_fileformat(),
       self:lsp_status(),
-      "%0* ",
-      self:get_git_status(),
-      self:get_line_col(),
       self:lsp_diagnostic(),
+      self:get_encoding_fileformat(),
+      "%0* ",
+      self:get_line_col(),
    })
 end
 
@@ -302,9 +302,9 @@ Statusline = setmetatable(M, {
 
 -- set statusline
 vim.cmd([[
-  augroup Statusline
-     autocmd!
-     autocmd WinEnter,BufEnter * setlocal statusline=%!v:lua.Statusline('active')
-     autocmd WinLeave,BufLeave * setlocal statusline=%!v:lua.Statusline('inactive')
-  augroup END
+   augroup Statusline
+      autocmd!
+      autocmd WinEnter,BufEnter * setlocal statusline=%!v:lua.Statusline('active')
+      autocmd WinLeave,BufLeave * setlocal statusline=%!v:lua.Statusline('inactive')
+   augroup END
 ]])

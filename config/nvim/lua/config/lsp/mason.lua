@@ -23,7 +23,6 @@ function M.setup()
       mason_lspconfig.setup({
          ensure_installed = {
             "basedpyright",
-            "pyright",
             "gopls",
             "rust_analyzer",
             "bashls",
@@ -40,6 +39,7 @@ function M.setup()
             "ansiblels",
             "jsonls",
             "terraformls",
+            "taplo"
          },
          automatic_installation = true,
       })

@@ -10,7 +10,7 @@ function M.setup()
          debug = false,
          sources = {
             -- ruff will take care of it
-            -- -- python 
+            -- -- python
             -- null_ls.builtins.formatting.black,
             -- null_ls.builtins.formatting.isort.with({
             --    args = { "--stdout", "--profile", "black", "--lines-after-imports", "2", "--filename", "$FILENAME", "-" },
@@ -43,7 +43,7 @@ function M.setup()
 
             -- sh
             null_ls.builtins.formatting.shfmt.with({
-               args = { "--case-indent", "--indent", "2", "--simplify", "--binary-next-lint", "--filename", "$FILENAME" },
+               args = { "--case-indent", "--indent", "2", "--simplify", "--binary-next-line", "--filename", "$FILENAME" },
             }),
             -- null_ls.builtins.diagnostics.shellcheck,
             null_ls.builtins.hover.printenv,

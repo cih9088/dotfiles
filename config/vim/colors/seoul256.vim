@@ -315,8 +315,8 @@ call s:hi('NonText', [59, 145], ['', ''])
 call s:hi('MoreMsg', [173, 173], ['', ''])
 
 " Popup menu
-call s:hi('Pmenu', [s:dark_fg, s:light_fg], [s:dark_bg + 1, s:light_bg - 2])
-call s:hi('PmenuSel', [s:dark_fg, s:dark_fg], [95, 95])
+call s:hi('Pmenu', [s:dark_fg, s:light_fg], [s:dark_bg + 1, s:light_bg - 2], 'NONE')
+call s:hi('PmenuSel', [s:dark_fg, s:dark_fg], [95, 95], 'NONE')
 call s:hi('PmenuSbar', ['', ''], [65, 65])
 call s:hi('PmenuThumb', ['', ''], [23, 23])
 
@@ -361,11 +361,11 @@ else
   endif
 endif
 
-"
-call s:hi('StatusLine', [95, 95], [187, 187], 'bold,reverse')
-call s:hi('StatusLineNC', [s:dark_bg + 2, s:light_bg - 2], [187, 238], 'reverse')
-call s:hi('StatusLineTerm', [95, 95], [187, 187], 'bold,reverse')
-call s:hi('StatusLineTermNC', [s:dark_bg + 2, s:light_bg - 2], [187, 238], 'reverse')
+call s:hi('StatusLine', [187, 187], [95, 95],  'bold')
+call s:hi('StatusLineNC', [187, 238], [s:dark_bg + 2, s:light_bg - 2], 'NONE')
+call s:hi('StatusLineTerm', [187, 187], [95, 95], 'bold')
+call s:hi('StatusLineTermNC', [187, 238], [s:dark_bg + 2, s:light_bg - 2], 'NONE')
+
 call s:hi('TabLineFill', [s:dark_bg + 2, s:light_bg - 2], ['', ''])
 call s:hi('TabLineSel', [187, 187], [23, 66])
 call s:hi('TabLine', [s:dark_bg + 12, s:light_bg - 12], [s:dark_bg + 4, s:light_bg - 4])

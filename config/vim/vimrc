@@ -99,6 +99,7 @@
     Plug 'neovim/nvim-lspconfig'
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'nvimtools/none-ls.nvim'
+    Plug 'stevearc/conform.nvim'
 
     Plug 'hrsh7th/nvim-cmp'
     Plug 'hrsh7th/cmp-nvim-lsp'
@@ -111,9 +112,6 @@
     Plug 'saadparwaiz1/cmp_luasnip'
 
     Plug 'ray-x/lsp_signature.nvim'
-    if !has("nvim-0.10")
-      Plug 'lvimuser/lsp-inlayhints.nvim'
-    endif
     " Plug 'hood/popui.nvim'
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     Plug 'windwp/nvim-ts-autotag'
@@ -153,15 +151,6 @@
   else
     Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
   endif
-
-  if has("nvim-0.5")
-    Plug 'MunifTanjim/nui.nvim'
-  endif
-  if has("nvim-0.8")
-    Plug 'SmiteshP/nvim-navic'
-    Plug 'SmiteshP/nvim-navbuddy'
-  endif
-  
 
 
 " Initialize plugin system

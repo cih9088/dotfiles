@@ -4,7 +4,7 @@ local dap = require('dap')
 local utils = require('utils')
 
 -- keep argument for input
-local default_args = ""
+local default_args = {}
 
 
 local function get_input(args)
@@ -16,8 +16,13 @@ local function get_input(args)
        args[4] or args.split
 
    local out
+
+   if default == default_args then
+      default = default_args[prompt]
+   end
+
    vim.ui.input({ prompt = prompt, default = default, completion = completion }, function(value)
-      default_args = value
+      default_args[prompt] = value
       if split then
          value = vim.split(value or "", " +")
       end
@@ -312,12 +317,27 @@ local function delve_setup()
    }
 end
 
+local function lua_setup()
+   dap.configurations.lua = {
+      {
+         type = 'nlua',
+         request = 'attach',
+         name = "Attach to running Neovim instance",
+      }
+   }
+
+   dap.adapters.nlua = function(callback, config)
+      callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or 8086 })
+   end
+end
+
 function M.setup()
    bashdb_setup()
    python_setup()
    node_setup()
    codelldb_setup()
    delve_setup()
+   lua_setup()
 
    -- Override default configurations with `launch.json`
    require("dap.ext.vscode").load_launchjs(".vscode/launch.json")

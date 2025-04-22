@@ -11,12 +11,19 @@ end
 
 local function diagnostic_override()
    vim.diagnostic.config({
+      -- virtual_lines = {
+      --    -- Only show virtual line diagnostics for the current cursor line
+      --    current_line = true,
+      --    format = function(diagnostic)
+      --       return ('%s: %s [%s]'):format(diagnostic.source, diagnostic.message, diagnostic.code)
+      --    end,
+      -- },
+      severity_sort = true,
       virtual_text = {
          severity = vim.diagnostic.severity.ERROR,
       },
       float = {
-         severity_sort = true,
-         source = "always",
+         source = true,
          focusable = false, -- See neovim#16425
          border = "single",
       },
@@ -31,9 +38,10 @@ local function diagnostic_override()
       -- but only once for the current cursor location (unless moved afterwards).
       if not (current_cursor[1] == last_popup_cursor[1] and current_cursor[2] == last_popup_cursor[2]) then
          vim.w.lsp_diagnostics_last_cursor = current_cursor
-         local _, winnr = vim.diagnostic.open_float(nil, { scope = "cursor" })
+         local _, winnr = vim.diagnostic.open_float({ bufnr = 0, scope = "cursor" })
          if winnr ~= nil then
-            vim.api.nvim_win_set_option(winnr, "winblend", 0) -- opacity for diagnostics
+            -- opacity for diagnostics
+            vim.wo[winnr].winblend = 0
          end
       end
    end
