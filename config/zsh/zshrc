@@ -143,8 +143,8 @@
     unset BREW_PREFIX
   fi
 
-  if [ ! -z "${_MISE_BINARY+x}" ]; then
-    eval "$(${_MISE_BINARY} activate bash)"
+  if [ ! -z "${_MISE_BINARY}" ]; then
+    eval "$(${_MISE_BINARY} activate zsh)"
     # https://mise.jdx.dev/lang/python.html#python.compile
     # make mise compile python instead of download precompiled version
     export MISE_PYTHON_COMPILE=true
