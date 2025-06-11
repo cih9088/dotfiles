@@ -33,10 +33,10 @@ is_first_destination() {
   [[ "$1" == *"@"* ]] && return 0
 
   # ip
-  [[ "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] && return 0
+  [[ "$1" =~ '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' ]] && return 0
 
   # domain
-  [[ "$1" =~ .*\..* ]] && return 0
+  [[ "$1" =~ '.*\..*' ]] && return 0
 
   # alias in .ssh/config
   grep -q "^Host $1\$" $_config && return 0
