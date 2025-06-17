@@ -1,12 +1,41 @@
 # expected .ssh/config
 #
 # Host foo
-# #alias bar sample_group
+#   #alias bar sample_group
 #   HostName foo.example.com
 #   HostName 192.168.1.1
 
 
 _SSH_CONFIG=${SSH_CONFIG:-$HOME/.ssh/config}
+_SSH_CONFIG_DIR=$(dirname $_SSH_CONFIG)
+_SSH_CONTENT=""
+
+# read all sshconfig
+_SSH_CONFIG_FILES=($_SSH_CONFIG)
+INDEX=1
+while [ ${#_SSH_CONFIG_FILES} -ge ${INDEX} ]; do
+  SSH_CONFIG_FILE=${_SSH_CONFIG_FILES[$INDEX]}
+  if [ -f $SSH_CONFIG_FILE ] && grep -i -q '^include' $SSH_CONFIG_FILE; then
+    _FILES=($(grep -i '^include' $SSH_CONFIG_FILE | awk '{print $2}'))
+    for _FILE in $_FILES; do
+      if [[ $_FILE = *"/*" ]]; then
+        __FILES=($(ls $_SSH_CONFIG_DIR/${_FILE[1, -3]}))
+        for __FILE in $__FILES; do
+          _SSH_CONFIG_FILES+=($_SSH_CONFIG_DIR/${_FILE[1, -3]}/$__FILE)
+        done
+      else
+        _SSH_CONFIG_FILES+=($_SSH_CONFIG_DIR/$_FILE)
+      fi
+    done
+  fi
+  INDEX=$(($INDEX + 1))
+done
+
+for _SSH_CONFIG_FILE in $_SSH_CONFIG_FILES; do
+  if [ -f $_SSH_CONFIG_FILE ]; then
+    _SSH_CONTENT+="$(cat $_SSH_CONFIG_FILE)\n"
+  fi
+done
 
 
 has() {
@@ -40,7 +69,7 @@ is_first_destination() {
   [[ "$1" =~ '.*\..*' ]] && return 0
 
   # alias in .ssh/config
-  [ -f $_SSH_CONFIG ] && grep -q "^Host $1\$" $_SSH_CONFIG && return 0
+  [ -f $_SSH_CONFIG ] && echo $_SSH_CONTENT | grep -q "^Host $1\$" && return 0
 
   # not an option
   [[ $1 != "-"* ]] && return 0
@@ -49,7 +78,7 @@ is_first_destination() {
 }
 
 parse_config() {
-  targets=$(awk '
+  targets=$(echo "$_SSH_CONTENT" | awk '
   BEGIN { current = ""; hosts[0] = ""; hostnames[0] = ""; ips[0] = ""; aliases[0] = "" }
   {
     if ($1 == "Host") {
@@ -58,7 +87,7 @@ parse_config() {
         hosts[current] = $2
       }
     }
-    else if ( $1 == "HostName") {
+    else if ( tolower($1) == "hostname") {
       if ( $2 ~ /[a-zA-Z]+/ ) {
         if ( hostnames[current] == "" ) {
           hostnames[current] = $2
@@ -84,7 +113,7 @@ parse_config() {
       }
     }
   }
-  ' $_SSH_CONFIG | sort --version-sort | grep -v '*' | column -t -s '|')
+  ' | sort --version-sort | grep -v '*' | column -t -s '|')
 
   exit_code=$?
   [ ${exit_code} != 0 ] && return ${exit_code}
@@ -92,19 +121,20 @@ parse_config() {
     | fzf --bind 'ctrl-a:select-all' --multi \
       --height=40% --cycle --no-sort --layout=reverse \
       --preview-window=up:2 \
-      --preview='cat '"$_SSH_CONFIG"' | grep Host \
-      | awk -v host={} '"'"'{
-        split(host, fld, /->/)
-        gsub(/[ \t]+$/, "", fld[1])
-        if ($0~fld[1]) {
+      --preview='echo "'"$_SSH_CONTENT"'" \
+      | awk -v host={} '"'"'
+      BEGIN { split(host, fld, /->/); gsub(/[ \t]+$/, "", fld[1]); }
+      {
+        if ($0 !~ /^#.*/ && $0 ~ fld[1]) {
+          gsub(/^[ \t]+/,"", $0)
+          print $0
           getline
           gsub(/^[ \t]+/,"", $0)
-          print
-          getline
-          if ($0 ~ /HostName/) {
+          while (tolower($0) !~ /hostname.*/) {
+            getline
             gsub(/^[ \t]+/,"", $0)
-            print
           }
+          print $0
         }
       }'"'" \
         | awk '{print $1}'))
