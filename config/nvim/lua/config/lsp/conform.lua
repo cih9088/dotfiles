@@ -10,7 +10,17 @@ function M.setup()
          formatters = {
             yamlfmt = {
                -- no indent at array
-               prepend_args = { "-formatter", "indentless_arrays=true,retain_line_breaks_single=true" },
+               -- prepend_args = { "-formatter", "indentless_arrays=true,retain_line_breaks_single=true" },
+               prepend_args = function(self, ctx)
+                  local lines = utils.lines_from(ctx.filename)
+                  for _, v in pairs(lines) do
+                     -- k8s yaml file
+                     if v:sub(1,#"apiVersion") == "apiVersion" then
+                        return { "-formatter", "indentless_arrays=true,retain_line_breaks_single=true" }
+                     end
+                  end
+                  return { "-formatter", "retain_line_breaks_single=true" }
+               end,
             },
             shfmt = {
                prepend_args = { "--case-indent", "--indent", "2", "--binary-next-line" }

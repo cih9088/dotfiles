@@ -2,12 +2,12 @@ local M = {}
 
 function M.safe_require(args)
    if type(args) ~= "table" then
-      args = {module = args}
+      args = { module = args }
    end
-   setmetatable(args,{__index={ignore=false}})
-    local module, ignore =
-      args[1] or args.module,
-      args[2] or args.ignore
+   setmetatable(args, { __index = { ignore = false } })
+   local module, ignore =
+       args[1] or args.module,
+       args[2] or args.ignore
    local ok, result = pcall(require, module)
    if not ok then
       if not ignore then
@@ -17,7 +17,6 @@ function M.safe_require(args)
    end
    return result
 end
-
 
 function M.dump(o)
    if type(o) == "table" then
@@ -33,7 +32,6 @@ function M.dump(o)
       return tostring(o)
    end
 end
-
 
 function M.is_windows()
    return vim.loop.os_uname().sysname:find("Windows", 1, true) and true
@@ -59,6 +57,24 @@ function M.get_python_path()
       end
       return result
    end
+end
+
+-- see if the file exists
+function M.file_exists(file)
+   local f = io.open(file, "rb")
+   if f then f:close() end
+   return f ~= nil
+end
+
+-- get all lines from a file, returns an empty
+-- list/table if the file does not exist
+function M.lines_from(file)
+   if not M.file_exists(file) then return {} end
+   local lines = {}
+   for line in io.lines(file) do
+      lines[#lines + 1] = line
+   end
+   return lines
 end
 
 return M
