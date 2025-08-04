@@ -145,7 +145,7 @@ brew install azure-cli
 # https://github.com/haokaiyang/Mac-QuickLook
 brew install --cask --appdir "/Applications/QuickLookPlugins" \
   qlstephen qlmarkdown syntax-highlight \
-  quicklook-json qlimagesize suspicious-package apparency quicklookase qlvideo
+  quicklook-json  suspicious-package apparency quicklookase qlvideo
 xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 # Install terminals
