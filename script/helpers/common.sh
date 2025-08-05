@@ -115,7 +115,7 @@ if [ -f "${PREFIX}/bin/mise" ]; then
 elif command -v brew >/dev/null && [ -f "$(brew --prefix mise)/bin/mise" ]; then
   _MISE_BINARY="$(brew --prefix mise)/bin/mise"
 fi
-if [ ! -z "${_MISE_BINARY+x}" ]; then
+if [ ! -z "${_MISE_BINARY}" ]; then
   eval "$(${_MISE_BINARY} activate bash)"
   export MISE_VERBOSE=1
   # https://mise.jdx.dev/lang/python.html#python.compile
@@ -337,7 +337,12 @@ main_script() {
     else
       _FUNC_SETUP="${_FUNC_SETUP_SYSTEM}"
       _BANNER="[mode=system, version=${_TARGET_VERSION}]"
-      sudo -v
+      # extend sudo cached credential if it is valid or ask user for a password
+      # only for linux becuase cache clear is hardcoded in brew see
+      # https://github.com/Homebrew/brew/issues/17905
+      if [ "${PLATFORM}" != OSX ]; then
+        sudo -nv || sudo -v
+      fi
     fi
 
     if [ -z "${_FUNC_SETUP}" ]; then
