@@ -10,7 +10,7 @@ config/tmux/resurrect
 
 config/git/config.local
 
-config/sketchybar/plugins/icon_map_fn.sh
+config/sketchybar/plugins/icon_map.sh
 
 bin/dircnt
 

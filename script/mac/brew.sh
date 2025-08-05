@@ -235,13 +235,12 @@ skhd --start-service
 brew tap FelixKratz/formulae
 brew install sketchybar
 brew services start sketchybar
-
-# install app font
+# install app font for sketchybar
 app_font_version=$($DIR/../helpers/gh_get_latest_release "kvndrsslr/sketchybar-app-font")
 curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/${app_font_version}/sketchybar-app-font.ttf \
   -o $HOME/Library/Fonts/sketchybar-app-font.ttf
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/${app_font_version}/icon_map_fn.sh \
-  -o $DIR/../../config/sketchybar/plugins/icon_map_fn.sh
+curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/${app_font_version}/icon_map.sh \
+  -o $DIR/../../config/sketchybar/plugins/icon_map.sh
 
 
 ## free stuff

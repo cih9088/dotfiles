@@ -18,7 +18,7 @@ space_layout() {
 
 windows_on_spaces () {
   CURRENT_SPACES="${1:-$(yabai -m query --displays | jq -r '.[].spaces | @sh')}"
-  source $CONFIG_DIR/plugins/icon_map_fn.sh
+  source $CONFIG_DIR/plugins/icon_map.sh
 
   args=()
 
@@ -30,8 +30,8 @@ windows_on_spaces () {
       apps=$(yabai -m query --windows --space $space | jq -r ".[].app")
       if [ "$apps" != "" ]; then
         while IFS= read -r app; do
-          icon_map "$app"
-          icon_strip+="${icon_result}  "
+          __icon_map "$app"
+          icon_strip+="${icon_result} "
         done <<< "$apps"
       fi
       if [ ! -z "${icon_strip}" ]; then
