@@ -18,19 +18,24 @@ warp                         < alt - space      ; resize
 resize                       < alt - space      ; default
 resize, warp, prefix         < escape           ; default
 
-# focus window h and j cycles, this is dependent on the monitor order beeing correct
-# default, focus, resize, warp < alt - h          :  yabai -m window --focus west \
-#   || (yabai -m display --focus last && yabai -m window --focus last)
-# default, focus, resize, warp < alt - l          :  yabai -m window --focus east \
-#   || (yabai -m display --focus first && yabai -m window --focus first)
+# focus window hjkl cycles, this is dependent on the monitor order beeing correct
 default, resize, warp < alt - h          :  yabai -m window --focus west \
   || (yabai -m display --focus west && yabai -m window --focus last)
 default, resize, warp < alt - l          :  yabai -m window --focus east \
   || (yabai -m display --focus east && yabai -m window --focus last)
-default, resize, warp < alt - j          :  yabai -m window --focus south
-default, resize, warp < alt - k          :  yabai -m window --focus north
-default, resize, warp < alt - n          :  yabai -m window --focus stack.next
-default, resize, warp < alt - p          :  yabai -m window --focus stack.prev
+default, resize, warp < alt - j          :  yabai -m window --focus south \
+  || (yabai -m display --focus south && yabai -m window --focus last)
+default, resize, warp < alt - k          :  yabai -m window --focus north \
+  || (yabai -m display --focus north && yabai -m window --focus last)
+# focus window n,p cycles
+# default, resize, warp < alt - n          :  [ $(yabai -m query --spaces --space | jq -r '.type') = "stack" ] \
+#   && (yabai -m window --focus stack.next || yabai -m window --focus stack.first) \
+#   || (yabai -m window --focus next || yabai -m window --focus first)
+# default, resize, warp < alt - p          :  [ $(yabai -m query --spaces --space | jq -r '.type') = "stack" ] \
+#   && (yabai -m window --focus stack.prev || yabai -m window --focus stack.last) \
+#   || (yabai -m window --focus prev || yabai -m window --focus last)
+default, resize, warp < alt - n          :  yabai -m window --focus "$(yabai -m query --windows --space | jq -re "sort_by(.display, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" and .subrole != \"AXUnknown\")) | reverse | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
+default, resize, warp < alt - p          :  yabai -m window --focus "$(yabai -m query --windows --space | jq -re "sort_by(.display, .frame.x, .frame.y, .id) | map(select(.\"is-visible\" and .subrole != \"AXUnknown\")) | nth(index(map(select(.\"has-focus\" == true))) - 1).id")"
 
 # focus monitor cycle around
 default, resize, warp < shift + alt - h  :  yabai -m display --focus prev \
