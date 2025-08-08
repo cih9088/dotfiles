@@ -133,6 +133,8 @@ brew install htop
 brew install jq
 brew install awscli
 brew install azure-cli
+brew install gcloud-cli
+brew install kubernetes-cli
 
 # Lxml and Libxslt
 # brew install libxml2
@@ -149,7 +151,8 @@ brew install --cask --appdir "/Applications/QuickLookPlugins" \
 xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 # Install terminals
-brew install --cask iterm2
+# brew install --cask iterm2
+brew install --cask ghostty
 brew install --cask alacritty
 # download pretty icon for alacritty
 [ -e /Applications/Alacritty.app ] && (
@@ -159,61 +162,61 @@ brew install --cask alacritty
 )
 brew install --cask xquartz # -> requires password
 
-# install SFMono patched with the nerd font
+# Install SFMono patched with the nerd font
 # https://github.com/epk/SF-Mono-Nerd-Font
-brew tap epk/epk
-brew install --cask font-sf-mono-nerd-font
+brew tap epk/epk && brew install --cask font-sf-mono-nerd-font
 
 # Install useful apps
 brew install --cask google-chrome
-brew install --cask skype
+brew install --cask safari-technology-preview
 brew install --cask mos
 # brew install --cask betterzip
 brew install --cask keka
+brew install --cask alfred
+brew install --cask jordanbaird-ice
+# brew install --cask bartender
+brew install --cask microsoft-office
+brew install --cask slack
+brew install --cask zotero
+brew install --cask homerow
+brew tap AlexStrNik/Browserino && brew install browserino --no-quarantine
+
+# Install personal useful apps
+# https://www.microsoft.com/en-us/microsoft-365/blog/2025/02/28/the-next-chapter-moving-from-skype-to-microsoft-teams/
+# brew install --cask skype
 brew install --cask istat-menus
 # brew install --cask stats
 # brew install --cask eul
 brew install --cask teamviewer # -> requires password
-# brew install --cask vmware-fusion
-brew install --cask parallels
 # brew install --cask alt-tab
-brew install --cask alfred
-brew install --cask bartender
-brew install --cask hazel
-brew install --cask microsoft-office
-brew install --cask openvpn-connect
-brew tap homebrew/cask-drivers
 brew install --cask synology-drive
-
-# Install personally useful apps
+brew install --cask openvpn-connect
+brew install --cask hazel
 brew install --cask dropbox
-brew install --cask slack
-brew install --cask inkscape
+# brew install --cask inkscape
 brew install --cask mactex # -> requires password
-brew install --cask docker
 brew install --cask mathpix-snipping-tool
 brew install --cask notion
 brew install --cask transmission
 # brew install --cask swiftbar
-brew tap homebrew/cask-versions
-brew install --cask safari-technology-preview
 brew install --cask paragon-ntfs
-brew install --cask zotero
+
+# Install virtualmachine engines
+# brew install --cask vmware-fusion
+brew install --cask parallels
 # brew install --cask virtualbox
 # brew install --cask vagrant
 # brew install --cask vagrant-manager
 
-# https://github.com/AlexStrNik/Browserino/
-# browserosaurus alternative
-cd $HOME/Downloads && { curl -LO https://github.com/AlexStrNik/Browserino/releases/latest/download/Browserino-Installer.dmg; cd -; }
-hdiutil attach $HOME/Downloads/Browserino-Installer.dmg
-cp -r /Volumes/Browserino\ Installer/Browserino.app /Applications
-hdiutil detach /Volumes/Browserino\ Installer
+# Install container engines
+# brew install docker
+# brew install docker-compose
+brew install podman
+brew install podman-compose
 
-
-# install yabai
+# Install yabai
 brew install koekeishiya/formulae/yabai
-echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 $(brew --prefix)/bin/yabai) --load-sa" | \
+echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 "$(brew --prefix)/bin/yabai") --load-sa" | \
     sudo tee -a /private/etc/sudoers.d/yabai >/dev/null
 # reinstall the scripting addition
 sudo yabai --uninstall-sa || true
@@ -222,25 +225,24 @@ yabai --start-service
 # load the scripting addition
 killall Dock || true
 
-# install skhd
+# Install skhd
 brew install koekeishiya/formulae/skhd
 skhd --start-service
 
-# # install uebersicht
+# # Install uebersicht
 # brew install --cask ubersicht
 # # install simplebar
 # git clone https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
 
-# install sketchybar
-brew tap FelixKratz/formulae
-brew install sketchybar
+# Install sketchybar
+brew tap FelixKratz/formulae && brew install sketchybar
 brew services start sketchybar
 # install app font for sketchybar
-app_font_version=$($DIR/../helpers/gh_get_latest_release "kvndrsslr/sketchybar-app-font")
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/${app_font_version}/sketchybar-app-font.ttf \
-  -o $HOME/Library/Fonts/sketchybar-app-font.ttf
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/${app_font_version}/icon_map.sh \
-  -o $DIR/../../config/sketchybar/plugins/icon_map.sh
+app_font_version=$("$DIR"/../helpers/gh_get_latest_release "kvndrsslr/sketchybar-app-font")
+curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/"${app_font_version}"/sketchybar-app-font.ttf \
+  -o "$HOME"/Library/Fonts/sketchybar-app-font.ttf
+curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/"${app_font_version}"/icon_map.sh \
+  -o "$DIR"/../../config/sketchybar/plugins/icon_map.sh
 
 
 ## free stuff
@@ -255,7 +257,8 @@ mas install 1114196460  # Rocket Fuel
 mas install 1462114288  # Grammarly for Safari
 mas install 1445910651  # Dynamo
 mas install 869223134   # KakaoTalk
-mas install 1480933944  # Vimari
+# https://github.com/televator-apps/vimari/issues/304
+# mas install 1480933944  # Vimari
 mas install 1559269364  # Notion Web Clipper
 mas install 1519867270  # Refined GitHub
 
