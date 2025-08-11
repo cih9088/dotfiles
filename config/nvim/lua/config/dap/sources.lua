@@ -93,19 +93,21 @@ local function python_setup()
          type = "python",
          request = "attach",
          name = 'Attach to remote',
+         console = "integratedTerminal",
          connect = function()
             local host = get_input { "Host: ", default = "127.0.0.1" }
             local port = tonumber(get_input { "Port: ", default = "5678" })
             return { host = host, port = port }
          end,
-         console = "integratedTerminal",
       },
       {
          type = 'python',
          request = 'launch',
          name = "Launch file with arguments",
+         console = "integratedTerminal",
          pythonPath = utils.get_python_path,
          program = function()
+            -- return require 'dap.utils'.pick_file({ filter = '.*%.py', executables = false })
             return get_input {
                "File to execute: ",
                default = vim.fn.expand("%:p"),
@@ -115,7 +117,6 @@ local function python_setup()
          args = function()
             return get_input { "Arguments: ", default = default_args, split = true }
          end,
-         console = "integratedTerminal",
          justMyCode = function()
             return get_input { "Enable JustMyCode? [y/n]: ", default = 'y' } == 'y'
          end,
@@ -124,12 +125,12 @@ local function python_setup()
          type = 'python',
          request = 'launch',
          name = "Launch pytest",
-         module = "pytest",
+         console = "integratedTerminal",
          pythonPath = utils.get_python_path,
+         module = "pytest",
          args = function()
             get_input { "Arguments: ", default = "-v -s .", split = true }
          end,
-         console = "integratedTerminal",
          justMyCode = function()
             return get_input { "Enable JustMyCode? [y/n]: ", default = 'y' } == 'y'
          end,
@@ -225,7 +226,7 @@ local function codelldb_setup()
       type = 'server',
       port = '${port}',
       executable = {
-         command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
+         command = vim.fn.stdpath("data") .. '/mason/packages/codelldb/codelldb',
          args = { '--port', '${port}' }
       },
       enrich_config = function(config, on_config)
@@ -293,12 +294,21 @@ local function delve_setup()
       type = "server",
       port = '${port}',
       executable = {
-         command = vim.fn.stdpath("data") .. '/mason/bin/dlv',
+         command = vim.fn.stdpath("data") .. '/mason/packages/delve/dlv',
          args = { "dap", "-l", "127.0.0.1:${port}" }
       }
    }
 
    dap.configurations.go = {
+      {
+         type = "go",
+         request = "launch",
+         name = "Launch main with arguments",
+         program = "${workspaceFolder}/main.go",
+         args = function()
+            return get_input { "Arguments: ", default = default_args, split = true }
+         end
+      },
       {
          type = "go",
          request = "launch",

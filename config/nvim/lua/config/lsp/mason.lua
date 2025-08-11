@@ -39,7 +39,8 @@ function M.setup()
             "ansiblels",
             "jsonls",
             "terraformls",
-            "taplo"
+            "taplo",
+            "zls",
          },
          automatic_installation = true,
       })
