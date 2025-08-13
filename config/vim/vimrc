@@ -115,6 +115,7 @@
     " Plug 'hood/popui.nvim'
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     Plug 'windwp/nvim-ts-autotag'
+    Plug 'dmmulroy/ts-error-translator.nvim'
     Plug 'diogo464/kubernetes.nvim'
   else
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
@@ -1513,6 +1514,12 @@ EOF
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-ts-autotag')
     lua require('nvim-ts-autotag').setup({})
+  endif
+
+" dmmulroy/ts-error-translator.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('ts-error-translator.nvim')
+    lua require('ts-error-translator').setup({})
   endif
 
 " andrewferrier/debugprint.nvim
