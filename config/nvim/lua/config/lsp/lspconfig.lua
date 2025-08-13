@@ -153,6 +153,14 @@ function M.setup()
          client.server_capabilities.semanticTokensProvider = nil
       end,
    })
+
+   -- setup kubernetes yamlls
+   local kubernetes = utils.safe_require("kubernetes")
+   if kubernetes then
+      -- only generate the schema if the files don't already exists.
+      -- run `:KubernetesGenerateSchema` manually to generate the schema if needed.
+      kubernetes.setup({ schema_generate_always = false })
+   end
 end
 
 return M

@@ -68,13 +68,14 @@ end
 
 -- get all lines from a file, returns an empty
 -- list/table if the file does not exist
-function M.lines_from(file)
-   if not M.file_exists(file) then return {} end
-   local lines = {}
-   for line in io.lines(file) do
-      lines[#lines + 1] = line
+function M.iter_lines_from(file)
+   if not M.file_exists(file) then return function () return nil end end
+   local iter = io.lines(file)
+   return function ()
+      for line in iter do
+         return line
+      end
    end
-   return lines
 end
 
 return M

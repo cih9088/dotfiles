@@ -115,6 +115,7 @@
     " Plug 'hood/popui.nvim'
     " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     Plug 'windwp/nvim-ts-autotag'
+    Plug 'diogo464/kubernetes.nvim'
   else
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     Plug 'dag/vim-fish', { 'for': 'fish' }
