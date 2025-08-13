@@ -381,6 +381,11 @@ EOF
   set foldnestmax=10      " 10 nested fold max
   set foldmethod=manual   " fold manually
   set foldlevel=1
+  if has("nvim")
+    set foldmethod=expr                          " fold by expression
+    set foldexpr=v:lua.vim.treesitter.foldexpr() " use treesitter as fold expression
+    set foldtext=                                " do not change fold text
+  endif
 
 
 " StatusLine
