@@ -26,12 +26,26 @@ return {
             break
          end
 
-         if line:sub(1,#"apiVersion") == "apiVersion" then
+         if line:sub(1, #"apiVersion") == "apiVersion" then
+            local key = "kubernetes"
+
             local kubernetes = utils.safe_require("kubernetes")
             if kubernetes then
-               client.config.settings.yaml.schemas[kubernetes.yamlls_schema()] = "*"
+               key = kubernetes.yamlls_schema()
+            end
+
+            local existing = client.config.settings.yaml.schemas[key]
+            if existing then
+               existing = existing:sub(2):sub(1, -2)
+               client.config.settings.yaml.schemas[key] = "{" .. existing .. "," .. filepath .. "}"
             else
-               client.config.settings.yaml.schemas["kubernetes"] = "*"
+               client.config.settings.yaml.schemas[key] = "{" .. filepath .. "}"
+               vim.cmd([[
+                augroup kubernetesYamlls
+                  autocmd!
+                  autocmd FileType yaml LspRestart yamlls
+                augroup END
+              ]])
             end
             break
          end
