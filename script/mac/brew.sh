@@ -135,6 +135,7 @@ brew install awscli
 brew install azure-cli
 brew install gcloud-cli
 brew install kubernetes-cli
+brew install helm
 
 # Lxml and Libxslt
 # brew install libxml2
