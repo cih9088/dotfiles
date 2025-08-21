@@ -17,11 +17,11 @@ python-env:
 
 golang:
   mode: local
-  version: 1.23.8
+  version: 1.24.6
 
 rust:
   mode: local
-  version: 1.76.0
+  version: 1.85.0
 
 nodejs:
   mode: local

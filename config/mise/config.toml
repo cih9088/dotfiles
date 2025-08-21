@@ -5,10 +5,10 @@ show_env = true
 # show_tools = true
 
 [tools]
-go = "1.23.8"
+go = "1.24.6"
 lua = "5.4.3"
 node = "17.9.1"
 perl = "5.36.0"
 python = "3.9.22"
-rust = "1.76.0"
+rust = "1.85.0"
 zig = "0.14.0"
