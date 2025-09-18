@@ -8,24 +8,9 @@
 # XTerm Operating System Commands
 #     "ESC ] Ps;Pt ST"
 
-
 if ! command -v ps >/dev/null; then
   exit 1
 fi
-
-
-stringContain() { case $2 in *$1* ) return 0;; *) return 1;; esac ;}
-
-tmuxPassThrough() {
-  # if stringContain "Ptmux" "$seq"; then
-  #   seq=$(printf "%s\n" "$seq" | sed 's/..$//')
-  # fi
-  seq="\033Ptmux;$(printf "%s\n" "$seq" | sed 's/\\033/\\033\\033/g')\033\\"
-}
-
-
-parent_tty="/dev/$(ps hotty $PPID | sed -n -E '/[0-9]+/p' | xargs)"
-target_tty="${SSH_TTY:-$parent_tty}"
 
 # 11: text background
 Ps=${1:-11}
@@ -34,27 +19,37 @@ Ps=${1:-11}
 t=${2:-0.001}
 max_ctr=${3:-1000}
 
+# resolve target terminal to send escape sequence
+# if we are on remote machine, send directly to SSH_TTY to transport escape sequence
+# to terminal on local machine, so data lands in clipboard on our local machine
+target_tty="${SSH_TTY}"
+_PID=$$
+while [ -z "$target_tty" ]; do
+  # traverse to parent of it until finding tty
+  target_tty="$(ps hotty "$_PID" | sed -n -E '/[0-9]+/p' | xargs | awk '{print $1}')"
+  _PID=$(ps -o ppid= "$_PID")
+done
+target_tty="/dev/${target_tty#/dev/}"
+
+tmux_passthrough () {
+  # https://github.com/tmux/tmux/wiki/FAQ#what-is-the-passthrough-escape-sequence-and-how-do-i-use-it
+  seq="$1"
+  test -n "$TMUX" -o -z "${TERM##tmux*}" -o -z "${TERM##screen*}" &&
+    seq="\033Ptmux;$(printf "%s" "$seq" | sed 's/\\033/\\033\\033/g')\033\\"
+  printf "$seq"
+}
+
 stty -icanon -echo min 0 time 0
 seq="\033]$Ps;?\007"
 
-
-if [ -n "${SSH_CLIENT}" ] || [ -n "${SSH_TTY}" ]; then
-  # do nothing if we are in ssh session
-  :
-#   # in ssh session, if terminal environment variable is set to tmux-ish,
-#   # it is assumed that one sshed into it in tmux
-#   test -z "${TERM##tmux*}" -o -z "${TERM##screen*}" &&
-#     tmuxPassThrough
-else
-  [ -n "${TMUX}" ] && tmuxPassThrough
-fi
-
-printf $seq > $target_tty
+printf "$seq" > "$target_tty"
+# NOTE: don't need
+# printf $( tmux_passthrough "$seq" ) > "$target_tty"
 ctr=0
-while [ ${#answer} -eq 0 ] && [ $ctr -lt $max_ctr  ]; do
+while [ ${#answer} -eq 0 ] && [ $ctr -lt $max_ctr ]; do
   sleep $t
   read -r answer
-  ctr=$(( $ctr + 1 ))
+  ctr=$(($ctr + 1))
 done
 result=${answer#*;}
 # Remove escape at the end.
