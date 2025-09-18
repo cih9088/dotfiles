@@ -1,0 +1,27 @@
+
+_CONFIG_PATH="$(readlink -f $HOME/.config/ghostty/config)"
+
+if [ -n "${1}" ]; then
+  _THEME="${1}"
+else
+  has -v fzf
+  # _THEME=$( ghostty +list-themes --plain | awk '{print $1}' | fzf --height=10% --reverse )
+  _THEME=$( ls $HOME/.config/ghostty/themes | fzf --height=10% --reverse )
+fi
+
+[ ! -f "${_CONFIG_PATH}" ] && \
+  echo "file "${_CONFIG_PATH}" doesn't exist" >&1 && return 1
+
+if [ -n "${_THEME}" ]; then
+  sed -i "" -e "s/^theme\([[:space:]]*\)=.*/theme\1= ${_THEME}/" "${_CONFIG_PATH}"
+else
+  _THEME=$(sed -n -e 's|^theme[[:space:]]*=[[:space:]]*\(.*\)|\1|p' "${_CONFIG_PATH}")
+fi
+
+[ -z "${_THEME}" ] \
+  && echo "cannot determine ghostty theme" >&1 && return 1
+
+# https://github.com/ghostty-org/ghostty/pull/7759
+pkill -SIGUSR2 ghostty
+
+echo ${_THEME}

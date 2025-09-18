@@ -1,26 +1,40 @@
-# get colour scheme variable
-if [ ! -z "${1+x}" ]; then
-  _COLOUR_SCHEME="${1}"
-else
-  has -v fzf
-  _COLOUR_SCHEME=$( ls $DOTS/config/alacritty/colourschemes | cut -d '.' -f 1 | fzf --height=10% --reverse )
-fi
+
+[ -n "${TMUX}" ] && _PID=$(tmux display-message -p "#{client_pid}") || _PID=$$
+
+_TERM=
+_COLOUR_SCHEME=
+
+while [ "$_PID" != 1 ]; do
+  _PID=$(ps -p "$_PID" -o ppid= | xargs)
+  _COMM=$(ps -p "$_PID" -o comm= | xargs)
+
+  if [[ $_COMM =~ ".*alacritty" ]]; then
+    _TERM="alacritty"
+    _COLOUR_SCHEME=$(alacritty-theme "${1}")
+  elif [[ $_COMM =~ ".*ghostty" ]]; then
+    _TERM="ghostty"
+    _COLOUR_SCHEME=$(ghostty-theme "${1}")
+  fi
+done
+
+[ -z "${_TERM}" ] && echo "cannot determine terminal" >&2 && exit 1
 
 # default colour scheme
-[ ! -n "${_COLOUR_SCHEME}" ] && _COLOUR_SCHEME=$(
-  basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
-    cut -d '.' -f 1
+[ -z "${_COLOUR_SCHEME}" ] && _COLOUR_SCHEME=$(
+  if [ "${_TERM}" = "alacritty" ]; then
+    basename "$(grep -rli "background.*[\"']\(#\|0x\)$($DOTS/bin/bg-colourscheme)[\"']" $DOTS/config/alacritty/colourschemes)" \
+      | cut -d '.' -f 1
+  elif [ "${_TERM}" = "ghostty" ]; then
+    basename "$(grep -rli "background.*#\?$($DOTS/bin/bg-colourscheme)" $DOTS/config/ghostty/themes)"
+  fi
 )
 
 if [ -n "${_COLOUR_SCHEME}" ]; then
   export COLOUR_SCHEME=${_COLOUR_SCHEME}
   echo "Changing theme to '${COLOUR_SCHEME}'"
 
-  # change alcritty background
-  alacritty-theme "$COLOUR_SCHEME"
-
-  # wait a bit
-  sleep 0.5
+  # # wait a bit
+  # sleep 0.5
 
   # renew environment variable
   export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )

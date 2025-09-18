@@ -1,0 +1,18 @@
+# ghostty +show-config --default --docs
+# ghostty +list-themes
+
+
+font-family           = SFMono Nerd Font
+font-size             = 10
+
+cursor-style          = block
+cursor-style-blink    = false
+cursor-invert-fg-bg   = true
+
+shell-integration     = none
+confirm-close-surface = false
+
+window-padding-x      = 5
+window-padding-y      = 5
+
+theme                 = seoul256
