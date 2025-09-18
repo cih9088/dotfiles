@@ -1,1 +1,2 @@
---color=light
+--color=fg:black,hl:red
+--color=fg+:bright-black,bg+:bright-white,hl+:bright-magenta:bold
