@@ -24,11 +24,19 @@ max_ctr=${3:-1000}
 # to terminal on local machine, so data lands in clipboard on our local machine
 target_tty="${SSH_TTY}"
 _PID=$$
-while [ -z "$target_tty" ]; do
-  # traverse to parent of it until finding tty
+# traverse to parent of it until finding tty
+while [ -z "$target_tty" ] && [ "$_PID" -ne 1 ]; do
   target_tty="$(ps hotty "$_PID" | sed -n -E '/[0-9]+/p' | xargs | awk '{print $1}')"
   _PID=$(ps -o ppid= "$_PID")
 done
+if [ -z "$target_tty" ]; then
+  if [ -n "$TMUX" ]; then
+    target_tty=$(tmux display-message -p "#{pane_tty}")
+  else
+    echo "can not identify tty" >&2
+    exit 1
+  fi
+fi
 target_tty="/dev/${target_tty#/dev/}"
 
 tmux_passthrough () {
