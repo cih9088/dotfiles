@@ -940,7 +940,36 @@ EOF
       wincmd J
     endif
   endfunction
-  autocmd FileType qf call s:customiseLocation()
+  augroup customLocationForQF
+    autocmd!
+    autocmd FileType qf call s:customiseLocation()
+  augroup END
+
+
+" Edit quickfix and loclist
+" ---------------------------------------------------------------------------------------
+  packadd cfilter
+
+  function! s:removeQfAtCursor() abort
+    let currline = line('.')
+    let items = getqflist()->filter({ index -> (index + 1) != currline })
+    call setqflist(items, 'r')
+    execute 'normal ' . currline . 'G'
+  endfunction
+
+  function! s:removeQfFromSelected() abort
+    let startline = line("'<")
+    let endline = line("'>")
+    let items = getqflist()->filter({ index -> (index + 1) < startline || (index + 1) > endline })
+    call setqflist(items, 'r')
+    execute 'normal ' . startline . 'G'
+  endfunction
+
+  augroup removeQf
+    autocmd!
+    autocmd FileType qf nnoremap <buffer><silent> dd :call <SID>removeQfAtCursor()<CR>
+    autocmd FileType qf vnoremap <buffer><silent> x :call <SID>removeQfFromSelected()<CR>
+  augroup END
 
 
 " jumpfile
