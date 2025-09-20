@@ -33,6 +33,7 @@
     Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
     Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
     Plug 'rebelot/kanagawa.nvim'
+    Plug 'vague2k/vague.nvim'
   endif
 
 
@@ -533,6 +534,21 @@ EOF
   " circular navigation
   " nnoremap <tab>   <c-w>w
   " nnoremap <S-tab> <c-w>W
+
+
+" argument list
+" ---------------------------------------------------------------------------------------
+  " arglist previous with visual feedback
+  nnoremap [a <cmd>exe v:count1 .. 'N'<bar>args<cr><esc>
+  " arglist next with visual feedback
+  nnoremap ]a <cmd>exe v:count1 .. 'n'<bar>args<cr><esc>
+  " add current buffer to arglist and and deduplicate it
+  nnoremap <leader>aa <cmd>$arge %<bar>argded<bar>args<cr>
+  " local arglist per tab
+  augroup local_arglist
+    autocmd!
+    autocmd TabNewEntered * argl|%argd
+  augroup END
 
 
 " yanked text using osc52 and X11
