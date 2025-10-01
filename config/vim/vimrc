@@ -32,7 +32,6 @@
   if has('nvim')
     Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
     Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
-    Plug 'rebelot/kanagawa.nvim'
     Plug 'vague2k/vague.nvim'
   endif
 
