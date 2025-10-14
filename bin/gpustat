@@ -92,6 +92,9 @@ ${BRed}OPTIONS${Reset}
     ${BRed}-c, --show-cmd${Reset}
         Display command of the process.
 
+    ${BRed}-f, --show-full-cmd${Reset}
+        Display full command of the process.
+
     ${BRed}-f, --show-fan${Reset}
         Display GPU fan speed.
 
@@ -112,6 +115,7 @@ SHOW_HEADER=1
 SHOW_PID=0
 SHOW_POWER=0
 SHOW_CMD=0
+SHOW_FULLCMD=0
 SHOW_FAN=0
 SHOW_USER=2
 INTERVAL=0
@@ -124,6 +128,7 @@ for pass in 1 2; do
         -p|--show-pid)      SHOW_PID=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
         -w|--show-power)    SHOW_POWER=1; ;;
         -c|--show-cmd)      SHOW_CMD=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
+        -c|--show-full-cmd) SHOW_FULLCMD=1; SHOW_CMD=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
         -u|--show-user)     SHOW_USER=1;;
         -f|--show-fan)      SHOW_FAN=1;;
         -i|--interval)      INTERVAL=${2:-1}; [ ! -z ${2:-} ] && shift;;
@@ -215,6 +220,7 @@ while true; do
       fi
       user=$(stat -c "%U" /proc/${pid} 2>/dev/null || echo "Anonymous")
       comm=$(strings /proc/${pid}/cmdline || echo "Unkonwn")
+      [ "$SHOW_FULLCMD" -eq 0 ] && comm=$(echo "$comm" | awk '{print $1}' | awk -F '/' '{print $NF}')
       [ ! -z "$comm" ] && comm=$(echo "$comm" | head -n 1) || comm="Unkonwn"
       gpus[${uuid}]="${gpus[${uuid}]}:,:${user}:,:${comm}:,:${pid}:,:${memory}"
     done <<< "${per_info}"
