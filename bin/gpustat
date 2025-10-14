@@ -95,7 +95,7 @@ ${BRed}OPTIONS${Reset}
     ${BRed}-f, --show-full-cmd${Reset}
         Display full command of the process.
 
-    ${BRed}-f, --show-fan${Reset}
+    ${BRed}-F, --show-fan${Reset}
         Display GPU fan speed.
 
     ${BRed}-h, --help${Reset}
