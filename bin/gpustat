@@ -198,7 +198,7 @@ while true; do
   ctr=0
   while IFS= read -r line; do
     line_=$(awk -F, 'BEGIN {OFS = ","} {print substr($0, index($0,$2))}' <(echo ${line}))
-    line_="${ctr},${line_}"
+    line_=$(echo "${ctr}, ${line_}" | sed -e "s/, /:,:/g")
     gpus["$(awk -F, '{print $1}' <(echo ${line}))"]="${line_}"
     gpus_order+=("$(awk -F, '{print $1}' <(echo ${line}))")
     ctr=$(( ${ctr} + 1 ))
@@ -216,7 +216,7 @@ while true; do
       user=$(stat -c "%U" /proc/${pid} 2>/dev/null || echo "Anonymous")
       comm=$(strings /proc/${pid}/cmdline || echo "Unkonwn")
       [ ! -z "$comm" ] && comm=$(echo "$comm" | head -n 1) || comm="Unkonwn"
-      gpus[${uuid}]="${gpus[${uuid}]}, ${user}, ${comm}, ${pid}, ${memory}"
+      gpus[${uuid}]="${gpus[${uuid}]}:,:${user}:,:${comm}:,:${pid}:,:${memory}"
     done <<< "${per_info}"
   fi
 
@@ -226,7 +226,7 @@ while true; do
   fi
 
   for uuid in "${gpus_order[@]}"; do
-    out+=$(awk -F ', ' -v SHOW_PID="${SHOW_PID}" -v SHOW_POWER="${SHOW_POWER}" -v SHOW_CMD="${SHOW_CMD}" -v SHOW_USER="${SHOW_USER}" -v SHOW_FAN=${SHOW_FAN} '
+    out+=$(awk -F ':,:' -v SHOW_PID="${SHOW_PID}" -v SHOW_POWER="${SHOW_POWER}" -v SHOW_CMD="${SHOW_CMD}" -v SHOW_USER="${SHOW_USER}" -v SHOW_FAN=${SHOW_FAN} '
   function bold() {
     printf "\033[1m";
   }
