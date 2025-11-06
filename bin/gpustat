@@ -128,9 +128,9 @@ for pass in 1 2; do
         -p|--show-pid)      SHOW_PID=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
         -w|--show-power)    SHOW_POWER=1; ;;
         -c|--show-cmd)      SHOW_CMD=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
-        -c|--show-full-cmd) SHOW_FULLCMD=1; SHOW_CMD=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
+        -f|--show-full-cmd) SHOW_FULLCMD=1; SHOW_CMD=1; [ ${SHOW_USER} == 1 ] || SHOW_USER=0;;
         -u|--show-user)     SHOW_USER=1;;
-        -f|--show-fan)      SHOW_FAN=1;;
+        -F|--show-fan)      SHOW_FAN=1;;
         -i|--interval)      INTERVAL=${2:-1}; [ ! -z ${2:-} ] && shift;;
         -h|--help)          usage; exit 0;;
         --*)                error $1;;
@@ -185,7 +185,6 @@ names=($(sort <<< "${names[*]}" | uniq))
 for name in ${names[@]}; do
   [ ${#name} -gt ${max_length} ] && max_length=${#name}
 done
-max_length=$(( ${max_length} + 2 ))
 
 while true; do
 
@@ -202,7 +201,7 @@ while true; do
 
   ctr=0
   while IFS= read -r line; do
-    line_=$(awk -F, 'BEGIN {OFS = ","} {print substr($0, index($0,$2))}' <(echo ${line}))
+    line_=$(awk -F ", " 'BEGIN {OFS = ","} {print substr($0, index($0,$2))}' <(echo ${line}))
     line_=$(echo "${ctr}, ${line_}" | sed -e "s/, /:,:/g")
     gpus["$(awk -F, '{print $1}' <(echo ${line}))"]="${line_}"
     gpus_order+=("$(awk -F, '{print $1}' <(echo ${line}))")
@@ -322,7 +321,7 @@ while true; do
         bold()
       }
       cyanI()
-      printf "%3d %", $5
+      printf "%3d %%", $5
       reset()
 
     }
@@ -334,7 +333,7 @@ while true; do
       bold()
     }
     green()
-    printf "%3d %", $4
+    printf "%3d %%", $4
     reset()
 
     # power
@@ -359,13 +358,13 @@ while true; do
 
     bold()
     yellow()
-    printf "%5d", $8
+    printf "%*d", length($9), $8
     reset()
 
     printf " / "
 
     yellow()
-    printf "%5d", $9
+    printf "%*d", length($9), $9
     reset()
 
     printf " MB |"
