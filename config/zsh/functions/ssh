@@ -55,24 +55,23 @@ has() {
 
 
 # TODO: develop more
-is_first_destination() {
+has_destination() {
   # no argument
   [ $# -eq 0 ] && return 1
 
-  # user@host
-  [[ "$1" == *"@"* ]] && return 0
+  for _arg in "$@"; do
+    # user@host
+    [[ "$_arg" == *"@"* ]] && return 0
 
-  # ip
-  [[ "$1" =~ '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' ]] && return 0
+    # ip
+    [[ "$_arg" =~ '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' ]] && return 0
 
-  # domain
-  [[ "$1" =~ '.*\..*' ]] && return 0
+    # domain
+    [[ "$_arg" =~ '.*\..*' ]] && return 0
 
-  # alias in .ssh/config
-  [ -f $_SSH_CONFIG ] && echo $_SSH_CONTENT | grep -q "^Host $1\$" && return 0
-
-  # not an option
-  [[ $1 != "-"* ]] && return 0
+    # alias in .ssh/config
+    [ -f $_SSH_CONFIG ] && echo $_SSH_CONTENT | grep -q "^Host\s\+$_arg\$" && return 0
+  done
 
   return 1
 }
@@ -113,7 +112,7 @@ parse_config() {
       }
     }
   }
-  ' | sort --version-sort | grep -v '*' | column -t -s '|')
+  ' | sort --version-sort -k 8 -k 1 | grep -v '*' | column -t -s '|')
 
   exit_code=$?
   [ ${exit_code} != 0 ] && return ${exit_code}
@@ -146,7 +145,7 @@ if [ "$1" = "gcp" ]; then
   has -v ssh-gcp || return 1
   shift; ssh-gcp $@
 
-elif is_first_destination "$@";  then
+elif has_destination "$@";  then
   if [ -t 0 ] && ps -p $$ -o ppid= \
     | xargs -I{} ps -p {} -o comm= \
     | grep -qw tmux; then
