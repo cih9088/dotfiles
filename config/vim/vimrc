@@ -251,7 +251,7 @@
 
   " Change grep to rg if it exists
   if executable('rg')
-    set grepprg=rg\ -S\ --vimgrep
+    set grepprg=rg\ --smart-case\ --vimgrep\ --no-heading
   endif
 
 
@@ -766,48 +766,60 @@ EOF
 " Redirect the output of a Vim or external command into a scratch buffer
 " https://gist.github.com/romainl/eae0a260ab9c135390c30cd370c20cd7
 " ---------------------------------------------------------------------------------------
-  function! Redir(cmd)
+  function! Redir(cmd = '', rng = 0, start = 1, end = 1, bang = '')
+    " get a clean command, without ^M at the end
+    let cmd = a:cmd->trim()
+    " close existing scratch windows
     for win in range(1, winnr('$'))
       if getwinvar(win, 'scratch')
         execute win . 'windo close'
       endif
     endfor
-    if a:cmd =~ '^!'
-      if a:cmd =~' %'
-        let cmd = substitute(a:cmd, ' %', ' ' . expand('%:p'), '')
+    " if called via :Redir!, assume the user wants to repeat the last Ex command
+    if a:bang == '!' && cmd->empty()
+      let cmd = expand(@:)->trim()
+    endif
+    " if cmd starts with !, assume it is an external command
+    if cmd =~ '^!'
+      let ext_cmd = cmd =~' %'
+          \ ? matchstr(substitute(cmd, ' %', ' ' . shellescape(escape(expand('%:p'), '\')), ''), '^!\zs.*')
+          \ : matchstr(cmd, '^!\zs.*')
+      if a:rng == 0
+        let output = systemlist(ext_cmd)
       else
-        let cmd = a:cmd
+        let joined_lines = join(getline(a:start, a:end), '\n')
+        let cleaned_lines = substitute(shellescape(joined_lines), "'\\\\''", "\\\\'", 'g')
+        let output = systemlist(ext_cmd . " <<< $" . cleaned_lines)
       endif
-      let output = system(matchstr(cmd, '^!\zs.*'))
+    " if not, assume it is a Vim command
     else
       redir => output
-      execute a:cmd
+      execute cmd
       redir END
+      let output = split(output, "\n")
     endif
+    " open a new window
     vnew
+    " flag it as a scratch window
     let w:scratch = 1
+    " make it a scratch window
     setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
-    call setline(1, split(output, "\n"))
+    " fill the buffer with the output of the given command
+    call setline(1, output)
   endfunction
 
-  command! -nargs=1 -complete=command Redir silent call Redir(<q-args>)
-  " Usage:
-  " 	:Redir %w !python ..... show the full output of command ':%w !python' in a scratch window
-  " 	:Redir .w !bash ....... show the full output of command ':.w !bash' in a scratch window
-  " 	:Redir hi ............. show the full output of command ':hi' in a scratch window
-  " 	:Redir !ls -al ........ show the full output of command ':!ls -al' in a scratch window
+  command! -nargs=? -complete=command -bar -range -bang Redir silent call Redir(<q-args>, <range>, <line1>, <line2>, '<bang>')
 
 
-" Improve grep
+" Improved grep 
+" https://gist.github.com/romainl/56f0c28ef953ffc157f36cc495947ab3
 " ---------------------------------------------------------------------------------------
   function! Grep(...)
     " neovim v0.4.4 has no expandcmd()
-    let l:expands = []
-    for elem in a:000
-      let l:expands += ['"' . expand(elem) . '"']
-    endfor
-    echo join([&grepprg] + l:expands)
-    return system(join([&grepprg] + l:expands))
+    let args = map(copy(a:000), 'shellescape(expand(v:val))')
+    let cmd = join([&grepprg] + l:args)
+    echo l:cmd
+    return system(l:cmd)
   endfunction
   command! -nargs=+ -complete=file_in_path -bar Grep  cgetexpr Grep(<f-args>)
   command! -nargs=+ -complete=file_in_path -bar LGrep lgetexpr Grep(<f-args>)
