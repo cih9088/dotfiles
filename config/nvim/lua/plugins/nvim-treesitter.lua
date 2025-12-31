@@ -4,7 +4,7 @@ local utils = require("utils")
 
 function M.setup()
    -- HACK
-   local ismaster = utils.safe_require('nvim-treesitter.statusline')
+   local ismaster = utils.safe_require({ 'nvim-treesitter.statusline', ignore = true})
    if ismaster then
       M.setup_master_branch()
    else
@@ -14,6 +14,9 @@ end
 
 function M.setup_master_branch()
    local ts = utils.safe_require("nvim-treesitter.configs")
+   if not ts then
+      return
+   end
 
    ts.setup({
       highlight = {
@@ -23,7 +26,8 @@ function M.setup_master_branch()
          end,
       },
       indent = {
-         enable = true
+         enable = true,
+         disable = { 'yaml' },
       },
    })
 
@@ -34,6 +38,9 @@ end
 
 function M.setup_main_branch()
    local ts = utils.safe_require("nvim-treesitter")
+   if not ts then
+      return
+   end
 
    local group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true })
 

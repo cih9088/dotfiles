@@ -14,7 +14,6 @@ function M.setup()
       multiline_threshold = 1,
       -- Disable it when the window is too small.
       min_window_height = 20,
-
    })
 end
 

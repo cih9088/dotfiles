@@ -77,7 +77,8 @@
   endif
 
   if has("nvim-0.5")
-    Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+    " TODO: change branch if main branch is stable
+    Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'master', 'do': ':TSUpdate' }
     Plug 'nvim-treesitter/nvim-treesitter-context'
   elseif has('nvim')
     Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': 'python' }
