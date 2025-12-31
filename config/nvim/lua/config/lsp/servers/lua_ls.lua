@@ -5,11 +5,17 @@ return {
             globals = { "vim" },
          },
          format = {
-            enable = true,
+            -- Using stylua
+            enable = false,
             defaultConfig = {
                indent_style = "space",
-               indent_size = "2",
+               indent_size = "3",
             }
+         },
+         workspace = {
+            library = {
+               vim.env.VIMRUNTIME,
+            },
          },
          telemetry = {
             enable = false,

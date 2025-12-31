@@ -20,7 +20,7 @@ function M.setup()
                      end
 
                      -- k8s yaml file
-                     if line:sub(1,#"apiVersion") == "apiVersion" then
+                     if line:sub(1, #"apiVersion") == "apiVersion" then
                         return { "-formatter", "indentless_arrays=true,retain_line_breaks_single=true" }
                      end
 
@@ -35,12 +35,20 @@ function M.setup()
          },
          formatters_by_ft = {
 
-            python = { "ruff_format", "ruff_organize_imports" },
+            python = function(bufnr)
+               if require("conform").get_formatter_info("ruff_format", bufnr).available then
+                  return { "ruff_format", "ruff_organize_imports" }
+               else
+                  return { "isort", "black" }
+               end
+            end,
 
             -- golines run goimports at the last stage so no need
             go = { "golines" },
 
             yaml = { "yamlfmt" },
+
+            lua = { "stylua" },
 
             javascript = { "prettierd", "prettier", stop_after_first = true },
             javascriptreact = { "prettierd", "prettier", stop_after_first = true },
