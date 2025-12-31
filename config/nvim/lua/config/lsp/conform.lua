@@ -34,22 +34,17 @@ function M.setup()
             }
          },
          formatters_by_ft = {
-
             python = function(bufnr)
-               if require("conform").get_formatter_info("ruff_format", bufnr).available then
+               if conform.get_formatter_info("ruff_format", bufnr).available then
                   return { "ruff_format", "ruff_organize_imports" }
                else
                   return { "isort", "black" }
                end
             end,
-
             -- golines run goimports at the last stage so no need
             go = { "golines" },
-
             yaml = { "yamlfmt" },
-
             lua = { "stylua" },
-
             javascript = { "prettierd", "prettier", stop_after_first = true },
             javascriptreact = { "prettierd", "prettier", stop_after_first = true },
             typescript = { "prettierd", "prettier", stop_after_first = true },
@@ -57,7 +52,6 @@ function M.setup()
             html = { "prettierd", "prettier", stop_after_first = true },
             json = { "prettierd", "prettier", stop_after_first = true },
             markdown = { "prettierd", "prettier", stop_after_first = true },
-
             sh = { "shfmt" },
             bash = { "shfmt" },
             zsh = { "shfmt" },

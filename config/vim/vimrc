@@ -83,7 +83,7 @@
     Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': 'python' }
   endif
 
-  Plug 'LunarWatcher/auto-pairs'
+  " Plug 'LunarWatcher/auto-pairs'
   Plug 'AndrewRadev/splitjoin.vim'
   Plug 'liuchengxu/vista.vim'
   Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
