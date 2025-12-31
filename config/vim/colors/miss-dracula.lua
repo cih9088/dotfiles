@@ -120,7 +120,7 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     Normal = { fg = colors.fg, bg = colors.bg },
     NormalFloat = { fg = colors.fg, bg = colors.bg },
     Number = { fg = colors.orange },
-    Pmenu = { fg = colors.white, bg = colors.transparent_blue },
+    Pmenu = { fg = colors.white, bg = colors.bg },
     PmenuSbar = { bg = colors.transparent_blue },
     PmenuSel = { fg = colors.cyan, bg = colors.selection },
     PmenuThumb = { bg = colors.selection },
@@ -373,9 +373,6 @@ local groups = vim.tbl_extend('error', statusline_groups, {
     GrugFarResultsChangeIndicator = { link = 'Changed' },
     GrugFarResultsRemoveIndicator = { link = 'Removed' },
     GrugFarResultsAddIndicator = { link = 'Added' },
-
-    -- Overseeer.
-    OverseerComponent = { link = '@keyword' },
 
     -- Links.
     HighlightUrl = { underline = true, fg = colors.neon_cyan, sp = colors.neon_cyan },
