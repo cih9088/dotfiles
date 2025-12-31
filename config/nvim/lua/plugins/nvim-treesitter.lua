@@ -3,10 +3,37 @@ local M = {}
 local utils = require("utils")
 
 function M.setup()
-   local ts = utils.safe_require("nvim-treesitter")
-   if not ts then
-      return
+   -- HACK
+   local ismaster = utils.safe_require('nvim-treesitter.statusline')
+   if ismaster then
+      M.setup_master_branch()
+   else
+      M.setup_main_branch()
    end
+end
+
+function M.setup_master_branch()
+   local ts = utils.safe_require("nvim-treesitter.configs")
+
+   ts.setup({
+      highlight = {
+         enable = true,
+         disable = function(lang, bufnr)
+            return lang == "yaml" and vim.bo.filetype == "yaml.ansible"
+         end,
+      },
+      indent = {
+         enable = true
+      },
+   })
+
+   -- folding
+   vim.wo.foldmethod = 'expr'
+   vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+end
+
+function M.setup_main_branch()
+   local ts = utils.safe_require("nvim-treesitter")
 
    local group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true })
 
