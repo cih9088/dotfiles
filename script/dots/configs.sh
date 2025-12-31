@@ -61,6 +61,7 @@ setup_for_local() {
     backup-and-link "${VIM_DIR}"                           "$HOME/.vim"                  "$BACKUP_PATH"
     # backup-and-link "${VIM_DIR}/vimrc"                     "$HOME/.vimrc"                "$BACKUP_PATH"
 
+    backup-and-link "${CONFIG_DIR}/ghostty"                "$HOME/.config/ghostty"       "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/alacritty"              "$HOME/.config/alacritty"     "$BACKUP_PATH/config"
     backup-and-link "${CONFIG_DIR}/iterm2"                 "$HOME/.config/iterm2"        "$BACKUP_PATH/config"
     if [ "$PLATFORM" == OSX ]; then
