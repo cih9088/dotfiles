@@ -447,6 +447,16 @@
       openssl x509 -inform pem -noout -text
   }
 
+
+# Zsh hook
+# ---------------------------------------------------------------------------------------
+  preexec () {
+    # OSC 133 integration
+    # https://learn.microsoft.com/en-us/windows/terminal/tutorials/shell-integration
+    echo -n "\\x1b]133;A\\x1b\\"
+  }
+
+
 # Load custom function lazily
 # ---------------------------------------------------------------------------------------
   custom_zsh_fpath="$(dirname $(readlink -f ${(%):-%N}))/functions"
