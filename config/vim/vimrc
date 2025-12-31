@@ -975,8 +975,6 @@ EOF
 
 " Edit quickfix and loclist
 " ---------------------------------------------------------------------------------------
-  packadd cfilter
-
   function! s:removeQfAtCursor() abort
     let currline = line('.')
     let items = getqflist()->filter({ index -> (index + 1) != currline })
