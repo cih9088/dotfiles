@@ -78,6 +78,7 @@
 
   if has("nvim-0.5")
     Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }
+    Plug 'nvim-treesitter/nvim-treesitter-context'
   elseif has('nvim')
     Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': 'python' }
   endif
@@ -1535,6 +1536,13 @@ EOF
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-treesitter')
     lua require('plugins.nvim-treesitter').setup({})
+  endif
+
+
+" nvim-treesitter/nvim-treesitter-context
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('nvim-treesitter-context')
+    lua require('plugins.nvim-treesitter-context').setup({})
   endif
 
 
