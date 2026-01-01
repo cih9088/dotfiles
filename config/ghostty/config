@@ -7,7 +7,7 @@ font-size             = 10
 
 cursor-style          = block
 cursor-style-blink    = false
-cursor-invert-fg-bg   = true
+cursor-invert-fg-bg   = false
 
 shell-integration     = none
 confirm-close-surface = false
