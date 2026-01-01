@@ -1554,6 +1554,13 @@ EOF
   endif
 
 
+" stevearc/conform.nvim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('conform.nvim')
+    lua require('plugins.conform').setup({})
+  endif
+
+
 " mfussenegger/nvim-dap
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-dap')
@@ -1574,11 +1581,13 @@ EOF
     lua require('plugins.popui').setup({})
   endif
 
+
 " windwp/nvim-ts-autotag
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('nvim-ts-autotag')
     lua require('nvim-ts-autotag').setup({})
   endif
+
 
 " dmmulroy/ts-error-translator.nvim
 " ---------------------------------------------------------------------------------------
@@ -1586,9 +1595,11 @@ EOF
     lua require('ts-error-translator').setup({})
   endif
 
+
 " andrewferrier/debugprint.nvim
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('debugprint.nvim')
     lua require('debugprint').setup({})
   endif
+
 " }}}

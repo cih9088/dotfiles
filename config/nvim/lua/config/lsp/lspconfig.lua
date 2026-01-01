@@ -16,7 +16,7 @@ local function get_config(server_name)
    if cmp_nvim_lsp then
       capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
    end
-   local lsp_status = utils.safe_require("lsp-status")
+   local lsp_status = utils.safe_require({ "lsp-status", ignore = true})
    if lsp_status then
       capabilities = vim.tbl_extend("keep", capabilities, lsp_status.capabilities)
    end

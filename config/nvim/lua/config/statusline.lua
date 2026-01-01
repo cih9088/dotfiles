@@ -1,6 +1,19 @@
 local fn = vim.fn
 local api = vim.api
 
+local utils = require("utils")
+
+local lsp_status = utils.safe_require({ "lsp-status", ignore = true })
+if lsp_status ~= nil then
+   lsp_status.config({
+      current_function = false,
+      show_filename = true,
+      diagnostics = false,
+      status_symbol = "",
+   })
+   lsp_status.register_progress()
+end
+
 local M = {}
 
 -- TODO
@@ -230,7 +243,10 @@ M.lsp_status = function(self)
    --    msg = msg .. client.name .. ","
    -- end
    -- msg = string.sub(msg, 1, -2)
-   msg = msg .. require("lsp-status").status()
+   --
+   if lsp_status ~= nil then
+      msg = msg .. require("lsp-status").status()
+   end
 
    return msg
 end

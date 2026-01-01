@@ -1,6 +1,34 @@
 local this = (...):match("(.-)[^%.]+$")
 local M = {}
 
+local kind_icons = {
+   Text = "",
+   Method = "",
+   Function = "",
+   Constructor = "",
+   Field = "",
+   Variable = "",
+   Class = "ﴯ",
+   Interface = "",
+   Module = "",
+   Property = "ﰠ",
+   Unit = "",
+   Value = "",
+   Enum = "",
+   Keyword = "",
+   Snippet = "",
+   Color = "",
+   File = "",
+   Reference = "",
+   Folder = "",
+   EnumMember = "",
+   Constant = "",
+   Struct = "",
+   Event = "",
+   Operator = "",
+   TypeParameter = "",
+}
+
 
 local function luasnip_setup()
    local ls = require("luasnip")
@@ -29,7 +57,6 @@ local function cmp_setup()
    end
 
    local luasnip = require("luasnip")
-   local kind_icons = require(this .. "kind")
 
    local cmp = require("cmp")
    cmp.setup({
