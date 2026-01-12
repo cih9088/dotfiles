@@ -96,5 +96,5 @@ else {
 
 printf(\"%6.2f\", PERCENT)
 reset()
-printf \" %\";
+printf \" %%\";
 }"
