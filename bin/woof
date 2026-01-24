@@ -30,12 +30,11 @@
 # File upload support loosely based on code from Stephen English <steve@secomputing.co.uk>
 
 import configparser
-import email.parser
 import errno
 import getopt
 import http.server
-import io
 import os
+import re
 import readline
 import shutil
 import socket
@@ -46,11 +45,146 @@ import urllib.parse
 import urllib.request
 import zipfile
 
-maxdownloads = 1
+max_downloads = 1
+chunk_size = 1024 * 1024  # 1MB
 cpid = -1
 compressed = "gz"
 upload = False
 version = 0.5
+
+
+upload_html = b"""\
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Woof Upload</title>
+    <style>
+      #progressWrap { display: none; margin-top: 12px; }
+      #progressText { font-family: system-ui, sans-serif; font-size: 14px; }
+    </style>
+  </head>
+
+  <body>
+    <h1>Woof Upload</h1>
+    <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
+      <p><input id="fileInput" type="file" name="upfile" multiple /></p>
+      <p><input id="submitBtn" type="submit" value="Upload!" diabled /></p>
+    </form>
+    <div id="progressWrap" style="display:none; margin-top:12px;">
+      <progress id="progressBar" value="0" max="100"></progress>
+      <div id="progressText">0%</div>
+    </div>
+    <script>
+      const form = document.getElementById("uploadForm");
+      const fileInput = document.getElementById("fileInput");
+      const btn = document.getElementById("submitBtn");
+
+      function syncButtonState() {
+        btn.disabled = !(fileInput.files && fileInput.files.length > 0);
+      }
+      syncButtonState();
+      fileInput.addEventListener("change", syncButtonState);
+
+      const progressWrap = document.getElementById("progressWrap");
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressText");
+      function formatBytes(bytes) {
+        if (!Number.isFinite(bytes)) return "-";
+        const units = ["B", "KB", "MB", "GB", "TB"];
+        let i = 0;
+        let n = bytes;
+        while (n >= 1024 && i < units.length - 1) {
+          n /= 1024;
+          i++;
+        }
+        return `${n.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+      }
+      function formatDuration(seconds) {
+        if (!Number.isFinite(seconds) || seconds < 0) return "-";
+        const s = Math.round(seconds);
+        const m = Math.floor(s / 60);
+        const r = s % 60;
+        return m > 0 ? `${m}m ${r}s` : `${r}s`;
+      }
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", form.action, true);
+        progressWrap.style.display = "block";
+        progressBar.value = 0;
+        progressText.textContent = "0%";
+        btn.disabled = true;
+        const startTime = performance.now();
+        const samples = [];
+        const windowMs = 3000;      // speed averaged over last 3 seconds
+        let lastUiUpdate = 0;
+
+        xhr.upload.onprogress = (event) => {
+          if (!event.lengthComputable) return;
+
+          const now = performance.now();
+          const loaded = event.loaded;
+          const total = event.total;
+
+          samples.push({ t: now, b: loaded });
+          while (samples.length > 2 && samples[0].t < now - windowMs) samples.shift();
+
+          let recentBps = 0;
+          if (samples.length >= 2) {
+            const first = samples[0];
+            const dt = (now - first.t) / 1000;
+            const db = loaded - first.b;
+            recentBps = dt > 0 ? db / dt : 0;
+          }
+
+          const remainingBytes = total - loaded;
+          const etaSec = recentBps > 0 ? remainingBytes / recentBps : Infinity;
+
+          const percent = Math.round((loaded / total) * 100);
+
+          // Throttle UI updates (every 250ms) to reduce flicker
+          if (now - lastUiUpdate >= 250 || loaded === total) {
+            progressBar.value = percent;
+            progressText.textContent =
+              `${percent}% - ${formatBytes(loaded)} / ${formatBytes(total)} ` +
+              `(${formatBytes(recentBps)}/s, ETA ${formatDuration(etaSec)})`;
+            lastUiUpdate = now;
+          }
+        };
+
+        xhr.onload = () => {
+          btn.disabled = false;
+          if (xhr.status >= 200 && xhr.status < 300) {
+            progressBar.value = 100;
+            n = xhr.getResponseHeader("X-Woof-Downloads")
+            fileInput.value = "";
+            if (n == "0") {
+              btn.disabled = true;
+              fileInput.disabled = true;
+              progressText.textContent = "Upload complete and no more upload is allowed";
+            } else {
+              progressText.textContent = "Upload complete";
+            }
+          } else {
+            progressText.textContent = `Upload failed (${xhr.status})`;
+          }
+        };
+
+        xhr.onerror = () => {
+          btn.disabled = false;
+          progressText.textContent = "Upload failed (network error)";
+        };
+
+        xhr.send(fd);
+      });
+    </script>
+  </body>
+</html>
+"""
+
 
 # Utility function to guess the IP (as a string) where the server can be
 # reached from the outside. Quite nasty problem actually.
@@ -79,22 +213,56 @@ def find_ip():
 
 def decode_multipart_form_data(multipart_data, headers):
     """Decode multipart form data"""
-    content_type = headers["Content-Type"].encode("ascii")
+    content_type = headers["Content-Type"]
     content_len = int(headers["Content-Length"])
-    data = multipart_data.read(content_len)
 
-    content = b"Content-Type: %b\r\n%b" % (content_type, data)
+    boundary = b"--" + re.findall("boundary=(.*);?", content_type)[0].encode()
 
-    parsed = email.parser.BytesParser().parsebytes(content)
+    n_read = 0
+    meta = None
+    buffer = bytearray()
+    meta = {}
+    while n_read < content_len:
+        to_read = min(chunk_size, content_len - n_read)
+        chunk = multipart_data.read(to_read)
+        n_read += len(chunk)
+        buffer.extend(chunk)
 
-    results = []
-    for part in parsed.get_payload():
-        params = part.get_params(header="content-disposition")
-        payload = part.get_payload(decode=True)
-        result = dict(params), payload
-        results.append(result)
+        if buffer.startswith(boundary + b"\r\n"):
+            del buffer[: len(boundary + b"\r\n")]
+            for cand in buffer.split(b"\r\n"):
+                if cand.startswith(b"Content-Disposition:"):
+                    del buffer[: len(cand) + 2]
+                    cand.replace(b"Content-Disposition:", b"")
+                    for data in cand.split(b";"):
+                        slice = data.decode().strip().split("=", 1)
+                        if len(slice) != 2:
+                            continue
+                        meta[slice[0]] = slice[1][1:-1]
+                elif not cand:
+                    del buffer[:2]
 
-    return results
+                    def _iter():
+                        nonlocal n_read
+                        while True:
+                            while len(buffer) < len(boundary):
+                                to_read = min(chunk_size, content_len - n_read)
+                                chunk = multipart_data.read(to_read)
+                                n_read += len(chunk)
+                                buffer.extend(chunk)
+                            if b"\r\n" + boundary in buffer:
+                                slice = buffer.split(b"\r\n" + boundary)
+                                yield slice[0]
+                                del buffer[: len(slice[0]) + 2]
+                                break
+                            else:
+                                yield buffer
+                                buffer.clear()
+
+                    yield meta, _iter()
+                    break
+                else:
+                    del buffer[: len(cand) + 2]
 
 
 # our own HTTP server class, fixing up a change in python 2.7
@@ -126,84 +294,59 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             super().log_request(code, size)
 
     def do_POST(self):
-        global maxdownloads, upload
+        global max_downloads, upload
 
         if not upload:
             self.send_error(501, "Unsupported method (POST)")
             return
 
-        multi_form = decode_multipart_form_data(self.rfile, self.headers)
-
         have_upload = False
+        for meta, iterator in decode_multipart_form_data(self.rfile, self.headers):
+            if meta is None or meta.get("name", "") != "upfile":
+                continue
+            have_upload = True
+            upfilename = meta["filename"]
+            upfilename = upfilename.rsplit("\\", 1)[-1]
+            upfilename = os.path.basename(upfilename)
 
-        for form_dict, content in multi_form:
-            if form_dict.get("name") == "upfile":
-                if not content or not form_dict.get("filename"):
-                    self.send_error(403, "No upload provided")
+            destfilename = None
+            for suffix in [
+                "",
+                ".1",
+                ".2",
+                ".3",
+                ".4",
+                ".5",
+                ".6",
+                ".7",
+                ".8",
+                ".9",
+            ]:
+                destfilename = os.path.join(".", upfilename + suffix)
+                if os.path.exists(destfilename):
                     continue
+                else:
+                    break
+            if destfilename is None or os.path.exists(destfilename):
+                upfilename += "."
+                destfile, destfilename = tempfile.mkstemp(prefix=upfilename, dir=".")
 
-                have_upload = True
-                upfilename = form_dict["filename"]
-                upfilename = upfilename.rsplit("\\", 1)[-1]
-                upfilename = os.path.basename(upfilename)
-
-                destfile = None
-                for suffix in [
-                    "",
-                    ".1",
-                    ".2",
-                    ".3",
-                    ".4",
-                    ".5",
-                    ".6",
-                    ".7",
-                    ".8",
-                    ".9",
-                ]:
-                    destfilename = os.path.join(".", upfilename + suffix)
-                    try:
-                        destfile = os.open(
-                            destfilename, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644
-                        )
-                        break
-                    except OSError as e:
-                        if e.errno == errno.EEXIST:
-                            continue
-                        raise
-
-                if not destfile:
-                    upfilename += "."
-                    destfile, destfilename = tempfile.mkstemp(
-                        prefix=upfilename, dir="."
-                    )
-
-                print(
-                    "accepting uploaded file: %s -> %s" % (upfilename, destfilename),
-                    file=sys.stderr,
-                )
-
-                shutil.copyfileobj(io.BytesIO(content), os.fdopen(destfile, "wb"))
+            print(
+                "accepting uploaded file: %s -> %s" % (upfilename, destfilename),
+                file=sys.stderr,
+            )
+            with open(destfilename, "wb") as f:
+                for chunk in iterator:
+                    f.write(chunk)
 
         if not have_upload:
             self.send_error(403, "No upload provided?")
             return
 
-        txt = b"""\
-              <html>
-                <head><title>Woof Upload</title></head>
-                <body>
-                  <h1>Woof Upload complete</title></h1>
-                  <p>Thanks a lot!</p>
-                </body>
-              </html>
-            """
+        max_downloads -= 1
         self.send_response(200)
-        self.send_header("Content-Type", "text/html")
-        self.send_header("Content-Length", str(len(txt)))
+        self.send_header("X-Woof-Downloads", str(max_downloads))
         self.end_headers()
-        self.wfile.write(txt)
-
-        maxdownloads -= 1
 
         return
 
@@ -214,31 +357,19 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         return self.get_or_head(True)
 
     def get_or_head(self, headers_only=False):
-        global maxdownloads, cpid, compressed, upload
+        global max_downloads, cpid, compressed, upload
 
         # Form for uploading a file
         if upload:
-            txt = b"""\
-                 <html>
-                   <head><title>Woof Upload</title></head>
-                   <body>
-                     <h1>Woof Upload</title></h1>
-                     <form name="upload" method="POST" enctype="multipart/form-data">
-                       <p><input type="file" name="upfile" multiple /></p>
-                       <p><input type="submit" value="Upload!" /></p>
-                     </form>
-                   </body>
-                 </html>
-               """
             self.send_response(200)
             self.send_header("Content-Type", "text/html")
-            self.send_header("Content-Length", str(len(txt)))
+            self.send_header("Content-Length", str(len(upload_html)))
             self.end_headers()
 
             if headers_only:
                 return
 
-            self.wfile.write(txt)
+            self.wfile.write(upload_html)
             return
 
         # Redirect any request to the filename of the file to serve.
@@ -279,7 +410,7 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             return
 
         if not headers_only:
-            maxdownloads -= 1
+            max_downloads -= 1
 
         # let a separate process handle the actual download, so that
         # multiple downloads can happen simultaneously.
@@ -350,9 +481,9 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
 def serve_files(filename, maxdown=1, ip_addr="", port=8080):
-    global maxdownloads
+    global max_downloads
 
-    maxdownloads = maxdown
+    max_downloads = maxdown
 
     archive_ext = ""
     if filename and os.path.isdir(filename):
@@ -391,7 +522,7 @@ def serve_files(filename, maxdown=1, ip_addr="", port=8080):
 
         print("Now serving on %s" % location)
 
-    while cpid != 0 and maxdownloads > 0:
+    while cpid != 0 and max_downloads > 0:
         httpd.handle_request()
 
 
