@@ -71,6 +71,12 @@ has_destination() {
 
     # alias in .ssh/config
     [ -f $_SSH_CONFIG ] && echo $_SSH_CONTENT | grep -q "^Host\s\+$_arg\$" && return 0
+
+    # if it is system's host database
+    getent hosts "$_arg" >/dev/null 2>&1 && return 0
+
+    # destination must be the first argument
+    break
   done
 
   return 1
