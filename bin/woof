@@ -228,12 +228,12 @@ def decode_multipart_form_data(multipart_data, headers):
         n_read += len(chunk)
         buffer.extend(chunk)
 
-        if buffer.startswith(boundary + b"\r\n"):
+        while buffer and buffer.startswith(boundary + b"\r\n"):
             del buffer[: len(boundary + b"\r\n")]
             for cand in buffer.split(b"\r\n"):
                 if cand.startswith(b"Content-Disposition:"):
                     del buffer[: len(cand) + 2]
-                    cand.replace(b"Content-Disposition:", b"")
+                    cand = cand.replace(b"Content-Disposition:", b"")
                     for data in cand.split(b";"):
                         slice = data.decode().strip().split("=", 1)
                         if len(slice) != 2:
