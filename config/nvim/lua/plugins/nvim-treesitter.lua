@@ -42,8 +42,6 @@ function M.setup_main_branch()
       return
    end
 
-   local group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true })
-
    -- Enable treesitter for a buffer
    local function enable_treesitter(buf, lang)
       if not vim.api.nvim_buf_is_valid(buf) then
@@ -65,20 +63,61 @@ function M.setup_main_branch()
       end
    end
 
+   local function enable_treesitter_when_ready(buf, lang, timeout_ms)
+      timeout_ms = timeout_ms or 10000
+      local interval = 500
+
+      if vim.list_contains(ts.get_installed(), lang) then
+         vim.schedule(function()
+            enable_treesitter(buf, lang)
+         end)
+      elseif timeout_ms <= 0 then
+         vim.notify(
+            string.format("[TS] Timeout: '%s' parser failed to install.", lang),
+            vim.log.levels.ERROR
+         )
+      else
+         vim.defer_fn(function()
+            enable_treesitter_when_ready(buf, lang, timeout_ms - interval)
+         end, interval)
+      end
+   end
+
+   local group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true })
+
+   local ignore_filetypes = {
+      "checkhealth",
+      "startify",
+      "netrw",
+      "fugitive",
+      "fzf",
+      "mason",
+      "cmp_menu",
+      "cmp_docs",
+   }
+
    vim.api.nvim_create_autocmd('FileType', {
       group = group,
       callback = function(event)
-         local lang = vim.treesitter.language.get_lang(event.match) or event.match
-
-         -- install treesitter if not installed
-         ts.install({ lang })
-
-         -- it will be handeld by pearofducks/ansible-vim
-         if event.match == "yaml.ansible" then
-            return
+         if vim.tbl_contains(ignore_filetypes, event.match) then
+           return
          end
 
-         enable_treesitter(event.buf, lang)
+         local lang = vim.treesitter.language.get_lang(event.match) or event.match
+
+         if vim.list_contains(ts.get_installed(), lang) then
+            enable_treesitter(event.buf, lang)
+         elseif vim.list_contains(ts.get_available(), lang) then
+            -- install treesitter parser
+            ts.install({ lang })
+
+            -- it will be handeld by pearofducks/ansible-vim
+            if event.match == "yaml.ansible" then
+               return
+            end
+
+            enable_treesitter_when_ready(event.buf, lang)
+         end
       end,
    })
 end

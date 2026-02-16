@@ -56,7 +56,9 @@ function M.setup()
             "goimports", "golines",
             "yamlfmt",
 
-            "debugpy", "js-debug-adapter", "codelldb", "delve", "bash-debug-adapter"
+            "debugpy", "js-debug-adapter", "codelldb", "delve", "bash-debug-adapter",
+
+            "tree-sitter-cli",
          },
       })
    end
