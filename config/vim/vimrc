@@ -41,7 +41,8 @@
   Plug 'scrooloose/nerdcommenter'
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
-  Plug 'junegunn/vim-peekaboo'
+  " https://github.com/junegunn/vim-peekaboo/pull/89
+  " Plug 'junegunn/vim-peekaboo'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
   Plug 'unblevable/quick-scope'
