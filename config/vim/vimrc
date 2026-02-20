@@ -41,12 +41,12 @@
   Plug 'scrooloose/nerdcommenter'
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
-  Plug 'junegunn/gv.vim', { 'on': [ 'GV', 'GV!' ] }
   Plug 'junegunn/vim-peekaboo'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
+    Plug 'junegunn/fzf.vim'
   Plug 'unblevable/quick-scope'
   Plug 'tpope/vim-fugitive'
+    Plug 'junegunn/gv.vim', { 'on': [ 'GV', 'GV!' ] }
   Plug 'tpope/vim-rhubarb'
   Plug 'tpope/vim-repeat'
   Plug 'tpope/vim-surround'
@@ -77,7 +77,6 @@
   endif
 
   if has("nvim-0.5")
-    " TODO: change branch if main branch is stable
     Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'main', 'do': ':TSUpdate' }
     Plug 'nvim-treesitter/nvim-treesitter-context'
   elseif has('nvim')
@@ -491,12 +490,12 @@ EOF
   nnoremap [b :<c-u>call <SID>buffernavigation('bprevious')<CR>
   " buffer next
   nnoremap ]b :<c-u>call <SID>buffernavigation('bnext')<CR>
-  " new empty buffer
-  nnoremap <C-b> :enew<CR>
-  " conform changes (Yes, No, Cancel) instead of error
-  " set confirm
-  " close buffer
-  nnoremap <leader>bx :bp <BAR> bd #<CR>
+  " " new empty buffer
+  " nnoremap <C-b> :enew<CR>
+  " " conform changes (Yes, No, Cancel) instead of error
+  " " set confirm
+  " " close buffer
+  " nnoremap <leader>bx :bp <BAR> bd #<CR>
 
 
 " Tab navigations
@@ -505,15 +504,15 @@ EOF
   nnoremap [t  :tabprevious<CR>
   " tap next
   nnoremap ]t  :tabnext<CR>
-  function! OpenCurrentAsNewTab()
-    let l:currentPos = getcurpos()
-    tabedit %
-    call setpos(".", l:currentPos)
-  endfunction
-  " new tap with current buffer
-  nnoremap <C-t> :call OpenCurrentAsNewTab()<CR>
-  " close tap
-  nnoremap <leader>tx :tabclose<CR>
+  " function! OpenCurrentAsNewTab()
+  "   let l:currentPos = getcurpos()
+  "   tabedit %
+  "   call setpos(".", l:currentPos)
+  " endfunction
+  " " new tap with current buffer
+  " nnoremap <C-t> :call OpenCurrentAsNewTab()<CR>
+  " " close tap
+  " nnoremap <leader>tx :tabclose<CR>
 
 
 " Window navigations
@@ -525,8 +524,8 @@ EOF
   set splitbelow
   set splitright
 
-  " remove window
-  nmap <C-W>x <C-W>q
+  " " remove window
+  " nmap <C-W>x <C-W>q
 
   " circular navigation
   " nnoremap <tab>   <c-w>w
