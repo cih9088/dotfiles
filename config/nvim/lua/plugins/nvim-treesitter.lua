@@ -19,6 +19,7 @@ function M.setup_master_branch()
    end
 
    ts.setup({
+      auto_install = true,
       highlight = {
          enable = true,
          disable = function(lang, bufnr)
