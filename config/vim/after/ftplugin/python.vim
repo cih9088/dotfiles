@@ -1,6 +1,6 @@
 execute "compiler python"
 
-if executable('black')
+if executable('black') && &formatprg == "" && &formatexpr == ""
   setlocal formatprg=black\ --quiet\ -
   setlocal formatexpr=
 endif
