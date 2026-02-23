@@ -76,7 +76,9 @@ function M.setup()
         "delve",
         "bash-debug-adapter",
 
-        "tree-sitter-cli",
+        -- https://github.com/tree-sitter/tree-sitter/issues/4174
+        -- glibc 2.27 compatible
+        "tree-sitter-cli@v0.25.10",
       },
     })
   end
