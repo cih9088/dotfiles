@@ -85,6 +85,14 @@ function M.setup_main_branch()
 
    local group = vim.api.nvim_create_augroup('TreesitterSetup', { clear = true })
 
+   local ensure_installed = {
+      "comment",
+   }
+
+   for _, parser in ipairs(ensure_installed) do
+       ts.install(parser)
+   end
+
    local ignore_filetypes = {
       "checkhealth",
       "startify",
