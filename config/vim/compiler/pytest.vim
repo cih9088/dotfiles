@@ -1,8 +1,7 @@
 " Vim Compiler File
-" Compiler:    python
-" References:
-"              https://github.com/tartansandal/vim-compiler-pytest
-" Last Change: 2023-05-27
+" Compiler:    pytest
+" References:  https://github.com/tartansandal/vim-compiler-pytest
+" Last Change: 2026-02-23
 
 if exists("current_compiler") | finish | endif
 let current_compiler = "pytest"

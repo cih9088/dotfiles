@@ -1,29 +1,21 @@
 " Vim Compiler File
-" Compiler:    python
-" References:
-"              https://github.com/Konfekt/vim-compilers/blob/master/compiler/shellcheck.vim
-" Last Change: 2023-05-27
+" Compiler:    shellcheck
+" References:  https://github.com/Konfekt/vim-compilers/blob/master/compiler/shellcheck.vim
+" Last Change: 2026-02-23
 
-if exists("current_compiler") | finish | endif
+if exists("current_compiler")
+  finish
+endif
 let current_compiler = "shellcheck"
 
-if exists(":CompilerSet") != 2
-  command -nargs=* CompilerSet setlocal <args>
-endif
+let s:cpo_save = &cpo
+set cpo&vim
 
-let s:save_cpo = &cpo
-set cpo-=C
+CompilerSet makeprg=shellcheck\ -f\ gcc
+CompilerSet errorformat=%f:%l:%c:\ %trror:\ %m\ [SC%n],
+		       \%f:%l:%c:\ %tarning:\ %m\ [SC%n],
+		       \%f:%l:%c:\ %tote:\ %m\ [SC%n],
+		       \%-G%.%#
 
-CompilerSet makeprg=shellcheck\ -f\ gcc\ %:S
-" CompilerSet makeprg=shellcheck\ -s\ bash\ -f\ gcc\ --\ %:S
-
-CompilerSet errorformat=
-      \%f:%l:%c:\ %trror:\ %m,
-      \%f:%l:%c:\ %tarning:\ %m,
-      \%I%f:%l:%c:\ note:\ %m
-" CompilerSet errorformat=%f:%l:%c:\ %m\ [SC%n]
-
-let &cpo = s:save_cpo
-unlet s:save_cpo
-
-" vim:ft=vim:ts=2:sw=2:sts=2:et
+let &cpo = s:cpo_save
+unlet s:cpo_save
