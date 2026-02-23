@@ -1487,8 +1487,14 @@ EOF
     let g:netrw_fastbrowse = 0
 
     " https://github.com/tpope/vim-vinegar/issues/136#issuecomment-1993962767
-    nnoremap <silent> <SID>(lcd) :<c-u>lcd %:p:h<CR>
-    nmap <silent> - <SID>(lcd)<Plug>VinegarUp
+    nnoremap <silent> - :<c-u>call <SID>VinegarUp()<CR>
+    function s:VinegarUp()
+      let save_dir = chdir(expand('%:p:h'))
+      if !empty(save_dir)
+        exe "normal \<Plug>VinegarUp"
+        call chdir(save_dir)
+      endif
+    endf
   endif
 
 
