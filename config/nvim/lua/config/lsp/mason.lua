@@ -55,6 +55,7 @@ function M.setup()
             "shellcheck", "shfmt",
             "goimports", "golines",
             "yamlfmt",
+            "stylua",
 
             "debugpy", "js-debug-adapter", "codelldb", "delve", "bash-debug-adapter",
 

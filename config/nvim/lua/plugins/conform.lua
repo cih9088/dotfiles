@@ -7,6 +7,7 @@ function M.setup()
 
    if conform then
       conform.setup({
+         -- log_level = vim.log.levels.DEBUG,
          formatters = {
             yamlfmt = {
                -- no indent at array
@@ -21,7 +22,10 @@ function M.setup()
 
                      -- k8s yaml file
                      if line:sub(1, #"apiVersion") == "apiVersion" then
-                        return { "-formatter", "indentless_arrays=true,retain_line_breaks_single=true" }
+                        return {
+                           "-formatter",
+                           "indentless_arrays=true,retain_line_breaks_single=true",
+                        }
                      end
 
                      ctr = ctr + 1
@@ -30,8 +34,8 @@ function M.setup()
                end,
             },
             shfmt = {
-               prepend_args = { "--case-indent", "--indent", "2", "--binary-next-line" }
-            }
+               prepend_args = { "--case-indent", "--indent", "2", "--binary-next-line" },
+            },
          },
          formatters_by_ft = {
             python = function(bufnr)
