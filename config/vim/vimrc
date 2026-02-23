@@ -84,7 +84,7 @@
   endif
 
   if has("nvim-0.5")
-    Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'main', 'do': ':TSUpdate' }
+    Plug 'nvim-treesitter/nvim-treesitter', { 'branch': 'master', 'do': ':TSUpdate' }
     Plug 'nvim-treesitter/nvim-treesitter-context'
   elseif has('nvim')
     Plug 'numirias/semshi', { 'do': ':UpdateRemotePlugins', 'for': 'python' }
