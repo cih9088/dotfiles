@@ -38,7 +38,13 @@
 
 " Convenient
 " ---------------------------------------------------------------------------------------
-  Plug 'scrooloose/nerdcommenter'
+  if ! has("nvim") && v:version >= 901
+    packadd comment
+  elseif ! has("nvim-0.10")
+    Plug 'tpope/vim-commentary'
+    " Plug 'scrooloose/nerdcommenter'
+  endif
+
   Plug 'christoomey/vim-tmux-navigator'
   Plug 'junegunn/vim-easy-align', { 'on': '<Plug>(EasyAlign)' }
   " https://github.com/junegunn/vim-peekaboo/pull/89
