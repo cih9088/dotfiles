@@ -54,6 +54,7 @@ function M.setup()
             typescript = { "prettierd", "prettier", stop_after_first = true },
             typescriptreact = { "prettierd", "prettier", stop_after_first = true },
             html = { "prettierd", "prettier", stop_after_first = true },
+            css = { "prettierd", "prettier", stop_after_first = true },
             json = { "prettierd", "prettier", stop_after_first = true },
             markdown = { "prettierd", "prettier", stop_after_first = true },
             sh = { "shfmt" },
@@ -66,10 +67,6 @@ function M.setup()
       })
 
       vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
-
-      vim.keymap.set('n', '<space>f', function()
-         conform.format({ async = true })
-      end)
    end
 end
 

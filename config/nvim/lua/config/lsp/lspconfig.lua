@@ -88,7 +88,6 @@ function M.setup()
                   border = "single",
                },
                toggle_key = "<M-x>",
-
             }, ev.buf)
          end
 
@@ -96,35 +95,47 @@ function M.setup()
          local opts = { noremap = true, silent = true }
          vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
          vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-         vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, opts)
+         vim.keymap.set("n", "grd", vim.diagnostic.setloclist, opts)
 
          -- Buffer local mappings.
          -- See `:help vim.lsp.*` for documentation on any of the below functions
          local bufopts = { noremap = true, silent = true, buffer = ev.buf }
          vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
          vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-         vim.keymap.set("n", "gc", vim.lsp.buf.implementation, bufopts)
-         vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-         vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, bufopts)
+         vim.keymap.set("n", "gri", vim.lsp.buf.implementation, bufopts)
+         vim.keymap.set("n", "grr", vim.lsp.buf.references, bufopts)
+         vim.keymap.set("n", "grt", vim.lsp.buf.type_definition, bufopts)
          vim.keymap.set("n", "K", function()
             vim.lsp.buf.hover({ border = "single" })
          end, bufopts)
-         -- vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+         vim.keymap.set({"n", "i"}, "<C-s>", function()
+             vim.lsp.buf.signature_help({ border = "single" })
+         end, bufopts)
          -- vim.keymap.set("n", "<space>wa", vim.lsp.buf.add_workspace_folder, bufopts)
          -- vim.keymap.set("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
          -- vim.keymap.set('n', '<space>wl', function()
          --    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
          -- end, bufopts)
-         vim.keymap.set("n", "<space>rn", vim.lsp.buf.rename, bufopts)
-         vim.keymap.set({ "n", "v" }, "<space>ca", vim.lsp.buf.code_action, bufopts)
-         vim.keymap.set('n', '<space>f', function()
+         vim.keymap.set("n", "grn", vim.lsp.buf.rename, bufopts)
+         vim.keymap.set({ "n", "v" }, "gra", vim.lsp.buf.code_action, bufopts)
+
+         vim.api.nvim_buf_create_user_command(ev.buf, "Format", function(args)
+            local range = nil
+            if args.count ~= -1 then
+              local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
+              range = {
+                start = { args.line1, 0 },
+                ["end"] = { args.line2, end_line:len() },
+              }
+            end
+
             local conform = utils.safe_require("conform")
             if conform then
-               conform.format({ async = true })
+               conform.format({ async = true, lsp_format = "fallback", range = range })
             else
-               vim.lsp.buf.format { async = true }
+               vim.lsp.buf.format { async = true, range = range}
             end
-         end, bufopts)
+         end, { range = true })
 
          -- Setup inlay hints
          if client.server_capabilities.inlayHintProvider then
@@ -134,8 +145,15 @@ function M.setup()
             end
             vim.api.nvim_buf_create_user_command(ev.buf, "LspToggleInlayHint", function()
                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }))
+               vim.notify(
+                   string.format(
+                       'Inlay hints is %s',
+                       vim.lsp.inlay_hint.is_enabled({ bufnr = ev.buf }) and 'enabled' or 'disabled'
+                   ),
+                   vim.log.levels.INFO
+               )
             end, {})
-            vim.keymap.set("n", "<space>h", "<cmd>LspToggleInlayHint<CR>", { buffer = true })
+            vim.keymap.set("n", "grh", "<cmd>LspToggleInlayHint<CR>", { buffer = true })
          end
 
          -- Highlight symbol under cursor
@@ -144,7 +162,7 @@ function M.setup()
                augroup lsp_document_highlight
                   autocmd! * <buffer>
                   autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-                  autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+                  autocmd CursorMoved,InsertEnter <buffer> lua vim.lsp.buf.clear_references()
                augroup END
             ]])
          end
