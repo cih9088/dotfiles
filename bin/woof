@@ -44,6 +44,7 @@ import tempfile
 import urllib.parse
 import urllib.request
 import zipfile
+from itertools import chain, count
 
 max_downloads = 1
 chunk_size = 1024 * 1024  # 1MB
@@ -327,18 +328,7 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             upfilename = upfilename.rsplit("\\", 1)[-1]
 
             destfilename = None
-            for suffix in [
-                "",
-                ".1",
-                ".2",
-                ".3",
-                ".4",
-                ".5",
-                ".6",
-                ".7",
-                ".8",
-                ".9",
-            ]:
+            for suffix in chain.from_iterable([[""], map(lambda x: f".{x}", count(1))]):
                 destfilename = os.path.join(".", upfilename + suffix)
                 if os.path.exists(destfilename):
                     continue
