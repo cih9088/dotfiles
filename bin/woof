@@ -69,13 +69,31 @@ upload_html = b"""\
   <body>
     <h1>Woof Upload</h1>
     <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
-      <p><input id="fileInput" type="file" name="upfile" multiple /></p>
+      <p><input id="fileInput" type="file" name="upfile" multiple webkitdirectory directory /></p>
       <p><input id="submitBtn" type="submit" value="Upload!" diabled /></p>
     </form>
     <div id="progressWrap" style="display:none; margin-top:12px;">
       <progress id="progressBar" value="0" max="100"></progress>
       <div id="progressText">0%</div>
     </div>
+    <script>
+      const form = document.querySelector('form');
+      const fileInput = document.querySelector('input[type="file"]');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        const files = fileInput.files;
+        for (let file of files) {
+          const pathOnServer = file.webkitRelativePath || file.name;
+          formData.append('upfile', file, pathOnServer);
+        }
+        await fetch("/upload", {
+          method: 'POST',
+          body: formData,
+        });
+      });
+    </script>
     <script>
       const form = document.getElementById("uploadForm");
       const fileInput = document.getElementById("fileInput");
@@ -307,7 +325,6 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             have_upload = True
             upfilename = meta["filename"]
             upfilename = upfilename.rsplit("\\", 1)[-1]
-            upfilename = os.path.basename(upfilename)
 
             destfilename = None
             for suffix in [
@@ -335,6 +352,7 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
                 "accepting uploaded file: %s -> %s" % (upfilename, destfilename),
                 file=sys.stderr,
             )
+            os.makedirs(os.path.dirname(destfilename), exist_ok=True)
             with open(destfilename, "wb") as f:
                 for chunk in iterator:
                     f.write(chunk)
