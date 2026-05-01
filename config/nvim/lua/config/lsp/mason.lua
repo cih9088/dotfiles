@@ -68,6 +68,8 @@ function M.setup()
 
         "stylua",
 
+        "cmakelang",
+
         "debugpy",
         "js-debug-adapter",
         "codelldb",

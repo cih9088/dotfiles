@@ -60,6 +60,7 @@ function M.setup()
         sh = { "shfmt" },
         bash = { "shfmt" },
         zsh = { "shfmt" },
+        cmake = { "cmake_format" },
       },
       default_format_opts = {
         lsp_format = "fallback",
