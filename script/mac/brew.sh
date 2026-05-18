@@ -174,7 +174,7 @@ brew install --cask mos
 # brew install --cask betterzip
 brew install --cask keka
 brew install --cask alfred
-brew install --cask jordanbaird-ice
+brew install --cask thaw
 # brew install --cask bartender
 brew install --cask microsoft-office
 brew install --cask slack
