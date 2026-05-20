@@ -1,5 +1,20 @@
 #!/usr/bin/env bash
 # https://github.com/mathiasbynens/dotfiles/blob/main/.macos
+# https://macos-defaults.com/
+# https://github.com/tpvasconcelos/dotfiles/blob/main/scripts/macos.zsh
+
+# How to check for changes in "defaults"
+# $ defaults read | sed -e 's/[0-9]\{4\}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]/DATE_REMOVED/g' | sed -E 's/Age = "[0-9]+\.[0-9]+"/AGE_REDACTED/g' > dft1.plist
+# make your changes...
+# $ defaults read | sed -e 's/[0-9]\{4\}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]/DATE_REMOVED/g' | sed -E 's/Age = "[0-9]+\.[0-9]+"/AGE_REDACTED/g' > dft2.plist
+# $ diffmerge dft1.plist dft2.plist
+
+# How to check the id of an Application
+# $ osascript -e 'id of app "Safari"'
+# com.apple.Safari
+# $ osascript -e 'id of app "Pycharm"'
+# com.jetbrains.pycharm
+# etc...
 
 # Close any open System Preferences panes, to prevent them from overriding
 # settings we’re about to change
@@ -21,22 +36,20 @@ PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin${PATH+
 ###############################################################################
 
 # Disable the sound effects on boot
-sudo nvram SystemAudioVolume=" "
-
-# # Set highlight color to a specific yellow
-# defaults write NSGlobalDomain AppleHighlightColor -string '0.984300 0.929400 0.450900'
+sudo nvram StartupMute=%01
 
 # Set sidebar icon size to medium
+# Possible values: 1(small), 2(medium, default), 3(large)
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 2
 
-# Always show scrollbars
-# Possible values: `WhenScrolling`, `Automatic` and `Always`
-defaults write NSGlobalDomain AppleShowScrollBars -string "Always"
+# Show scollbar
+# Possible values: `WhenScrolling`, `Automatic` (default) and `Always`
+defaults write NSGlobalDomain AppleShowScrollBars -string "Automatic"
 
 # # Disable the over-the-top focus ring animation
 # defaults write NSGlobalDomain NSUseAnimatedFocusRing -bool false
 
-# Adjust toolbar title rollover delay
+# Adjust toolbar title rollover (e.g. show full path in finder) delay
 defaults write NSGlobalDomain NSToolbarTitleViewRolloverDelay -float 0
 
 # Expand save panel by default
@@ -47,8 +60,8 @@ defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint -bool true
 defaults write NSGlobalDomain PMPrintingExpandedStateForPrint2 -bool true
 
-# Save to disk (not to iCloud) by default
-defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
+# # Save to disk (not to iCloud) by default
+# defaults write NSGlobalDomain NSDocumentSaveNewDocumentsToCloud -bool false
 
 # Automatically quit printer app once the print jobs complete
 defaults write com.apple.print.PrintingPrefs "Quit When Finished" -bool true
@@ -76,13 +89,9 @@ defaults write NSGlobalDomain NSAutomaticSpellingCorrectionEnabled -bool false
 # Date and Time
 ###############################################################################
 
-# Thu 18 Aug 23:46
-# System Preferences > Date & Time > Display time with seconds - Checked [:ss]
-# System Preferences > Date & Time > Use a 24-hour clock - Checked [HH:mm]
-# System Preferences > Date & Time > Show AM/PM - Unchecked
-# System Preferences > Date & Time > Show the day of the week - Checked [EEE]
-# System Preferences > Date & Time > Show date - Checked [d MMM]
-defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM HH:mm"
+defaults write com.apple.menuextra.clock ShowDate -bool true
+defaults write com.apple.menuextra.clock ShowDayOfWeek -bool true
+defaults write NSGlobalDomain AppleICUForce24HourTime -bool true
 
 
 ###############################################################################
@@ -91,26 +100,46 @@ defaults write com.apple.menuextra.clock DateFormat -string "EEE d MMM HH:mm"
 
 ## Trackpad
 
-# Enable tap to click for this user and for the login screen
+# Enable tap to click for trackpads
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 defaults write com.apple.AppleMultitouchTrackPad Clicking -bool true
-defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+# Enable tap to click for the current user
 defaults write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
+defaults -currentHost write NSGlobalDomain com.apple.mouse.tapBehavior -int 1
 
-# Use three finger to drag
-#defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -bool false
-#defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -bool false
-#defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerTapGesture -int 2
+# Disable horizontal three-finger swiping for three-finger drag
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerHorizSwipeGesture -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerHorizSwipeGesture -int 0
+# Disable vertical three-finger swiping for three-finger drag
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerVertSwipeGesture -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerVertSwipeGesture -int 0
+# Diable three-finger look up
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerTapGesture -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerTapGesture -int 0
+# Enable three-finger drag
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
 defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
+
+# Enable horizontal four-finger swiping for four-finger drag
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFourFingerHorizSwipeGesture -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFourFingerHorizSwipeGesture -int 0
+# Enable vertical four-finger swiping for four-finger drag
+defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadFourFingerVertSwipeGesture -int 0
+defaults write com.apple.AppleMultitouchTrackpad TrackpadFourFingerVertSwipeGesture -int 0
+
+# Enable three/four-finger swipe down for App Expose
 defaults write com.apple.dock showAppExposeGestureEnabled -bool true
 
 # Use scroll gesture with the Ctrl (^) modifier key to zoom
 defaults write com.apple.universalaccess closeViewScrollWheelToggle -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad HIDScrollZoomModifierMask -int 262144
 defaults write com.apple.AppleMultitouchTrackpad HIDScrollZoomModifierMask -int 262144
+# Set zoom style to Picture-in-Picture
+defaults write com.apple.universalaccess closeViewZoomMode -int 1
 # Follow the keyboard focus while zoomed in
 defaults write com.apple.universalaccess closeViewZoomFollowsFocus -bool true
+# Keep pointer centered while zoomed
+defaults write com.apple.universalaccess closeViewPanningMode -int 2
 
 
 ## Keyboard
@@ -162,7 +191,7 @@ fi
 # Energy saving                                                               #
 ###############################################################################
 
-# Enable lid wakeup
+# Enable lid wakeup (will be ignored on apple silicon)
 sudo pmset -a lidwake 1
 
 # Sleep the display after 5 minutes
@@ -170,9 +199,11 @@ sudo pmset -a displaysleep 5
 
 # Set machine sleep to 10 minutes while charging
 sudo pmset -c sleep 10
+sudo pmset -c disksleep 10
 
 # Set machine sleep to 5 minutes on battery
 sudo pmset -b sleep 5
+sudo pmset -b disksleep 5
 
 ## Remove the sleep image file to save disk space
 #sudo rm /private/var/vm/sleepimage
@@ -196,12 +227,8 @@ defaults -currentHost write com.apple.screensaver idleTime -int 120
 # Show clock on screensaver
 defaults -currentHost write com.apple.screensaver showClock -bool true
 
-# Set screensaver as drift
-defaults -currentHost write com.apple.screensaver moduleDict \
-  -dict moduleName Drift path /System/Library/Screen\ Savers/Drift.saver type 0
-
-# Save screenshots to the desktop
-defaults write com.apple.screencapture location -string "${HOME}/Desktop"
+# # Save screenshots to the desktop
+# defaults write com.apple.screencapture location -string "${HOME}/Desktop"
 
 # Save screenshots in PNG format (other options: BMP, GIF, JPG, PDF, TIFF)
 defaults write com.apple.screencapture type -string "png"
@@ -218,7 +245,7 @@ defaults write com.apple.screencapture disable-shadow -bool true
 defaults write com.apple.dock mouse-over-hilite-stack -bool true
 
 # Set orientation of dock
-defaults write com.apple.dock "orientation" -string "bottom"
+defaults write com.apple.dock orientation -string "bottom"
 
 # Change minimize/maximize window effect
 defaults write com.apple.dock mineffect -string "genie"
@@ -244,12 +271,14 @@ defaults write com.apple.dock show-process-indicators -bool true
 # Speed up Mission Control animations
 defaults write com.apple.dock expose-animation-duration -float 0.1
 
-# Don’t group windows by application in Mission Control
-# (i.e. use the old Exposé behavior instead)
-defaults write com.apple.dock expose-group-apps -bool false
+# Group windows by application in Mission Control
+defaults write com.apple.dock expose-group-apps -bool true
 
 # Don’t automatically rearrange Spaces based on most recent use
 defaults write com.apple.dock mru-spaces -bool false
+
+# Automatically hide and show the Dock
+defaults write com.apple.dock autohide -bool true
 
 # Remove the auto-hiding Dock delay
 defaults write com.apple.dock autohide-delay -float 0
@@ -257,37 +286,34 @@ defaults write com.apple.dock autohide-delay -float 0
 # # Remove the animation when hiding/showing the Dock
 # defaults write com.apple.dock autohide-time-modifier -float 0
 
-# Automatically hide and show the Dock
-defaults write com.apple.dock autohide -bool true
-
 # Make Dock icons of hidden applications translucent
 defaults write com.apple.dock showhidden -bool true
 
-# Don’t show recent applications in Dock
-defaults write com.apple.dock show-recents -bool false
+# Show recent applications in Dock
+defaults write com.apple.dock show-recents -bool true
 
-# Hot corners
-# Possible values:
-#  0: no-op
-#  2: Mission Control
-#  3: Show application windows
-#  4: Desktop
-#  5: Start screen saver
-#  6: Disable screen saver
-#  7: Dashboard
-# 10: Put display to sleep
-# 11: Launchpad
-# 12: Notification Center
-# 13: Lock Screen
-# Top left screen corner → Mission Control
-defaults write com.apple.dock wvous-tl-corner -int 2
-defaults write com.apple.dock wvous-tl-modifier -int 0
-# Bottom right screen corner → Desktop
-defaults write com.apple.dock wvous-br-corner -int 4
-defaults write com.apple.dock wvous-br-modifier -int 0
-# Bottom left screen corner → Start screen saver
-defaults write com.apple.dock wvous-bl-corner -int 5
-defaults write com.apple.dock wvous-bl-modifier -int 0
+# # Hot corners
+# # Possible values:
+# #  0: no-op
+# #  2: Mission Control
+# #  3: Show application windows
+# #  4: Desktop
+# #  5: Start screen saver
+# #  6: Disable screen saver
+# #  7: Dashboard
+# # 10: Put display to sleep
+# # 11: Launchpad
+# # 12: Notification Center
+# # 13: Lock Screen
+# # Top left screen corner → Mission Control
+# defaults write com.apple.dock wvous-tl-corner -int 2
+# defaults write com.apple.dock wvous-tl-modifier -int 0
+# # Bottom right screen corner → Desktop
+# defaults write com.apple.dock wvous-br-corner -int 4
+# defaults write com.apple.dock wvous-br-modifier -int 0
+# # Bottom left screen corner → Start screen saver
+# defaults write com.apple.dock wvous-bl-corner -int 5
+# defaults write com.apple.dock wvous-bl-modifier -int 0
 
 
 # # Menu bar
@@ -330,7 +356,7 @@ defaults write com.apple.finder DisableAllAnimations -bool false
 
 # Icons for hard drives, servers, and removable media on the desktop
 defaults write com.apple.finder ShowExternalHardDrivesOnDesktop -bool true
-defaults write com.apple.finder ShowHardDrivesOnDesktop         -bool false
+defaults write com.apple.finder ShowHardDrivesOnDesktop         -bool true
 defaults write com.apple.finder ShowMountedServersOnDesktop     -bool true
 defaults write com.apple.finder ShowRemovableMediaOnDesktop     -bool true
 
@@ -371,9 +397,9 @@ defaults write com.apple.finder QLEnableTextSelection -bool true
 # Column View : `clmv`
 # Cover Flow  : `Flwv`
 defaults write com.apple.finder FXPreferredViewStyle -string "Nlsv"
-# After configuring preferred view style, clear all `.DS_Store` files
-# to ensure settings are applied for every directory
-find $HOME -name ".DS_Store" -delete
+# # After configuring preferred view style, clear all `.DS_Store` files
+# # to ensure settings are applied for every directory
+# find $HOME -name ".DS_Store" -delete
 
 # Enable spring loading for directories
 defaults write NSGlobalDomain com.apple.springing.enabled -bool true
@@ -412,7 +438,7 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
 # defaults write com.apple.finder WarnOnEmptyTrash -bool false
 
 # Show the ~/Library folder
-chflags nohidden ~/Library && xattr -d com.apple.FinderInfo ~/Library
+chflags nohidden ~/Library
 
 # # Show the /Volumes folder
 # sudo chflags nohidden /Volumes
@@ -429,34 +455,37 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 # Safari                                                                      #
 ###############################################################################
 
-# # Privacy: don’t send search queries to Apple
-# defaults write -app Safari UniversalSearchEnabled -bool false
-# defaults write -app Safari SuppressSearchSuggestions -bool true
+for app_name in "Safari" "Safari Technology Preview"; do
+  if [[ ! -e "/Applications/$app_name.app" ]]; then
+    continue
+  fi
 
-# Prevent Safari from opening ‘safe’ files automatically after downloading
-defaults write -app Safari AutoOpenSafeDownloads -bool false
+  # # Privacy: don’t send search queries to Apple
+  # defaults write -app Safari UniversalSearchEnabled -bool false
+  # defaults write -app Safari SuppressSearchSuggestions -bool true
 
-# # Enable Safari’s debug menu
-# defaults write -app Safari IncludeInternalDebugMenu -bool true
+  # Prevent Safari from opening ‘safe’ files automatically after downloading
+  defaults write -app "$app_name" AutoOpenSafeDownloads -bool false
 
-# Enable the Develop menu and the Web Inspector in Safari
-defaults write -app Safari IncludeDevelopMenu -bool true
-# defaults write -app Safari.SandboxBroker ShowDevelopMenu -bool true
-# defaults write -app Safari WebKitDeveloperExtrasEnabledPreferenceKey -bool true
-# defaults write -app Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2DeveloperExtrasEnabled -bool true
+  # Enable the Develop menu and the Web Inspector in "$app_name"
+  defaults write -app "$app_name" IncludeDevelopMenu -bool true
 
-# # Add a context menu item for showing the Web Inspector in web views
-# defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
+  # Enable the bottom hover status bar
+  defaults write -app "$app_name" ShowOverlayStatusBar -bool true
 
-# # Block pop-up windows
-# defaults write -app Safari WebKitJavaScriptCanOpenWindowsAutomatically -bool false
-# defaults write -app Safari com.apple.Safari.ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
+  # # Add a context menu item for showing the Web Inspector in web views
+  # defaults write NSGlobalDomain WebKitDeveloperExtras -bool true
 
-# # Enable “Do Not Track”
-# defaults write -app Safari SendDoNotTrackHTTPHeader -bool true
+  # # Block pop-up windows
+  # defaults write -app "$app_name" WebKitJavaScriptCanOpenWindowsAutomatically -bool false
+  # defaults write -app "$app_name" com.apple."$app_name".ContentPageGroupIdentifier.WebKit2JavaScriptCanOpenWindowsAutomatically -bool false
 
-# # Update extensions automatically
-# defaults write -app Safari InstallExtensionUpdatesAutomatically -bool true
+  # # Enable “Do Not Track”
+  # defaults write -app "$app_name" SendDoNotTrackHTTPHeader -bool true
+
+  # # Update extensions automatically
+  # defaults write -app "$app_name" InstallExtensionUpdatesAutomatically -bool true
+done
 
 
 
