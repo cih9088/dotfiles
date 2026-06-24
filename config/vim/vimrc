@@ -76,7 +76,7 @@
     Plug 'mhinz/vim-signify'
   endif
 
-  if has('nvim-0.4.0') && exists('*nvim_open_win')
+  if has('nvim-0.4.0') || v:version >= 800
     Plug 'rhysd/git-messenger.vim'
   endif
 
@@ -164,6 +164,7 @@
   else
     Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
   endif
+  Plug 'junegunn/goyo.vim'
 
 
 " Initialize plugin system
@@ -1525,6 +1526,13 @@ EOF
 " ---------------------------------------------------------------------------------------
   if IsPlugInstalled('splitjoin.vim')
     let g:splitjoin_python_brackets_on_separate_lines = 1
+  endif
+
+
+" junegunn/goyo.vim
+" ---------------------------------------------------------------------------------------
+  if IsPlugInstalled('goyo.vim')
+    let g:goyo_width = 120
   endif
 
 
