@@ -100,8 +100,7 @@ brew install --yes wget
 # brew install --yes exiv2
 brew install --yes fzf
 brew install --yes watch
-brew install --yes gzip
-brew install --yes pigz
+brew install --yes gzip pigz
 brew install --yes p7zip
 brew install --yes git
 brew install --yes git-lfs
@@ -140,8 +139,9 @@ brew install --yes helm
 # # https://github.com/sindresorhus/quick-look-plugins
 # # https://github.com/haokaiyang/Mac-QuickLook
 # brew install --yes --cask \
-#   qlstephen qlmarkdown syntax-highlight \
-#   suspicious-package apparency quicklookase qlvideo
+#   qlmarkdown qlvideo
+#   qlstephen syntax-highlight \
+#   quicklook-json suspicious-package apparency quicklookase qlvideo
 # xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 # Install terminals
@@ -185,7 +185,7 @@ brew trust AlexStrNik/Browserino \
 # brew install --yes --cask skype
 brew install --yes --cask istat-menus
 # brew install --yes --cask stats
-brew install --yes --cask teamviewer # -> requires password
+# brew install --yes --cask teamviewer # -> requires password
 # brew install --yes --cask alt-tab
 brew install --yes --cask synology-drive
 brew install --yes --cask openvpn-connect
@@ -198,10 +198,13 @@ brew install --yes --cask notion
 # brew install --yes --cask transmission
 # brew install --yes --cask swiftbar
 # brew install --yes --cask paragon-ntfs
+brew install --yes --cask iina
+# https://www.popclip.app/kb/mas#but-what-about-installing-in-future-on-a-new-mac
+brew install --yes --cask popclip
 
 # Install virtualmachine engines
 # brew install --yes --cask vmware-fusion
-brew install --yes --cask parallels
+brew install --yes --cask parallels@17
 # brew install --yes --cask virtualbox
 # brew install --yes --cask vagrant
 # brew install --yes --cask vagrant-manager
@@ -249,11 +252,11 @@ brew install --yes podman-compose
 mas install 409183694   # Keynote
 mas install 409201541   # Pages
 mas install 409203825   # Numbers
-mas install 1295203466  # Microsoft Remote Desktop
+# mas install 1295203466  # Microsoft Remote Desktop
 mas install 1114196460  # Rocket Fuel
 # mas install 414855915   # WinArchiver Lite
-mas install 1462114288  # Grammarly for Safari
-mas install 1445910651  # Dynamo
+# mas install 1462114288  # Grammarly for Safari
+# mas install 1445910651  # Dynamo
 mas install 869223134   # KakaoTalk
 # https://github.com/televator-apps/vimari/issues/304
 # mas install 1480933944  # Vimari
@@ -262,10 +265,10 @@ mas install 1519867270  # Refined GitHub
 
 
 ## not free
-mas install 445189367   # PopClip
+# mas install 445189367   # PopClip (https://www.popclip.app/kb/mas)
 # mas install 441258766   # Magnet
 # mas install 461788075   # Movist
-mas install 577085396   # Unclutter
+# mas install 577085396   # Unclutter
 mas install 1231935892  # Unicorn Blocker:Adblock
 mas install 1475628500  # Unicorn HTTPS
 # mas install 922765270   # LiquidText
