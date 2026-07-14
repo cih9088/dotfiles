@@ -28,7 +28,12 @@ fi
 
 FAILED=()
 
-IMAGES=("rockylinux_dots:8" "rockylinux_dots:9" "ubuntu_dots:20" "ubuntu_dots:22")
+IMAGES=(
+  "rockylinux_dots:9"
+  "rockylinux_dots:10"
+  "ubuntu_dots:22"
+  "ubuntu_dots:24"
+)
 MODES=("local" "system")
 ITEMS=(
   perl "asdf perl"
