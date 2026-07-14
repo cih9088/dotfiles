@@ -15,22 +15,21 @@ PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin${PATH+
 
 # MAC OS version
 MACOS_VERSION=$(sw_vers -productVersion)
-BIG_SUR_VERSION="11.0"
 MONTEREY_VERISON="12.0"
 ################################################################
 
 # Check for Homebrew,
 # Install if we don't have it
-if test ! $(which brew); then
+if test ! "$(which brew)"; then
   log_info "Install homebrew."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 # Install mas
-brew install mas
+brew install --yes mas
 # Login to Appstore first
-if verlte $MONTEREY_VERISON $MACOS_VERSION; then
-  # monterey does not support account command
+if verlte "$MONTEREY_VERISON" "$MACOS_VERSION"; then
+  # monterey and above does not support account command
   # https://github.com/mas-cli/mas/issues/417
   log_info "Please signin Appstore manually and press any key."
   read anykey
@@ -51,27 +50,27 @@ brew upgrade
 
 # Install GNU core utilities (those that come with OS X are outdated).
 # Don’t forget to add `$(brew --prefix coreutils)/libexec/gnubin` to `$PATH`.
-brew install coreutils
+brew install --yes coreutils
 # sudo ln -s /usr/local/bin/gsha256sum /usr/local/bin/sha256sum
 # Install some other useful utilities like `sponge`.
-brew install moreutils
+brew install --yes moreutils
 # Install GNU `find`, `locate`, `updatedb`, and `xargs`, `g`-prefixed.
 # Don’t forget to add `$(brew --prefix findutils)/libexec/gnubin` to `$PATH`.
-brew install findutils
+brew install --yes findutils
 # Install GNU `sed`, `awk`, `grep`
 # Don’t forget to add `$(brew --prefix gnu-sed)/libexec/gnubin` to `$PATH`.
-brew install gnu-sed
-brew install gawk
+brew install --yes gnu-sed
+brew install --yes gawk
 # Don’t forget to add `$(brew --prefix gnugrep)/libexec/gnubin` to `$PATH`.
-brew install grep
-# brew install gnu-indent --with-default-names
-# brew install gnu-tar --with-default-names
-# brew install gnu-which --with-default-names
-# brew install gnutls
+brew install --yes grep
+# brew install --yes gnu-indent
+# brew install --yes gnu-tar
+# brew install --yes gnu-which
+# brew install --yes gnutls
 
 # Install Bash 5
-brew install bash
-# brew install bash-completion2
+brew install --yes bash
+brew install --yes bash-completion@2
 # # We installed the new shell, now we have to activate it
 # echo "Adding the newly installed shell to the list of allowed shells"
 # # Prompts for password
@@ -79,12 +78,8 @@ brew install bash
 # # Change to the new shell, prompts for password
 # chsh -s /usr/local/bin/bash
 
-# Install `wget` with IRI support.
-# brew install wget --with-iri
-brew install wget
-
 # Install python
-brew install python
+brew install --yes python
 # # create symlink manually
 # # https://github.com/Homebrew/homebrew-core/issues/16212
 # ln -snf $(brew --prefix)/bin/python3 $(brew --prefix)/bin/python
@@ -94,120 +89,122 @@ brew install python
 # ln -snf $(brew --prefix)/bin/pydoc3 $(brew --prefix)/bin/pydoc
 
 # Install ruby
-brew install ruby
+brew install --yes ruby
 
 # Install more recent versions of some OS X tools.
-# brew install vim --override-system-vi
-brew install openssh
+# brew install --yes vim
+brew install --yes openssh
 
 # Install other useful binaries.
-# brew install ack
-#brew install exiv2
-brew install watch
-brew install gzip
-brew install pigz
-brew install p7zip
-brew install git
-# brew install git-lfs
-# brew install git-flow
-# brew install git-extras
-# brew install hub
-# brew install imagemagick --with-webp
-# brew install lua
-# brew install lynx
-brew install pv
-# brew install rename
-# brew install rhino
-# brew install speedtest_cli
-brew install ssh-copy-id
-brew install esolitos/ipa/sshpass
-brew install pssh
-brew install mosh
-brew install tree
-# brew install webkit2png
-# brew install zopfli
-# brew install pkg-config libffi
-brew install pandoc
-brew install dockutil
-brew install htop
-brew install jq
-brew install awscli
-brew install azure-cli
-brew install gcloud-cli
-brew install kubernetes-cli
-brew install helm
+brew install --yes wget
+# brew install --yes exiv2
+brew install --yes fzf
+brew install --yes watch
+brew install --yes gzip
+brew install --yes pigz
+brew install --yes p7zip
+brew install --yes git
+brew install --yes git-lfs
+# brew install --yes git-extras
+brew install --yes gh
+# brew install --yes imagemagick --with-webp
+# brew install --yes lynx
+brew install --yes pv
+# brew install --yes rename
+# brew install --yes speedtest-cli
+brew install --yes ssh-copy-id
+brew install --yes esolitos/ipa/sshpass
+brew install --yes pssh
+brew install --yes mosh
+brew install --yes tree
+# brew install --yes webkit2png
+# brew install --yes zopfli
+# brew install --yes pkg-config libffi
+brew install --yes pandoc
+brew install --yes dockutil
+brew install --yes htop
+brew install --yes jq
+brew install --yes awscli
+brew install --yes azure-cli
+brew install --yes gcloud-cli
+brew install --yes kubernetes-cli
+brew install --yes helm
 
 # Lxml and Libxslt
-# brew install libxml2
-# brew install libxslt
+# brew install --yes libxml2
+# brew install --yes libxslt
 # brew link libxml2 --force
 # brew link libxslt --force
 
-# Install quicklook plugins
-# https://github.com/sindresorhus/quick-look-plugins
-# https://github.com/haokaiyang/Mac-QuickLook
-brew install --cask --appdir "/Applications/QuickLookPlugins" \
-  qlstephen qlmarkdown syntax-highlight \
-  quicklook-json  suspicious-package apparency quicklookase qlvideo
-xattr -d -r com.apple.quarantine ~/Library/QuickLook
+# # Install quicklook plugins
+# # https://github.com/sindresorhus/quick-look-plugins
+# # https://github.com/haokaiyang/Mac-QuickLook
+# brew install --yes --cask \
+#   qlstephen qlmarkdown syntax-highlight \
+#   suspicious-package apparency quicklookase qlvideo
+# xattr -d -r com.apple.quarantine ~/Library/QuickLook
 
 # Install terminals
-# brew install --cask iterm2
-brew install --cask ghostty
-brew install --cask alacritty
-# download pretty icon for alacritty
-[ -e /Applications/Alacritty.app ] && (
-  curl -L 'https://www.dropbox.com/s/0i4ez0el7paksg3/Alacritty.icns' \
-    -o /Applications/Alacritty.app/Contents/Resources/alacritty.icns
-  touch /Applications/Alacritty.app
-)
-brew install --cask xquartz # -> requires password
+# brew install --yes --cask iterm2
+#brew install --yes --cask alacritty
+## download pretty icon for alacritty
+#[ -e /Applications/Alacritty.app ] && (
+#  curl -L 'https://www.dropbox.com/s/0i4ez0el7paksg3/Alacritty.icns' \
+#    -o /Applications/Alacritty.app/Contents/Resources/alacritty.icns
+#  touch /Applications/Alacritty.app
+#)
+brew install --yes --cask ghostty
+brew install --yes --cask xquartz # -> requires password
 
 # Install SFMono patched with the nerd font
 # https://github.com/epk/SF-Mono-Nerd-Font
-brew tap epk/epk && brew install --cask font-sf-mono-nerd-font
+brew trust epk/epk \
+  && brew tap epk/epk \
+  && brew install --yes --cask font-sf-mono-nerd-font
 
 # Install useful apps
-brew install --cask google-chrome
-brew install --cask safari-technology-preview
-brew install --cask mos
-# brew install --cask betterzip
-brew install --cask keka
-brew install --cask alfred
-brew install --cask thaw
-# brew install --cask bartender
-brew install --cask microsoft-office
-brew install --cask slack
-brew install --cask zotero
-brew install --cask homerow
-brew tap AlexStrNik/Browserino && brew install browserino --no-quarantine
+brew install --yes --cask google-chrome
+brew install --yes --cask safari-technology-preview
+brew install --yes --cask mos
+# brew install --yes --cask betterzip
+brew install --yes --cask keka
+brew install --yes --cask alfred
+brew install --yes --cask thaw
+# brew install --yes --cask bartender
+brew install --yes --cask microsoft-office
+brew install --yes --cask zotero
+brew install --yes --cask slack
+brew install --yes --cask homerow
+brew trust AlexStrNik/Browserino \
+  && brew tap AlexStrNik/Browserino \
+  && brew install --yes browserino \
+  && xattr -d -r com.apple.quarantine /Applications/Browserino.app
 
 # Install personal useful apps
 # https://www.microsoft.com/en-us/microsoft-365/blog/2025/02/28/the-next-chapter-moving-from-skype-to-microsoft-teams/
-# brew install --cask skype
-brew install --cask istat-menus
-# brew install --cask stats
-# brew install --cask eul
-brew install --cask teamviewer # -> requires password
-# brew install --cask alt-tab
-brew install --cask synology-drive
-brew install --cask openvpn-connect
-brew install --cask hazel
-brew install --cask dropbox
-# brew install --cask inkscape
-brew install --cask mactex # -> requires password
-brew install --cask mathpix-snipping-tool
-brew install --cask notion
-brew install --cask transmission
-# brew install --cask swiftbar
-brew install --cask paragon-ntfs
+# brew install --yes --cask skype
+brew install --yes --cask istat-menus
+# brew install --yes --cask stats
+brew install --yes --cask teamviewer # -> requires password
+# brew install --yes --cask alt-tab
+brew install --yes --cask synology-drive
+brew install --yes --cask openvpn-connect
+brew install --yes --cask hazel
+brew install --yes --cask dropbox
+# brew install --yes --cask inkscape
+brew install --yes --cask mactex # -> requires password
+brew install --yes --cask mathpix-snipping-tool
+brew install --yes --cask notion
+# brew install --yes --cask transmission
+# brew install --yes --cask swiftbar
+# brew install --yes --cask paragon-ntfs
 
 # Install virtualmachine engines
-# brew install --cask vmware-fusion
-brew install --cask parallels
-# brew install --cask virtualbox
-# brew install --cask vagrant
-# brew install --cask vagrant-manager
+# brew install --yes --cask vmware-fusion
+brew install --yes --cask parallels
+# brew install --yes --cask virtualbox
+# brew install --yes --cask vagrant
+# brew install --yes --cask vagrant-manager
 
 # Install container engines
 # brew install docker
@@ -266,12 +263,12 @@ mas install 1519867270  # Refined GitHub
 
 ## not free
 mas install 445189367   # PopClip
-mas install 441258766   # Magnet
-mas install 461788075   # Movist
+# mas install 441258766   # Magnet
+# mas install 461788075   # Movist
 mas install 577085396   # Unclutter
 mas install 1231935892  # Unicorn Blocker:Adblock
 mas install 1475628500  # Unicorn HTTPS
-mas install 922765270   # LiquidText
+# mas install 922765270   # LiquidText
 
 
 # Remove outdated versions from the cellar.
