@@ -207,40 +207,40 @@ brew install --yes --cask parallels
 # brew install --yes --cask vagrant-manager
 
 # Install container engines
-# brew install docker
-# brew install docker-compose
-brew install podman
-brew install podman-compose
+# brew install --yes docker
+# brew install --yes docker-compose
+brew install --yes podman
+brew install --yes podman-compose
 
-# Install yabai
-brew install koekeishiya/formulae/yabai
-echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 "$(brew --prefix)/bin/yabai") --load-sa" | \
-    sudo tee -a /private/etc/sudoers.d/yabai >/dev/null
-# reinstall the scripting addition
-sudo yabai --uninstall-sa || true
-sudo yabai --install-sa || true
-yabai --start-service
-# load the scripting addition
-killall Dock || true
-
-# Install skhd
-brew install koekeishiya/formulae/skhd
-skhd --start-service
-
-# # Install uebersicht
-# brew install --cask ubersicht
-# # install simplebar
-# git clone https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
-
-# Install sketchybar
-brew tap FelixKratz/formulae && brew install sketchybar
-brew services start sketchybar
-# install app font for sketchybar
-app_font_version=$("$DIR"/../helpers/gh_get_latest_release "kvndrsslr/sketchybar-app-font")
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/"${app_font_version}"/sketchybar-app-font.ttf \
-  -o "$HOME"/Library/Fonts/sketchybar-app-font.ttf
-curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/"${app_font_version}"/icon_map.sh \
-  -o "$DIR"/../../config/sketchybar/plugins/icon_map.sh
+## Install yabai
+#brew install --yes koekeishiya/formulae/yabai
+#echo "$(whoami) ALL=(root) NOPASSWD: sha256:$(shasum -a 256 "$(brew --prefix)/bin/yabai") --load-sa" | \
+#    sudo tee -a /private/etc/sudoers.d/yabai >/dev/null
+## reinstall the scripting addition
+#sudo yabai --uninstall-sa || true
+#sudo yabai --install-sa || true
+#yabai --start-service
+## load the scripting addition
+#killall Dock || true
+#
+## Install skhd
+#brew install --yes koekeishiya/formulae/skhd
+#skhd --start-service
+#
+## # Install uebersicht
+## brew install --yes --cask ubersicht
+## # install simplebar
+## git clone https://github.com/Jean-Tinland/simple-bar $HOME/Library/Application\ Support/Übersicht/widgets/simple-bar
+#
+## Install sketchybar
+#brew tap FelixKratz/formulae && brew install --yes sketchybar
+#brew services start sketchybar
+## install app font for sketchybar
+#app_font_version=$("$DIR"/../helpers/gh_get_latest_release "kvndrsslr/sketchybar-app-font")
+#curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/"${app_font_version}"/sketchybar-app-font.ttf \
+#  -o "$HOME"/Library/Fonts/sketchybar-app-font.ttf
+#curl -L https://github.com/kvndrsslr/sketchybar-app-font/releases/download/"${app_font_version}"/icon_map.sh \
+#  -o "$DIR"/../../config/sketchybar/plugins/icon_map.sh
 
 
 ## free stuff
