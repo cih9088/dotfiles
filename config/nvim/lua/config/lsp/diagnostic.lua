@@ -1,31 +1,56 @@
 local M = {}
 
-local function symbols_override()
-  local signs = { Error = "", Warn = " ", Hint = " ", Info = " " }
-  -- local signs = { Error = "•", Warn = "•", Hint = "•", Info = "•" }
-  for type, icon in pairs(signs) do
-    local hl = "DiagnosticSign" .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-  end
-end
+local icons = {
+  ERROR = "",
+  WARN = "",
+  HINT = "",
+  INFO = "",
+}
 
 local function diagnostic_override()
   vim.diagnostic.config({
-    -- virtual_lines = {
-    --    -- Only show virtual line diagnostics for the current cursor line
-    --    current_line = true,
-    --    format = function(diagnostic)
-    --       return ('%s: %s [%s]'):format(diagnostic.source, diagnostic.message, diagnostic.code)
-    --    end,
-    -- },
     severity_sort = true,
+    status = {
+      format = function(counts)
+        local items = {}
+        for severity, count in pairs(counts) do
+          local name = vim.diagnostic.severity[severity]
+          local hl = "Diagnostic" .. name:sub(1, 1) .. name:sub(2):lower()
+          table.insert(items, ("%%#%s#%s %d"):format(hl, icons[name], count))
+        end
+        return table.concat(items, " ")
+      end,
+    },
     virtual_text = {
       severity = vim.diagnostic.severity.ERROR,
+      prefix = "",
+      format = function(diagnostic)
+        local message = icons[vim.diagnostic.severity[diagnostic.severity]]
+        if diagnostic.source then
+          message = string.format("%s %s", message, diagnostic.source)
+        end
+        if diagnostic.code then
+          message = string.format("%s[%s]", message, diagnostic.code)
+        end
+        return message .. " "
+      end,
     },
     float = {
       source = true,
-      focusable = false, -- See neovim#16425
       border = "single",
+      prefix = function(diag)
+        local level = vim.diagnostic.severity[diag.severity]
+        local prefix = string.format(" %s  ", icons[level])
+        return prefix, "Diagnostic" .. level:gsub("^%l", string.upper)
+      end,
+    },
+    signs = {
+      text = {
+        [vim.diagnostic.severity.ERROR] = icons["ERROR"],
+        [vim.diagnostic.severity.WARN] = icons["WARN"],
+        [vim.diagnostic.severity.HINT] = icons["HINT"],
+        [vim.diagnostic.severity.INFO] = icons["INFO"],
+      },
     },
   })
 
@@ -56,7 +81,6 @@ local function diagnostic_override()
 end
 
 function M.setup()
-  symbols_override()
   diagnostic_override()
 end
 

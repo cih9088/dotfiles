@@ -93,8 +93,12 @@ function M.setup()
 
       -- Setup diagnostic mapping
       local opts = { noremap = true, silent = true }
-      vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-      vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+      vim.keymap.set("n", "[d", function()
+        vim.diagnostic.jump({ count = -1 })
+      end, opts)
+      vim.keymap.set("n", "]d", function()
+        vim.diagnostic.jump({ count = 1 })
+      end, opts)
       vim.keymap.set("n", "grd", vim.diagnostic.setloclist, opts)
 
       -- Buffer local mappings.
