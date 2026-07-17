@@ -101,7 +101,6 @@
 
 " Language Specific
 " ---------------------------------------------------------------------------------------
-  " Plug 'SirVer/ultisnips'
 
   if has("nvim-0.7")
     Plug 'williamboman/mason.nvim', { 'do': ':MasonUpdate' }
@@ -112,32 +111,31 @@
     Plug 'nvimtools/none-ls.nvim'
     Plug 'stevearc/conform.nvim'
 
-    Plug 'hrsh7th/nvim-cmp'
-    Plug 'hrsh7th/cmp-nvim-lsp'
-    Plug 'hrsh7th/cmp-buffer'
-    Plug 'hrsh7th/cmp-path'
-    Plug 'hrsh7th/cmp-emoji'
-    Plug 'hrsh7th/cmp-cmdline'
-    Plug 'andersevenrud/cmp-tmux'
-    Plug 'L3MON4D3/LuaSnip'
-    Plug 'saadparwaiz1/cmp_luasnip'
+    Plug 'L3MON4D3/LuaSnip'  " snippet engine
+
+    Plug 'hrsh7th/nvim-cmp'  " completion engine
+      Plug 'hrsh7th/cmp-nvim-lsp'
+      Plug 'hrsh7th/cmp-buffer'
+      Plug 'hrsh7th/cmp-path'
+      Plug 'hrsh7th/cmp-emoji'
+      Plug 'hrsh7th/cmp-cmdline'
+      Plug 'andersevenrud/cmp-tmux'
+      Plug 'saadparwaiz1/cmp_luasnip'
+      " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 
     Plug 'ray-x/lsp_signature.nvim'
-    " Plug 'hood/popui.nvim'
-    " Plug 'quangnguyen30192/cmp-nvim-ultisnips'
     Plug 'windwp/nvim-ts-autotag'
     Plug 'dmmulroy/ts-error-translator.nvim'
     Plug 'diogo464/kubernetes.nvim'
   else
+    Plug 'SirVer/ultisnips'  " snippet engine
     Plug 'neoclide/coc.nvim', { 'branch': 'release' }
     Plug 'dag/vim-fish', { 'for': 'fish' }
     Plug 'lervag/vimtex', { 'for': 'tex' }
     Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries', 'for': 'go' }
     Plug 'wellle/tmux-complete.vim'
   endif
-    " Plug 'rafamadriz/friendly-snippets'
   Plug 'honza/vim-snippets'
-  " Plug 'Vimjas/vim-python-pep8-indent', { 'for': 'python' }
   Plug 'pearofducks/ansible-vim'
   Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }    " no treesitter parser
   Plug 'mzlogin/vim-markdown-toc', { 'for': 'markdown' }

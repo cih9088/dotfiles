@@ -199,7 +199,7 @@
 # ---------------------------------------------------------------------------------------
   if [ -x "$(command -v fzf)" ]; then
     # Auto-completion
-    [[ $- == *i* ]] && 
+    [[ $- == *i* ]] &&
       source "${HOME}/.local/share/nvim/plugged/fzf/shell/completion.zsh" 2>/dev/null
     # Key bindings
     source "${HOME}/.local/share/nvim/plugged/fzf/shell/key-bindings.zsh"
@@ -376,7 +376,7 @@
 # ---------------------------------------------------------------------------------------
   unalias cd &>/dev/null
   cd() {
-    nocorrect builtin cd "$@" && 
+    nocorrect builtin cd "$@" &&
       (
         n_files=$(\timeout 0.01 ls -f | wc -l)
         if [ ${n_files} != 0 ]; then

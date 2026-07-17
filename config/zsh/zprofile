@@ -59,13 +59,6 @@
   fi
 
 
-# # yarn to PATH
-# # ---------------------------------------------------------------------------------------
-#   [[ ":$PATH:" != *":$HOME/.yarn/bin:"* ]] && export PATH="$HOME/.yarn/bin:${PATH}"
-#   [[ ":$PATH:" != *":$HOME/.config/yarn/global/node_modules/.bin:"* ]] && \
-#     export PATH="$HOME/.config/yarn/global/node_modules/.bin:${PATH}"
-
-
 # Setup pyenv -> DEPRECATED in favour of asdf (zsh startup time is too slow)
 # ---------------------------------------------------------------------------------------
   # prefer locally installed pyenv
