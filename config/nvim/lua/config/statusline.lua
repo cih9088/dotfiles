@@ -127,7 +127,7 @@ M.get_git_status = function(self)
 
   local output = ""
   if is_head_empty then
-    output = " " .. string.format(" %s", signs.head)
+    output = string.format(" %s", signs.head)
     if self:is_truncated(self.trunc_width.git_branch) then
       return output
     end
@@ -138,15 +138,12 @@ M.get_git_status = function(self)
 
     if added ~= "0" and added ~= "nil" then
       output = output .. " %#StatusGitSignsAdd#" .. string.format(" %s", added) .. "%0*"
-      -- output = output .. " " .. string.format(" %s", added)
     end
     if changed ~= "0" and changed ~= "nil" then
       output = output .. " %#StatusGitSignsChange#" .. string.format(" %s", changed) .. "%0*"
-      -- output = output .. " " .. string.format(" %s", changed)
     end
     if removed ~= "0" and removed ~= "nil" then
       output = output .. " %#StatusGitSignsDelete#" .. string.format(" %s", removed) .. "%0*"
-      -- output = output .. " " .. string.format(" %s", removed)
     end
   end
 
@@ -164,18 +161,18 @@ M.get_filepath = function(self)
 end
 
 M.get_filename = function()
-  local filename = fn.expand("%:t")
-  return filename == "" and " " or filename .. " "
+  return fn.expand("%:t")
 end
 
 M.get_fileflag = function()
-  local mod = "%{&modified ? '🖋️' : !&modifiable ? '🔒' : ''}"
-  local ro = "%{&readonly ? '👀' : ''}"
-
-  return mod .. ro .. " "
+  return "%{&modified ? '🖋️' : !&modifiable ? '🔒' : &readonly ? '👀' : '🌸'}"
 end
 
-M.get_filetype = function()
+M.get_filetype = function(self)
+  if self:is_truncated(self.trunc_width.filetype) then
+    return ""
+  end
+
   local icon
   local filetype = vim.bo.filetype
 
@@ -186,13 +183,10 @@ M.get_filetype = function()
   end
 
   if icon then
-    filetype = icon .. " " .. filetype
+    filetype = icon
   end
 
-   -- stylua: ignore
-   return filetype == ""
-       and "[No FT] "
-       or string.format("[%s] ", filetype):lower()
+  return string.format("%s", filetype):upper()
 end
 
 M.get_fileformat = function(self)
@@ -214,12 +208,12 @@ M.get_encoding = function(self)
   return string.format("%s", vim.o.encoding):upper()
 end
 
-M.get_encoding_fileformat = function(self)
+M.get_meta = function(self)
   if self:is_truncated(self.trunc_width.fileformat) then
     return ""
   end
 
-  return string.format("[%s/%s] ", self:get_encoding(), self:get_fileformat())
+  return string.format("[%s/%s/%s]", self:get_filetype(), self:get_encoding(), self:get_fileformat())
 end
 
 M.get_line_col = function()
@@ -231,19 +225,17 @@ M.lsp_status = function(self)
     return ""
   end
 
-  local msg = "🌼"
-  local msg_fail = "[No Active LSP]"
   local clients = vim.lsp.get_clients()
-
   if #clients == 0 then
-    return msg_fail
+    return ""
   end
 
+  local msg = ""
   -- for _, client in pairs(clients) do
   --    msg = msg .. client.name .. ","
   -- end
   -- msg = string.sub(msg, 1, -2)
-  --
+
   if lsp_status ~= nil then
     msg = msg .. require("lsp-status").status()
   end
@@ -251,82 +243,35 @@ M.lsp_status = function(self)
   return msg
 end
 
-M.lsp_diagnostic = function(self)
-  if self:is_truncated(self.trunc_width.lsp_diagnostic) then
+M.diagnostic = function(self)
+  if self:is_truncated(self.trunc_width.diagnostic) then
     return ""
   end
-
-  local output = ""
-  local err_ctr = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
-  local err_sign = vim.fn.sign_getdefined("DiagnosticSignError")
-  local warn_ctr = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.WARN })
-  local warn_sign = vim.fn.sign_getdefined("DiagnosticSignWarn")
-  local hint_ctr = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
-  local hint_sign = vim.fn.sign_getdefined("DiagnosticSignHint")
-  local info_ctr = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
-  local info_sign = vim.fn.sign_getdefined("DiagnosticSignInfo")
-
-  if err_ctr > 0 then
-    output = output
-      .. "%#Status"
-      .. err_sign[1].texthl
-      .. "#"
-      .. err_sign[1].text
-      .. err_ctr
-      .. " %0*"
-    -- output = output .. err_sign[1].text .. err_ctr .. " "
-  end
-  if warn_ctr > 0 then
-    output = output
-      .. "%#Status"
-      .. warn_sign[1].texthl
-      .. "#"
-      .. warn_sign[1].text
-      .. warn_ctr
-      .. " %0*"
-    -- output = output .. warn_sign[1].text .. warn_ctr .. " "
-  end
-  if hint_ctr > 0 then
-    output = output
-      .. "%#Status"
-      .. hint_sign[1].texthl
-      .. "#"
-      .. hint_sign[1].text
-      .. hint_ctr
-      .. " %0*"
-    -- output = output .. hint_sign[1].text .. hint_ctr .. " "
-  end
-  if info_ctr > 0 then
-    output = output
-      .. "%#Status"
-      .. info_sign[1].texthl
-      .. "#"
-      .. info_sign[1].text
-      .. info_ctr
-      .. " %0*"
-    -- output = output .. info_sign[1].text .. info_ctr .. " "
-  end
-
-  return "  " .. output
+  return vim.diagnostic.status()
 end
 
 M.set_active = function(self)
   return table.concat({
-    "[%n] 🌸 ",
+    -- "▊ ",
+    "[%n] ",
+    self:get_fileflag(),
+    " ",
     -- string.format("[%s] ", self:get_current_mode()),
     self:get_filepath(),
     self:get_filename(),
-    self:get_fileflag(),
-    self:get_filetype(),
+    " ",
     self:get_git_status(),
+    " ",
     "%=",
-    "  ",
-    -- "%#String#",
+    " ",
     self:lsp_status(),
-    self:lsp_diagnostic(),
-    self:get_encoding_fileformat(),
+    " ",
+    self:diagnostic(),
+    " ",
+    self:get_meta(),
     "%0* ",
     self:get_line_col(),
+    -- " ▊",
   })
 end
 
