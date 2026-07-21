@@ -1,5 +1,6 @@
 
-_CONFIG_PATH="$(readlink -f $HOME/.config/ghostty/config)"
+local _CONFIG_PATH="$(readlink -f $HOME/.config/ghostty/config)"
+local _THEME
 
 if [ -n "${1}" ]; then
   _THEME="${1}"
@@ -22,6 +23,11 @@ fi
   && echo "cannot determine ghostty theme" >&1 && return 1
 
 # https://github.com/ghostty-org/ghostty/pull/7759
-pkill -SIGUSR2 ghostty
+if [[ $OSTYPE == darwin* ]]; then
+  # On macOS, pgrep and pkill exclude their own ancestor processes by default
+  pkill -SIGUSR2 -a ghostty
+else
+  pkill -SIGUSR2 ghostty
+fi
 
 echo ${_THEME}
