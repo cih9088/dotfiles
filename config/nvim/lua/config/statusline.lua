@@ -73,6 +73,7 @@ M.trunc_width = setmetatable({
   git_status = 100,
   git_branch = 140,
   filepath = 50,
+  filetype = 50,
 }, {
   __index = function()
     return 100
@@ -176,10 +177,10 @@ M.get_filetype = function(self)
   local icon
   local filetype = vim.bo.filetype
 
-  if vim.fn.exists("*WebDevIconsGetFileTypeSymbol") == 1 then
-    icon = vim.fn.WebDevIconsGetFileTypeSymbol()
-  elseif package.loaded["nvim-web-devicons"] ~= nil then
+  if package.loaded["nvim-web-devicons"] ~= nil then
     icon = require("nvim-web-devicons").get_icon_by_filetype(filetype)
+  elseif vim.fn.exists("*WebDevIconsGetFileTypeSymbol") == 1 then
+    icon = vim.fn.WebDevIconsGetFileTypeSymbol()
   end
 
   if icon then
@@ -194,10 +195,24 @@ M.get_fileformat = function(self)
     return ""
   end
 
+  local icon
   local fileformat = vim.o.fileformat
+
   if vim.fn.exists("*WebDevIconsGetFileFormatSymbol") == 1 then
-    fileformat = vim.fn.WebDevIconsGetFileFormatSymbol()
+    icon = vim.fn.WebDevIconsGetFileFormatSymbol()
+  else
+    local format_icons = {
+        unix = "",
+        dos  = "",
+        mac  = "",
+      }
+    icon = format_icons[fileformat] or ""
   end
+
+  if icon then
+    fileformat = icon
+  end
+
   return string.format("%s", fileformat):lower()
 end
 
@@ -209,11 +224,20 @@ M.get_encoding = function(self)
 end
 
 M.get_meta = function(self)
-  if self:is_truncated(self.trunc_width.fileformat) then
+  local filetype = self:get_filetype()
+  local encoding = self:get_encoding()
+  local fileformat = self:get_fileformat()
+
+  local components = {}
+  if filetype ~= "" then table.insert(components, filetype) end
+  if encoding ~= "" then table.insert(components, encoding) end
+  if fileformat ~= "" then table.insert(components, fileformat) end
+
+  if #components == 0 then
     return ""
   end
 
-  return string.format("[%s/%s/%s]", self:get_filetype(), self:get_encoding(), self:get_fileformat())
+  return string.format("[ %s ]", table.concat(components, " | "))
 end
 
 M.get_line_col = function()
