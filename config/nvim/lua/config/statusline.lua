@@ -150,18 +150,26 @@ M.get_git_status = function(self)
   return output
 end
 
-M.get_filepath = function(self)
-  local filepath = fn.fnamemodify(fn.expand("%"), ":.:h")
-
-  if filepath == "" or filepath == "." or self:is_truncated(self.trunc_width.filepath) then
+M.get_filedir = function(self)
+  if self:is_truncated(self.trunc_width.filepath) then
     return ""
   end
 
-  return string.format("%%<%s/", filepath)
+  local winid = vim.g.statusline_winid
+  if not winid or winid == 0 then return "" end
+
+  local bufnr = vim.api.nvim_win_get_buf(winid)
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  if bufname == "" then return "" end
+
+  local dir_path = vim.fn.fnamemodify(bufname, ":.:h")
+  if dir_path == "" then return "" end
+
+  return string.format("%%<%s/", dir_path)
 end
 
 M.get_filename = function()
-  return fn.expand("%:t")
+  return "%t"
 end
 
 M.get_fileflag = function()
@@ -280,7 +288,7 @@ M.set_active = function(self)
     self:get_fileflag(),
     " ",
     -- string.format("[%s] ", self:get_current_mode()),
-    self:get_filepath(),
+    self:get_filedir(),
     self:get_filename(),
     " ",
     self:get_git_status(),
@@ -302,7 +310,7 @@ M.set_inactive = function(self)
   return table.concat({
     -- "▊ ",
     "[%n] ",
-    self:get_filepath(),
+    self:get_filedir(),
     self:get_filename(),
     -- " ▊",
   })
