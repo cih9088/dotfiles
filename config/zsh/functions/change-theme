@@ -34,23 +34,23 @@ if [ -n "${_THEME}" ]; then
   echo "Changing theme to '${_THEME}'"
 
   # renew environment variable
-  export COLOUR_SCHEME=${_THEME}
-  export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
+  export DOTS_THEME=${_THEME}
+  export DOTS_BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
 
   # renew ls color
-  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME ] &&
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME) ||
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$BG_LUMINANCE)
+  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] &&
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME) ||
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_BG_LUMINANCE)
 
   # renew fzf color
-  [ -f $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME ] &&
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME)" ||
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$BG_LUMINANCE)"
+  [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] &&
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)" ||
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_BG_LUMINANCE)"
 
   if tmux info &> /dev/null; then
     # update tmux environment
-    tmux set-environment BG_LUMINANCE $BG_LUMINANCE
-    tmux set-environment COLOUR_SCHEME $COLOUR_SCHEME
+    tmux set-environment DOTS_BG_LUMINANCE $DOTS_BG_LUMINANCE
+    tmux set-environment DOTS_THEME $DOTS_THEME
 
     # source tmux config
     tmux source-file $HOME/.tmux.conf

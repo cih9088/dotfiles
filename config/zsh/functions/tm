@@ -5,14 +5,14 @@
 has -v tmux fzf
 
 if tmux ls >/dev/null 2>&1; then
-  _CUR_COLOUR_SCHEME=$(tmux show-environment COLOUR_SCHEME | awk -F'=' '{print $2}')
-  _CUR_BG_LUMINANCE=$(tmux show-environment BG_LUMINANCE | awk -F'=' '{print $2}')
+  _CUR_THEME=$(tmux show-environment DOTS_THEME | awk -F'=' '{print $2}')
+  _CUR_BG_LUMINANCE=$(tmux show-environment DOTS_BG_LUMINANCE | awk -F'=' '{print $2}')
 
-  if [[ $_CUR_BG_LUMINANCE != $BG_LUMINANCE || $_CUR_COLOUR_SCHEME != $COLOUR_SCHEME ]]; then
+  if [[ $_CUR_BG_LUMINANCE != $DOTS_BG_LUMINANCE || $_CUR_THEME != $DOTS_THEME ]]; then
 
     # update tmux environment
-    tmux set-environment BG_LUMINANCE $BG_LUMINANCE
-    tmux set-environment COLOUR_SCHEME $COLOUR_SCHEME
+    tmux set-environment DOTS_BG_LUMINANCE $DOTS_BG_LUMINANCE
+    tmux set-environment DOTS_THEME $DOTS_THEME
 
     # source tmux config
     tmux source-file $HOME/.tmux.conf

@@ -11,14 +11,14 @@ tmux list-panes -s -F "$pane_fmt" | awk '
   _CMD=' eval "$(tmux show-env -s)"; '
 
   # renew ls color
-  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME ] &&
-    _CMD+='export LS_COLORS="$(cat $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME)"; ' ||
-    _CMD+='export LS_COLORS="$(cat $DOTS/config/zsh/ls_colors/ls_colors.$BG_LUMINANCE)"; '
+  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] &&
+    _CMD+='export LS_COLORS="$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME)"; ' ||
+    _CMD+='export LS_COLORS="$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_BG_LUMINANCE)"; '
 
   # renew fzf color
-  [ -f $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME ] &&
-    _CMD+='export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME)"; ' ||
-    _CMD+='export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$BG_LUMINANCE)"; '
+  [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] &&
+    _CMD+='export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)"; ' ||
+    _CMD+='export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_BG_LUMINANCE)"; '
 
   # Execute
   tmux send-keys -t "$pane_id" 'Enter' "$_CMD" 'Enter'

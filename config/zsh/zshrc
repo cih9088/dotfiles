@@ -22,12 +22,12 @@
 # Get terminal colour scheme and background luminance
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
-  [ -z "${COLOUR_SCHEME+x}" ] && export COLOUR_SCHEME=$(
+  [ -z "${DOTS_THEME+x}" ] && export DOTS_THEME=$(
     basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
       cut -d '.' -f 1)
-  [ -z "${COLOUR_SCHEME}" ] && export COLOUR_SCHEME=seoul256
-  [ -z "${BG_LUMINANCE+x}" ] && export BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
-  [ -z "${BG_LUMINANCE}" ] && export BG_LUMINANCE="dark"
+  [ -z "${DOTS_THEME}" ] && export DOTS_THEME=seoul256
+  [ -z "${DOTS_BG_LUMINANCE+x}" ] && export DOTS_BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
+  [ -z "${DOTS_BG_LUMINANCE}" ] && export DOTS_BG_LUMINANCE="dark"
 
 
 # Add color to terminal
@@ -36,9 +36,9 @@
   # export LSCOLORS=exfxcxdxbxGxDxabagacad
   # # https://github.com/trapd00r/LS_COLORS
   # export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors)
-  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME ] &&
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$COLOUR_SCHEME) ||
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$BG_LUMINANCE)
+  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] &&
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME) ||
+    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_BG_LUMINANCE)
 
 
 # Setup FZF
@@ -56,12 +56,12 @@
   # show full command below
   export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
   # change fzf color
-  [ -f $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME ] &&
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$COLOUR_SCHEME)" ||
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$BG_LUMINANCE)"
   # add fzf path
   [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
     export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
+  [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] &&
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)" ||
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_BG_LUMINANCE)"
 
 
 # Setup xpanes
