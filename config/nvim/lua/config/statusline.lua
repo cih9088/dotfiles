@@ -70,9 +70,8 @@ vim.cmd([[
 ]])
 
 M.trunc_width = setmetatable({
-  git_status = 100,
   git_branch = 140,
-  filepath = 50,
+  filepath = 80,
   filetype = 50,
 }, {
   __index = function()
@@ -299,8 +298,14 @@ M.set_active = function(self)
   })
 end
 
-M.set_inactive = function()
-  return "%#StatusLineNC#" .. "[%n] %F"
+M.set_inactive = function(self)
+  return table.concat({
+    -- "▊ ",
+    "[%n] ",
+    self:get_filepath(),
+    self:get_filename(),
+    -- " ▊",
+  })
 end
 
 Statusline = setmetatable(M, {
