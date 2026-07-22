@@ -1,5 +1,6 @@
 
-_CONFIG_PATH="$(readlink -f $HOME/.config/alacritty/alacritty.toml)"
+local _CONFIG_PATH="$(readlink -f $HOME/.config/alacritty/alacritty.toml)"
+local _THEME
 
 if [ -n "${1}" ]; then
   _THEME="${1}"
