@@ -1,0 +1,251 @@
+#!/bin/sh
+
+# Print the theme whose ANSI palette matches the current terminal.
+
+set -u
+
+usage() {
+  cat <<EOF
+Usage: ${0##*/} [--help]
+
+Identify the current terminal theme by comparing ANSI colors 0 through 15.
+Ghostty or Alacritty is detected automatically.
+
+Default theme directories:
+  Ghostty:   \$GHOSTTY_THEME_DIR or ~/.config/ghostty/themes
+  Alacritty: \$ALACRITTY_COLORSCHEME_DIR or ~/.config/alacritty/colourschemes
+EOF
+}
+
+case ${1-} in
+  -h|--help)
+    [ "$#" -eq 1 ] || {
+      usage >&2
+      exit 2
+    }
+    usage
+    exit 0
+    ;;
+  "")
+    ;;
+  *)
+    usage >&2
+    exit 2
+    ;;
+esac
+
+detect_terminal() {
+  pid=${PPID:-$$}
+
+  if [ -n "${TMUX-}" ] && command -v tmux >/dev/null 2>&1; then
+    client_pid=$(tmux display-message -p '#{client_pid}' 2>/dev/null) || client_pid=
+    case $client_pid in
+      *[!0-9]*|'') ;;
+      *) pid=$client_pid ;;
+    esac
+  fi
+
+  while [ "$pid" -gt 1 ] 2>/dev/null; do
+    process_name=$(ps -p "$pid" -o comm= 2>/dev/null) || process_name=
+    process_name=$(printf '%s' "$process_name" | tr '[:upper:]' '[:lower:]')
+
+    case $process_name in
+      *alacritty*)
+        printf '%s\n' alacritty
+        return 0
+        ;;
+      *ghostty*)
+        printf '%s\n' ghostty
+        return 0
+        ;;
+    esac
+
+    parent_pid=$(ps -p "$pid" -o ppid= 2>/dev/null | tr -d '[:space:]') || parent_pid=
+    case $parent_pid in
+      *[!0-9]*|'') break ;;
+      *) pid=$parent_pid ;;
+    esac
+  done
+
+  case ${TERM_PROGRAM-} in
+    [Aa]lacritty)
+      printf '%s\n' alacritty
+      return 0
+      ;;
+    [Gg]hostty)
+      printf '%s\n' ghostty
+      return 0
+      ;;
+  esac
+
+  if [ -n "${ALACRITTY_WINDOW_ID-}${ALACRITTY_SOCKET-}" ]; then
+    printf '%s\n' alacritty
+    return 0
+  fi
+
+  if [ -n "${GHOSTTY_RESOURCES_DIR-}${GHOSTTY_BIN_DIR-}" ]; then
+    printf '%s\n' ghostty
+    return 0
+  fi
+
+  return 1
+}
+
+if ! terminal=$(detect_terminal); then
+  printf '%s: cannot detect Ghostty or Alacritty\n' "${0##*/}" >&2
+  exit 2
+fi
+
+config_home=${XDG_CONFIG_HOME:-"${HOME}/.config"}
+
+case $terminal in
+  ghostty)
+    themes_dir=${GHOSTTY_THEME_DIR:-"${config_home}/ghostty/themes"}
+    ;;
+  alacritty)
+    themes_dir=${ALACRITTY_COLORSCHEME_DIR:-"${config_home}/alacritty/colourschemes"}
+    ;;
+esac
+
+query_command=${XTERM_QUERY:-xterm-query}
+
+if [ ! -d "$themes_dir" ]; then
+  printf '%s: theme directory does not exist: %s\n' "${0##*/}" "$themes_dir" >&2
+  exit 2
+fi
+
+if ! command -v "$query_command" >/dev/null 2>&1; then
+  printf '%s: command not found: %s\n' "${0##*/}" "$query_command" >&2
+  exit 127
+fi
+
+current_palette=
+palette_index=0
+
+while [ "$palette_index" -le 15 ]; do
+  if ! response=$("$query_command" "4;$palette_index"); then
+    printf '%s: failed to query ANSI color %s\n' \
+      "${0##*/}" "$palette_index" >&2
+    exit 1
+  fi
+
+  # Keep the high byte of each reported channel to match six-digit theme values.
+  color=$(printf '%s\n' "$response" |
+    tr '[:upper:]' '[:lower:]' |
+    sed -n 's|.*rgb:\([0-9a-f]\{2\}\).*/\([0-9a-f]\{2\}\).*/\([0-9a-f]\{2\}\).*|\1\2\3|p')
+
+  case $color in
+    [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]) ;;
+    *)
+      printf '%s: invalid response for ANSI color %s: %s\n' \
+        "${0##*/}" "$palette_index" "$response" >&2
+      exit 1
+      ;;
+  esac
+
+  current_palette="${current_palette}${current_palette:+:}${color}"
+
+  palette_index=$((palette_index + 1))
+done
+
+theme_matches() {
+  awk -v terminal="$terminal" -v expected="$current_palette" '
+    BEGIN {
+      split(expected, wanted, ":")
+      position["black"] = 0
+      position["red"] = 1
+      position["green"] = 2
+      position["yellow"] = 3
+      position["blue"] = 4
+      position["magenta"] = 5
+      position["cyan"] = 6
+      position["white"] = 7
+    }
+
+    function normalize(value) {
+      sub(/^[[:space:]]*/, "", value)
+      sub(/[[:space:]].*$/, "", value)
+      gsub(/[^[:xdigit:]]/, "", value)
+      return tolower(value)
+    }
+
+    function check_color(palette_index, value) {
+      value = normalize(value)
+
+      if (palette_index !~ /^[0-9]+$/ || palette_index < 0 || palette_index > 15 ||
+          value !~ /^[[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]][[:xdigit:]]$/) {
+        return
+      }
+
+      if (value != wanted[palette_index + 1]) {
+        mismatch = 1
+        exit 1
+      }
+
+      seen[palette_index] = 1
+    }
+
+    /^[[:space:]]*#/ { next }
+
+    terminal == "ghostty" && /^[[:space:]]*palette[[:space:]]*=/ {
+      line = $0
+      sub(/^[[:space:]]*palette[[:space:]]*=[[:space:]]*/, "", line)
+      split(line, fields, "=")
+
+      palette_index = fields[1]
+      gsub(/[[:space:]]/, "", palette_index)
+      check_color(palette_index, fields[2])
+      next
+    }
+
+    terminal == "alacritty" && /^[[:space:]]*\[[^][]+\][[:space:]]*$/ {
+      section = tolower($0)
+      gsub(/[[:space:]\[\]]/, "", section)
+      next
+    }
+
+    terminal == "alacritty" &&
+    (section == "colors.normal" || section == "colors.bright") &&
+    /^[[:space:]]*(black|red|green|yellow|blue|magenta|cyan|white)[[:space:]]*=/ {
+      line = $0
+      split(line, fields, "=")
+
+      color_name = tolower(fields[1])
+      gsub(/[[:space:]]/, "", color_name)
+
+      palette_index = position[color_name]
+      if (section == "colors.bright") {
+        palette_index += 8
+      }
+
+      check_color(palette_index, fields[2])
+    }
+
+    END {
+      if (mismatch) {
+        exit 1
+      }
+
+      for (palette_index = 0; palette_index <= 15; palette_index++) {
+        if (!(palette_index in seen)) {
+          exit 1
+        }
+      }
+    }
+  ' "$1"
+}
+
+for theme_file in "$themes_dir"/*; do
+  [ -f "$theme_file" ] || continue
+
+  if theme_matches "$theme_file"; then
+    theme_name=${theme_file##*/}
+    [ "$terminal" = alacritty ] && theme_name=${theme_name%.toml}
+    printf '%s\n' "$theme_name"
+    exit 0
+  fi
+done
+
+printf '%s: no %s theme matches the current ANSI palette\n' \
+  "${0##*/}" "$terminal" >&2
+exit 1

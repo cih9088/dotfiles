@@ -23,19 +23,20 @@
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
   [ -z "${DOTS_THEME+x}" ] \
-    && export DOTS_THEME=${$(
-      basename "$(grep -rli "background.*[\"']\(#\|0x\)$($DOTS/bin/bg-colourscheme)[\"']" $DOTS/config/alacritty/colourschemes)" \
-        | cut -d '.' -f 1
-    ):-seoul256}
+    && export DOTS_THEME=$($DOTS/bin/identify-theme 2>/dev/null || echo seoul256)
+
   [ -z "${DOTS_BG_LUMINANCE+x}" ] \
-    && export DOTS_BG_LUMINANCE=${$(
+    && export DOTS_BG_LUMINANCE=$(
       $DOTS/bin/xterm-query 11 | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance
-    ):-dark}
+    )
+  [ -z "${DOTS_BG_LUMINANCE}" ] && export DOTS_BG_LUMINANCE=dark
+
   [ -z "${DOTS_HL_LUMINANCE+x}" ] && {
     [ -z "${DOTS_COLOUR0_LUMINANCE+x}" ] \
-      && DOTS_COLOUR0_LUMINANCE=${$(
+      && DOTS_COLOUR0_LUMINANCE=$(
         $DOTS/bin/xterm-query "4;0" | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance
-      ):-dark}
+      )
+    [ -z "${DOTS_COLOUR0_LUMINANCE}" ] && DOTS_COLOUR0_LUMINANCE=dark
 
     # dark background and colour0(black) dark -> dark
     # dark background and colour0(black) light -> light (reversed)
