@@ -13,12 +13,12 @@ tmux list-panes -s -F "$pane_fmt" | awk '
   # renew ls color
   [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] &&
     _CMD+='export LS_COLORS="$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME)"; ' ||
-    _CMD+='export LS_COLORS="$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_BG_LUMINANCE)"; '
+    _CMD+='export LS_COLORS="$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_HL_LUMINANCE)"; '
 
   # renew fzf color
   [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] &&
     _CMD+='export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)"; ' ||
-    _CMD+='export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_BG_LUMINANCE)"; '
+    _CMD+='export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_HL_LUMINANCE)"; '
 
   # Execute
   tmux send-keys -t "$pane_id" 'Enter' "$_CMD" 'Enter'

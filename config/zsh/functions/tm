@@ -7,11 +7,15 @@ has -v tmux fzf
 if tmux ls >/dev/null 2>&1; then
   _CUR_THEME=$(tmux show-environment DOTS_THEME | awk -F'=' '{print $2}')
   _CUR_BG_LUMINANCE=$(tmux show-environment DOTS_BG_LUMINANCE | awk -F'=' '{print $2}')
+  _CUR_HL_LUMINANCE=$(tmux show-environment DOTS_HL_LUMINANCE | awk -F'=' '{print $2}')
 
-  if [[ $_CUR_BG_LUMINANCE != $DOTS_BG_LUMINANCE || $_CUR_THEME != $DOTS_THEME ]]; then
+  if [[ $_CUR_BG_LUMINANCE != $DOTS_BG_LUMINANCE ||
+        $_CUR_HL_LUMINANCE != $DOTS_HL_LUMINANCE ||
+        $_CUR_THEME != $DOTS_THEME ]]; then
 
     # update tmux environment
     tmux set-environment DOTS_BG_LUMINANCE $DOTS_BG_LUMINANCE
+    tmux set-environment DOTS_HL_LUMINANCE $DOTS_HL_LUMINANCE
     tmux set-environment DOTS_THEME $DOTS_THEME
 
     # source tmux config

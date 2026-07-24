@@ -15,19 +15,38 @@
 # Source Prezto
 # ---------------------------------------------------------------------------------------
   # prezto should be sourced here for the fast startup
-  [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] &&
-    source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+  [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]] \
+    && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
-# Get terminal theme and background luminance
+# Get terminal theme and background/highlight luminance
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
-  [ -z "${DOTS_THEME+x}" ] && export DOTS_THEME=$(
-    basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
-      cut -d '.' -f 1)
-  [ -z "${DOTS_THEME}" ] && export DOTS_THEME=seoul256
-  [ -z "${DOTS_BG_LUMINANCE+x}" ] && export DOTS_BG_LUMINANCE=$( $DOTS/bin/xterm-query 11 | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance )
-  [ -z "${DOTS_BG_LUMINANCE}" ] && export DOTS_BG_LUMINANCE="dark"
+  [ -z "${DOTS_THEME+x}" ] \
+    && export DOTS_THEME=${$(
+      basename "$(grep -rli "background.*[\"']\(#\|0x\)$($DOTS/bin/bg-colourscheme)[\"']" $DOTS/config/alacritty/colourschemes)" \
+        | cut -d '.' -f 1
+    ):-seoul256}
+  [ -z "${DOTS_BG_LUMINANCE+x}" ] \
+    && export DOTS_BG_LUMINANCE=${$(
+      $DOTS/bin/xterm-query 11 | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance
+    ):-dark}
+  [ -z "${DOTS_HL_LUMINANCE+x}" ] && {
+    [ -z "${DOTS_COLOUR0_LUMINANCE+x}" ] \
+      && DOTS_COLOUR0_LUMINANCE=${$(
+        $DOTS/bin/xterm-query "4;0" | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance
+      ):-dark}
+
+    # dark background and colour0(black) dark -> dark
+    # dark background and colour0(black) light -> light (reversed)
+    # light background and colour0(black) dark -> light
+    # light background and colour0(black) light -> dark (reversed)
+    [ "${DOTS_BG_LUMINANCE}" = "${DOTS_COLOUR0_LUMINANCE}" ] \
+      && export DOTS_HL_LUMINANCE="dark" \
+      || export DOTS_HL_LUMINANCE="light"
+    unset DOTS_COLOUR0_LUMINANCE
+  }
+  [ -z "${DOTS_HL_LUMINANCE}" ] && export DOTS_HL_LUMINANCE="dark"
 
 
 # Add color to terminal
@@ -36,32 +55,32 @@
   # export LSCOLORS=exfxcxdxbxGxDxabagacad
   # # https://github.com/trapd00r/LS_COLORS
   # export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors)
-  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] &&
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME) ||
-    export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_BG_LUMINANCE)
+  [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] \
+    && export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME) \
+    || export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_HL_LUMINANCE)
 
 
 # Setup FZF
 # ---------------------------------------------------------------------------------------
   # Change search command to fd
-  [ -x "$(command -v fd)" ] &&
-    export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git' &&
-    export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  [ -x "$(command -v fd)" ] \
+    && export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git' \
+    && export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
   # show tree view for the directory
-  [ -x "$(command -v tree)" ] &&
-    export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+  [ -x "$(command -v tree)" ] \
+    && export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
   # show preview with highlight
-  [ -x "$(command -v highlight)" ] &&
-    export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+  [ -x "$(command -v highlight)" ] \
+    && export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
   # show full command below
   export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
   # change fzf color
   # add fzf path
   [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
     export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
-  [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] &&
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)" ||
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_BG_LUMINANCE)"
+  [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] \
+    && export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)" \
+    || export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_HL_LUMINANCE)"
 
 
 # Setup xpanes
@@ -127,8 +146,8 @@
 
   # direnv
   if command -v asdf >/dev/null; then
-    [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ] &&
-      source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
+    [ -e "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc" ] \
+      && source "${XDG_CONFIG_HOME:-$HOME/.config}/asdf-direnv/zshrc"
   fi
 
 
@@ -199,8 +218,8 @@
 # ---------------------------------------------------------------------------------------
   if [ -x "$(command -v fzf)" ]; then
     # Auto-completion
-    [[ $- == *i* ]] &&
-      source "${HOME}/.local/share/nvim/plugged/fzf/shell/completion.zsh" 2>/dev/null
+    [[ $- == *i* ]] \
+      && source "${HOME}/.local/share/nvim/plugged/fzf/shell/completion.zsh" 2>/dev/null
     # Key bindings
     source "${HOME}/.local/share/nvim/plugged/fzf/shell/key-bindings.zsh"
   fi
@@ -263,16 +282,16 @@
     # gcloud command is way slower
     if command -v brew >/dev/null; then
       BREW_PREFIX=$(brew --prefix)
-      [ -f $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc ] &&
-        source $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc
-      [ -f $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc ] &&
-        source $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc
+      [ -f $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc ] \
+        && source $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc
+      [ -f $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc ] \
+        && source $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc
       unset BREW_PREFIX
     else
       GCLOUD_ROOT_PATH=$(gcloud --format='value(installation.sdk_root)' info)
       [ -f $GCLOUD_ROOT_PATH/path.zsh.inc ] && source $GCLOUD_ROOT_PATH/path.zsh.inc
-      [ -f $GCLOUD_ROOT_PATH/completion.zsh.inc ] &&
-        source $GCLOUD_ROOT_PATH/completion.zsh.inc
+      [ -f $GCLOUD_ROOT_PATH/completion.zsh.inc ] \
+        && source $GCLOUD_ROOT_PATH/completion.zsh.inc
       unset GCLOUD_ROOT_PATH
     fi
   fi
