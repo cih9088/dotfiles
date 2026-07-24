@@ -33,6 +33,8 @@
     Plug 'rose-pine/neovim', { 'as': 'rose-pine' }
     Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
     Plug 'vague2k/vague.nvim'
+    Plug 'zenbones-theme/zenbones.nvim'
+      Plug 'rktjmp/lush.nvim'
   endif
 
 
@@ -303,6 +305,7 @@
       endif
     endif
 
+    " set background before colorscheme
     execute "set background=" . l:background
 
     " Change colorscheme
@@ -336,6 +339,8 @@ require("rose-pine").setup({
 })
 EOF
           unlet g:rose_pine_variant
+        elseif l:scheme =~ 'zenwritten.*'
+          let l:scheme = 'zenwritten'
         endif
 
         execute 'colorscheme ' . l:scheme
@@ -343,6 +348,9 @@ EOF
     catch
       colorscheme seoul256
     endtry
+
+    " set background again after colorscheme
+    execute "set background=" . l:background
 
   endfunction
 
