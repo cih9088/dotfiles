@@ -35,7 +35,7 @@ if [ -n "${_THEME}" ]; then
 
   # renew environment variable
   export DOTS_THEME=${_THEME}
-  export DOTS_BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
+  export DOTS_BG_LUMINANCE=$( $DOTS/bin/xterm-query 11 | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance )
 
   # renew ls color
   [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] &&

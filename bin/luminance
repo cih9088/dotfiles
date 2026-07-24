@@ -1,0 +1,64 @@
+#!/usr/bin/env -S awk -f
+#
+# input:
+#   RRRR/GGGG/BBBB
+#   #RRRRGGGGBBBB
+#   RR/GG/BB
+#   #RRGGBB
+#
+# output:
+#   dark/light
+#
+
+function parsehex(V,OUT, N) {
+  if(V ~ /^0x/)  V=substr(V,3);
+
+  for(N=1; N<=length(V); N++) {
+    OUT=(OUT*16) + H[substr(V, N, 1)]
+  }
+
+  return(OUT)
+}
+
+BEGIN {
+  for(N=0; N<16; N++) {
+    H[sprintf("%x",N)]=N; H[sprintf("%X",N)]=N
+  }
+}
+
+{
+  if ($0 ~ /^#/) {
+    clean = substr($0, 2)
+    len = length(clean)
+
+    if (len == 6) {
+      # #ffffff
+      rgb[1] = substr(clean, 1, 2)
+      rgb[2] = substr(clean, 3, 2)
+      rgb[3] = substr(clean, 5, 2)
+    } else if (len == 12) {
+      # #ffffffffffff
+      rgb[1] = substr(clean, 1, 4)
+      rgb[2] = substr(clean, 5, 4)
+      rgb[3] = substr(clean, 9, 4)
+    } else {
+      next
+    }
+  }
+  else {
+    if ( split($0, rgb, "/") < 3 ) next;
+  }
+
+  div = (length(rgb[1]) <= 2) ? 1 : 256;
+
+  # mawk compatible
+  r = int(parsehex("0x" rgb[1]) / div)
+  g = int(parsehex("0x" rgb[2]) / div)
+  b = int(parsehex("0x" rgb[3]) / div)
+
+  luminance = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255.
+  if (luminance >= 0.5)
+    print "light"
+  else
+    print "dark"
+}

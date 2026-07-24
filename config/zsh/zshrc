@@ -19,14 +19,14 @@
     source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
-# Get terminal colour scheme and background luminance
+# Get terminal theme and background luminance
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
   [ -z "${DOTS_THEME+x}" ] && export DOTS_THEME=$(
     basename "$(grep -rli "background.*[\"']\(#\|0x\)$( $DOTS/bin/bg-colourscheme )[\"']" $DOTS/config/alacritty/colourschemes)" |
       cut -d '.' -f 1)
   [ -z "${DOTS_THEME}" ] && export DOTS_THEME=seoul256
-  [ -z "${DOTS_BG_LUMINANCE+x}" ] && export DOTS_BG_LUMINANCE=$( $DOTS/bin/bg-luminance )
+  [ -z "${DOTS_BG_LUMINANCE+x}" ] && export DOTS_BG_LUMINANCE=$( $DOTS/bin/xterm-query 11 | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance )
   [ -z "${DOTS_BG_LUMINANCE}" ] && export DOTS_BG_LUMINANCE="dark"
 
 
