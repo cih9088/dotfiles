@@ -76,12 +76,13 @@
   # show full command below
   export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:5:wrap"
   # change fzf color
-  # add fzf path
-  [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] &&
-    export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
   [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] \
     && export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)" \
     || export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_HL_LUMINANCE)"
+  # add neovim fzf path if not found in default path
+  [ ! -x "$(command -v fzf)" ] \
+    && [[ ":$PATH:" != *":$HOME/.local/share/nvim/plugged/fzf/bin:"* ]] \
+    && export PATH="${PATH:+${PATH}:}${HOME}/.local/share/nvim/plugged/fzf/bin"
 
 
 # Setup xpanes
