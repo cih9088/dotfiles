@@ -1,33 +1,45 @@
 
 local _CONFIG_PATH="$(readlink -f $HOME/.config/ghostty/config)"
 local _THEME
+local _SHOW_ONLY=false
 
-if [ -n "${1}" ]; then
-  _THEME="${1}"
-else
+[ ! -f "${_CONFIG_PATH}" ] \
+  && echo "file "${_CONFIG_PATH}" doesn't exist" >&1 && return 1
+
+get_current() {
+  _THEME=$(sed -n -e 's|^theme[[:space:]]*=[[:space:]]*\(.*\)|\1|p' "${_CONFIG_PATH}")
+}
+
+set_interactive() {
   has -v fzf
   # _THEME=$( ghostty +list-themes --plain | awk '{print $1}' | fzf --height=10% --reverse )
-  _THEME=$( ls $HOME/.config/ghostty/themes | fzf --height=10% --reverse )
-fi
+  _THEME=$(ls $HOME/.config/ghostty/themes | fzf --height=10% --reverse)
+[ -z "$_THEME" ] && get_current || sed -i "" -e "s/^theme\([[:space:]]*\)=.*/theme\1= ${_THEME}/" "${_CONFIG_PATH}"
+}
 
-[ ! -f "${_CONFIG_PATH}" ] && \
-  echo "file "${_CONFIG_PATH}" doesn't exist" >&1 && return 1
+case "$1" in
+  -c )
+    get_current
+    _SHOW_ONLY=true
+    ;;
 
-if [ -n "${_THEME}" ]; then
-  sed -i "" -e "s/^theme\([[:space:]]*\)=.*/theme\1= ${_THEME}/" "${_CONFIG_PATH}"
-else
-  _THEME=$(sed -n -e 's|^theme[[:space:]]*=[[:space:]]*\(.*\)|\1|p' "${_CONFIG_PATH}")
-fi
+  "")
+    set_interactive
+    ;;
 
-[ -z "${_THEME}" ] \
-  && echo "cannot determine ghostty theme" >&1 && return 1
+  *)
+    _THEME="$1"
+    ;;
+esac
 
-# https://github.com/ghostty-org/ghostty/pull/7759
-if [[ $OSTYPE == darwin* ]]; then
-  # On macOS, pgrep and pkill exclude their own ancestor processes by default
-  pkill -SIGUSR2 -a ghostty
-else
-  pkill -SIGUSR2 ghostty
+if [ $_SHOW_ONLY = false ]; then
+  # https://github.com/ghostty-org/ghostty/pull/7759
+  if [[ $OSTYPE == darwin* ]]; then
+    # On macOS, pgrep and pkill exclude their own ancestor processes by default
+    pkill -SIGUSR2 -a ghostty
+  else
+    pkill -SIGUSR2 ghostty
+  fi
 fi
 
 echo ${_THEME}

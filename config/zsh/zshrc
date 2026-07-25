@@ -58,7 +58,7 @@
   # export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors)
   [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] \
     && export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME) \
-    || export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_HL_LUMINANCE)
+    || export LS_COLORS=$(cat $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_BG_LUMINANCE)
 
 
 # Setup FZF

@@ -1,34 +1,28 @@
 
 local _PID
+local _COMM
 local _TERM
 local _THEME
+local _DOTS_COLOUR0_LUMINANCE
+local _ARG="$1"
 
 [ -n "${TMUX}" ] && _PID=$(tmux display-message -p "#{client_pid}") || _PID=$$
 
 while [ "$_PID" != 1 ]; do
   _PID=$(ps -p "$_PID" -o ppid= | xargs)
-  local _COMM=$(ps -p "$_PID" -o comm= | xargs)
+  _COMM=$(ps -p "$_PID" -o comm= | xargs)
 
   if [[ $_COMM =~ ".*alacritty" ]]; then
     _TERM="alacritty"
-    _THEME=$(alacritty-theme "${1}")
+    _THEME=$(alacritty-theme "$_ARG")
   elif [[ $_COMM =~ ".*ghostty" ]]; then
     _TERM="ghostty"
-    _THEME=$(ghostty-theme "${1}")
+    _THEME=$(ghostty-theme "$_ARG")
   fi
 done
 
-[ -z "${_TERM}" ] && echo "cannot determine terminal" >&2 && exit 1
-
-# fallback current colour scheme
-[ -z "${_THEME}" ] && _THEME=$(
-  if [ "${_TERM}" = "alacritty" ]; then
-    basename "$(grep -rli "background.*[\"']\(#\|0x\)$($DOTS/bin/bg-colourscheme)[\"']" $DOTS/config/alacritty/colourschemes)" \
-      | cut -d '.' -f 1
-  elif [ "${_TERM}" = "ghostty" ]; then
-    basename "$(grep -rli "background.*#\?$($DOTS/bin/bg-colourscheme)" $DOTS/config/ghostty/themes)"
-  fi
-)
+[ -z "${_TERM}" ] && echo "cannot determine terminal" >&2 && return 1
+[ "$_ARG" = "-c" ] && echo $_THEME && return 0
 
 if [ -n "${_THEME}" ]; then
   echo "Changing theme to '${_THEME}'"
@@ -36,6 +30,10 @@ if [ -n "${_THEME}" ]; then
   # renew environment variable
   export DOTS_THEME=${_THEME}
   export DOTS_BG_LUMINANCE=$( $DOTS/bin/xterm-query 11 | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance )
+  _DOTS_COLOUR0_LUMINANCE=$( $DOTS/bin/xterm-query "4;0" | sed 's/.*rgb:\([0-9a-f/]*\).*/\1/' | $DOTS/bin/luminance )
+  [ "${DOTS_BG_LUMINANCE}" = "${_DOTS_COLOUR0_LUMINANCE}" ] \
+    && export DOTS_HL_LUMINANCE="dark" \
+    || export DOTS_HL_LUMINANCE="light"
 
   # renew ls color
   [ -f $DOTS/config/zsh/ls_colors/ls_colors.$DOTS_THEME ] &&
@@ -45,11 +43,12 @@ if [ -n "${_THEME}" ]; then
   # renew fzf color
   [ -f $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME ] &&
     export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_THEME)" ||
-    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_BG_LUMINANCE)"
+    export FZF_DEFAULT_OPTS="$(cat $DOTS/config/zsh/fzf_colors/fzf.$DOTS_HL_LUMINANCE)"
 
   if tmux info &> /dev/null; then
     # update tmux environment
     tmux set-environment DOTS_BG_LUMINANCE $DOTS_BG_LUMINANCE
+    tmux set-environment DOTS_HL_LUMINANCE $DOTS_HL_LUMINANCE
     tmux set-environment DOTS_THEME $DOTS_THEME
 
     # source tmux config

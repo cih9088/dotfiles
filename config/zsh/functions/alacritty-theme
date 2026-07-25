@@ -2,23 +2,31 @@
 local _CONFIG_PATH="$(readlink -f $HOME/.config/alacritty/alacritty.toml)"
 local _THEME
 
-if [ -n "${1}" ]; then
-  _THEME="${1}"
-else
-  has -v fzf
-  _THEME=$(ls $HOME/.config/alacritty/colourschemes | cut -d '.' -f 1 | fzf --height=10% --reverse)
-fi
-
 [ ! -f "${_CONFIG_PATH}" ] \
   && echo "file "${_CONFIG_PATH}" doesn't exist" >&1 && return 1
 
-if [ -n "${_THEME}" ]; then
-  sed -i "" -e "s/alacritty\/colourschemes\/.*\.toml/alacritty\/colourschemes\/${_THEME}.toml/" "${_CONFIG_PATH}"
-else
+get_current() {
   _THEME=$(sed -n -e 's|.*alacritty/colourschemes/\(.*\)\.toml.*|\1|p' "${_CONFIG_PATH}")
-fi
+}
 
-[ -z "${_THEME}" ] \
-  && echo "cannot determine alacritty theme" >&1 && return 1
+set_interactive() {
+  has -v fzf
+  _THEME=$(ls $HOME/.config/alacritty/colourschemes | cut -d '.' -f 1 | fzf --height=10% --reverse)
+  [ -z "$_THEME" ] && get_current || sed -i "" -e "s/alacritty\/colourschemes\/.*\.toml/alacritty\/colourschemes\/${_THEME}.toml/" "${_CONFIG_PATH}"
+}
+
+case "$1" in
+  -c )
+    get_current
+    ;;
+
+  "")
+    set_interactive
+    ;;
+
+  *)
+    _THEME="$1"
+    ;;
+esac
 
 echo ${_THEME}
