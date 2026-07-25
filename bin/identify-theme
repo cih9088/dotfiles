@@ -4,12 +4,17 @@
 
 set -u
 
+default_terminal=${IDENTIFY_TERMINAL_DEFAULT:-ghostty}
+
 usage() {
   cat <<EOF
 Usage: ${0##*/} [--help]
 
 Identify the current terminal theme by comparing ANSI colors 0 through 15.
 Ghostty or Alacritty is detected automatically.
+
+If terminal detection fails, IDENTIFY_TERMINAL_DEFAULT is used.
+The default value is: ${default_terminal}
 
 Default theme directories:
   Ghostty:   \$GHOSTTY_THEME_DIR or ~/.config/ghostty/themes
@@ -92,11 +97,20 @@ detect_terminal() {
 }
 
 if ! terminal=$(detect_terminal); then
-  printf '%s: cannot detect Ghostty or Alacritty\n' "${0##*/}" >&2
-  exit 2
+  printf '%s: cannot detect Ghostty or Alacritty, defaulting to %s\n' \
+    "${0##*/}" "$default_terminal" >&2
+  terminal=$default_terminal
 fi
 
 config_home=${XDG_CONFIG_HOME:-"${HOME}/.config"}
+
+case $terminal in
+  alacritty|ghostty) ;;
+  *)
+    printf '%s: unsupported terminal: %s\n' "${0##*/}" "$terminal" >&2
+    exit 2
+    ;;
+esac
 
 case $terminal in
   ghostty)
