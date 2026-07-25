@@ -2,22 +2,26 @@
 
 [ -z ${TMUX+x} ] && echo "Not in tmux session" >&1 && return 1
 
-split=${1:-s}
+_LAYOUT=${1:-a}
 
-[ $split = "s" ] && (
-  tmux split-window -v -l 25%
-  tmux select-pane -t 1
-)
+[ "$_LAYOUT" = "a" ] && {
+  tmux split-window -hdl 30%
+  tmux split-window -vdl 25%
+}
 
-[ $split = "d" ] && (
+[ "$_LAYOUT" = "s" ] && {
+  tmux split-window -vdl 25%
+}
+
+[ "$_LAYOUT" = "d" ] && {
   tmux split-window -v -l 25%
   tmux split-window -hb -l 50%
   tmux select-pane -t 1
-)
+}
 
-[ $split = "t" ] && (
+[ "$_LAYOUT" = "t" ] && {
   tmux split-window -v -l 25%
   tmux split-window -hb -l 66%
   tmux split-window -hb -l 50%
   tmux select-pane -t 1
-)
+}
