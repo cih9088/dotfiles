@@ -148,8 +148,8 @@
 
   if has("nvim-0.8.0")
     Plug 'mfussenegger/nvim-dap'
-    Plug 'nvim-neotest/nvim-nio'
-    Plug 'rcarriga/nvim-dap-ui'
+    Plug 'igorlfs/nvim-dap-view'
+    Plug 'theHamsta/nvim-dap-virtual-text'
   endif
   if has("nvim-0.9")
     Plug 'andrewferrier/debugprint.nvim'

@@ -30,7 +30,6 @@ function M.setup()
   end, { noremap = true, silent = true })
   vim.keymap.set("n", "<Plug>DAPTerminate", function()
     require("dap").terminate()
-    require("dapui").close()
   end, { noremap = true, silent = true })
 
   vim.keymap.set("n", "<space>dq", "<Plug>DAPTerminate")
