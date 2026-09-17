@@ -17,3 +17,6 @@ palette = 15=#EEEEEE
 
 background = #E1E1E1
 foreground = #606060
+
+cursor-color = cell-foreground
+cursor-text = cell-background
