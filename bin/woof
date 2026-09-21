@@ -33,6 +33,7 @@ import configparser
 import errno
 import getopt
 import http.server
+import ntpath
 import os
 import re
 import readline
@@ -62,6 +63,9 @@ upload_html = b"""\
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Woof Upload</title>
     <style>
+      #fileInput, #fileInput::file-selector-button, #directoryBtn, #directorySelection {
+        font: 13px system-ui, sans-serif;
+      }
       #progressWrap { display: none; margin-top: 12px; }
       #progressText { font-family: system-ui, sans-serif; font-size: 14px; }
     </style>
@@ -70,75 +74,106 @@ upload_html = b"""\
   <body>
     <h1>Woof Upload</h1>
     <form id="uploadForm" method="POST" action="/upload" enctype="multipart/form-data">
-      <p><input id="fileInput" type="file" name="upfile" multiple webkitdirectory directory /></p>
-      <p><input id="submitBtn" type="submit" value="Upload!" diabled /></p>
+      <p><label for="fileInput">Files</label> <input id="fileInput" type="file" name="upfile" multiple /></p>
+      <p>
+        <label for="directoryBtn">Directories</label>
+        <button id="directoryBtn" type="button">Choose directory</button>
+        <input id="directoryInput" type="file" name="upfile" multiple webkitdirectory hidden />
+        <span id="directorySelection">No directory chosen</span>
+      </p>
+      <p><input id="submitBtn" type="submit" value="Upload!" disabled /></p>
     </form>
     <div id="progressWrap" style="display:none; margin-top:12px;">
       <progress id="progressBar" value="0" max="100"></progress>
       <div id="progressText">0%</div>
     </div>
     <script>
-      const form = document.querySelector('form');
-      const fileInput = document.querySelector('input[type="file"]');
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        const files = fileInput.files;
-        for (let file of files) {
-          const pathOnServer = file.webkitRelativePath || file.name;
-          formData.append('upfile', file, pathOnServer);
-        }
-        await fetch("/upload", {
-          method: 'POST',
-          body: formData,
-        });
-      });
-    </script>
-    <script>
       const form = document.getElementById("uploadForm");
       const fileInput = document.getElementById("fileInput");
+      const directoryInput = document.getElementById("directoryInput");
+      const directoryBtn = document.getElementById("directoryBtn");
+      const directorySelection = document.getElementById("directorySelection");
       const btn = document.getElementById("submitBtn");
-
-      function syncButtonState() {
-        btn.disabled = !(fileInput.files && fileInput.files.length > 0);
-      }
-      syncButtonState();
-      fileInput.addEventListener("change", syncButtonState);
 
       const progressWrap = document.getElementById("progressWrap");
       const progressBar = document.getElementById("progressBar");
       const progressText = document.getElementById("progressText");
+      let uploading = false;
+      let exhausted = false;
+
+      function syncButtonState() {
+        fileInput.disabled = uploading || exhausted;
+        directoryInput.disabled = uploading || exhausted;
+        directoryBtn.disabled = uploading || exhausted;
+        const count = directoryInput.files.length;
+        directorySelection.textContent = count
+          ? `${count} file${count === 1 ? "" : "s"} selected`
+          : "No directory chosen";
+        btn.disabled =
+          uploading || exhausted ||
+          (fileInput.files.length === 0 && directoryInput.files.length === 0);
+      }
+      fileInput.addEventListener("change", syncButtonState);
+      directoryInput.addEventListener("change", syncButtonState);
+      directoryBtn.addEventListener("click", () => directoryInput.click());
+
       function formatBytes(bytes) {
         if (!Number.isFinite(bytes)) return "-";
+
         const units = ["B", "KB", "MB", "GB", "TB"];
         let i = 0;
         let n = bytes;
+
         while (n >= 1024 && i < units.length - 1) {
           n /= 1024;
           i++;
         }
+
         return `${n.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
       }
+
       function formatDuration(seconds) {
         if (!Number.isFinite(seconds) || seconds < 0) return "-";
+
         const s = Math.round(seconds);
         const m = Math.floor(s / 60);
         const r = s % 60;
+
         return m > 0 ? `${m}m ${r}s` : `${r}s`;
       }
+
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        const fd = new FormData(form);
+        if (uploading || exhausted ||
+            (fileInput.files.length === 0 && directoryInput.files.length === 0)) return;
+
+        const fd = new FormData();
+
+        // Normal files
+        for (const file of fileInput.files) {
+          fd.append("upfile", file, file.name);
+        }
+
+        // Directory files: preserve relative paths
+        for (const file of directoryInput.files) {
+          fd.append(
+            "upfile",
+            file,
+            file.webkitRelativePath || file.name
+          );
+        }
+
         const xhr = new XMLHttpRequest();
         xhr.open("POST", form.action, true);
+
         progressWrap.style.display = "block";
         progressBar.value = 0;
         progressText.textContent = "0%";
-        btn.disabled = true;
-        const startTime = performance.now();
+        uploading = true;
+        syncButtonState();
+
         const samples = [];
-        const windowMs = 3000;      // speed averaged over last 3 seconds
+        const windowMs = 3000;
         let lastUiUpdate = 0;
 
         xhr.upload.onprogress = (event) => {
@@ -149,41 +184,54 @@ upload_html = b"""\
           const total = event.total;
 
           samples.push({ t: now, b: loaded });
-          while (samples.length > 2 && samples[0].t < now - windowMs) samples.shift();
+
+          while (
+            samples.length > 2 &&
+            samples[0].t < now - windowMs
+          ) {
+            samples.shift();
+          }
 
           let recentBps = 0;
+
           if (samples.length >= 2) {
             const first = samples[0];
             const dt = (now - first.t) / 1000;
             const db = loaded - first.b;
+
             recentBps = dt > 0 ? db / dt : 0;
           }
 
           const remainingBytes = total - loaded;
-          const etaSec = recentBps > 0 ? remainingBytes / recentBps : Infinity;
+          const etaSec =
+            recentBps > 0 ? remainingBytes / recentBps : Infinity;
 
           const percent = Math.round((loaded / total) * 100);
 
-          // Throttle UI updates (every 250ms) to reduce flicker
           if (now - lastUiUpdate >= 250 || loaded === total) {
             progressBar.value = percent;
             progressText.textContent =
               `${percent}% - ${formatBytes(loaded)} / ${formatBytes(total)} ` +
               `(${formatBytes(recentBps)}/s, ETA ${formatDuration(etaSec)})`;
+
             lastUiUpdate = now;
           }
         };
 
         xhr.onload = () => {
-          btn.disabled = false;
           if (xhr.status >= 200 && xhr.status < 300) {
             progressBar.value = 100;
-            n = xhr.getResponseHeader("X-Woof-Downloads")
+
+            const n = xhr.getResponseHeader("X-Woof-Downloads");
+
             fileInput.value = "";
-            if (n == "0") {
-              btn.disabled = true;
-              fileInput.disabled = true;
-              progressText.textContent = "Upload complete and no more upload is allowed";
+            directoryInput.value = "";
+
+            if (n === "0") {
+              exhausted = true;
+
+              progressText.textContent =
+                "Upload complete and no more uploads are allowed";
             } else {
               progressText.textContent = "Upload complete";
             }
@@ -193,12 +241,29 @@ upload_html = b"""\
         };
 
         xhr.onerror = () => {
-          btn.disabled = false;
           progressText.textContent = "Upload failed (network error)";
         };
+        xhr.onabort = () => {
+          progressText.textContent = "Upload cancelled";
+        };
+        xhr.ontimeout = () => {
+          progressText.textContent = "Upload failed (timeout)";
+        };
+        xhr.onloadend = () => {
+          uploading = false;
+          syncButtonState();
+        };
 
-        xhr.send(fd);
+        try {
+          xhr.send(fd);
+        } catch (error) {
+          uploading = false;
+          progressText.textContent = "Upload failed (could not send request)";
+          syncButtonState();
+        }
       });
+
+      syncButtonState();
     </script>
   </body>
 </html>
@@ -244,6 +309,8 @@ def decode_multipart_form_data(multipart_data, headers):
     while n_read < content_len:
         to_read = min(chunk_size, content_len - n_read)
         chunk = multipart_data.read(to_read)
+        if not chunk:
+            raise EOFError("Unexpected end of upload")
         n_read += len(chunk)
         buffer.extend(chunk)
 
@@ -263,20 +330,42 @@ def decode_multipart_form_data(multipart_data, headers):
 
                     def _iter():
                         nonlocal n_read
+                        marker = b"\r\n" + boundary
                         while True:
-                            while len(buffer) < len(boundary):
-                                to_read = min(chunk_size, content_len - n_read)
-                                chunk = multipart_data.read(to_read)
-                                n_read += len(chunk)
-                                buffer.extend(chunk)
-                            if b"\r\n" + boundary in buffer:
-                                slice = buffer.split(b"\r\n" + boundary)
-                                yield slice[0]
-                                del buffer[: len(slice[0]) + 2]
-                                break
+                            pos = buffer.find(marker)
+                            if pos >= 0:
+                                end = pos + len(marker)
+                                suffix = buffer[end : end + 4]
+                                if (
+                                    suffix.startswith(b"\r\n")
+                                    or suffix == b"--\r\n"
+                                    or (suffix == b"--" and n_read == content_len)
+                                ):
+                                    yield bytes(buffer[:pos])
+                                    del buffer[: pos + 2]
+                                    break
+                                needed = 4 if suffix.startswith(b"--") else 2
+                                if len(suffix) >= needed or n_read == content_len:
+                                    # False match: keep it as file data and search again.
+                                    yield bytes(buffer[: pos + 2])
+                                    del buffer[: pos + 2]
+                                    continue
+                                # Retain the candidate until its ending has arrived.
+                                safe = pos
                             else:
-                                yield buffer
-                                buffer.clear()
+                                # Keep any suffix that could begin a split boundary.
+                                safe = max(0, len(buffer) - len(marker) + 1)
+                            if safe:
+                                yield bytes(buffer[:safe])
+                                del buffer[:safe]
+                            to_read = min(chunk_size, content_len - n_read)
+                            if to_read <= 0:
+                                raise EOFError("Missing multipart boundary")
+                            chunk = multipart_data.read(to_read)
+                            if not chunk:
+                                raise EOFError("Unexpected end of upload")
+                            n_read += len(chunk)
+                            buffer.extend(chunk)
 
                     yield meta, _iter()
                     break
@@ -319,33 +408,58 @@ class FileServHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_error(501, "Unsupported method (POST)")
             return
 
+        upload_root = os.path.realpath(".")
         have_upload = False
-        for meta, iterator in decode_multipart_form_data(self.rfile, self.headers):
-            if meta is None or meta.get("name", "") != "upfile":
-                continue
-            have_upload = True
-            upfilename = meta["filename"]
-            upfilename = upfilename.rsplit("\\", 1)[-1]
-
-            destfilename = None
-            for suffix in chain.from_iterable([[""], map(lambda x: f".{x}", count(1))]):
-                destfilename = os.path.join(".", upfilename + suffix)
-                if os.path.exists(destfilename):
+        try:
+            for meta, iterator in decode_multipart_form_data(self.rfile, self.headers):
+                if meta is None or meta.get("name", "") != "upfile":
                     continue
-                else:
-                    break
-            if destfilename is None or os.path.exists(destfilename):
-                upfilename += "."
-                destfile, destfilename = tempfile.mkstemp(prefix=upfilename, dir=".")
+                have_upload = True
+                upfilename = meta.get("filename", "").replace("\\", "/")
+                if (
+                    not upfilename
+                    or "\x00" in upfilename
+                    or os.path.isabs(upfilename)
+                    or ntpath.splitdrive(upfilename)[0]
+                    or ".." in upfilename.split("/")
+                ):
+                    self.send_error(403, "Invalid upload path")
+                    return
 
-            print(
-                "accepting uploaded file: %s -> %s" % (upfilename, destfilename),
-                file=sys.stderr,
-            )
-            os.makedirs(os.path.dirname(destfilename), exist_ok=True)
-            with open(destfilename, "wb") as f:
-                for chunk in iterator:
-                    f.write(chunk)
+                destination = os.path.join(upload_root, upfilename)
+                if os.path.commonpath([upload_root, os.path.realpath(destination)]) != upload_root:
+                    self.send_error(403, "Upload path is outside the upload directory")
+                    return
+
+                destdir = os.path.dirname(destination)
+                os.makedirs(destdir, exist_ok=True)
+                tempfd, tempname = tempfile.mkstemp(prefix=".woof-", dir=destdir)
+                try:
+                    with os.fdopen(tempfd, "wb") as f:
+                        for chunk in iterator:
+                            f.write(chunk)
+
+                    for suffix in chain.from_iterable([[""], map(lambda x: f".{x}", count(1))]):
+                        destfilename = destination + suffix
+                        try:
+                            os.link(tempname, destfilename)
+                        except FileExistsError:
+                            continue
+                        break
+                finally:
+                    os.unlink(tempname)
+
+                print(
+                    "accepting uploaded file: %s -> %s" % (upfilename, destfilename),
+                    file=sys.stderr,
+                )
+        except EOFError as error:
+            self.send_error(400, str(error))
+            return
+        except OSError as error:
+            self.log_error("Upload failed: %s", error)
+            self.send_error(500, "Unable to save upload")
+            return
 
         if not have_upload:
             self.send_error(403, "No upload provided?")
@@ -638,7 +752,7 @@ def woof_client(url):
 
     if destfile == None:
         if override == True:
-            destfile = os.open(destfilename, os.O_WRONLY | os.O_CREAT, 0o644)
+            destfile = os.open(destfilename, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
         else:
             for suffix in [".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9"]:
                 destfilename = os.path.join(".", fname + suffix)
