@@ -36,6 +36,7 @@ function M.setup()
         "tailwindcss",
         "emmet_language_server",
         "yamlls",
+        "helm_ls",
         "ansiblels",
         "jsonls",
         "terraformls",
