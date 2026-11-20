@@ -425,16 +425,24 @@
 # ---------------------------------------------------------------------------------------
   unalias cd &>/dev/null
   cd() {
-    nocorrect builtin cd "$@" &&
-      (
-        n_files=$(\timeout 0.01 ls -f | wc -l)
-        if [ ${n_files} != 0 ]; then
-          term_size=$(( `tput lines` * `tput cols` / 100 ))
-          if [ ${n_files} -lt ${term_size} ]; then
-            ls
-          fi
-        fi
-      )
+    nocorrect builtin cd "$@" || return
+
+    # # reference implementation
+    # local n_files=0 term_size=0
+    # n_files=$(\timeout 0.01 ls -f | wc -l)
+    # if [ ${n_files} != 0 ]; then
+    #   term_size=$(( `tput lines` * `tput cols` / 100 ))
+    #   if [ ${n_files} -lt ${term_size} ]; then
+    #     ls
+    #   fi
+    # fi
+
+    local term_size=$(( ${LINES:-0} * ${COLUMNS:-0} / 100 ))
+    (( term_size <= 0 )) && return
+    local n_entries=$(\timeout 0.01 ls -fA 2>/dev/null | head -n $((term_size + 1)) | wc -l)
+    if (( n_entries > 0 && n_entries <= term_size )); then
+      ls
+    fi
   }
 
 
