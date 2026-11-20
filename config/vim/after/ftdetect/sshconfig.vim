@@ -1,1 +1,1 @@
-autocmd BufNewFile,BufRead ~/.ssh/config.d/* setlocal filetype=sshconfig
+autocmd BufNewFile,BufRead ~/.ssh/config.d/* setfiletype sshconfig

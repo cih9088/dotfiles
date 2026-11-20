@@ -1,1 +1,1 @@
-autocmd BufNewFile,BufRead *.jsonl setlocal filetype=jsonl
+autocmd BufNewFile,BufRead *.jsonl setfiletype jsonl
