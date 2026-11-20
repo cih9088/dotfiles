@@ -129,6 +129,27 @@
   fi
 
 
+# gcloud support
+# ---------------------------------------------------------------------------------------
+  if  [ -x "$(command -v gcloud)" ]; then
+    # gcloud command is way slower
+    if command -v brew >/dev/null; then
+      BREW_PREFIX=$(brew --prefix)
+      [ -f $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc ] \
+        && source $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc
+      [ -f $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc ] \
+        && source $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc
+      unset BREW_PREFIX
+    else
+      GCLOUD_ROOT_PATH=$(gcloud --format='value(installation.sdk_root)' info)
+      [ -f $GCLOUD_ROOT_PATH/path.zsh.inc ] && source $GCLOUD_ROOT_PATH/path.zsh.inc
+      [ -f $GCLOUD_ROOT_PATH/completion.zsh.inc ] \
+        && source $GCLOUD_ROOT_PATH/completion.zsh.inc
+      unset GCLOUD_ROOT_PATH
+    fi
+  fi
+
+
 # Setup asdf
 # ---------------------------------------------------------------------------------------
   # https://github.com/asdf-vm/asdf/pull/1560
@@ -155,22 +176,50 @@
 
 # Setup mise
 # ---------------------------------------------------------------------------------------
-  _MISE_BINARY=
+  __MISE_BINARY=""
   if [ -f "${HOME}/.local/bin/mise" ]; then
-    _MISE_BINARY="${HOME}/.local/bin/mise"
+    __MISE_BINARY="${HOME}/.local/bin/mise"
   elif command -v brew >/dev/null; then
     BREW_PREFIX=$(brew --prefix)
-    [ -f "$BREW_PREFIX/bin/mise" ] && _MISE_BINARY=$BREW_PREFIX/bin/mise || true
+    [ -f "$BREW_PREFIX/bin/mise" ] && __MISE_BINARY=$BREW_PREFIX/bin/mise || true
     unset BREW_PREFIX
   fi
 
-  if [ ! -z "${_MISE_BINARY}" ]; then
-    eval "$(${_MISE_BINARY} activate zsh)"
+  if [ ! -z "${__MISE_BINARY}" ]; then
+    eval "$(${__MISE_BINARY} activate zsh)"
     # https://mise.jdx.dev/lang/python.html#python.compile
     # make mise compile python instead of download precompiled version
     export MISE_PYTHON_COMPILE=true
+
+    # overwrite _mise_hook from mise activate zsh
+    _mise_hook() {
+      local dir="$PWD" state="" mtime="" f
+      local -a candidates=(
+        .mise.local.toml
+        mise.local.toml
+        .mise.toml
+        mise.toml
+        .mise
+        mise
+        .tool-versions
+      )
+
+      while [[ "$dir" != "/" && "$dir" != "$HOME" ]]; do
+        for f in "${candidates[@]}"; do
+          if [[ -e "$dir/$f" ]]; then
+            zstat -A mtime +mtime "$dir/$f" 2>/dev/null
+            state+="$dir/$f:${mtime};"
+          fi
+        done
+        dir="${dir:h}"
+      done
+
+      if [[ "$state" != "$__MISE_ACTIVE_STATE" ]]; then
+        __MISE_ACTIVE_STATE="$state"
+        eval "$(${__MISE_BINARY} hook-env --shell-pid $$ -s zsh "$@")"
+      fi
+    }
   fi
-  unset _MISE_BINARY
 
 
 # Setup conda
@@ -275,27 +324,6 @@
     autoload -z edit-command-line
     zle -N edit-command-line
     bindkey "^X^E" edit-command-line
-  fi
-
-
-# gcloud support
-# ---------------------------------------------------------------------------------------
-  if  [ -x "$(command -v gcloud)" ]; then
-    # gcloud command is way slower
-    if command -v brew >/dev/null; then
-      BREW_PREFIX=$(brew --prefix)
-      [ -f $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc ] \
-        && source $BREW_PREFIX/share/google-cloud-sdk/path.zsh.inc
-      [ -f $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc ] \
-        && source $BREW_PREFIX/share/google-cloud-sdk/completion.zsh.inc
-      unset BREW_PREFIX
-    else
-      GCLOUD_ROOT_PATH=$(gcloud --format='value(installation.sdk_root)' info)
-      [ -f $GCLOUD_ROOT_PATH/path.zsh.inc ] && source $GCLOUD_ROOT_PATH/path.zsh.inc
-      [ -f $GCLOUD_ROOT_PATH/completion.zsh.inc ] \
-        && source $GCLOUD_ROOT_PATH/completion.zsh.inc
-      unset GCLOUD_ROOT_PATH
-    fi
   fi
 
 
