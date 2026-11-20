@@ -19,6 +19,17 @@
     && source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 
 
+# Helper function for no hook
+# ---------------------------------------------------------------------------------------
+  _dots_no_hook() {
+    local p
+    for p in ${(s.:.)DOTS_NO_HOOK_PATHS}; do
+      [[ -n "$p" && ( "$PWD" == "$p" || "$PWD" == "$p/"* ) ]] && return 0
+    done
+    return 1
+  }
+
+
 # Get terminal theme and background/highlight luminance
 # https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
 # --------------------------------------------------------------------------------------
@@ -193,6 +204,14 @@
 
     # overwrite _mise_hook from mise activate zsh
     _mise_hook() {
+      if _dots_no_hook; then
+        if [[ -n "$__MISE_ACTIVE_STATE" ]]; then
+          unset __MISE_ACTIVE_STATE
+          eval "$(${__MISE_BINARY} hook-env --shell-pid $$ -s zsh "$@")"
+        fi
+        return
+      fi
+
       local dir="$PWD" state="" mtime="" f
       local -a candidates=(
         .mise.local.toml
@@ -426,6 +445,7 @@
   unalias cd &>/dev/null
   cd() {
     nocorrect builtin cd "$@" || return
+    _dots_no_hook && return
 
     # # reference implementation
     # local n_files=0 term_size=0
