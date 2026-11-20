@@ -7,7 +7,7 @@
 
 
 _SSH_CONFIG=${SSH_CONFIG:-$HOME/.ssh/config}
-_SSH_CONFIG_DIR=$(dirname $_SSH_CONFIG)
+_SSH_CONFIG_DIR=$(dirname "$_SSH_CONFIG")
 _SSH_CONTENT=""
 
 # read all sshconfig
@@ -53,33 +53,42 @@ has() {
 }
 
 
-
 # TODO: develop more
 has_destination() {
+  local arg
+
   # no argument
   [ $# -eq 0 ] && return 1
 
-  for _arg in "$@"; do
+  for arg in "$@"; do
+    # option
+    [[ "$arg" == -* ]] && return 1
+
     # user@host
-    [[ "$_arg" == *"@"* ]] && return 0
+    [[ "$arg" == *"@"* ]] && return 0
 
     # ip
-    [[ "$_arg" =~ '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' ]] && return 0
+    local re_ip='^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+    [[ "$arg" =~ $re_ip ]] && return 0
 
     # domain
-    [[ "$_arg" =~ '.*\..*' ]] && return 0
+    local re_domain='^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)+$'
+    [[ "$arg" =~ $re_domain ]] && return 0
 
     # alias in .ssh/config
-    [ -f $_SSH_CONFIG ] && echo $_SSH_CONTENT | grep -q "^Host\s\+$_arg\$" && return 0
+    [ -f "$_SSH_CONFIG" ] && echo "$_SSH_CONTENT" | grep -q "^Host\s\+$arg\$" && return 0
 
-    # if it is system's host database
-    getent hosts "$_arg" >/dev/null 2>&1 && return 0
+    # in system's host database
+    getent hosts "$arg" >/dev/null 2>&1 && return 0
   done
 
   return 1
 }
 
+
 parse_config() {
+  local targets exit_code
+
   targets=$(echo "$_SSH_CONTENT" | awk '
   BEGIN { current = ""; hosts[0] = ""; hostnames[0] = ""; ips[0] = ""; aliases[0] = "" }
   {
@@ -119,9 +128,11 @@ parse_config() {
 
   exit_code=$?
   [ ${exit_code} != 0 ] && return ${exit_code}
+
   targets=($(echo "${targets}" \
     | fzf --bind 'ctrl-a:select-all' --multi \
       --height=40% --cycle --no-sort --layout=reverse \
+      --exact \
       --preview-window=up:2 \
       --preview='echo "'"$_SSH_CONTENT"'" \
       | awk -v host={} '"'"'
@@ -176,7 +187,7 @@ else
   # local config parsing
   has -v fzf awk tmux xpanes || return 1
 
-  if [ ! -f $_SSH_CONFIG ]; then
+  if [ ! -f "$_SSH_CONFIG" ]; then
     echo "$_SSH_CONFIG does not exist" >&2
     return 1
   fi
