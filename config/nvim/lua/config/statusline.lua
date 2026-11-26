@@ -183,9 +183,14 @@ M.get_filetype = function(self)
 
   local icon
   local filetype = vim.bo.filetype
+  local filename = vim.fn.expand("%:t")
+  local ext = vim.fn.expand("%:e")
 
   if package.loaded["nvim-web-devicons"] ~= nil then
-    icon = require("nvim-web-devicons").get_icon_by_filetype(filetype)
+    icon = require("nvim-web-devicons").get_icon(filename, ext, {default = false})
+    if not icon then
+      icon = require("nvim-web-devicons").get_icon_by_filetype(filetype)
+    end
   elseif vim.fn.exists("*WebDevIconsGetFileTypeSymbol") == 1 then
     icon = vim.fn.WebDevIconsGetFileTypeSymbol()
   end
